@@ -6,6 +6,7 @@
 import type { FastifyPluginAsync } from 'fastify';
 import type { StateManager } from '@dtu/state';
 import type { ResetResponse } from '@dtu/types';
+import { createGID } from '../services/gid.js';
 
 interface FixturesLoadBody {
   orders?: any[];
@@ -58,19 +59,25 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
       'Loading fixtures'
     );
 
-    // Load orders
+    // Load orders — generate GIDs before insertion (StateManager requires data.gid, DB enforces NOT NULL)
     for (const order of orders) {
-      fastify.stateManager.createOrder(order);
+      const orderId = Date.now() + Math.floor(Math.random() * 100000);
+      const orderGid = createGID('Order', orderId);
+      fastify.stateManager.createOrder({ ...order, gid: orderGid });
     }
 
-    // Load products
+    // Load products — generate GIDs before insertion
     for (const product of products) {
-      fastify.stateManager.createProduct(product);
+      const productId = Date.now() + Math.floor(Math.random() * 100000);
+      const productGid = createGID('Product', productId);
+      fastify.stateManager.createProduct({ ...product, gid: productGid });
     }
 
-    // Load customers
+    // Load customers — generate GIDs before insertion
     for (const customer of customers) {
-      fastify.stateManager.createCustomer(customer);
+      const customerId = Date.now() + Math.floor(Math.random() * 100000);
+      const customerGid = createGID('Customer', customerId);
+      fastify.stateManager.createCustomer({ ...customer, gid: customerGid });
     }
 
     return {
