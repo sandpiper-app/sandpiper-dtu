@@ -27,7 +27,11 @@
   3. Any twin can persist state to SQLite and reset to empty state in under 100ms
   4. Any twin returns 200 from `/health` endpoint when initialized
   5. Logs from any twin include correlation IDs and structured JSON format for debugging
-**Plans**: TBD
+**Plans**: 2 plans in 2 waves
+
+Plans:
+- [ ] 01-01-PLAN.md — Initialize monorepo structure and shared package foundations
+- [ ] 01-02-PLAN.md — Implement state management and example twin validation
 
 ### Phase 2: Shopify Twin - Core Operations
 **Goal**: Shopify twin handles OAuth and core GraphQL operations with stateful behavior
@@ -111,7 +115,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Monorepo Setup | 0/? | Not started | - |
+| 1. Foundation & Monorepo Setup | 0/2 | Not started | - |
 | 2. Shopify Twin - Core Operations | 0/? | Not started | - |
 | 3. Webhook System & Conformance Framework | 0/? | Not started | - |
 | 4. Shopify Twin - Advanced Features | 0/? | Not started | - |
@@ -143,4 +147,4 @@ Phase 2 (Shopify Core) ──→ Phase 3 (Webhooks/Conformance)
 - Phase 7 integrates twins with Sandpiper after UIs prove twins work independently
 
 ---
-*Last updated: 2026-02-27 after roadmap creation*
+*Last updated: 2026-02-27 after Phase 1 planning*
