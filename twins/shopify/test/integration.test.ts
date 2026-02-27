@@ -1,0 +1,666 @@
+/**
+ * Integration tests for the Shopify twin application.
+ *
+ * Tests verify:
+ * - OAuth token exchange (SHOP-02)
+ * - Admin API endpoints (INFRA-03)
+ * - GraphQL queries and mutations (SHOP-01)
+ * - Token validation on API requests (SHOP-07)
+ * - Error simulation (INFRA-04)
+ * - Webhook triggering on mutations (SHOP-03)
+ * - Order updates with state changes
+ */
+
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { buildApp } from '../src/index.js';
+
+describe('Shopify Twin Integration', () => {
+  let app: Awaited<ReturnType<typeof buildApp>>;
+
+  beforeEach(async () => {
+    app = await buildApp({ logger: false });
+    await app.ready();
+  });
+
+  afterEach(async () => {
+    await app.close();
+  });
+
+  // ---------------------------------------------------------------------------
+  // OAuth (SHOP-02)
+  // ---------------------------------------------------------------------------
+  describe('OAuth', () => {
+    it('issues access token for authorization code', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/oauth/access_token',
+        payload: { code: 'test-code' },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.access_token).toBeDefined();
+      expect(body.scope).toContain('read_orders');
+      expect(body.scope).toContain('write_orders');
+    });
+
+    it('issues unique tokens for different codes', async () => {
+      const res1 = await app.inject({
+        method: 'POST',
+        url: '/admin/oauth/access_token',
+        payload: { code: 'code-1' },
+      });
+      const res2 = await app.inject({
+        method: 'POST',
+        url: '/admin/oauth/access_token',
+        payload: { code: 'code-2' },
+      });
+      const body1 = JSON.parse(res1.body);
+      const body2 = JSON.parse(res2.body);
+      expect(body1.access_token).not.toBe(body2.access_token);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Admin API (INFRA-03)
+  // ---------------------------------------------------------------------------
+  describe('Admin API', () => {
+    it('resets state', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/reset',
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.reset).toBe(true);
+      expect(body.timestamp).toBeGreaterThan(0);
+    });
+
+    it('loads fixtures', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/fixtures/load',
+        payload: {
+          orders: [
+            {
+              gid: 'gid://shopify/Order/0',
+              name: '#1001',
+              total_price: '100.00',
+              currency_code: 'USD',
+              line_items: [{ title: 'Widget', quantity: 1, price: '100.00' }],
+            },
+          ],
+        },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.loaded.orders).toBe(1);
+    });
+
+    it('returns state summary', async () => {
+      const response = await app.inject({
+        method: 'GET',
+        url: '/admin/state',
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body).toHaveProperty('orders');
+      expect(body).toHaveProperty('products');
+      expect(body).toHaveProperty('customers');
+      expect(body).toHaveProperty('tokens');
+      expect(body).toHaveProperty('webhooks');
+    });
+
+    it('state counts update after fixture load', async () => {
+      await app.inject({
+        method: 'POST',
+        url: '/admin/fixtures/load',
+        payload: {
+          orders: [
+            { gid: 'gid://shopify/Order/0', name: '#1001', total_price: '10.00', currency_code: 'USD' },
+          ],
+          products: [
+            { gid: 'gid://shopify/Product/100', title: 'Widget' },
+            { gid: 'gid://shopify/Product/101', title: 'Gadget' },
+          ],
+        },
+      });
+
+      const stateRes = await app.inject({ method: 'GET', url: '/admin/state' });
+      const state = JSON.parse(stateRes.body);
+      expect(state.orders).toBe(1);
+      expect(state.products).toBe(2);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // GraphQL API (SHOP-01, SHOP-07)
+  // ---------------------------------------------------------------------------
+  describe('GraphQL API', () => {
+    let token: string;
+
+    beforeEach(async () => {
+      const oauthResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/oauth/access_token',
+        payload: { code: 'test' },
+      });
+      token = JSON.parse(oauthResponse.body).access_token;
+    });
+
+    // -- Authentication (SHOP-07) --
+
+    it('returns error without access token', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        payload: { query: '{ orders(first:10) { edges { node { id } } } }' },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.errors).toBeDefined();
+      expect(body.errors[0].extensions.code).toBe('UNAUTHORIZED');
+    });
+
+    it('returns error with invalid token', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': 'invalid-token-value' },
+        payload: { query: '{ orders(first:10) { edges { node { id } } } }' },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.errors).toBeDefined();
+      expect(body.errors[0].extensions.code).toBe('UNAUTHORIZED');
+    });
+
+    // -- Queries --
+
+    it('queries orders with valid token', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: { query: '{ orders(first:10) { edges { node { id name } } } }' },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.data.orders.edges).toBeDefined();
+      expect(Array.isArray(body.data.orders.edges)).toBe(true);
+    });
+
+    it('queries products with valid token', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: { query: '{ products(first:10) { edges { node { id title } } } }' },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.data.products.edges).toBeDefined();
+    });
+
+    it('queries customers with valid token', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: { query: '{ customers(first:10) { edges { node { id email } } } }' },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.data.customers.edges).toBeDefined();
+    });
+
+    // -- Mutations: orderCreate --
+
+    it('creates order and returns GID', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            orderCreate(input: {
+              lineItems: [{title: "Test Product", quantity: 1, price: "10.00"}],
+              totalPrice: "10.00",
+              currencyCode: "USD"
+            }) {
+              order { id name }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.data.orderCreate.order.id).toMatch(/^gid:\/\/shopify\/Order\/\d+$/);
+      expect(body.data.orderCreate.order.name).toBeDefined();
+      expect(body.data.orderCreate.userErrors).toHaveLength(0);
+    });
+
+    it('returns userErrors for empty lineItems', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            orderCreate(input: {
+              lineItems: [],
+              totalPrice: "10.00",
+              currencyCode: "USD"
+            }) {
+              order { id }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.data.orderCreate.userErrors.length).toBeGreaterThan(0);
+      expect(body.data.orderCreate.order).toBeNull();
+    });
+
+    // -- Mutations: orderUpdate --
+
+    it('updates existing order and observes state changes', async () => {
+      // Create order first
+      const createResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            orderCreate(input: {
+              lineItems: [{title: "Test", quantity: 1, price: "10.00"}],
+              totalPrice: "10.00",
+              currencyCode: "USD"
+            }) {
+              order { id updatedAt }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+      const createBody = JSON.parse(createResponse.body);
+      const orderId = createBody.data.orderCreate.order.id;
+      const originalUpdatedAt = createBody.data.orderCreate.order.updatedAt;
+
+      // Wait briefly so timestamp differs
+      await new Promise(resolve => setTimeout(resolve, 1100));
+
+      // Update order
+      const updateResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            orderUpdate(input: {
+              id: "${orderId}",
+              totalPrice: "20.00"
+            }) {
+              order { id totalPriceSet { shopMoney { amount } } updatedAt }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+
+      expect(updateResponse.statusCode).toBe(200);
+      const updateBody = JSON.parse(updateResponse.body);
+      expect(updateBody.data.orderUpdate.order.totalPriceSet.shopMoney.amount).toBe('20.00');
+      expect(updateBody.data.orderUpdate.order.updatedAt).not.toBe(originalUpdatedAt);
+      expect(updateBody.data.orderUpdate.userErrors).toHaveLength(0);
+    });
+
+    it('returns userError when updating non-existent order', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            orderUpdate(input: {
+              id: "gid://shopify/Order/999999",
+              totalPrice: "20.00"
+            }) {
+              order { id }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.data.orderUpdate.order).toBeNull();
+      expect(body.data.orderUpdate.userErrors.length).toBeGreaterThan(0);
+      expect(body.data.orderUpdate.userErrors[0].message).toContain('not found');
+    });
+
+    // -- Mutations: productCreate --
+
+    it('creates product and returns GID', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            productCreate(input: {
+              title: "Test Widget"
+              vendor: "Acme"
+            }) {
+              product { id title }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.data.productCreate.product.id).toMatch(/^gid:\/\/shopify\/Product\/\d+$/);
+      expect(body.data.productCreate.product.title).toBe('Test Widget');
+      expect(body.data.productCreate.userErrors).toHaveLength(0);
+    });
+
+    // -- Mutations: customerCreate --
+
+    it('creates customer and returns GID', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            customerCreate(input: {
+              email: "test@example.com"
+              firstName: "Test"
+              lastName: "User"
+            }) {
+              customer { id email firstName lastName }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.data.customerCreate.customer.id).toMatch(/^gid:\/\/shopify\/Customer\/\d+$/);
+      expect(body.data.customerCreate.customer.email).toBe('test@example.com');
+      expect(body.data.customerCreate.userErrors).toHaveLength(0);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Error Simulation (INFRA-04)
+  // ---------------------------------------------------------------------------
+  describe('Error Simulation', () => {
+    let token: string;
+
+    beforeEach(async () => {
+      const oauthResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/oauth/access_token',
+        payload: { code: 'test' },
+      });
+      token = JSON.parse(oauthResponse.body).access_token;
+    });
+
+    it('returns configured 429 THROTTLED error for operation', async () => {
+      // Configure error
+      await app.inject({
+        method: 'POST',
+        url: '/admin/errors/configure',
+        payload: {
+          operationName: 'orderCreate',
+          statusCode: 429,
+          errorBody: { message: 'Throttled' },
+        },
+      });
+
+      // Enable error simulation
+      await app.inject({
+        method: 'POST',
+        url: '/admin/errors/enable',
+      });
+
+      // Attempt mutation
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            orderCreate(input: {
+              lineItems: [{title: "Test", quantity: 1, price: "10.00"}],
+              totalPrice: "10.00",
+              currencyCode: "USD"
+            }) {
+              order { id }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.errors).toBeDefined();
+      expect(body.errors[0].extensions.code).toBe('THROTTLED');
+    });
+
+    it('does not simulate errors when disabled', async () => {
+      // Configure error
+      await app.inject({
+        method: 'POST',
+        url: '/admin/errors/configure',
+        payload: { operationName: 'orderCreate', statusCode: 500 },
+      });
+
+      // Explicitly disable
+      await app.inject({ method: 'POST', url: '/admin/errors/disable' });
+
+      // Attempt mutation -- should succeed
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            orderCreate(input: {
+              lineItems: [{title: "Test", quantity: 1, price: "10.00"}],
+              totalPrice: "10.00",
+              currencyCode: "USD"
+            }) {
+              order { id }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+
+      const body = JSON.parse(response.body);
+      expect(body.data.orderCreate.order).toBeDefined();
+      expect(body.data.orderCreate.order.id).toBeDefined();
+      expect(body.errors).toBeUndefined();
+    });
+
+    it('error simulation can be toggled on and off', async () => {
+      // Configure
+      await app.inject({
+        method: 'POST',
+        url: '/admin/errors/configure',
+        payload: {
+          operationName: 'orderCreate',
+          statusCode: 401,
+          errorBody: { message: 'Unauthorized' },
+        },
+      });
+
+      // Enable
+      const enableRes = await app.inject({ method: 'POST', url: '/admin/errors/enable' });
+      expect(JSON.parse(enableRes.body).enabled).toBe(true);
+
+      // Verify error is thrown
+      const errorRes = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            orderCreate(input: {
+              lineItems: [{title: "T", quantity: 1, price: "1.00"}],
+              totalPrice: "1.00",
+              currencyCode: "USD"
+            }) {
+              order { id }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+      expect(JSON.parse(errorRes.body).errors).toBeDefined();
+
+      // Disable
+      const disableRes = await app.inject({ method: 'POST', url: '/admin/errors/disable' });
+      expect(JSON.parse(disableRes.body).enabled).toBe(false);
+
+      // Verify mutation succeeds now
+      const successRes = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            orderCreate(input: {
+              lineItems: [{title: "T", quantity: 1, price: "1.00"}],
+              totalPrice: "1.00",
+              currencyCode: "USD"
+            }) {
+              order { id }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+      const successBody = JSON.parse(successRes.body);
+      expect(successBody.errors).toBeUndefined();
+      expect(successBody.data.orderCreate.order).toBeDefined();
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Webhooks (SHOP-03)
+  // ---------------------------------------------------------------------------
+  describe('Webhooks', () => {
+    let token: string;
+
+    beforeEach(async () => {
+      const oauthResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/oauth/access_token',
+        payload: { code: 'test' },
+      });
+      token = JSON.parse(oauthResponse.body).access_token;
+
+      // Subscribe to webhooks (using stateManager directly since
+      // webhook subscription endpoint is not yet implemented)
+      app.stateManager.createWebhookSubscription('orders/create', 'http://localhost:9999/webhook');
+      app.stateManager.createWebhookSubscription('orders/update', 'http://localhost:9999/webhook');
+    });
+
+    it('triggers webhook on order creation (verifies order created successfully)', async () => {
+      // Webhook is fire-and-forget to localhost:9999 which won't be listening.
+      // We verify the mutation itself succeeds (webhook failure is logged, not thrown).
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            orderCreate(input: {
+              lineItems: [{title: "Test", quantity: 1, price: "10.00"}],
+              totalPrice: "10.00",
+              currencyCode: "USD"
+            }) {
+              order { id name }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.data.orderCreate.order).toBeDefined();
+      expect(body.data.orderCreate.order.id).toMatch(/^gid:\/\/shopify\/Order\/\d+$/);
+    });
+
+    it('triggers webhook on order update (verifies order updated successfully)', async () => {
+      // Create order first
+      const createResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            orderCreate(input: {
+              lineItems: [{title: "Test", quantity: 1, price: "10.00"}],
+              totalPrice: "10.00",
+              currencyCode: "USD"
+            }) {
+              order { id }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+      const orderId = JSON.parse(createResponse.body).data.orderCreate.order.id;
+
+      // Update order -- webhook fires to localhost:9999 (will fail silently)
+      const updateResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            orderUpdate(input: { id: "${orderId}", totalPrice: "20.00" }) {
+              order { id totalPriceSet { shopMoney { amount } } }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+
+      expect(updateResponse.statusCode).toBe(200);
+      const body = JSON.parse(updateResponse.body);
+      expect(body.data.orderUpdate.order).toBeDefined();
+      expect(body.data.orderUpdate.order.totalPriceSet.shopMoney.amount).toBe('20.00');
+    });
+
+    it('webhook subscriptions are visible in state', async () => {
+      const stateRes = await app.inject({ method: 'GET', url: '/admin/state' });
+      const state = JSON.parse(stateRes.body);
+      expect(state.webhooks).toBe(2);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Health check
+  // ---------------------------------------------------------------------------
+  describe('Health Check', () => {
+    it('returns 200 with status ok', async () => {
+      const response = await app.inject({
+        method: 'GET',
+        url: '/health',
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.status).toBe('ok');
+    });
+  });
+});

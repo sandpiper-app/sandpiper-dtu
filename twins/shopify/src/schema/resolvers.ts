@@ -3,15 +3,30 @@
  *
  * Implements queries and mutations for orders, products, customers
  * with Shopify-realistic response structures including GID format IDs.
+ * Mutations check error simulation and trigger webhook delivery.
  */
 
-import { GraphQLScalarType, Kind } from 'graphql';
+import { GraphQLScalarType, GraphQLError, Kind } from 'graphql';
 import { createGID, parseGID } from '../services/gid.js';
+import { sendWebhook } from '../services/webhook-sender.js';
 import type { StateManager } from '@dtu/state';
+import type { ErrorSimulator } from '../services/error-simulator.js';
 
 interface Context {
   stateManager: StateManager;
+  errorSimulator: ErrorSimulator;
+  webhookSecret: string;
   shopDomain: string;
+  authorized: boolean;
+}
+
+/** Throw GraphQLError if the request is not authenticated */
+function requireAuth(context: Context): void {
+  if (!context.authorized) {
+    throw new GraphQLError('Unauthorized', {
+      extensions: { code: 'UNAUTHORIZED' },
+    });
+  }
 }
 
 interface UserError {
@@ -54,6 +69,7 @@ export const resolvers = {
   // Query resolvers
   QueryRoot: {
     orders: async (_parent: unknown, args: { first?: number }, context: Context) => {
+      requireAuth(context);
       const orders = context.stateManager.listOrders();
       const limit = args.first ?? 10;
       return {
@@ -64,12 +80,14 @@ export const resolvers = {
     },
 
     order: async (_parent: unknown, args: { id: string }, context: Context) => {
+      requireAuth(context);
       const { id } = parseGID(args.id);
       const order = context.stateManager.getOrder(parseInt(id, 10));
       return order ?? null;
     },
 
     products: async (_parent: unknown, args: { first?: number }, context: Context) => {
+      requireAuth(context);
       const products = context.stateManager.listProducts();
       const limit = args.first ?? 10;
       return {
@@ -80,6 +98,7 @@ export const resolvers = {
     },
 
     product: async (_parent: unknown, args: { id: string }, context: Context) => {
+      requireAuth(context);
       const { id } = parseGID(args.id);
       const gid = createGID('Product', id);
       const product = context.stateManager.getProductByGid(gid);
@@ -87,6 +106,7 @@ export const resolvers = {
     },
 
     customers: async (_parent: unknown, args: { first?: number }, context: Context) => {
+      requireAuth(context);
       const customers = context.stateManager.listCustomers();
       const limit = args.first ?? 10;
       return {
@@ -97,6 +117,7 @@ export const resolvers = {
     },
 
     customer: async (_parent: unknown, args: { id: string }, context: Context) => {
+      requireAuth(context);
       const { id } = parseGID(args.id);
       const gid = createGID('Customer', id);
       const customer = context.stateManager.getCustomerByGid(gid);
@@ -107,6 +128,10 @@ export const resolvers = {
   // Mutation resolvers
   MutationType: {
     orderCreate: async (_parent: unknown, args: { input: any }, context: Context) => {
+      requireAuth(context);
+      // Check error simulation first
+      await context.errorSimulator.throwIfConfigured('orderCreate');
+
       const { input } = args;
       const errors: UserError[] = [];
 
@@ -136,9 +161,10 @@ export const resolvers = {
         return { order: null, userErrors: errors };
       }
 
-      // Create order
+      // Create order — use unique placeholder GID, then update with actual ID
+      const tempId = Date.now() + Math.floor(Math.random() * 100000);
       const orderId = context.stateManager.createOrder({
-        gid: createGID('Order', 0), // Placeholder - actual GID computed from ID in type resolver
+        gid: createGID('Order', tempId),
         name: `#${Math.floor(1000 + Math.random() * 9000)}`, // Generate order name
         total_price: input.totalPrice,
         currency_code: input.currencyCode,
@@ -148,10 +174,35 @@ export const resolvers = {
 
       const order = context.stateManager.getOrder(orderId);
 
+      // Send webhooks (fire and forget)
+      if (order) {
+        const subscriptions = context.stateManager.listWebhookSubscriptions();
+        const orderSubs = subscriptions.filter((s: any) => s.topic === 'orders/create');
+        for (const sub of orderSubs) {
+          sendWebhook(
+            sub.callback_url,
+            'orders/create',
+            {
+              id: order.id,
+              admin_graphql_api_id: createGID('Order', order.id),
+              created_at: new Date(order.created_at * 1000).toISOString(),
+              name: order.name,
+              total_price: order.total_price,
+              line_items: JSON.parse(order.line_items || '[]'),
+            },
+            context.webhookSecret,
+          );
+        }
+      }
+
       return { order, userErrors: [] };
     },
 
     orderUpdate: async (_parent: unknown, args: { input: any }, context: Context) => {
+      requireAuth(context);
+      // Check error simulation first
+      await context.errorSimulator.throwIfConfigured('orderUpdate');
+
       const { input } = args;
       const errors: UserError[] = [];
 
@@ -178,25 +229,48 @@ export const resolvers = {
         return { order: null, userErrors: errors };
       }
 
-      // Update order
-      const updateData: any = {};
-      if (input.lineItems) {
-        updateData.line_items = JSON.stringify(input.lineItems);
-      }
-      if (input.totalPrice) {
-        updateData.total_price = input.totalPrice;
-      }
-      if (input.currencyCode) {
-        updateData.currency_code = input.currencyCode;
-      }
+      // Build update data, preserving existing values for fields not provided
+      const updateData: any = {
+        name: existingOrder.name,
+        total_price: input.totalPrice ?? existingOrder.total_price,
+        currency_code: input.currencyCode ?? existingOrder.currency_code,
+        customer_gid: existingOrder.customer_gid,
+        line_items: input.lineItems ? JSON.stringify(input.lineItems) : existingOrder.line_items,
+      };
 
       context.stateManager.updateOrder(orderId, updateData);
       const updatedOrder = context.stateManager.getOrder(orderId);
+
+      // Send webhooks (fire and forget)
+      if (updatedOrder) {
+        const subscriptions = context.stateManager.listWebhookSubscriptions();
+        const orderUpdateSubs = subscriptions.filter((s: any) => s.topic === 'orders/update');
+        for (const sub of orderUpdateSubs) {
+          sendWebhook(
+            sub.callback_url,
+            'orders/update',
+            {
+              id: updatedOrder.id,
+              admin_graphql_api_id: createGID('Order', updatedOrder.id),
+              created_at: new Date(updatedOrder.created_at * 1000).toISOString(),
+              updated_at: new Date(updatedOrder.updated_at * 1000).toISOString(),
+              name: updatedOrder.name,
+              total_price: updatedOrder.total_price,
+              line_items: JSON.parse(updatedOrder.line_items || '[]'),
+            },
+            context.webhookSecret,
+          );
+        }
+      }
 
       return { order: updatedOrder, userErrors: [] };
     },
 
     productCreate: async (_parent: unknown, args: { input: any }, context: Context) => {
+      requireAuth(context);
+      // Check error simulation first
+      await context.errorSimulator.throwIfConfigured('productCreate');
+
       const { input } = args;
       const errors: UserError[] = [];
 
@@ -211,8 +285,9 @@ export const resolvers = {
         return { product: null, userErrors: errors };
       }
 
+      const productTempId = Date.now() + Math.floor(Math.random() * 100000);
       const productId = context.stateManager.createProduct({
-        gid: createGID('Product', 0), // Placeholder - actual GID computed from ID in type resolver
+        gid: createGID('Product', productTempId),
         title: input.title,
         description: input.description ?? null,
         vendor: input.vendor ?? null,
@@ -221,10 +296,33 @@ export const resolvers = {
 
       const product = context.stateManager.getProduct(productId);
 
+      // Send webhooks (fire and forget)
+      if (product) {
+        const subscriptions = context.stateManager.listWebhookSubscriptions();
+        const productSubs = subscriptions.filter((s: any) => s.topic === 'products/create');
+        for (const sub of productSubs) {
+          sendWebhook(
+            sub.callback_url,
+            'products/create',
+            {
+              id: product.id,
+              admin_graphql_api_id: createGID('Product', product.id),
+              created_at: new Date(product.created_at * 1000).toISOString(),
+              title: product.title,
+            },
+            context.webhookSecret,
+          );
+        }
+      }
+
       return { product, userErrors: [] };
     },
 
     customerCreate: async (_parent: unknown, args: { input: any }, context: Context) => {
+      requireAuth(context);
+      // Check error simulation first
+      await context.errorSimulator.throwIfConfigured('customerCreate');
+
       const { input } = args;
       const errors: UserError[] = [];
 
@@ -239,14 +337,36 @@ export const resolvers = {
         return { customer: null, userErrors: errors };
       }
 
+      const customerTempId = Date.now() + Math.floor(Math.random() * 100000);
       const customerId = context.stateManager.createCustomer({
-        gid: createGID('Customer', 0), // Placeholder - actual GID computed from ID in type resolver
+        gid: createGID('Customer', customerTempId),
         email: input.email,
         first_name: input.firstName ?? null,
         last_name: input.lastName ?? null,
       });
 
       const customer = context.stateManager.getCustomer(customerId);
+
+      // Send webhooks (fire and forget)
+      if (customer) {
+        const subscriptions = context.stateManager.listWebhookSubscriptions();
+        const customerSubs = subscriptions.filter((s: any) => s.topic === 'customers/create');
+        for (const sub of customerSubs) {
+          sendWebhook(
+            sub.callback_url,
+            'customers/create',
+            {
+              id: customer.id,
+              admin_graphql_api_id: createGID('Customer', customer.id),
+              created_at: new Date(customer.created_at * 1000).toISOString(),
+              email: customer.email,
+              first_name: customer.first_name,
+              last_name: customer.last_name,
+            },
+            context.webhookSecret,
+          );
+        }
+      }
 
       return { customer, userErrors: [] };
     },
@@ -255,6 +375,8 @@ export const resolvers = {
   // Type resolvers
   Order: {
     id: (parent: any) => createGID('Order', parent.id),
+    createdAt: (parent: any) => parent.created_at,
+    updatedAt: (parent: any) => parent.updated_at,
     lineItems: (parent: any) => {
       const items = JSON.parse(parent.line_items || '[]');
       return {
@@ -281,10 +403,17 @@ export const resolvers = {
 
   Product: {
     id: (parent: any) => createGID('Product', parent.id),
+    createdAt: (parent: any) => parent.created_at,
+    updatedAt: (parent: any) => parent.updated_at,
+    productType: (parent: any) => parent.product_type,
   },
 
   Customer: {
     id: (parent: any) => createGID('Customer', parent.id),
+    createdAt: (parent: any) => parent.created_at,
+    updatedAt: (parent: any) => parent.updated_at,
+    firstName: (parent: any) => parent.first_name,
+    lastName: (parent: any) => parent.last_name,
   },
 
   InventoryItem: {

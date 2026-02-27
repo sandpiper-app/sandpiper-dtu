@@ -15,6 +15,8 @@ import healthPlugin from './plugins/health.js';
 import oauthPlugin from './plugins/oauth.js';
 import adminPlugin from './plugins/admin.js';
 import { graphqlPlugin } from './plugins/graphql.js';
+import { errorsPlugin } from './plugins/errors.js';
+import { ErrorSimulator } from './services/error-simulator.js';
 
 /**
  * Build the Fastify application instance.
@@ -40,13 +42,22 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
   const stateManager = new StateManager({ dbPath });
   stateManager.init();
 
-  // Decorate Fastify with stateManager for plugin access
+  // Initialize error simulator
+  const errorSimulator = new ErrorSimulator(stateManager);
+
+  // Configure webhook secret
+  const webhookSecret = process.env.SHOPIFY_WEBHOOK_SECRET || 'dev-secret';
+
+  // Decorate Fastify with stateManager, errorSimulator, and webhookSecret for plugin access
   fastify.decorate('stateManager', stateManager);
+  fastify.decorate('errorSimulator', errorSimulator);
+  fastify.decorate('webhookSecret', webhookSecret);
 
   // Register plugins
   await fastify.register(healthPlugin);
   await fastify.register(oauthPlugin);
   await fastify.register(adminPlugin);
+  await fastify.register(errorsPlugin);
   await fastify.register(graphqlPlugin);
 
   // Graceful shutdown

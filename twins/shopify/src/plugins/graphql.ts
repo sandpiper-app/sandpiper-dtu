@@ -41,6 +41,8 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
   }>({
     schema,
     graphqlEndpoint: '/admin/api/2024-01/graphql.json',
+    // Disable error masking so GraphQLError codes from resolvers pass through
+    maskedErrors: false,
     logging: {
       debug: (...args) => args.forEach((arg) => fastify.log.debug(arg)),
       info: (...args) => args.forEach((arg) => fastify.log.info(arg)),
@@ -48,35 +50,78 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
       error: (...args) => args.forEach((arg) => fastify.log.error(arg)),
     },
     context: async ({ req }) => {
-      // Extract and validate access token
+      // Extract and validate access token — don't throw here to avoid
+      // Fastify/Yoga response handling issues. Auth is enforced in the
+      // onExecute plugin below.
       const token = req.headers['x-shopify-access-token'];
+      let authorized = false;
+      let shopDomain = '';
 
-      if (!token || typeof token !== 'string') {
-        throw new GraphQLError('Unauthorized', {
-          extensions: { code: 'UNAUTHORIZED', http: { status: 401 } },
-        });
-      }
-
-      const validation = await validateAccessToken(token, fastify.stateManager);
-
-      if (!validation.valid) {
-        throw new GraphQLError('Unauthorized', {
-          extensions: { code: 'UNAUTHORIZED', http: { status: 401 } },
-        });
+      if (token && typeof token === 'string') {
+        const validation = await validateAccessToken(token, fastify.stateManager);
+        if (validation.valid) {
+          authorized = true;
+          shopDomain = validation.shopDomain!;
+        }
       }
 
       return {
         stateManager: fastify.stateManager,
-        shopDomain: validation.shopDomain!,
+        errorSimulator: fastify.errorSimulator,
+        webhookSecret: fastify.webhookSecret,
+        shopDomain,
+        authorized,
       };
     },
+    // Auth enforcement happens in resolvers via requireAuth() helper
   });
 
-  // Register GraphQL route
+  // Register GraphQL route — use yoga.fetch() to avoid Node stream
+  // compatibility issues between Yoga and Fastify's reply object
   fastify.route({
     url: '/admin/api/2024-01/graphql.json',
     method: ['GET', 'POST', 'OPTIONS'],
-    handler: async (req, reply) =>
-      yoga.handleNodeRequestAndResponse(req, reply, { req, reply }),
+    handler: async (req, reply) => {
+      try {
+        const url = new URL(req.url, `http://${req.hostname}`);
+
+        const headers: Record<string, string> = {};
+        for (const [key, value] of Object.entries(req.headers)) {
+          if (value) {
+            headers[key] = Array.isArray(value) ? value[0] : value;
+          }
+        }
+
+        const response = await yoga.fetch(
+          url.toString(),
+          {
+            method: req.method,
+            headers,
+            body: req.method !== 'GET' && req.method !== 'HEAD'
+              ? JSON.stringify(req.body)
+              : undefined,
+          },
+          { req, reply },
+        );
+
+        reply.status(response.status);
+        response.headers.forEach((value: string, key: string) => {
+          reply.header(key, value);
+        });
+        reply.send(await response.text());
+        return reply;
+      } catch (err: any) {
+        // If Yoga fails to handle the error internally (e.g. plugin throws),
+        // return a proper GraphQL error response
+        const code = err?.extensions?.code || 'INTERNAL_SERVER_ERROR';
+        const message = err?.message || 'Internal server error';
+        reply.status(200).header('content-type', 'application/json').send(
+          JSON.stringify({
+            errors: [{ message, extensions: { code } }],
+          }),
+        );
+        return reply;
+      }
+    },
   });
 };
