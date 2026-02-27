@@ -15,9 +15,11 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "dependencies": {
-    "@dtu/types": "workspace:*"
+    "@dtu/types": "workspace:*",
+    "better-sqlite3": "^12.6.2"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
     "typescript": "^5.7.3"
   }
 }
