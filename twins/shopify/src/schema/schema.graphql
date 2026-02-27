@@ -1,0 +1,186 @@
+# Shopify Admin API GraphQL Schema (Subset for DTU Twin)
+# Matches Shopify's actual schema structure for implemented resources
+
+scalar DateTime
+
+# Money types matching Shopify's structure
+type MoneyV2 {
+  amount: String!
+  currencyCode: String!
+}
+
+type MoneySet {
+  shopMoney: MoneyV2!
+}
+
+# Order types
+type Order {
+  id: ID!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  totalPriceSet: MoneySet!
+  customer: Customer
+  lineItems(first: Int = 10): LineItemConnection!
+}
+
+type LineItemConnection {
+  edges: [LineItemEdge!]!
+}
+
+type LineItemEdge {
+  node: LineItem!
+}
+
+type LineItem {
+  id: ID!
+  title: String!
+  quantity: Int!
+  price: String!
+}
+
+type OrderConnection {
+  edges: [OrderEdge!]!
+}
+
+type OrderEdge {
+  node: Order!
+}
+
+# Product types
+type Product {
+  id: ID!
+  title: String!
+  description: String
+  vendor: String
+  productType: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type ProductConnection {
+  edges: [ProductEdge!]!
+}
+
+type ProductEdge {
+  node: Product!
+}
+
+# Customer types
+type Customer {
+  id: ID!
+  email: String!
+  firstName: String
+  lastName: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type CustomerConnection {
+  edges: [CustomerEdge!]!
+}
+
+type CustomerEdge {
+  node: Customer!
+}
+
+# Inventory types
+type InventoryItem {
+  id: ID!
+  sku: String!
+  tracked: Boolean!
+  available: Int!
+}
+
+# Fulfillment types
+type Fulfillment {
+  id: ID!
+  status: String!
+  trackingNumber: String
+  createdAt: DateTime!
+}
+
+# UserError for mutation responses
+type UserError {
+  field: [String!]!
+  message: String!
+}
+
+# Input types for mutations
+input LineItemInput {
+  title: String!
+  quantity: Int!
+  price: String!
+}
+
+input OrderInput {
+  lineItems: [LineItemInput!]!
+  customerId: ID
+  totalPrice: String!
+  currencyCode: String!
+}
+
+input OrderUpdateInput {
+  id: ID!
+  lineItems: [LineItemInput!]
+  totalPrice: String
+  currencyCode: String
+}
+
+input ProductInput {
+  title: String!
+  description: String
+  vendor: String
+  productType: String
+}
+
+input CustomerInput {
+  email: String!
+  firstName: String
+  lastName: String
+}
+
+# Mutation payloads
+type OrderCreatePayload {
+  order: Order
+  userErrors: [UserError!]!
+}
+
+type OrderUpdatePayload {
+  order: Order
+  userErrors: [UserError!]!
+}
+
+type ProductCreatePayload {
+  product: Product
+  userErrors: [UserError!]!
+}
+
+type CustomerCreatePayload {
+  customer: Customer
+  userErrors: [UserError!]!
+}
+
+# Query root
+type QueryRoot {
+  orders(first: Int = 10): OrderConnection!
+  order(id: ID!): Order
+  products(first: Int = 10): ProductConnection!
+  product(id: ID!): Product
+  customers(first: Int = 10): CustomerConnection!
+  customer(id: ID!): Customer
+}
+
+# Mutation root
+type MutationType {
+  orderCreate(input: OrderInput!): OrderCreatePayload!
+  orderUpdate(input: OrderUpdateInput!): OrderUpdatePayload!
+  productCreate(input: ProductInput!): ProductCreatePayload!
+  customerCreate(input: CustomerInput!): CustomerCreatePayload!
+}
+
+# Schema declaration
+schema {
+  query: QueryRoot
+  mutation: MutationType
+}
