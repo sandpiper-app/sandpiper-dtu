@@ -12,8 +12,8 @@
 ## Current Position
 
 **Phase:** Phase 2 - Shopify Twin - Core Operations
-**Plan:** Not started (context gathered, needs research and planning)
-**Status:** Ready for research
+**Plan:** 02 of 03
+**Status:** In progress
 **Progress:** [███░░░░░░░░░░░░░░░░░] 14% (1/7 phases complete)
 
 ## Performance Metrics
@@ -26,6 +26,12 @@
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-02-27 - Plan 02-01 Execution:**
+- Use @graphql-tools/schema makeExecutableSchema for GraphQL Yoga 5.x compatibility
+- Store tokens in StateManager tokens table cleared on reset
+- Implement simplified OAuth flow without client_id/client_secret validation (twin-friendly)
+- Add getProduct and getCustomer methods to StateManager for resolver lookups
 
 **2026-02-27 - Plan 01-02 Execution:**
 - buildApp() factory pattern for test-friendly Fastify twin construction
@@ -72,15 +78,18 @@ None.
 
 ## Session Continuity
 
+**Last completed:** 02-01-PLAN.md (Shopify Twin Foundation)
+**Timestamp:** 2026-02-27T20:22:32Z
+
 **For next session:**
-1. Phase 2 context gathered (auto mode decisions in 02-CONTEXT.md)
-2. Phase 2 needs research next (Shopify GraphQL Admin API specifics)
-3. Then planning, then execution
-4. Patterns from Phase 1: buildApp() factory, plugin encapsulation, StateManager CRUD
+1. Execute 02-02-PLAN.md (GraphQL API implementation)
+2. Plan 02-01 established foundation: StateManager with 8 Shopify tables, OAuth token exchange, admin endpoints
+3. GraphQL schema and resolvers framework exists, ready for full API implementation
+4. Patterns established: GID format, token validation, @graphql-tools/schema usage
 
 **Context required:**
+- .planning/phases/02-shopify-twin-core-operations/02-01-SUMMARY.md (foundation just completed)
 - .planning/phases/02-shopify-twin-core-operations/02-CONTEXT.md (Phase 2 decisions)
-- .planning/phases/01-foundation-monorepo-setup/01-02-SUMMARY.md (twin patterns)
 - .planning/ROADMAP.md (Phase 2 goals and requirements)
 - .planning/REQUIREMENTS.md (SHOP-01, SHOP-02, SHOP-03, SHOP-07, INFRA-03, INFRA-04)
 

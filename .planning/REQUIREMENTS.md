@@ -13,7 +13,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **INFRA-01**: Monorepo with pnpm workspaces — shared packages (types, core, state, webhooks, conformance) and per-twin apps
 - [x] **INFRA-02**: Shared state management layer with SQLite/in-memory backends, resettable between test runs in <100ms
-- [ ] **INFRA-03**: Admin API for programmatic test control — `POST /admin/reset`, `POST /admin/fixtures/load`, `GET /admin/state`
+- [x] **INFRA-03**: Admin API for programmatic test control — `POST /admin/reset`, `POST /admin/fixtures/load`, `GET /admin/state`
 - [ ] **INFRA-04**: Configurable error simulation per endpoint — 401, 403, 429, 500, 503, timeout responses with realistic error bodies
 - [ ] **INFRA-05**: Conformance test framework — same test suite runs against twin AND real sandbox API, reports behavioral differences
 - [ ] **INFRA-06**: Conformance suites run periodically (CI schedule) to detect upstream API drift
@@ -24,12 +24,12 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Shopify Twin
 
 - [ ] **SHOP-01**: GraphQL Admin API handles queries and mutations Sandpiper uses — orders, products, customers, inventory, fulfillments
-- [ ] **SHOP-02**: OAuth token exchange flow — authorization code → access token, with token validation on subsequent requests
+- [x] **SHOP-02**: OAuth token exchange flow — authorization code → access token, with token validation on subsequent requests
 - [ ] **SHOP-03**: Webhook delivery — state mutations (orderCreate, orderUpdate, productUpdate, fulfillmentCreate) trigger POST to configured callback URLs
 - [ ] **SHOP-04**: Rate limiting by GraphQL query cost — returns 429 + Retry-After header when cost threshold exceeded
 - [ ] **SHOP-05**: Cursor-based pagination with deterministic, stable results across test runs
 - [ ] **SHOP-06**: Stateful order lifecycle — create → update → fulfill → close with realistic state transitions
-- [ ] **SHOP-07**: X-Shopify-Access-Token header validation on all API requests
+- [x] **SHOP-07**: X-Shopify-Access-Token header validation on all API requests
 
 ### Slack Twin
 
@@ -92,7 +92,7 @@ Deferred to future release. Tracked but not in current roadmap.
 |-------------|-------|--------|
 | INFRA-01 | Phase 1 | Complete |
 | INFRA-02 | Phase 1 | Complete |
-| INFRA-03 | Phase 2 | Pending |
+| INFRA-03 | Phase 2 | Complete |
 | INFRA-04 | Phase 2 | Pending |
 | INFRA-05 | Phase 3 | Pending |
 | INFRA-06 | Phase 3 | Pending |
@@ -100,12 +100,12 @@ Deferred to future release. Tracked but not in current roadmap.
 | INFRA-08 | Phase 1 | Complete |
 | INFRA-09 | Phase 1 | Complete |
 | SHOP-01 | Phase 2 | Pending |
-| SHOP-02 | Phase 2 | Pending |
+| SHOP-02 | Phase 2 | Complete |
 | SHOP-03 | Phase 2 | Pending |
 | SHOP-04 | Phase 4 | Pending |
 | SHOP-05 | Phase 4 | Pending |
 | SHOP-06 | Phase 4 | Pending |
-| SHOP-07 | Phase 2 | Pending |
+| SHOP-07 | Phase 2 | Complete |
 | SLCK-01 | Phase 5 | Pending |
 | SLCK-02 | Phase 5 | Pending |
 | SLCK-03 | Phase 5 | Pending |
