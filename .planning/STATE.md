@@ -7,13 +7,13 @@
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 1 verified and complete. Ready to discuss Phase 2 (Shopify Twin - Core Operations).
+**Current Focus:** Phase 2 context gathered. Ready for research and planning.
 
 ## Current Position
 
 **Phase:** Phase 2 - Shopify Twin - Core Operations
-**Plan:** Not started (needs context gathering and planning)
-**Status:** Ready to discuss
+**Plan:** Not started (context gathered, needs research and planning)
+**Status:** Ready for research
 **Progress:** [███░░░░░░░░░░░░░░░░░] 14% (1/7 phases complete)
 
 ## Performance Metrics
@@ -73,16 +73,16 @@ None.
 ## Session Continuity
 
 **For next session:**
-1. Phase 1 verified and complete - monorepo, StateManager, example twin, 8 tests passing
-2. Phase 2 needs discuss-phase first (no CONTEXT.md yet)
-3. Shopify GraphQL Admin API research needed before planning
-4. Patterns established: buildApp() factory, plugin encapsulation, StateManager CRUD
+1. Phase 2 context gathered (auto mode decisions in 02-CONTEXT.md)
+2. Phase 2 needs research next (Shopify GraphQL Admin API specifics)
+3. Then planning, then execution
+4. Patterns from Phase 1: buildApp() factory, plugin encapsulation, StateManager CRUD
 
 **Context required:**
-- .planning/phases/01-foundation-monorepo-setup/01-01-SUMMARY.md (monorepo patterns)
+- .planning/phases/02-shopify-twin-core-operations/02-CONTEXT.md (Phase 2 decisions)
 - .planning/phases/01-foundation-monorepo-setup/01-02-SUMMARY.md (twin patterns)
 - .planning/ROADMAP.md (Phase 2 goals and requirements)
-- .planning/REQUIREMENTS.md (SHOP-01 through SHOP-07)
+- .planning/REQUIREMENTS.md (SHOP-01, SHOP-02, SHOP-03, SHOP-07, INFRA-03, INFRA-04)
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
