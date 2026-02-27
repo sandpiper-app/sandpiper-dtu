@@ -14,7 +14,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **INFRA-01**: Monorepo with pnpm workspaces — shared packages (types, core, state, webhooks, conformance) and per-twin apps
 - [x] **INFRA-02**: Shared state management layer with SQLite/in-memory backends, resettable between test runs in <100ms
 - [x] **INFRA-03**: Admin API for programmatic test control — `POST /admin/reset`, `POST /admin/fixtures/load`, `GET /admin/state`
-- [ ] **INFRA-04**: Configurable error simulation per endpoint — 401, 403, 429, 500, 503, timeout responses with realistic error bodies
+- [x] **INFRA-04**: Configurable error simulation per endpoint — 401, 403, 429, 500, 503, timeout responses with realistic error bodies
 - [ ] **INFRA-05**: Conformance test framework — same test suite runs against twin AND real sandbox API, reports behavioral differences
 - [ ] **INFRA-06**: Conformance suites run periodically (CI schedule) to detect upstream API drift
 - [x] **INFRA-07**: Health check endpoint (`/health`) returns 200 when twin is initialized and ready
@@ -93,7 +93,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | INFRA-01 | Phase 1 | Complete |
 | INFRA-02 | Phase 1 | Complete |
 | INFRA-03 | Phase 2 | Complete |
-| INFRA-04 | Phase 2 | Pending |
+| INFRA-04 | Phase 2 | Complete |
 | INFRA-05 | Phase 3 | Pending |
 | INFRA-06 | Phase 3 | Pending |
 | INFRA-07 | Phase 1 | Complete |

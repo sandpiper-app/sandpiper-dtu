@@ -1,20 +1,20 @@
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-02-27
-**Status:** Phase 1 Complete, Transitioning to Phase 2
+**Status:** Phase 2 Complete, Shopify Twin Core Operations Delivered
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 2 context gathered. Ready for research and planning.
+**Current Focus:** Phase 2 complete. Shopify twin core operations (GraphQL API, admin endpoints, fixtures, webhooks, error simulation) all delivered and tested.
 
 ## Current Position
 
 **Phase:** Phase 2 - Shopify Twin - Core Operations
-**Plan:** 02 of 03
-**Status:** In progress
-**Progress:** [████████░░] 80%
+**Plan:** 04 of 04
+**Status:** Complete
+**Progress:** [██████████] 100%
 
 ## Performance Metrics
 
@@ -43,6 +43,10 @@
 - Used pnpm 9.x (system installed) instead of plan-specified 10.x
 - Used version range for typescript in packages instead of workspace:* (external dep)
 - Extended @dtu/types with Entity types to prepare for Plan 02 StateManager
+
+**2026-02-27 - Plan 02-04 Execution:**
+- Generate GIDs using Date.now() + Math.floor(Math.random() * 100000) pattern before StateManager create calls in fixtures endpoint (matches resolver pattern)
+- Spread fixture data with { ...fixture, gid } to preserve any extra fields callers might include
 
 **2026-02-27 - Roadmap Creation:**
 - 7 phases derived from requirements and research recommendations
@@ -78,20 +82,20 @@ None.
 
 ## Session Continuity
 
-**Last completed:** 02-01-PLAN.md (Shopify Twin Foundation)
-**Timestamp:** 2026-02-27T20:22:32Z
+**Last completed:** 02-04-PLAN.md (Fixtures GID Generation Gap Closure)
+**Timestamp:** 2026-02-27T21:51:00Z
 
 **For next session:**
-1. Execute 02-02-PLAN.md (GraphQL API implementation)
-2. Plan 02-01 established foundation: StateManager with 8 Shopify tables, OAuth token exchange, admin endpoints
-3. GraphQL schema and resolvers framework exists, ready for full API implementation
-4. Patterns established: GID format, token validation, @graphql-tools/schema usage
+1. Phase 2 is complete — all 4 plans executed, 24/24 integration tests passing
+2. Phase 2 delivered: OAuth flow, GraphQL Admin API (orders/products/customers), webhooks, error simulation, admin endpoints (reset/fixtures/state)
+3. UAT gap closed: fixtures load endpoint now generates GIDs before insertion (SQLITE_CONSTRAINT_NOTNULL fix)
+4. Ready to plan Phase 3: Webhooks & Conformance Framework
 
 **Context required:**
-- .planning/phases/02-shopify-twin-core-operations/02-01-SUMMARY.md (foundation just completed)
-- .planning/phases/02-shopify-twin-core-operations/02-CONTEXT.md (Phase 2 decisions)
-- .planning/ROADMAP.md (Phase 2 goals and requirements)
-- .planning/REQUIREMENTS.md (SHOP-01, SHOP-02, SHOP-03, SHOP-07, INFRA-03, INFRA-04)
+- .planning/phases/02-shopify-twin-core-operations/02-04-SUMMARY.md (gap closure just completed)
+- .planning/phases/02-shopify-twin-core-operations/02-03-SUMMARY.md (webhooks and error simulation)
+- .planning/ROADMAP.md (Phase 3 goals)
+- .planning/REQUIREMENTS.md (remaining requirements)
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
