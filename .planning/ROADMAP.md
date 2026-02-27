@@ -45,7 +45,12 @@ Plans:
   5. Developer receives webhook POST at callback URL when order is created or updated
   6. Developer can trigger 401, 403, 429, 500, 503, timeout responses via admin API configuration
   7. Developer can reset all Shopify twin state via `POST /admin/reset` and load fixtures via `POST /admin/fixtures/load`
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves
+
+Plans:
+- [ ] 02-01-PLAN.md — Shopify twin foundation with OAuth, admin API, and StateManager extensions
+- [ ] 02-02-PLAN.md — GraphQL schema, resolvers, and Yoga integration with token validation
+- [ ] 02-03-PLAN.md — Webhook delivery, error simulation, and integration tests
 
 ### Phase 3: Webhook System & Conformance Framework
 **Goal**: Production-grade webhook delivery and automated behavioral validation against real APIs
@@ -116,7 +121,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Monorepo Setup | 0/2 | Not started | - |
-| 2. Shopify Twin - Core Operations | 0/? | Not started | - |
+| 2. Shopify Twin - Core Operations | 0/3 | Not started | - |
 | 3. Webhook System & Conformance Framework | 0/? | Not started | - |
 | 4. Shopify Twin - Advanced Features | 0/? | Not started | - |
 | 5. Slack Twin - Web API & Events | 0/? | Not started | - |
@@ -147,4 +152,4 @@ Phase 2 (Shopify Core) ──→ Phase 3 (Webhooks/Conformance)
 - Phase 7 integrates twins with Sandpiper after UIs prove twins work independently
 
 ---
-*Last updated: 2026-02-27 after Phase 1 planning*
+*Last updated: 2026-02-27 after Phase 2 planning*
