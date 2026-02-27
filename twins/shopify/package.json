@@ -1,0 +1,31 @@
+{
+  "name": "@dtu/twin-shopify",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Shopify Admin API Digital Twin",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@dtu/core": "workspace:*",
+    "@dtu/state": "workspace:*",
+    "@dtu/types": "workspace:*",
+    "@graphql-tools/schema": "^10.0.0",
+    "fastify": "^5.0.0",
+    "graphql": "^16.9.0",
+    "graphql-yoga": "^5.8.3",
+    "pino": "^9.5.0",
+    "pino-pretty": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
+  }
+}

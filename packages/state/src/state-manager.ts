@@ -428,6 +428,12 @@ export class StateManager {
     return result.lastInsertRowid as number;
   }
 
+  /** Get a product by internal ID */
+  getProduct(id: number): any | undefined {
+    const stmt = this.database.prepare('SELECT * FROM products WHERE id = ?');
+    return stmt.get(id);
+  }
+
   /** Get a product by Shopify GID */
   getProductByGid(gid: string): any | undefined {
     if (!this.getProductByGidStmt) {
@@ -459,6 +465,12 @@ export class StateManager {
       now
     );
     return result.lastInsertRowid as number;
+  }
+
+  /** Get a customer by internal ID */
+  getCustomer(id: number): any | undefined {
+    const stmt = this.database.prepare('SELECT * FROM customers WHERE id = ?');
+    return stmt.get(id);
   }
 
   /** Get a customer by Shopify GID */
