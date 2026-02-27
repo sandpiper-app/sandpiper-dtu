@@ -1,7 +1,7 @@
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-02-27
-**Status:** Phase 2 Complete, Shopify Twin Core Operations Delivered
+**Status:** Milestone complete
 
 ## Project Reference
 
