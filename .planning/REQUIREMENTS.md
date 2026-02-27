@@ -11,7 +11,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Shared Infrastructure
 
-- [ ] **INFRA-01**: Monorepo with pnpm workspaces — shared packages (types, core, state, webhooks, conformance) and per-twin apps
+- [x] **INFRA-01**: Monorepo with pnpm workspaces — shared packages (types, core, state, webhooks, conformance) and per-twin apps
 - [ ] **INFRA-02**: Shared state management layer with SQLite/in-memory backends, resettable between test runs in <100ms
 - [ ] **INFRA-03**: Admin API for programmatic test control — `POST /admin/reset`, `POST /admin/fixtures/load`, `GET /admin/state`
 - [ ] **INFRA-04**: Configurable error simulation per endpoint — 401, 403, 429, 500, 503, timeout responses with realistic error bodies
@@ -19,7 +19,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **INFRA-06**: Conformance suites run periodically (CI schedule) to detect upstream API drift
 - [ ] **INFRA-07**: Health check endpoint (`/health`) returns 200 when twin is initialized and ready
 - [ ] **INFRA-08**: Structured JSON logging with correlation IDs for debugging twin behavior
-- [ ] **INFRA-09**: Twin development grounded in StrongDM DTU methodology — replicate behavior at API boundary from contracts + edge cases, validate against real services
+- [x] **INFRA-09**: Twin development grounded in StrongDM DTU methodology — replicate behavior at API boundary from contracts + edge cases, validate against real services
 
 ### Shopify Twin
 
@@ -90,7 +90,7 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | Phase 1 | Pending |
+| INFRA-01 | Phase 1 | Complete |
 | INFRA-02 | Phase 1 | Pending |
 | INFRA-03 | Phase 2 | Pending |
 | INFRA-04 | Phase 2 | Pending |
@@ -98,7 +98,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | INFRA-06 | Phase 3 | Pending |
 | INFRA-07 | Phase 1 | Pending |
 | INFRA-08 | Phase 1 | Pending |
-| INFRA-09 | Phase 1 | Pending |
+| INFRA-09 | Phase 1 | Complete |
 | SHOP-01 | Phase 2 | Pending |
 | SHOP-02 | Phase 2 | Pending |
 | SHOP-03 | Phase 2 | Pending |
