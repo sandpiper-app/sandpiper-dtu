@@ -1,9 +1,9 @@
 ---
-status: complete
+status: resolved
 phase: 02-shopify-twin-core-operations
-source: [02-01-SUMMARY.md, 02-02-SUMMARY.md, 02-03-SUMMARY.md]
+source: [02-01-SUMMARY.md, 02-02-SUMMARY.md, 02-03-SUMMARY.md, 02-04-SUMMARY.md, 02-05-SUMMARY.md]
 started: 2026-02-27T21:00:00Z
-updated: 2026-02-27T21:30:00Z
+updated: 2026-02-27T17:20:00Z
 ---
 
 ## Current Test
@@ -65,11 +65,19 @@ skipped: 0
 ## Gaps
 
 - truth: "Fixtures load endpoint loads orders, products, customers from JSON body"
-  status: failed
+  status: resolved
   reason: "User reported: SQLITE_CONSTRAINT_NOTNULL - NOT NULL constraint failed: orders.gid. Fixtures load endpoint returns 500 error when loading orders because GID is not generated."
   severity: major
   test: 4
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Fixtures load endpoint passes fixture data directly to createOrder/createProduct/createCustomer without generating GIDs. StateManager methods expect data.gid, and DB enforces NOT NULL on gid columns."
+  artifacts:
+    - path: "twins/shopify/src/plugins/admin.ts"
+      issue: "Lines 62-74: calls createOrder/createProduct/createCustomer without generating GIDs"
+    - path: "packages/state/src/state-manager.ts"
+      issue: "createOrder/createProduct/createCustomer expect gid in data parameter"
+  missing:
+    - "Import createGID from services/gid.ts in admin.ts"
+    - "Generate GID for each order before createOrder: createGID('Order', uniqueId)"
+    - "Generate GID for each product before createProduct: createGID('Product', uniqueId)"
+    - "Generate GID for each customer before createCustomer: createGID('Customer', uniqueId)"
+  debug_session: ".planning/debug/fixtures-gid-constraint.md"
