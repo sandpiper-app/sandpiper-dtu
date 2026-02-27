@@ -40,6 +40,10 @@ export class StateManager {
   private listCustomersStmt: Database.Statement | null = null;
   private createWebhookSubscriptionStmt: Database.Statement | null = null;
   private listWebhookSubscriptionsStmt: Database.Statement | null = null;
+  private updateProductStmt: Database.Statement | null = null;
+  private createFulfillmentStmt: Database.Statement | null = null;
+  private getFulfillmentStmt: Database.Statement | null = null;
+  private listFulfillmentsStmt: Database.Statement | null = null;
   private createErrorConfigStmt: Database.Statement | null = null;
   private getErrorConfigStmt: Database.Statement | null = null;
   private clearErrorConfigsStmt: Database.Statement | null = null;
@@ -88,6 +92,10 @@ export class StateManager {
       this.listCustomersStmt = null;
       this.createWebhookSubscriptionStmt = null;
       this.listWebhookSubscriptionsStmt = null;
+      this.updateProductStmt = null;
+      this.createFulfillmentStmt = null;
+      this.getFulfillmentStmt = null;
+      this.listFulfillmentsStmt = null;
       this.createErrorConfigStmt = null;
       this.getErrorConfigStmt = null;
       this.clearErrorConfigsStmt = null;
@@ -121,6 +129,10 @@ export class StateManager {
       this.listCustomersStmt = null;
       this.createWebhookSubscriptionStmt = null;
       this.listWebhookSubscriptionsStmt = null;
+      this.updateProductStmt = null;
+      this.createFulfillmentStmt = null;
+      this.getFulfillmentStmt = null;
+      this.listFulfillmentsStmt = null;
       this.createErrorConfigStmt = null;
       this.getErrorConfigStmt = null;
       this.clearErrorConfigsStmt = null;
@@ -317,6 +329,15 @@ export class StateManager {
     this.getCustomerByGidStmt = db.prepare('SELECT * FROM customers WHERE gid = ?');
     this.listCustomersStmt = db.prepare('SELECT * FROM customers ORDER BY created_at DESC');
 
+    this.updateProductStmt = db.prepare(
+      'UPDATE products SET title = ?, description = ?, vendor = ?, product_type = ?, updated_at = ? WHERE id = ?'
+    );
+    this.createFulfillmentStmt = db.prepare(
+      'INSERT INTO fulfillments (gid, order_gid, status, tracking_number, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)'
+    );
+    this.getFulfillmentStmt = db.prepare('SELECT * FROM fulfillments WHERE id = ?');
+    this.listFulfillmentsStmt = db.prepare('SELECT * FROM fulfillments ORDER BY created_at DESC');
+
     this.createWebhookSubscriptionStmt = db.prepare(
       'INSERT INTO webhook_subscriptions (topic, callback_url, created_at) VALUES (?, ?, ?)'
     );
@@ -448,6 +469,55 @@ export class StateManager {
       throw new Error('StateManager not initialized. Call init() first.');
     }
     return this.listProductsStmt.all();
+  }
+
+  /** Update an existing product by ID, setting updated_at to current timestamp */
+  updateProduct(id: number, data: { title?: string; description?: string; vendor?: string; product_type?: string }): void {
+    if (!this.updateProductStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    const now = Math.floor(Date.now() / 1000);
+    this.updateProductStmt.run(
+      data.title ?? null,
+      data.description ?? null,
+      data.vendor ?? null,
+      data.product_type ?? null,
+      now,
+      id
+    );
+  }
+
+  /** Create a fulfillment and return its ID */
+  createFulfillment(data: { gid: string; order_gid?: string; status?: string; tracking_number?: string }): number {
+    if (!this.createFulfillmentStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    const now = Math.floor(Date.now() / 1000);
+    const result = this.createFulfillmentStmt.run(
+      data.gid,
+      data.order_gid ?? null,
+      data.status ?? 'pending',
+      data.tracking_number ?? null,
+      now,
+      now
+    );
+    return result.lastInsertRowid as number;
+  }
+
+  /** Get a fulfillment by internal ID */
+  getFulfillment(id: number): any | undefined {
+    if (!this.getFulfillmentStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    return this.getFulfillmentStmt.get(id);
+  }
+
+  /** List all fulfillments */
+  listFulfillments(): any[] {
+    if (!this.listFulfillmentsStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    return this.listFulfillmentsStmt.all();
   }
 
   /** Create a customer and return its ID */

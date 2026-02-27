@@ -367,6 +367,155 @@ describe('Shopify Twin Integration', () => {
       expect(body.data.productCreate.userErrors).toHaveLength(0);
     });
 
+    // -- Mutations: productUpdate --
+
+    it('updates existing product and observes state changes', async () => {
+      // Create product first
+      const createResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            productCreate(input: {
+              title: "Original Title"
+              vendor: "Acme"
+            }) {
+              product { id title updatedAt }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+      const createBody = JSON.parse(createResponse.body);
+      const productId = createBody.data.productCreate.product.id;
+      const originalUpdatedAt = createBody.data.productCreate.product.updatedAt;
+
+      // Wait briefly so timestamp differs
+      await new Promise(resolve => setTimeout(resolve, 1100));
+
+      // Update product
+      const updateResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            productUpdate(input: {
+              id: "${productId}",
+              title: "Updated Title"
+            }) {
+              product { id title updatedAt }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+
+      expect(updateResponse.statusCode).toBe(200);
+      const updateBody = JSON.parse(updateResponse.body);
+      expect(updateBody.data.productUpdate.product.title).toBe('Updated Title');
+      expect(updateBody.data.productUpdate.product.updatedAt).not.toBe(originalUpdatedAt);
+      expect(updateBody.data.productUpdate.userErrors).toHaveLength(0);
+    });
+
+    it('returns userError when updating non-existent product', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            productUpdate(input: {
+              id: "gid://shopify/Product/999999",
+              title: "Should Fail"
+            }) {
+              product { id }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.data.productUpdate.product).toBeNull();
+      expect(body.data.productUpdate.userErrors.length).toBeGreaterThan(0);
+      expect(body.data.productUpdate.userErrors[0].message).toContain('not found');
+    });
+
+    // -- Mutations: fulfillmentCreate --
+
+    it('creates fulfillment linked to order and returns GID', async () => {
+      // Create order first
+      const orderResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            orderCreate(input: {
+              lineItems: [{title: "Test", quantity: 1, price: "10.00"}],
+              totalPrice: "10.00",
+              currencyCode: "USD"
+            }) {
+              order { id }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+      const orderId = JSON.parse(orderResponse.body).data.orderCreate.order.id;
+
+      // Create fulfillment
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            fulfillmentCreate(input: {
+              orderId: "${orderId}",
+              status: "success",
+              trackingNumber: "1Z999AA10123456784"
+            }) {
+              fulfillment { id status trackingNumber createdAt }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.data.fulfillmentCreate.fulfillment.id).toMatch(/^gid:\/\/shopify\/Fulfillment\/\d+$/);
+      expect(body.data.fulfillmentCreate.fulfillment.status).toBe('success');
+      expect(body.data.fulfillmentCreate.fulfillment.trackingNumber).toBe('1Z999AA10123456784');
+      expect(body.data.fulfillmentCreate.userErrors).toHaveLength(0);
+    });
+
+    it('returns userError for fulfillmentCreate with invalid orderId format', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            fulfillmentCreate(input: {
+              orderId: "not-a-gid"
+            }) {
+              fulfillment { id }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.data.fulfillmentCreate.fulfillment).toBeNull();
+      expect(body.data.fulfillmentCreate.userErrors.length).toBeGreaterThan(0);
+      expect(body.data.fulfillmentCreate.userErrors[0].message).toContain('Invalid order ID');
+    });
+
     // -- Mutations: customerCreate --
 
     it('creates customer and returns GID', async () => {
@@ -571,6 +720,8 @@ describe('Shopify Twin Integration', () => {
       // webhook subscription endpoint is not yet implemented)
       app.stateManager.createWebhookSubscription('orders/create', 'http://localhost:9999/webhook');
       app.stateManager.createWebhookSubscription('orders/update', 'http://localhost:9999/webhook');
+      app.stateManager.createWebhookSubscription('products/update', 'http://localhost:9999/webhook');
+      app.stateManager.createWebhookSubscription('fulfillments/create', 'http://localhost:9999/webhook');
     });
 
     it('triggers webhook on order creation (verifies order created successfully)', async () => {
@@ -642,10 +793,94 @@ describe('Shopify Twin Integration', () => {
       expect(body.data.orderUpdate.order.totalPriceSet.shopMoney.amount).toBe('20.00');
     });
 
+    it('triggers webhook on product update (verifies product updated successfully)', async () => {
+      // Create product first
+      const createResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            productCreate(input: { title: "Original" }) {
+              product { id }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+      const productId = JSON.parse(createResponse.body).data.productCreate.product.id;
+
+      // Update product -- webhook fires to localhost:9999 (will fail silently)
+      const updateResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            productUpdate(input: { id: "${productId}", title: "Updated" }) {
+              product { id title }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+
+      expect(updateResponse.statusCode).toBe(200);
+      const body = JSON.parse(updateResponse.body);
+      expect(body.data.productUpdate.product).toBeDefined();
+      expect(body.data.productUpdate.product.title).toBe('Updated');
+    });
+
+    it('triggers webhook on fulfillment creation (verifies fulfillment created successfully)', async () => {
+      // Create order first
+      const orderResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            orderCreate(input: {
+              lineItems: [{title: "Test", quantity: 1, price: "10.00"}],
+              totalPrice: "10.00",
+              currencyCode: "USD"
+            }) {
+              order { id }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+      const orderId = JSON.parse(orderResponse.body).data.orderCreate.order.id;
+
+      // Create fulfillment -- webhook fires to localhost:9999 (will fail silently)
+      const fulfillmentResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            fulfillmentCreate(input: {
+              orderId: "${orderId}",
+              trackingNumber: "TRACK123"
+            }) {
+              fulfillment { id status trackingNumber }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+
+      expect(fulfillmentResponse.statusCode).toBe(200);
+      const body = JSON.parse(fulfillmentResponse.body);
+      expect(body.data.fulfillmentCreate.fulfillment).toBeDefined();
+      expect(body.data.fulfillmentCreate.fulfillment.id).toMatch(/^gid:\/\/shopify\/Fulfillment\/\d+$/);
+      expect(body.data.fulfillmentCreate.fulfillment.trackingNumber).toBe('TRACK123');
+    });
+
     it('webhook subscriptions are visible in state', async () => {
       const stateRes = await app.inject({ method: 'GET', url: '/admin/state' });
       const state = JSON.parse(stateRes.body);
-      expect(state.webhooks).toBe(2);
+      expect(state.webhooks).toBe(4);
     });
   });
 

@@ -318,6 +318,123 @@ export const resolvers = {
       return { product, userErrors: [] };
     },
 
+    productUpdate: async (_parent: unknown, args: { input: any }, context: Context) => {
+      requireAuth(context);
+      await context.errorSimulator.throwIfConfigured('productUpdate');
+
+      const { input } = args;
+      const errors: UserError[] = [];
+
+      // Parse GID to get internal ID
+      let productId: number;
+      try {
+        const { id } = parseGID(input.id);
+        productId = parseInt(id, 10);
+      } catch (err) {
+        errors.push({ field: ['id'], message: 'Invalid product ID format' });
+        return { product: null, userErrors: errors };
+      }
+
+      // Check if product exists
+      const existingProduct = context.stateManager.getProduct(productId);
+      if (!existingProduct) {
+        errors.push({ field: ['id'], message: 'Product not found' });
+        return { product: null, userErrors: errors };
+      }
+
+      // Build update data, preserving existing values for fields not provided
+      const updateData = {
+        title: input.title ?? existingProduct.title,
+        description: input.description ?? existingProduct.description,
+        vendor: input.vendor ?? existingProduct.vendor,
+        product_type: input.productType ?? existingProduct.product_type,
+      };
+
+      context.stateManager.updateProduct(productId, updateData);
+      const updatedProduct = context.stateManager.getProduct(productId);
+
+      // Send webhooks (fire and forget)
+      if (updatedProduct) {
+        const subscriptions = context.stateManager.listWebhookSubscriptions();
+        const productUpdateSubs = subscriptions.filter((s: any) => s.topic === 'products/update');
+        for (const sub of productUpdateSubs) {
+          sendWebhook(
+            sub.callback_url,
+            'products/update',
+            {
+              id: updatedProduct.id,
+              admin_graphql_api_id: createGID('Product', updatedProduct.id),
+              created_at: new Date(updatedProduct.created_at * 1000).toISOString(),
+              updated_at: new Date(updatedProduct.updated_at * 1000).toISOString(),
+              title: updatedProduct.title,
+            },
+            context.webhookSecret,
+          );
+        }
+      }
+
+      return { product: updatedProduct, userErrors: [] };
+    },
+
+    fulfillmentCreate: async (_parent: unknown, args: { input: any }, context: Context) => {
+      requireAuth(context);
+      await context.errorSimulator.throwIfConfigured('fulfillmentCreate');
+
+      const { input } = args;
+      const errors: UserError[] = [];
+
+      // Validate orderId
+      if (!input.orderId) {
+        errors.push({ field: ['orderId'], message: 'Order ID is required' });
+        return { fulfillment: null, userErrors: errors };
+      }
+
+      // Parse order GID to verify format
+      try {
+        parseGID(input.orderId);
+      } catch (err) {
+        errors.push({ field: ['orderId'], message: 'Invalid order ID format' });
+        return { fulfillment: null, userErrors: errors };
+      }
+
+      if (errors.length > 0) {
+        return { fulfillment: null, userErrors: errors };
+      }
+
+      const tempId = Date.now() + Math.floor(Math.random() * 100000);
+      const fulfillmentId = context.stateManager.createFulfillment({
+        gid: createGID('Fulfillment', tempId),
+        order_gid: input.orderId,
+        status: input.status ?? 'success',
+        tracking_number: input.trackingNumber ?? null,
+      });
+
+      const fulfillment = context.stateManager.getFulfillment(fulfillmentId);
+
+      // Send webhooks (fire and forget)
+      if (fulfillment) {
+        const subscriptions = context.stateManager.listWebhookSubscriptions();
+        const fulfillmentSubs = subscriptions.filter((s: any) => s.topic === 'fulfillments/create');
+        for (const sub of fulfillmentSubs) {
+          sendWebhook(
+            sub.callback_url,
+            'fulfillments/create',
+            {
+              id: fulfillment.id,
+              admin_graphql_api_id: createGID('Fulfillment', fulfillment.id),
+              created_at: new Date(fulfillment.created_at * 1000).toISOString(),
+              order_id: fulfillment.order_gid,
+              status: fulfillment.status,
+              tracking_number: fulfillment.tracking_number,
+            },
+            context.webhookSecret,
+          );
+        }
+      }
+
+      return { fulfillment, userErrors: [] };
+    },
+
     customerCreate: async (_parent: unknown, args: { input: any }, context: Context) => {
       requireAuth(context);
       // Check error simulation first
@@ -422,5 +539,13 @@ export const resolvers = {
 
   Fulfillment: {
     id: (parent: any) => createGID('Fulfillment', parent.id),
+    createdAt: (parent: any) => parent.created_at,
+    updatedAt: (parent: any) => parent.updated_at,
+    trackingNumber: (parent: any) => parent.tracking_number,
+    order: async (parent: any, _args: unknown, context: Context) => {
+      if (!parent.order_gid) return null;
+      const order = context.stateManager.getOrderByGid(parent.order_gid);
+      return order ?? null;
+    },
   },
 };

@@ -97,7 +97,9 @@ type Fulfillment {
   id: ID!
   status: String!
   trackingNumber: String
+  order: Order
   createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 # UserError for mutation responses
@@ -134,6 +136,20 @@ input ProductInput {
   productType: String
 }
 
+input ProductUpdateInput {
+  id: ID!
+  title: String
+  description: String
+  vendor: String
+  productType: String
+}
+
+input FulfillmentInput {
+  orderId: ID!
+  status: String
+  trackingNumber: String
+}
+
 input CustomerInput {
   email: String!
   firstName: String
@@ -153,6 +169,16 @@ type OrderUpdatePayload {
 
 type ProductCreatePayload {
   product: Product
+  userErrors: [UserError!]!
+}
+
+type ProductUpdatePayload {
+  product: Product
+  userErrors: [UserError!]!
+}
+
+type FulfillmentCreatePayload {
+  fulfillment: Fulfillment
   userErrors: [UserError!]!
 }
 
@@ -176,6 +202,8 @@ type MutationType {
   orderCreate(input: OrderInput!): OrderCreatePayload!
   orderUpdate(input: OrderUpdateInput!): OrderUpdatePayload!
   productCreate(input: ProductInput!): ProductCreatePayload!
+  productUpdate(input: ProductUpdateInput!): ProductUpdatePayload!
+  fulfillmentCreate(input: FulfillmentInput!): FulfillmentCreatePayload!
   customerCreate(input: CustomerInput!): CustomerCreatePayload!
 }
 
