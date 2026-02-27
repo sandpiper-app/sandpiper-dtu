@@ -12,7 +12,7 @@
 ## Current Position
 
 **Phase:** Phase 2 - Shopify Twin - Core Operations
-**Plan:** 04 of 04
+**Plan:** 05 of 05 (gap closure complete)
 **Status:** Complete
 **Progress:** [██████████] 100%
 
@@ -43,6 +43,12 @@
 - Used pnpm 9.x (system installed) instead of plan-specified 10.x
 - Used version range for typescript in packages instead of workspace:* (external dep)
 - Extended @dtu/types with Entity types to prepare for Plan 02 StateManager
+
+**2026-02-27 - Plan 02-05 Execution (Gap Closure):**
+- productUpdate resolver: parse GID, check exists, merge fields preserving existing values, trigger products/update webhook
+- fulfillmentCreate resolver: validate orderId GID, create with generated fulfillment GID, trigger fulfillments/create webhook
+- Fulfillment type resolver includes order reference via getOrderByGid for graph traversal
+- Default fulfillment status to "success" matching Shopify common flow
 
 **2026-02-27 - Plan 02-04 Execution:**
 - Generate GIDs using Date.now() + Math.floor(Math.random() * 100000) pattern before StateManager create calls in fixtures endpoint (matches resolver pattern)
@@ -82,18 +88,18 @@ None.
 
 ## Session Continuity
 
-**Last completed:** 02-04-PLAN.md (Fixtures GID Generation Gap Closure)
-**Timestamp:** 2026-02-27T21:51:00Z
+**Last completed:** 02-05-PLAN.md (productUpdate + fulfillmentCreate Gap Closure)
+**Timestamp:** 2026-02-27T17:19:00Z
 
 **For next session:**
-1. Phase 2 is complete — all 4 plans executed, 24/24 integration tests passing
-2. Phase 2 delivered: OAuth flow, GraphQL Admin API (orders/products/customers), webhooks, error simulation, admin endpoints (reset/fixtures/state)
-3. UAT gap closed: fixtures load endpoint now generates GIDs before insertion (SQLITE_CONSTRAINT_NOTNULL fix)
+1. Phase 2 fully complete — all 5 plans executed (4 original + 1 gap closure), 30/30 integration tests passing
+2. Phase 2 delivered: OAuth flow, GraphQL Admin API (orders/products/customers + productUpdate/fulfillmentCreate), webhooks for all 4 topics, error simulation, admin endpoints (reset/fixtures/state)
+3. SHOP-03 verification gap closed: productUpdate and fulfillmentCreate mutations with webhook delivery
 4. Ready to plan Phase 3: Webhooks & Conformance Framework
 
 **Context required:**
-- .planning/phases/02-shopify-twin-core-operations/02-04-SUMMARY.md (gap closure just completed)
-- .planning/phases/02-shopify-twin-core-operations/02-03-SUMMARY.md (webhooks and error simulation)
+- .planning/phases/02-shopify-twin-core-operations/02-05-SUMMARY.md (SHOP-03 gap closure just completed)
+- .planning/phases/02-shopify-twin-core-operations/02-04-SUMMARY.md (fixtures GID gap closure)
 - .planning/ROADMAP.md (Phase 3 goals)
 - .planning/REQUIREMENTS.md (remaining requirements)
 
