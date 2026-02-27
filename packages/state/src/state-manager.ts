@@ -24,6 +24,26 @@ export class StateManager {
   private listByTypeStmt: Database.Statement | null = null;
   private deleteByIdStmt: Database.Statement | null = null;
 
+  // Shopify-specific prepared statements
+  private createTokenStmt: Database.Statement | null = null;
+  private getTokenStmt: Database.Statement | null = null;
+  private createOrderStmt: Database.Statement | null = null;
+  private updateOrderStmt: Database.Statement | null = null;
+  private getOrderStmt: Database.Statement | null = null;
+  private getOrderByGidStmt: Database.Statement | null = null;
+  private listOrdersStmt: Database.Statement | null = null;
+  private createProductStmt: Database.Statement | null = null;
+  private getProductByGidStmt: Database.Statement | null = null;
+  private listProductsStmt: Database.Statement | null = null;
+  private createCustomerStmt: Database.Statement | null = null;
+  private getCustomerByGidStmt: Database.Statement | null = null;
+  private listCustomersStmt: Database.Statement | null = null;
+  private createWebhookSubscriptionStmt: Database.Statement | null = null;
+  private listWebhookSubscriptionsStmt: Database.Statement | null = null;
+  private createErrorConfigStmt: Database.Statement | null = null;
+  private getErrorConfigStmt: Database.Statement | null = null;
+  private clearErrorConfigsStmt: Database.Statement | null = null;
+
   constructor(options: StateManagerOptions = {}) {
     this.dbPath = options.dbPath ?? ':memory:';
   }
@@ -52,6 +72,25 @@ export class StateManager {
       this.listAllStmt = null;
       this.listByTypeStmt = null;
       this.deleteByIdStmt = null;
+      // Reset Shopify-specific statements
+      this.createTokenStmt = null;
+      this.getTokenStmt = null;
+      this.createOrderStmt = null;
+      this.updateOrderStmt = null;
+      this.getOrderStmt = null;
+      this.getOrderByGidStmt = null;
+      this.listOrdersStmt = null;
+      this.createProductStmt = null;
+      this.getProductByGidStmt = null;
+      this.listProductsStmt = null;
+      this.createCustomerStmt = null;
+      this.getCustomerByGidStmt = null;
+      this.listCustomersStmt = null;
+      this.createWebhookSubscriptionStmt = null;
+      this.listWebhookSubscriptionsStmt = null;
+      this.createErrorConfigStmt = null;
+      this.getErrorConfigStmt = null;
+      this.clearErrorConfigsStmt = null;
     }
     this.init();
   }
@@ -66,6 +105,25 @@ export class StateManager {
       this.listAllStmt = null;
       this.listByTypeStmt = null;
       this.deleteByIdStmt = null;
+      // Clear Shopify-specific statements
+      this.createTokenStmt = null;
+      this.getTokenStmt = null;
+      this.createOrderStmt = null;
+      this.updateOrderStmt = null;
+      this.getOrderStmt = null;
+      this.getOrderByGidStmt = null;
+      this.listOrdersStmt = null;
+      this.createProductStmt = null;
+      this.getProductByGidStmt = null;
+      this.listProductsStmt = null;
+      this.createCustomerStmt = null;
+      this.getCustomerByGidStmt = null;
+      this.listCustomersStmt = null;
+      this.createWebhookSubscriptionStmt = null;
+      this.listWebhookSubscriptionsStmt = null;
+      this.createErrorConfigStmt = null;
+      this.getErrorConfigStmt = null;
+      this.clearErrorConfigsStmt = null;
     }
   }
 
@@ -136,6 +194,88 @@ export class StateManager {
       );
 
       CREATE INDEX IF NOT EXISTS idx_entities_type ON entities(type);
+
+      -- Shopify-specific tables
+      CREATE TABLE IF NOT EXISTS tokens (
+        token TEXT PRIMARY KEY,
+        shop_domain TEXT NOT NULL,
+        scopes TEXT NOT NULL,
+        created_at INTEGER NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS orders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        gid TEXT UNIQUE NOT NULL,
+        name TEXT,
+        total_price TEXT,
+        currency_code TEXT,
+        customer_gid TEXT,
+        line_items TEXT,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS products (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        gid TEXT UNIQUE NOT NULL,
+        title TEXT,
+        description TEXT,
+        vendor TEXT,
+        product_type TEXT,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS customers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        gid TEXT UNIQUE NOT NULL,
+        email TEXT UNIQUE,
+        first_name TEXT,
+        last_name TEXT,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS inventory_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        gid TEXT UNIQUE NOT NULL,
+        sku TEXT,
+        tracked BOOLEAN,
+        available INTEGER,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS fulfillments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        gid TEXT UNIQUE NOT NULL,
+        order_gid TEXT,
+        status TEXT,
+        tracking_number TEXT,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS webhook_subscriptions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        topic TEXT NOT NULL,
+        callback_url TEXT NOT NULL,
+        created_at INTEGER NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS error_configs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        operation_name TEXT UNIQUE NOT NULL,
+        status_code INTEGER,
+        error_body TEXT,
+        delay_ms INTEGER,
+        enabled BOOLEAN DEFAULT 1
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_orders_gid ON orders(gid);
+      CREATE INDEX IF NOT EXISTS idx_products_gid ON products(gid);
+      CREATE INDEX IF NOT EXISTS idx_customers_gid ON customers(gid);
+      CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
     `);
   }
 
@@ -148,5 +288,240 @@ export class StateManager {
     this.listAllStmt = db.prepare('SELECT * FROM entities ORDER BY created_at DESC');
     this.listByTypeStmt = db.prepare('SELECT * FROM entities WHERE type = ? ORDER BY created_at DESC');
     this.deleteByIdStmt = db.prepare('DELETE FROM entities WHERE id = ?');
+
+    // Shopify-specific prepared statements
+    this.createTokenStmt = db.prepare(
+      'INSERT INTO tokens (token, shop_domain, scopes, created_at) VALUES (?, ?, ?, ?)'
+    );
+    this.getTokenStmt = db.prepare('SELECT * FROM tokens WHERE token = ?');
+
+    this.createOrderStmt = db.prepare(
+      'INSERT INTO orders (gid, name, total_price, currency_code, customer_gid, line_items, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+    );
+    this.updateOrderStmt = db.prepare(
+      'UPDATE orders SET name = ?, total_price = ?, currency_code = ?, customer_gid = ?, line_items = ?, updated_at = ? WHERE id = ?'
+    );
+    this.getOrderStmt = db.prepare('SELECT * FROM orders WHERE id = ?');
+    this.getOrderByGidStmt = db.prepare('SELECT * FROM orders WHERE gid = ?');
+    this.listOrdersStmt = db.prepare('SELECT * FROM orders ORDER BY created_at DESC');
+
+    this.createProductStmt = db.prepare(
+      'INSERT INTO products (gid, title, description, vendor, product_type, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    );
+    this.getProductByGidStmt = db.prepare('SELECT * FROM products WHERE gid = ?');
+    this.listProductsStmt = db.prepare('SELECT * FROM products ORDER BY created_at DESC');
+
+    this.createCustomerStmt = db.prepare(
+      'INSERT INTO customers (gid, email, first_name, last_name, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)'
+    );
+    this.getCustomerByGidStmt = db.prepare('SELECT * FROM customers WHERE gid = ?');
+    this.listCustomersStmt = db.prepare('SELECT * FROM customers ORDER BY created_at DESC');
+
+    this.createWebhookSubscriptionStmt = db.prepare(
+      'INSERT INTO webhook_subscriptions (topic, callback_url, created_at) VALUES (?, ?, ?)'
+    );
+    this.listWebhookSubscriptionsStmt = db.prepare('SELECT * FROM webhook_subscriptions ORDER BY created_at DESC');
+
+    this.createErrorConfigStmt = db.prepare(
+      'INSERT OR REPLACE INTO error_configs (operation_name, status_code, error_body, delay_ms, enabled) VALUES (?, ?, ?, ?, ?)'
+    );
+    this.getErrorConfigStmt = db.prepare('SELECT * FROM error_configs WHERE operation_name = ?');
+    this.clearErrorConfigsStmt = db.prepare('DELETE FROM error_configs');
+  }
+
+  // Shopify-specific methods
+
+  /** Create a token record */
+  createToken(token: string, shopDomain: string, scopes: string): void {
+    if (!this.createTokenStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    const now = Math.floor(Date.now() / 1000);
+    this.createTokenStmt.run(token, shopDomain, scopes, now);
+  }
+
+  /** Get a token record by token string */
+  getToken(token: string): { token: string; shop_domain: string; scopes: string; created_at: number } | undefined {
+    if (!this.getTokenStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    return this.getTokenStmt.get(token) as { token: string; shop_domain: string; scopes: string; created_at: number } | undefined;
+  }
+
+  /** Create an order and return its ID */
+  createOrder(data: { gid: string; name?: string; total_price?: string; currency_code?: string; customer_gid?: string; line_items?: any }): number {
+    if (!this.createOrderStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    const now = Math.floor(Date.now() / 1000);
+    const lineItemsJson = data.line_items ? JSON.stringify(data.line_items) : null;
+    const result = this.createOrderStmt.run(
+      data.gid,
+      data.name ?? null,
+      data.total_price ?? null,
+      data.currency_code ?? null,
+      data.customer_gid ?? null,
+      lineItemsJson,
+      now,
+      now
+    );
+    return result.lastInsertRowid as number;
+  }
+
+  /** Update an existing order by ID, setting updated_at to current timestamp */
+  updateOrder(id: number, data: { name?: string; total_price?: string; currency_code?: string; customer_gid?: string; line_items?: any }): void {
+    if (!this.updateOrderStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    const now = Math.floor(Date.now() / 1000);
+    const lineItemsJson = data.line_items ? JSON.stringify(data.line_items) : null;
+    this.updateOrderStmt.run(
+      data.name ?? null,
+      data.total_price ?? null,
+      data.currency_code ?? null,
+      data.customer_gid ?? null,
+      lineItemsJson,
+      now,
+      id
+    );
+  }
+
+  /** Get an order by internal ID */
+  getOrder(id: number): any | undefined {
+    if (!this.getOrderStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    return this.getOrderStmt.get(id);
+  }
+
+  /** Get an order by Shopify GID */
+  getOrderByGid(gid: string): any | undefined {
+    if (!this.getOrderByGidStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    return this.getOrderByGidStmt.get(gid);
+  }
+
+  /** List all orders */
+  listOrders(): any[] {
+    if (!this.listOrdersStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    return this.listOrdersStmt.all();
+  }
+
+  /** Create a product and return its ID */
+  createProduct(data: { gid: string; title?: string; description?: string; vendor?: string; product_type?: string }): number {
+    if (!this.createProductStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    const now = Math.floor(Date.now() / 1000);
+    const result = this.createProductStmt.run(
+      data.gid,
+      data.title ?? null,
+      data.description ?? null,
+      data.vendor ?? null,
+      data.product_type ?? null,
+      now,
+      now
+    );
+    return result.lastInsertRowid as number;
+  }
+
+  /** Get a product by Shopify GID */
+  getProductByGid(gid: string): any | undefined {
+    if (!this.getProductByGidStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    return this.getProductByGidStmt.get(gid);
+  }
+
+  /** List all products */
+  listProducts(): any[] {
+    if (!this.listProductsStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    return this.listProductsStmt.all();
+  }
+
+  /** Create a customer and return its ID */
+  createCustomer(data: { gid: string; email?: string; first_name?: string; last_name?: string }): number {
+    if (!this.createCustomerStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    const now = Math.floor(Date.now() / 1000);
+    const result = this.createCustomerStmt.run(
+      data.gid,
+      data.email ?? null,
+      data.first_name ?? null,
+      data.last_name ?? null,
+      now,
+      now
+    );
+    return result.lastInsertRowid as number;
+  }
+
+  /** Get a customer by Shopify GID */
+  getCustomerByGid(gid: string): any | undefined {
+    if (!this.getCustomerByGidStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    return this.getCustomerByGidStmt.get(gid);
+  }
+
+  /** List all customers */
+  listCustomers(): any[] {
+    if (!this.listCustomersStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    return this.listCustomersStmt.all();
+  }
+
+  /** Create a webhook subscription */
+  createWebhookSubscription(topic: string, callbackUrl: string): void {
+    if (!this.createWebhookSubscriptionStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    const now = Math.floor(Date.now() / 1000);
+    this.createWebhookSubscriptionStmt.run(topic, callbackUrl, now);
+  }
+
+  /** List all webhook subscriptions */
+  listWebhookSubscriptions(): any[] {
+    if (!this.listWebhookSubscriptionsStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    return this.listWebhookSubscriptionsStmt.all();
+  }
+
+  /** Create or replace an error configuration */
+  createErrorConfig(operationName: string, config: { status_code?: number; error_body?: any; delay_ms?: number; enabled?: boolean }): void {
+    if (!this.createErrorConfigStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    const errorBodyJson = config.error_body ? JSON.stringify(config.error_body) : null;
+    this.createErrorConfigStmt.run(
+      operationName,
+      config.status_code ?? null,
+      errorBodyJson,
+      config.delay_ms ?? null,
+      config.enabled !== false ? 1 : 0
+    );
+  }
+
+  /** Get error configuration for an operation */
+  getErrorConfig(operationName: string): any | undefined {
+    if (!this.getErrorConfigStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    return this.getErrorConfigStmt.get(operationName);
+  }
+
+  /** Clear all error configurations */
+  clearErrorConfigs(): void {
+    if (!this.clearErrorConfigsStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    this.clearErrorConfigsStmt.run();
   }
 }
