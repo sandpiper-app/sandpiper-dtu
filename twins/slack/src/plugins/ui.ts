@@ -349,6 +349,48 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
       subscriptions,
     }));
   });
+
+  fastify.post('/ui/admin/fixtures', async (_req, reply) => {
+    fastify.slackStateManager.createChannel({
+      id: generateChannelId(),
+      name: 'random',
+      is_private: false,
+      topic: 'Random conversations',
+      purpose: 'A place for non-work-related chatter',
+      creator: 'U_BOT_TWIN',
+    });
+    fastify.slackStateManager.createChannel({
+      id: generateChannelId(),
+      name: 'engineering',
+      is_private: false,
+      topic: 'Engineering discussions',
+      purpose: 'Talk about code, architecture, and deployments',
+      creator: 'U_BOT_TWIN',
+    });
+
+    fastify.slackStateManager.createUser({
+      id: generateUserId(),
+      name: 'alice',
+      real_name: 'Alice Smith',
+      display_name: 'alice',
+      email: 'alice@example.com',
+      is_admin: false,
+      is_bot: false,
+      team_id: 'T_TWIN',
+    });
+    fastify.slackStateManager.createUser({
+      id: generateUserId(),
+      name: 'bob',
+      real_name: 'Bob Jones',
+      display_name: 'bob',
+      email: 'bob@example.com',
+      is_admin: false,
+      is_bot: false,
+      team_id: 'T_TWIN',
+    });
+
+    return reply.redirect('/ui/admin');
+  });
 };
 
 export default uiPlugin;

@@ -189,6 +189,53 @@ describe('Shopify Twin UI', () => {
       expect(res.statusCode).toBe(200);
       expect(res.body).toContain('Webhook Subscriptions');
     });
+
+    it('webhook subscription form creates subscription', async () => {
+      const res = await app.inject({
+        method: 'POST',
+        url: '/ui/admin/webhooks',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        payload: 'topic=orders%2Fcreate&callback_url=https%3A%2F%2Fexample.com%2Fwebhook',
+      });
+      expect(res.statusCode).toBe(302);
+      const subs = app.stateManager.listWebhookSubscriptions();
+      expect(subs.some((s: any) => s.topic === 'orders/create' && s.callback_url === 'https://example.com/webhook')).toBe(true);
+    });
+
+    it('load fixtures button creates sample data', async () => {
+      const res = await app.inject({
+        method: 'POST',
+        url: '/ui/admin/fixtures',
+      });
+      expect(res.statusCode).toBe(302);
+      expect(app.stateManager.listProducts().length).toBeGreaterThan(0);
+      expect(app.stateManager.listOrders().length).toBeGreaterThan(0);
+    });
+
+    it('product form includes price field', async () => {
+      const res = await app.inject({
+        method: 'GET',
+        url: '/ui/products/new',
+      });
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toContain('Price');
+    });
+
+    it('order form shows products for line item selection', async () => {
+      // Create a product first
+      app.stateManager.createProduct({
+        gid: 'gid://shopify/Product/999',
+        title: 'Test Product',
+        price: '10.00',
+      });
+      const res = await app.inject({
+        method: 'GET',
+        url: '/ui/orders/new',
+      });
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toContain('Test Product');
+      expect(res.body).toContain('Line Items');
+    });
   });
 
   describe('Static Assets', () => {

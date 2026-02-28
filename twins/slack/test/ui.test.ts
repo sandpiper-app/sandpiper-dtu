@@ -242,6 +242,17 @@ describe('Slack Twin UI', () => {
       expect(res.statusCode).toBe(200);
       expect(res.body).toContain('Event Subscriptions');
     });
+
+    it('load fixtures button creates sample data', async () => {
+      const res = await app.inject({
+        method: 'POST',
+        url: '/ui/admin/fixtures',
+      });
+      expect(res.statusCode).toBe(302);
+      // Should have more channels than just the default C_GENERAL
+      const channels = app.slackStateManager.listChannels();
+      expect(channels.length).toBeGreaterThan(1);
+    });
   });
 
   describe('Static Assets', () => {

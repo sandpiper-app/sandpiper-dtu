@@ -1,1 +1,39 @@
-<%~ include('form', it) %>
+<div class="form-view">
+  <h2><%= it.formTitle %></h2>
+  <form method="POST" action="<%= it.action %>">
+    <% it.fields.forEach(function(field) { %>
+      <label>
+        <%= field.label %>
+        <input type="<%= field.type || 'text' %>"
+               name="<%= field.name %>"
+               value="<%= field.value || '' %>"
+               placeholder="<%= field.placeholder || '' %>"
+               <% if (field.required) { %>required<% } %>>
+      </label>
+    <% }) %>
+
+    <% if (it.products && it.products.length > 0) { %>
+      <hr>
+      <h3>Line Items</h3>
+      <p><small>Select products to add to this order. Leave unselected to skip.</small></p>
+      <% it.products.forEach(function(product) { %>
+        <div class="grid">
+          <label>
+            <input type="checkbox" name="line_product_<%= product.id %>" value="<%= product.id %>"
+                   <% if (it.selectedProducts && it.selectedProducts[product.id]) { %>checked<% } %>>
+            <%= product.title || 'Product #' + product.id %> <% if (product.price) { %>($<%= product.price %>)<% } %>
+          </label>
+          <label>
+            Qty
+            <input type="number" name="line_qty_<%= product.id %>" min="1" value="<%= (it.selectedProducts && it.selectedProducts[product.id]) || 1 %>" style="width:80px">
+          </label>
+        </div>
+      <% }) %>
+    <% } %>
+
+    <div class="form-actions">
+      <button type="submit"><%= it.submitLabel || 'Save' %></button>
+      <a href="<%= it.cancelHref %>" role="button" class="outline secondary">Cancel</a>
+    </div>
+  </form>
+</div>

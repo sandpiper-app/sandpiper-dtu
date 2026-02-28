@@ -73,9 +73,13 @@ export async function registerUI(fastify: FastifyInstance, options: RegisterUIOp
   const partialsDir = getPartialsDir();
   const publicDir = getPublicDir();
 
-  // Register form body parser for HTML form POSTs
-  const formbody = await import('@fastify/formbody');
-  await fastify.register(formbody.default);
+  // Register form body parser for HTML form POSTs.
+  // Only register if not already present — avoids FST_ERR_CTP_ALREADY_PRESENT
+  // when the parent Fastify instance has already registered @fastify/formbody.
+  if (!fastify.hasContentTypeParser('application/x-www-form-urlencoded')) {
+    const formbody = await import('@fastify/formbody');
+    await fastify.register(formbody.default);
+  }
 
   // Configure Eta template engine
   const { Eta } = await import('eta');

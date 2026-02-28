@@ -1,4 +1,31 @@
 <h1>Webhook Subscriptions</h1>
+
+<h2>Create New</h2>
+<form method="POST" action="/ui/admin/webhooks">
+  <div class="grid">
+    <label>
+      Topic
+      <select name="topic" required>
+        <option value="">Select topic...</option>
+        <option value="orders/create">orders/create</option>
+        <option value="orders/update">orders/update</option>
+        <option value="orders/delete">orders/delete</option>
+        <option value="products/create">products/create</option>
+        <option value="products/update">products/update</option>
+        <option value="fulfillments/create">fulfillments/create</option>
+      </select>
+    </label>
+    <label>
+      Callback URL
+      <input type="url" name="callback_url" placeholder="https://example.com/webhook" required>
+    </label>
+  </div>
+  <button type="submit">Create Subscription</button>
+</form>
+
+<hr>
+
+<h2>Active Subscriptions</h2>
 <% if (it.subscriptions.length === 0) { %>
   <p class="empty-state">No webhook subscriptions registered.</p>
   <p><small>Register webhooks via the GraphQL <code>webhookSubscriptionCreate</code> mutation or POST to <code>/admin/fixtures/load</code>.</small></p>

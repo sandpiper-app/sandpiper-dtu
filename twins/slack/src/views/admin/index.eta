@@ -33,4 +33,7 @@
 <hr>
 
 <h2>Load Fixtures</h2>
-<p><small>Use the admin API endpoint to load test fixtures: <code>POST /admin/fixtures/load</code> with JSON body <code>{ channels: [], users: [], messages: [] }</code></small></p>
+<form method="POST" action="/ui/admin/fixtures">
+  <button type="submit" class="secondary outline">Load Fixtures</button>
+</form>
+<p><small>Loads sample data (channels, users, messages) for testing. Equivalent to <code>POST /admin/fixtures/load</code>.</small></p>

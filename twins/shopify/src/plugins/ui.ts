@@ -48,6 +48,39 @@ function pageData(nav: string, pageTitle: string, extra: Record<string, any> = {
   };
 }
 
+function parseLineItems(lineItemsJson: string | null): Record<number, number> {
+  if (!lineItemsJson) return {};
+  try {
+    const items = JSON.parse(lineItemsJson);
+    const map: Record<number, number> = {};
+    for (const item of items) {
+      map[item.product_id] = item.quantity;
+    }
+    return map;
+  } catch {
+    return {};
+  }
+}
+
+function extractLineItems(data: Record<string, string>, stateManager: StateManager): any[] | undefined {
+  const lineItems: any[] = [];
+  for (const key of Object.keys(data)) {
+    if (key.startsWith('line_product_')) {
+      const productId = parseInt(data[key]);
+      const qtyKey = `line_qty_${productId}`;
+      const quantity = parseInt(data[qtyKey]) || 1;
+      const product = stateManager.getProduct(productId);
+      lineItems.push({
+        product_id: productId,
+        title: product?.title || '',
+        price: product?.price || '0.00',
+        quantity,
+      });
+    }
+  }
+  return lineItems.length > 0 ? lineItems : undefined;
+}
+
 async function dispatchWebhooks(
   stateManager: StateManager,
   webhookQueue: WebhookQueue,
@@ -94,6 +127,7 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
         { name: 'total_price', label: 'Total Price', type: 'text', placeholder: '29.99' },
         { name: 'currency_code', label: 'Currency', type: 'text', placeholder: 'USD', value: 'USD' },
       ],
+      products: fastify.stateManager.listProducts(),
     }));
   });
 
@@ -128,6 +162,8 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
         { name: 'total_price', label: 'Total Price', type: 'text', value: order.total_price },
         { name: 'currency_code', label: 'Currency', type: 'text', value: order.currency_code },
       ],
+      products: fastify.stateManager.listProducts(),
+      selectedProducts: parseLineItems(order.line_items),
     }));
   });
 
@@ -156,12 +192,20 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
 
   fastify.post('/ui/orders', async (req, reply) => {
     const data = req.body as Record<string, string>;
+    const lineItems = extractLineItems(data, fastify.stateManager);
+    let totalPrice = data.total_price;
+    if (lineItems && lineItems.length > 0 && !totalPrice) {
+      totalPrice = lineItems.reduce((sum: number, item: any) => {
+        return sum + (parseFloat(item.price) || 0) * item.quantity;
+      }, 0).toFixed(2);
+    }
     const gid = createGID('Order', Date.now() + Math.floor(Math.random() * 100000));
     const id = fastify.stateManager.createOrder({
       gid,
       name: data.name || `#${Date.now()}`,
-      total_price: data.total_price || '0.00',
+      total_price: totalPrice || '0.00',
       currency_code: data.currency_code || 'USD',
+      line_items: lineItems,
     });
     const order = fastify.stateManager.getOrder(id);
     await dispatchWebhooks(fastify.stateManager, fastify.webhookQueue, fastify.webhookSecret, 'orders/create', order);
@@ -171,10 +215,18 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
   fastify.post<{ Params: { id: string } }>('/ui/orders/:id', async (req, reply) => {
     const id = parseInt(req.params.id);
     const data = req.body as Record<string, string>;
+    const lineItems = extractLineItems(data, fastify.stateManager);
+    let totalPrice = data.total_price;
+    if (lineItems && lineItems.length > 0 && !totalPrice) {
+      totalPrice = lineItems.reduce((sum: number, item: any) => {
+        return sum + (parseFloat(item.price) || 0) * item.quantity;
+      }, 0).toFixed(2);
+    }
     fastify.stateManager.updateOrder(id, {
       name: data.name,
-      total_price: data.total_price,
+      total_price: totalPrice,
       currency_code: data.currency_code,
+      line_items: lineItems,
     });
     const order = fastify.stateManager.getOrder(id);
     await dispatchWebhooks(fastify.stateManager, fastify.webhookQueue, fastify.webhookSecret, 'orders/update', order);
@@ -201,6 +253,7 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
         { name: 'description', label: 'Description', type: 'textarea' },
         { name: 'vendor', label: 'Vendor', type: 'text' },
         { name: 'product_type', label: 'Product Type', type: 'text' },
+        { name: 'price', label: 'Price', type: 'text', placeholder: '29.99' },
       ],
     }));
   });
@@ -213,6 +266,7 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
         { key: 'title', label: 'Title' },
         { key: 'vendor', label: 'Vendor' },
         { key: 'product_type', label: 'Type' },
+        { key: 'price', label: 'Price' },
       ],
       rows: products,
       basePath: '/ui/products',
@@ -234,6 +288,7 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
         { name: 'description', label: 'Description', type: 'textarea', value: product.description },
         { name: 'vendor', label: 'Vendor', type: 'text', value: product.vendor },
         { name: 'product_type', label: 'Product Type', type: 'text', value: product.product_type },
+        { name: 'price', label: 'Price', type: 'text', value: product.price },
       ],
     }));
   });
@@ -253,6 +308,7 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
         { label: 'Description', value: product.description },
         { label: 'Vendor', value: product.vendor },
         { label: 'Product Type', value: product.product_type },
+        { label: 'Price', value: product.price },
         { label: 'Created', value: formatDate(product.created_at) },
         { label: 'Updated', value: formatDate(product.updated_at) },
       ],
@@ -269,6 +325,7 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
       description: data.description,
       vendor: data.vendor,
       product_type: data.product_type,
+      price: data.price,
     });
     const product = fastify.stateManager.getProduct(id);
     await dispatchWebhooks(fastify.stateManager, fastify.webhookQueue, fastify.webhookSecret, 'products/create', product);
@@ -283,6 +340,7 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
       description: data.description,
       vendor: data.vendor,
       product_type: data.product_type,
+      price: data.price,
     });
     const product = fastify.stateManager.getProduct(id);
     await dispatchWebhooks(fastify.stateManager, fastify.webhookQueue, fastify.webhookSecret, 'products/update', product);
@@ -422,6 +480,66 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
     return reply.viewAsync('admin/webhooks.eta', pageData('admin', 'Webhooks', {
       subscriptions: subs,
     }));
+  });
+
+  fastify.post('/ui/admin/webhooks', async (req, reply) => {
+    const data = req.body as Record<string, string>;
+    if (data.topic && data.callback_url) {
+      fastify.stateManager.createWebhookSubscription(data.topic, data.callback_url);
+    }
+    return reply.redirect('/ui/admin/webhooks');
+  });
+
+  fastify.post('/ui/admin/fixtures', async (_req, reply) => {
+    const gidSuffix = () => Date.now() + Math.floor(Math.random() * 100000);
+
+    // Sample products
+    fastify.stateManager.createProduct({
+      gid: createGID('Product', gidSuffix()),
+      title: 'Sample T-Shirt',
+      description: 'A comfortable cotton t-shirt',
+      vendor: 'Sample Vendor',
+      product_type: 'Apparel',
+      price: '29.99',
+    });
+    fastify.stateManager.createProduct({
+      gid: createGID('Product', gidSuffix()),
+      title: 'Sample Mug',
+      description: 'A ceramic coffee mug',
+      vendor: 'Sample Vendor',
+      product_type: 'Accessories',
+      price: '12.99',
+    });
+
+    // Sample customers
+    fastify.stateManager.createCustomer({
+      gid: createGID('Customer', gidSuffix()),
+      email: 'alice@example.com',
+      first_name: 'Alice',
+      last_name: 'Smith',
+    });
+    fastify.stateManager.createCustomer({
+      gid: createGID('Customer', gidSuffix()),
+      email: 'bob@example.com',
+      first_name: 'Bob',
+      last_name: 'Jones',
+    });
+
+    // Sample orders
+    fastify.stateManager.createOrder({
+      gid: createGID('Order', gidSuffix()),
+      name: '#1001',
+      total_price: '29.99',
+      currency_code: 'USD',
+    });
+    fastify.stateManager.createOrder({
+      gid: createGID('Order', gidSuffix()),
+      name: '#1002',
+      total_price: '42.98',
+      currency_code: 'USD',
+    });
+
+    return reply.redirect('/ui/admin');
   });
 };
 

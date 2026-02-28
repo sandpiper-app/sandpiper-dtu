@@ -29,3 +29,11 @@
   <button type="submit" class="secondary outline">Reset All State</button>
 </form>
 <p><small>Resets all twin state including orders, products, customers, tokens, and webhooks. Rate limiter state is also cleared.</small></p>
+
+<hr>
+
+<h2>Load Fixtures</h2>
+<form method="POST" action="/ui/admin/fixtures">
+  <button type="submit" class="secondary outline">Load Fixtures</button>
+</form>
+<p><small>Loads sample data (orders, products, customers) for testing. Equivalent to <code>POST /admin/fixtures/load</code>.</small></p>
