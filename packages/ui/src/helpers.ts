@@ -25,8 +25,7 @@ export function formatDate(unixTimestamp: number | null | undefined): string {
  * Format an object as indented JSON string, HTML-escaped for safe rendering.
  */
 export function formatJson(obj: any): string {
-  const json = JSON.stringify(obj, null, 2);
-  return escapeHtml(json);
+  return JSON.stringify(obj, null, 2);
 }
 
 /**
