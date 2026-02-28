@@ -13,8 +13,10 @@
   },
   "dependencies": {
     "@dtu/core": "workspace:*",
+    "@dtu/conformance": "workspace:*",
     "@dtu/state": "workspace:*",
     "@dtu/types": "workspace:*",
+    "@dtu/webhooks": "workspace:*",
     "@graphql-tools/schema": "^10.0.0",
     "fastify": "^5.0.0",
     "graphql": "^16.9.0",

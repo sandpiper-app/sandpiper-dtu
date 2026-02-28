@@ -10,7 +10,9 @@
 
 import Fastify from 'fastify';
 import { randomUUID } from 'node:crypto';
+import { readFileSync, existsSync } from 'node:fs';
 import { StateManager } from '@dtu/state';
+import { WebhookQueue, SqliteDeadLetterStore } from '@dtu/webhooks';
 import healthPlugin from './plugins/health.js';
 import oauthPlugin from './plugins/oauth.js';
 import adminPlugin from './plugins/admin.js';
@@ -48,10 +50,39 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
   // Configure webhook secret
   const webhookSecret = process.env.SHOPIFY_WEBHOOK_SECRET || 'dev-secret';
 
-  // Decorate Fastify with stateManager, errorSimulator, and webhookSecret for plugin access
+  // Initialize dead letter store (shares StateManager's DB connection)
+  const deadLetterStore = new SqliteDeadLetterStore(stateManager.database);
+
+  // Initialize webhook queue with configurable timing
+  const webhookQueue = new WebhookQueue({
+    timeScale: parseFloat(process.env.WEBHOOK_TIME_SCALE ?? '1.0'),
+    deadLetterStore,
+    syncMode: process.env.WEBHOOK_SYNC_MODE === 'true',
+    logger: fastify.log as any,
+  });
+
+  // Load config-file webhook subscriptions if available
+  const subsFile = process.env.WEBHOOK_SUBSCRIPTIONS_FILE;
+  if (subsFile && existsSync(subsFile)) {
+    try {
+      const subsData = JSON.parse(readFileSync(subsFile, 'utf-8'));
+      if (subsData.subscriptions && Array.isArray(subsData.subscriptions)) {
+        for (const sub of subsData.subscriptions) {
+          stateManager.createWebhookSubscription(sub.topic, sub.callback_url);
+        }
+        fastify.log.info({ count: subsData.subscriptions.length }, 'Loaded webhook subscriptions from config file');
+      }
+    } catch (err) {
+      fastify.log.warn({ file: subsFile, error: err }, 'Failed to load webhook subscriptions file');
+    }
+  }
+
+  // Decorate Fastify with stateManager, errorSimulator, webhookSecret, and queue
   fastify.decorate('stateManager', stateManager);
   fastify.decorate('errorSimulator', errorSimulator);
   fastify.decorate('webhookSecret', webhookSecret);
+  fastify.decorate('webhookQueue', webhookQueue);
+  fastify.decorate('deadLetterStore', deadLetterStore);
 
   // Register plugins
   await fastify.register(healthPlugin);
@@ -62,6 +93,8 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
 
   // Graceful shutdown
   fastify.addHook('onClose', async () => {
+    webhookQueue.shutdown();
+    deadLetterStore.close();
     stateManager.close();
   });
 

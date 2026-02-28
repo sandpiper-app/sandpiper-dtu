@@ -18,6 +18,19 @@ importers:
         specifier: ^3.0.0
         version: 3.2.4(@types/node@22.19.13)(tsx@4.21.0)
 
+  packages/conformance:
+    dependencies:
+      deep-diff:
+        specifier: ^1.0.2
+        version: 1.0.2
+    devDependencies:
+      '@types/deep-diff':
+        specifier: ^1.0.5
+        version: 1.0.5
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
   packages/core:
     dependencies:
       '@dtu/state':
@@ -49,6 +62,22 @@ importers:
 
   packages/types:
     devDependencies:
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+
+  packages/webhooks:
+    dependencies:
+      '@dtu/types':
+        specifier: workspace:*
+        version: link:../types
+      better-sqlite3:
+        specifier: ^12.6.2
+        version: 12.6.2
+    devDependencies:
+      '@types/better-sqlite3':
+        specifier: ^7.6.12
+        version: 7.6.13
       typescript:
         specifier: ^5.7.3
         version: 5.9.3
@@ -92,6 +121,9 @@ importers:
 
   twins/shopify:
     dependencies:
+      '@dtu/conformance':
+        specifier: workspace:*
+        version: link:../../packages/conformance
       '@dtu/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -101,6 +133,9 @@ importers:
       '@dtu/types':
         specifier: workspace:*
         version: link:../../packages/types
+      '@dtu/webhooks':
+        specifier: workspace:*
+        version: link:../../packages/webhooks
       '@graphql-tools/schema':
         specifier: ^10.0.0
         version: 10.0.31(graphql@16.13.0)
@@ -649,6 +684,9 @@ packages:
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
 
+  '@types/deep-diff@1.0.5':
+    resolution: {integrity: sha512-PQyNSy1YMZU1hgZA5tTYfHPpUAo9Dorn1PZho2/budQLfqLu3JIP37JAavnwYpR1S2yFZTXa3hxaE4ifGW5jaA==}
+
   '@types/deep-eql@4.0.2':
     resolution: {integrity: sha512-c9h9dVVMigMPc4bwTvC5dxqtqJZwQPePsWjPlpSOnojbor6pGqdk541lfA7AqFQr5pB1BRdq0juY9db81BwyFw==}
 
@@ -822,6 +860,10 @@ packages:
   decompress-response@6.0.0:
     resolution: {integrity: sha512-aW35yZM6Bb/4oJlZncMH2LCoZtJXTRxES17vE3hoRiowU2kWHaJKFkSBDnDR+cm9J+9QhXmREyIfv0pji9ejCQ==}
     engines: {node: '>=10'}
+
+  deep-diff@1.0.2:
+    resolution: {integrity: sha512-aWS3UIVH+NPGCD1kki+DCU9Dua032iSsO43LqQpcs4R3+dVv7tX0qBGjiVHJHjplsoUM2XRO/KB92glqc68awg==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   deep-eql@5.0.2:
     resolution: {integrity: sha512-h5k/5U50IJJFpzfL6nO9jaaumfjO/f2NjK/oYB2Djzm4p9L+3T9qWpZqZ2hAbLPuuYq9wrU08WQyBTL5GbPk5Q==}
@@ -1717,6 +1759,8 @@ snapshots:
       '@types/deep-eql': 4.0.2
       assertion-error: 2.0.1
 
+  '@types/deep-diff@1.0.5': {}
+
   '@types/deep-eql@4.0.2': {}
 
   '@types/estree@1.0.8': {}
@@ -1915,6 +1959,8 @@ snapshots:
   decompress-response@6.0.0:
     dependencies:
       mimic-response: 3.1.0
+
+  deep-diff@1.0.2: {}
 
   deep-eql@5.0.2: {}
 
