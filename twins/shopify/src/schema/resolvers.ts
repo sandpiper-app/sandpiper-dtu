@@ -13,6 +13,7 @@ import { randomUUID } from 'node:crypto';
 import { GraphQLScalarType, GraphQLError, Kind } from 'graphql';
 import { createGID, parseGID } from '../services/gid.js';
 import { encodeCursor, decodeCursor } from '../services/cursor.js';
+import { validateFulfillment, validateClose } from '../services/order-lifecycle.js';
 import type { StateManager } from '@dtu/state';
 import type { WebhookQueue } from '@dtu/webhooks';
 import type { ErrorSimulator } from '../services/error-simulator.js';
@@ -281,6 +282,7 @@ export const resolvers = {
         currency_code: input.currencyCode,
         customer_gid: input.customerId ?? null,
         line_items: input.lineItems,
+        financial_status: input.financialStatus ?? 'PENDING',
       });
 
       const order = context.stateManager.getOrder(orderId);
@@ -357,6 +359,60 @@ export const resolvers = {
       }
 
       return { order: updatedOrder, userErrors: [] };
+    },
+
+    orderClose: async (_parent: unknown, args: { input: any }, context: Context) => {
+      requireAuth(context);
+      await context.errorSimulator.throwIfConfigured('orderClose');
+
+      const { input } = args;
+      const errors: UserError[] = [];
+
+      // Parse GID to get numeric order ID
+      let orderId: number;
+      try {
+        const { id } = parseGID(input.id);
+        orderId = parseInt(id, 10);
+      } catch (err) {
+        errors.push({ field: ['id'], message: 'Invalid order ID format' });
+        return { order: null, userErrors: errors };
+      }
+
+      // Look up order
+      const existingOrder = context.stateManager.getOrder(orderId);
+      if (!existingOrder) {
+        errors.push({ field: ['id'], message: 'Order not found' });
+        return { order: null, userErrors: errors };
+      }
+
+      // Validate the close transition
+      const closeError = validateClose({
+        fulfillmentStatus: existingOrder.display_fulfillment_status ?? 'UNFULFILLED',
+        financialStatus: existingOrder.display_financial_status ?? 'PENDING',
+        closedAt: existingOrder.closed_at ?? null,
+      });
+      if (closeError) {
+        return { order: null, userErrors: [{ field: ['id'], message: closeError }] };
+      }
+
+      // Close the order
+      context.stateManager.closeOrder(orderId);
+
+      // Fetch updated order
+      const closedOrder = context.stateManager.getOrder(orderId);
+
+      // Enqueue orders/update webhook
+      if (closedOrder) {
+        await enqueueWebhooks(context, 'orders/update', {
+          id: closedOrder.id,
+          admin_graphql_api_id: createGID('Order', closedOrder.id),
+          updated_at: new Date(closedOrder.updated_at * 1000).toISOString(),
+          closed_at: new Date(closedOrder.closed_at * 1000).toISOString(),
+          name: closedOrder.name,
+        });
+      }
+
+      return { order: closedOrder, userErrors: [] };
     },
 
     productCreate: async (_parent: unknown, args: { input: any }, context: Context) => {
@@ -464,16 +520,30 @@ export const resolvers = {
         return { fulfillment: null, userErrors: errors };
       }
 
-      // Parse order GID to verify format
+      // Parse order GID to verify format and get numeric ID
+      let orderNumericId: number;
       try {
-        parseGID(input.orderId);
+        const { id } = parseGID(input.orderId);
+        orderNumericId = parseInt(id, 10);
       } catch (err) {
         errors.push({ field: ['orderId'], message: 'Invalid order ID format' });
         return { fulfillment: null, userErrors: errors };
       }
 
-      if (errors.length > 0) {
+      // Look up the parent order
+      const parentOrder = context.stateManager.getOrder(orderNumericId);
+      if (!parentOrder) {
+        errors.push({ field: ['orderId'], message: 'Order not found' });
         return { fulfillment: null, userErrors: errors };
+      }
+
+      // Validate the fulfillment transition
+      const fulfillmentError = validateFulfillment({
+        fulfillmentStatus: parentOrder.display_fulfillment_status ?? 'UNFULFILLED',
+        closedAt: parentOrder.closed_at ?? null,
+      });
+      if (fulfillmentError) {
+        return { fulfillment: null, userErrors: [{ field: ['orderId'], message: fulfillmentError }] };
       }
 
       const tempId = Date.now() + Math.floor(Math.random() * 100000);
@@ -486,7 +556,13 @@ export const resolvers = {
 
       const fulfillment = context.stateManager.getFulfillment(fulfillmentId);
 
-      // Enqueue webhooks via async queue
+      // Update parent order's fulfillment status to FULFILLED
+      context.stateManager.updateOrderFulfillmentStatus(orderNumericId, 'FULFILLED');
+
+      // Fetch the updated order for webhook payload
+      const updatedOrder = context.stateManager.getOrder(orderNumericId);
+
+      // Enqueue fulfillments/create webhook
       if (fulfillment) {
         await enqueueWebhooks(context, 'fulfillments/create', {
           id: fulfillment.id,
@@ -495,6 +571,17 @@ export const resolvers = {
           order_id: fulfillment.order_gid,
           status: fulfillment.status,
           tracking_number: fulfillment.tracking_number,
+        });
+      }
+
+      // Enqueue orders/update webhook (status change triggers order update)
+      if (updatedOrder) {
+        await enqueueWebhooks(context, 'orders/update', {
+          id: updatedOrder.id,
+          admin_graphql_api_id: createGID('Order', updatedOrder.id),
+          updated_at: new Date(updatedOrder.updated_at * 1000).toISOString(),
+          name: updatedOrder.name,
+          display_fulfillment_status: updatedOrder.display_fulfillment_status,
         });
       }
 
@@ -595,6 +682,9 @@ export const resolvers = {
     id: (parent: any) => createGID('Order', parent.id),
     createdAt: (parent: any) => parent.created_at,
     updatedAt: (parent: any) => parent.updated_at,
+    closedAt: (parent: any) => parent.closed_at ?? null,
+    displayFulfillmentStatus: (parent: any) => parent.display_fulfillment_status ?? 'UNFULFILLED',
+    displayFinancialStatus: (parent: any) => parent.display_financial_status ?? 'PENDING',
     lineItems: (parent: any) => {
       const items = JSON.parse(parent.line_items || '[]');
       const edges = items.map((item: any, index: number) => ({

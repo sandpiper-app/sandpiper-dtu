@@ -21,12 +21,30 @@ type PageInfo {
   endCursor: String
 }
 
+enum OrderDisplayFulfillmentStatus {
+  UNFULFILLED
+  IN_PROGRESS
+  PARTIALLY_FULFILLED
+  FULFILLED
+}
+
+enum OrderDisplayFinancialStatus {
+  PENDING
+  AUTHORIZED
+  PAID
+  PARTIALLY_REFUNDED
+  REFUNDED
+}
+
 # Order types
 type Order {
   id: ID!
   name: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  closedAt: DateTime
+  displayFulfillmentStatus: OrderDisplayFulfillmentStatus!
+  displayFinancialStatus: OrderDisplayFinancialStatus!
   totalPriceSet: MoneySet!
   customer: Customer
   lineItems(first: Int = 10): LineItemConnection!
@@ -136,6 +154,11 @@ input OrderInput {
   customerId: ID
   totalPrice: String!
   currencyCode: String!
+  financialStatus: OrderDisplayFinancialStatus
+}
+
+input OrderCloseInput {
+  id: ID!
 }
 
 input OrderUpdateInput {
@@ -198,6 +221,11 @@ type FulfillmentCreatePayload {
   userErrors: [UserError!]!
 }
 
+type OrderClosePayload {
+  order: Order
+  userErrors: [UserError!]!
+}
+
 type CustomerCreatePayload {
   customer: Customer
   userErrors: [UserError!]!
@@ -233,6 +261,7 @@ type QueryRoot {
 type MutationType {
   orderCreate(input: OrderInput!): OrderCreatePayload!
   orderUpdate(input: OrderUpdateInput!): OrderUpdatePayload!
+  orderClose(input: OrderCloseInput!): OrderClosePayload!
   productCreate(input: ProductInput!): ProductCreatePayload!
   productUpdate(input: ProductUpdateInput!): ProductUpdatePayload!
   fulfillmentCreate(input: FulfillmentInput!): FulfillmentCreatePayload!
