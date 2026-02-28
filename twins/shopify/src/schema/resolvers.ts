@@ -4,11 +4,15 @@
  * Implements queries and mutations for orders, products, customers
  * with Shopify-realistic response structures including GID format IDs.
  * Mutations check error simulation and trigger webhook delivery via @dtu/webhooks queue.
+ *
+ * All connection queries (orders, products, customers) support Relay-spec cursor pagination:
+ *   first, after, last, before arguments with pageInfo and cursor on edges.
  */
 
 import { randomUUID } from 'node:crypto';
 import { GraphQLScalarType, GraphQLError, Kind } from 'graphql';
 import { createGID, parseGID } from '../services/gid.js';
+import { encodeCursor, decodeCursor } from '../services/cursor.js';
 import type { StateManager } from '@dtu/state';
 import type { WebhookQueue } from '@dtu/webhooks';
 import type { ErrorSimulator } from '../services/error-simulator.js';
@@ -88,20 +92,104 @@ async function enqueueWebhooks(
   }
 }
 
+/**
+ * Relay-spec cursor pagination helper.
+ *
+ * Accepts items sorted by id ASC (guaranteed by listOrders/listProducts/listCustomers ORDER BY id ASC).
+ * Applies after/before cursor filtering, then first/last slicing.
+ * Returns { edges, pageInfo } compatible with Relay-spec connection types.
+ *
+ * Throws GraphQLError on invalid cursors (wrong resource type, malformed).
+ */
+function paginate<T extends { id: number }>(
+  items: T[],
+  args: { first?: number | null; after?: string | null; last?: number | null; before?: string | null },
+  resourceType: string
+): {
+  edges: Array<{ node: T; cursor: string }>;
+  pageInfo: {
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+    startCursor: string | null;
+    endCursor: string | null;
+  };
+} {
+  // Defensive sort by id ASC (DB should already guarantee this)
+  const sorted = [...items].sort((a, b) => a.id - b.id);
+
+  let filtered = sorted;
+
+  // Apply `after` cursor: filter items where id > afterId
+  if (args.after) {
+    let afterId: number;
+    try {
+      afterId = decodeCursor(args.after, resourceType);
+    } catch (err) {
+      throw new GraphQLError(err instanceof Error ? err.message : 'Invalid cursor', {
+        extensions: { code: 'BAD_USER_INPUT' },
+      });
+    }
+    filtered = filtered.filter(item => item.id > afterId);
+  }
+
+  // Apply `before` cursor: filter items where id < beforeId
+  if (args.before) {
+    let beforeId: number;
+    try {
+      beforeId = decodeCursor(args.before, resourceType);
+    } catch (err) {
+      throw new GraphQLError(err instanceof Error ? err.message : 'Invalid cursor', {
+        extensions: { code: 'BAD_USER_INPUT' },
+      });
+    }
+    filtered = filtered.filter(item => item.id < beforeId);
+  }
+
+  // Track count after cursor filtering, before slicing — needed for hasNextPage/hasPreviousPage
+  const totalAfterCursors = filtered.length;
+
+  // Apply `first` or `last` slicing
+  if (args.first != null) {
+    filtered = filtered.slice(0, args.first);
+  } else if (args.last != null) {
+    filtered = filtered.slice(Math.max(0, filtered.length - args.last));
+  }
+
+  // Build edges with cursor on each
+  const edges = filtered.map(item => ({
+    node: item,
+    cursor: encodeCursor(resourceType, item.id),
+  }));
+
+  // Build pageInfo
+  const hasNextPage = args.first != null ? totalAfterCursors > args.first : false;
+  const hasPreviousPage =
+    args.after != null ||
+    (args.last != null && totalAfterCursors > args.last);
+
+  const pageInfo = {
+    hasNextPage,
+    hasPreviousPage,
+    startCursor: edges.length > 0 ? edges[0].cursor : null,
+    endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : null,
+  };
+
+  return { edges, pageInfo };
+}
+
 export const resolvers = {
   DateTime: DateTimeScalar,
 
   // Query resolvers
   QueryRoot: {
-    orders: async (_parent: unknown, args: { first?: number }, context: Context) => {
+    orders: async (
+      _parent: unknown,
+      args: { first?: number; after?: string; last?: number; before?: string },
+      context: Context
+    ) => {
       requireAuth(context);
       const orders = context.stateManager.listOrders();
-      const limit = args.first ?? 10;
-      return {
-        edges: orders.slice(0, limit).map((order: any) => ({
-          node: order,
-        })),
-      };
+      return paginate(orders, args, 'Order');
     },
 
     order: async (_parent: unknown, args: { id: string }, context: Context) => {
@@ -111,15 +199,14 @@ export const resolvers = {
       return order ?? null;
     },
 
-    products: async (_parent: unknown, args: { first?: number }, context: Context) => {
+    products: async (
+      _parent: unknown,
+      args: { first?: number; after?: string; last?: number; before?: string },
+      context: Context
+    ) => {
       requireAuth(context);
       const products = context.stateManager.listProducts();
-      const limit = args.first ?? 10;
-      return {
-        edges: products.slice(0, limit).map((product: any) => ({
-          node: product,
-        })),
-      };
+      return paginate(products, args, 'Product');
     },
 
     product: async (_parent: unknown, args: { id: string }, context: Context) => {
@@ -130,15 +217,14 @@ export const resolvers = {
       return product ?? null;
     },
 
-    customers: async (_parent: unknown, args: { first?: number }, context: Context) => {
+    customers: async (
+      _parent: unknown,
+      args: { first?: number; after?: string; last?: number; before?: string },
+      context: Context
+    ) => {
       requireAuth(context);
       const customers = context.stateManager.listCustomers();
-      const limit = args.first ?? 10;
-      return {
-        edges: customers.slice(0, limit).map((customer: any) => ({
-          node: customer,
-        })),
-      };
+      return paginate(customers, args, 'Customer');
     },
 
     customer: async (_parent: unknown, args: { id: string }, context: Context) => {
@@ -511,13 +597,22 @@ export const resolvers = {
     updatedAt: (parent: any) => parent.updated_at,
     lineItems: (parent: any) => {
       const items = JSON.parse(parent.line_items || '[]');
+      const edges = items.map((item: any, index: number) => ({
+        node: {
+          id: createGID('LineItem', `${parent.id}-${index}`),
+          ...item,
+        },
+        // LineItem cursors use a synthetic composite key since they're JSON-stored
+        cursor: encodeCursor('LineItem', parent.id * 10000 + index),
+      }));
       return {
-        edges: items.map((item: any, index: number) => ({
-          node: {
-            id: createGID('LineItem', `${parent.id}-${index}`),
-            ...item,
-          },
-        })),
+        edges,
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: edges.length > 0 ? edges[0].cursor : null,
+          endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : null,
+        },
       };
     },
     totalPriceSet: (parent: any) => ({

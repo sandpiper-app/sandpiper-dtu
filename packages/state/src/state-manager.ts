@@ -315,19 +315,19 @@ export class StateManager {
     );
     this.getOrderStmt = db.prepare('SELECT * FROM orders WHERE id = ?');
     this.getOrderByGidStmt = db.prepare('SELECT * FROM orders WHERE gid = ?');
-    this.listOrdersStmt = db.prepare('SELECT * FROM orders ORDER BY created_at DESC');
+    this.listOrdersStmt = db.prepare('SELECT * FROM orders ORDER BY id ASC');
 
     this.createProductStmt = db.prepare(
       'INSERT INTO products (gid, title, description, vendor, product_type, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
     );
     this.getProductByGidStmt = db.prepare('SELECT * FROM products WHERE gid = ?');
-    this.listProductsStmt = db.prepare('SELECT * FROM products ORDER BY created_at DESC');
+    this.listProductsStmt = db.prepare('SELECT * FROM products ORDER BY id ASC');
 
     this.createCustomerStmt = db.prepare(
       'INSERT INTO customers (gid, email, first_name, last_name, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)'
     );
     this.getCustomerByGidStmt = db.prepare('SELECT * FROM customers WHERE gid = ?');
-    this.listCustomersStmt = db.prepare('SELECT * FROM customers ORDER BY created_at DESC');
+    this.listCustomersStmt = db.prepare('SELECT * FROM customers ORDER BY id ASC');
 
     this.updateProductStmt = db.prepare(
       'UPDATE products SET title = ?, description = ?, vendor = ?, product_type = ?, updated_at = ? WHERE id = ?'
