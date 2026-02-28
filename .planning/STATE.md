@@ -1,20 +1,20 @@
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-02-28
-**Status:** In progress
+**Status:** Milestone complete
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 4 complete. Next up: Phase 5 (Slack Twin - Web API & Events).
+**Current Focus:** Phase 5 complete. Next up: Phase 6 (Twin UIs).
 
 ## Current Position
 
-**Phase:** Phase 4 complete — Phase 5 next
-**Plan:** All phase 4 plans (04-01, 04-02, 04-03) complete
-**Status:** Ready for Phase 5
-**Progress:** [████████░░░░░░] 57% (4/7 phases)
+**Phase:** Phase 5 complete — Phase 6 next
+**Plan:** All phase 5 plans (05-01, 05-02, 05-03) complete
+**Status:** Ready for Phase 6
+**Progress:** [██████████░░░░] 71% (5/7 phases)
 
 ## Performance Metrics
 
@@ -26,6 +26,27 @@
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-02-28 - Plan 05-03 Execution:**
+- EventDispatcher wraps WebhookQueue with Slack event_callback envelope format (type, token, team_id, api_app_id, event, event_id, event_time, authorizations)
+- Fire-and-forget event dispatch: events dispatched without await (matching real Slack behavior), syncMode for tests
+- Interaction payloads delivered as application/x-www-form-urlencoded with payload= field (Slack convention, not JSON)
+- Response URLs as twin endpoints (/response-url/:id): 5 uses within 30 minutes, post messages back to originating channel
+- Bot mention detection in chat.postMessage: dispatches both message and app_mention events when text contains <@U_BOT_TWIN>
+
+**2026-02-28 - Plan 05-02 Execution:**
+- Slack Web API returns HTTP 200 with {ok: false, error: '...'} for ALL errors except rate limits (429) — never 401/403/404
+- Sliding window rate limiting (not leaky bucket): per-method per-token per-minute windows with tier-based limits
+- POST for all Web API methods including reads: Slack SDK clients always use POST, so twin does too
+- Forward-compatible Block Kit validation: accept unknown block types, only validate structure and 50-block count limit
+- Message timestamp (ts) is always STRING format (epoch.sequence) — never numeric
+
+**2026-02-28 - Plan 05-01 Execution:**
+- SlackStateManager uses composition (wraps StateManager, not extends) keeping base class clean for all twins
+- INSERT OR REPLACE for default seeding: T_TWIN team, U_BOT_TWIN bot user, C_GENERAL channel — idempotent after reset
+- @types/better-sqlite3 as devDependency: needed for Database.Statement types in prepared statement declarations
+- Port 3001 default: Slack twin on 3001, Shopify twin on 3000, allows simultaneous operation
+- OAuth v2 tokens use xoxb-/xoxp- prefixes: Slack SDK/Bolt check these prefixes for token type detection
 
 **2026-02-28 - Plan 04-03 Execution:**
 - State machine as pure functions: validateFulfillment/validateClose return string|null — no exceptions for business rule violations, easier to test and compose
@@ -128,25 +149,25 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 4 Plan 03 - Order lifecycle state machine with fulfillment and close transitions
-**Stopped at:** Phase 5 context gathered
+**Last completed:** Phase 5 Plan 03 - Events API, interactions, integration tests
+**Stopped at:** Phase 5 complete, ready for Phase 6
 **Timestamp:** 2026-02-28
 
 **For next session:**
-1. Phase 4 plans complete so far:
-   - 04-01: Query cost calculator + LeakyBucketRateLimiter services + app integration
-   - 04-02: Relay cursor pagination (encodeCursor/decodeCursor, PageInfo, paginate() helper, id ASC ordering)
-   - 04-03: Order lifecycle state machine (validateFulfillment/validateClose, orderClose mutation, status columns, 111 tests)
-2. All 111 Shopify twin tests pass (8 test files); 140 total monorepo tests pass
-3. Order lifecycle: create (UNFULFILLED/PENDING) -> fulfill (FULFILLED) -> close (closedAt set)
-4. Both fulfillmentCreate and orderClose trigger orders/update webhook on state transition
-5. Ready for next Phase 4 plan or Phase 5 (Slack twin)
+1. Phase 5 plans complete:
+   - 05-01: Slack twin foundation (SlackStateManager, OAuth v2, admin endpoints, default seeding)
+   - 05-02: 7 Web API methods (chat, conversations, users) with token auth, Block Kit validation, rate limiting
+   - 05-03: Events API delivery, url_verification, block_actions interactions, response URLs
+2. 39 Slack twin tests pass (11 smoke + 18 Web API + 10 integration)
+3. 179 total monorepo tests pass — zero regressions
+4. All 8 phase success criteria verified by integration tests
+5. Ready for Phase 6 (Twin UIs)
 
 **Context required:**
-- .planning/phases/04-shopify-twin-advanced-features/04-03-SUMMARY.md
-- twins/shopify/src/services/order-lifecycle.ts (state machine validators)
-- twins/shopify/src/schema/resolvers.ts (fulfillmentCreate + orderClose patterns)
-- packages/state/src/state-manager.ts (new status columns and methods)
+- .planning/phases/05-slack-twin-web-api-events/05-03-SUMMARY.md
+- twins/slack/src/index.ts (buildApp pattern)
+- twins/slack/src/state/slack-state-manager.ts (Slack state management)
+- twins/slack/src/plugins/ (all plugin patterns)
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
