@@ -15,6 +15,7 @@
     "@dtu/core": "workspace:*",
     "@dtu/state": "workspace:*",
     "@dtu/types": "workspace:*",
+    "@dtu/ui": "workspace:*",
     "@dtu/webhooks": "workspace:*",
     "fastify": "^5.0.0",
     "pino": "^9.5.0",

@@ -24,6 +24,7 @@ import conversationsPlugin from './plugins/web-api/conversations.js';
 import usersPlugin from './plugins/web-api/users.js';
 import eventsApiPlugin from './plugins/events-api.js';
 import interactionsPlugin from './plugins/interactions.js';
+import uiPlugin from './plugins/ui.js';
 
 import type { DeadLetterStore } from '@dtu/webhooks';
 
@@ -111,6 +112,7 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
   await fastify.register(usersPlugin);
   await fastify.register(eventsApiPlugin);
   await fastify.register(interactionsPlugin);
+  await fastify.register(uiPlugin);
 
   // Graceful shutdown
   fastify.addHook('onClose', async () => {

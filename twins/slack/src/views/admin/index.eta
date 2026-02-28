@@ -1,0 +1,36 @@
+<h1>Admin Dashboard</h1>
+<div class="admin-stats">
+  <div class="stat-card">
+    <div class="stat-value"><%= it.stats.channels %></div>
+    <div class="stat-label">Channels</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= it.stats.users %></div>
+    <div class="stat-label">Users</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= it.stats.messages %></div>
+    <div class="stat-label">Messages</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= it.stats.tokens %></div>
+    <div class="stat-label">Tokens</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= it.stats.event_subscriptions %></div>
+    <div class="stat-label">Event Subscriptions</div>
+  </div>
+</div>
+
+<hr>
+
+<h2>Actions</h2>
+<form method="POST" action="/ui/admin/reset" style="display:inline">
+  <button type="submit" class="secondary outline">Reset All State</button>
+</form>
+<p><small>Resets all twin state including channels, users, messages, tokens, and event subscriptions. Rate limiter state is also cleared.</small></p>
+
+<hr>
+
+<h2>Load Fixtures</h2>
+<p><small>Use the admin API endpoint to load test fixtures: <code>POST /admin/fixtures/load</code> with JSON body <code>{ channels: [], users: [], messages: [] }</code></small></p>

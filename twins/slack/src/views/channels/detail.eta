@@ -1,0 +1,78 @@
+<div style="margin-bottom: 1rem;">
+  <a href="/ui/channels">&larr; Back to Channels</a>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+  <div>
+    <h1 style="margin-bottom: 0.25rem;">#<%= it.channel.name %></h1>
+    <% if (it.channel.topic) { %>
+      <p style="margin: 0; color: var(--pico-secondary)"><strong>Topic:</strong> <%= it.channel.topic %></p>
+    <% } %>
+    <% if (it.channel.purpose) { %>
+      <p style="margin: 0; color: var(--pico-secondary)"><strong>Purpose:</strong> <%= it.channel.purpose %></p>
+    <% } %>
+    <p style="margin: 0.25rem 0 0; font-size: 0.875rem; color: var(--pico-secondary)">
+      ID: <code><%= it.channel.id %></code>
+      &bull; <%= it.channel.is_private ? 'Private' : 'Public' %>
+      &bull; <%= it.channel.num_members %> members
+      &bull; Created: <%= it.formatDate(it.channel.created) %>
+    </p>
+  </div>
+  <div style="display: flex; gap: 0.5rem;">
+    <a href="/ui/channels/<%= it.channel.id %>/edit" role="button" class="secondary outline">Edit</a>
+    <button
+      hx-delete="/ui/channels/<%= it.channel.id %>"
+      hx-confirm="Delete channel #<%= it.channel.name %>?"
+      hx-target="body"
+      hx-push-url="/ui/channels"
+      class="secondary outline"
+      style="background: none; border-color: var(--pico-del-color); color: var(--pico-del-color)">
+      Delete
+    </button>
+  </div>
+</div>
+
+<hr>
+
+<h2>Message Timeline</h2>
+
+<% if (it.messages.length === 0) { %>
+  <p class="empty-state">No messages yet. Post the first message below.</p>
+<% } else { %>
+  <div class="message-timeline" style="margin-bottom: 2rem;">
+    <% it.messages.forEach(function(msg) { %>
+      <div class="message" style="padding: 0.5rem 0; border-bottom: 1px solid var(--pico-table-border-color);">
+        <div style="display: flex; align-items: baseline; gap: 0.75rem;">
+          <strong><%= it.userNames[msg.user_id] || msg.user_id || 'unknown' %></strong>
+          <code style="font-size: 0.75rem; color: var(--pico-secondary)"><%= msg.ts %></code>
+          <% if (msg.blocks) { %><span style="font-size: 0.75rem; background: var(--pico-secondary-background); padding: 0.1rem 0.4rem; border-radius: 3px;">[has blocks]</span><% } %>
+        </div>
+        <div style="margin-top: 0.25rem;"><%= msg.text || '' %></div>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
+
+<h3>Post a Message</h3>
+<form method="POST" action="/ui/channels/<%= it.channel.id %>/message">
+  <label>
+    Message
+    <input type="text" name="text" placeholder="Type a message..." required autofocus>
+  </label>
+  <label>
+    Post as (User ID)
+    <select name="user_id">
+      <% it.users.forEach(function(u) { %>
+        <option value="<%= u.id %>"><%= u.name %> (<%= u.id %>)</option>
+      <% }) %>
+    </select>
+  </label>
+  <button type="submit">Post Message</button>
+</form>
+
+<hr>
+
+<details>
+  <summary>Raw JSON</summary>
+  <pre><code><%= it.rawJson %></code></pre>
+</details>

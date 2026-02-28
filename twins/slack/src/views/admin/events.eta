@@ -1,0 +1,28 @@
+<h1>Event Subscriptions</h1>
+<% if (it.subscriptions.length === 0) { %>
+  <p class="empty-state">No event subscriptions registered.</p>
+  <p><small>Register event subscriptions via <code>POST /api/events-api/subscribe</code> or load via fixtures.</small></p>
+<% } else { %>
+  <table role="grid" class="data-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>App ID</th>
+        <th>Request URL</th>
+        <th>Event Types</th>
+        <th>Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% it.subscriptions.forEach(function(sub) { %>
+        <tr>
+          <td><%= sub.id %></td>
+          <td><code><%= sub.app_id %></code></td>
+          <td><%= sub.request_url %></td>
+          <td><code><%= Array.isArray(sub.event_types) ? sub.event_types.join(', ') : sub.event_types %></code></td>
+          <td><%= it.formatDate(sub.created_at) %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
