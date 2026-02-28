@@ -119,7 +119,12 @@ Plans:
   4. Developer opens Slack twin UI and sees channel list, message timeline, user list
   5. Developer creates channel via Slack UI and channel appears in `conversations.list` API responses
   6. Both UIs share consistent visual styling and reusable list/detail/form components
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves
+
+Plans:
+- [ ] 06-01-PLAN.md — Shared @dtu/ui package with Eta partials, Pico CSS, and Fastify helpers
+- [ ] 06-02-PLAN.md — Shopify twin UI with orders, products, customers CRUD and admin
+- [ ] 06-03-PLAN.md — Slack twin UI with channels, message timeline, users CRUD and admin
 
 ### Phase 7: Integration & E2E Testing
 **Goal**: Twins integrate with Sandpiper via Docker Compose and base URL swap for E2E testing
@@ -142,7 +147,7 @@ Plans:
 | 3. Webhook System & Conformance Framework | 3/3 | Complete    | 2026-02-28 |
 | 4. Shopify Twin - Advanced Features | 3/3 | Complete    | 2026-02-28 |
 | 5. Slack Twin - Web API & Events | 3/3 | Complete | 2026-02-28 |
-| 6. Twin UIs | 0/? | Not started | - |
+| 6. Twin UIs | 0/3 | Planned | - |
 | 7. Integration & E2E Testing | 0/? | Not started | - |
 
 ## Dependencies
