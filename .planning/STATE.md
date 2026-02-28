@@ -34,6 +34,14 @@
 - CLI requires --twin-adapter flag; suite path can be positional or --suite flag
 - Fixture IDs sanitized to filesystem-safe characters via regex
 
+**2026-02-28 - Plan 03-01 Execution:**
+- In-memory queue with SQLite DLQ only: BullMQ+Redis rejected as over-engineered for local dev/test tool
+- Sync mode (syncMode=true) for test assertions: enqueue() awaits delivery and throws on failure
+- SqliteDeadLetterStore shares StateManager's DB connection to avoid multiple SQLite connections
+- Compressed timing via timeScale multiplier: 0.001 makes 1-minute retries happen in 60ms
+- Retry array [0, 60000, 300000] = 3 total attempts (immediate, 1min, 5min) before DLQ
+- Config-file webhook subscriptions loaded from WEBHOOK_SUBSCRIPTIONS_FILE env var
+
 **2026-02-27 - Plan 02-01 Execution:**
 - Use @graphql-tools/schema makeExecutableSchema for GraphQL Yoga 5.x compatibility
 - Store tokens in StateManager tokens table cleared on reset
