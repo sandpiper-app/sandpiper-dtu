@@ -1,0 +1,37 @@
+<div class="table-header">
+  <small><%= it.rows.length %> item(s)</small>
+  <% if (it.createHref) { %>
+    <a href="<%= it.createHref %>" role="button" class="outline create-btn">New</a>
+  <% } %>
+</div>
+<% if (it.rows.length === 0) { %>
+  <p class="empty-state">No items found.</p>
+<% } else { %>
+  <table role="grid" class="data-table">
+    <thead>
+      <tr>
+        <% it.columns.forEach(function(col) { %>
+          <th><%= col.label %></th>
+        <% }) %>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% it.rows.forEach(function(row) { %>
+        <tr>
+          <% it.columns.forEach(function(col) { %>
+            <td><%= row[col.key] != null ? row[col.key] : '' %></td>
+          <% }) %>
+          <td class="actions-cell">
+            <a href="<%= it.basePath %>/<%= row[it.idKey] %>">View</a>
+            <a href="<%= it.basePath %>/<%= row[it.idKey] %>/edit">Edit</a>
+            <button hx-delete="<%= it.basePath %>/<%= row[it.idKey] %>"
+                    hx-target="closest tr"
+                    hx-swap="delete"
+                    class="delete-btn">Del</button>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>

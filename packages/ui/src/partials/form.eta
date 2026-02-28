@@ -1,0 +1,39 @@
+<div class="form-view">
+  <h2><%= it.formTitle %></h2>
+  <form method="POST" action="<%= it.action %>">
+    <% it.fields.forEach(function(field) { %>
+      <label>
+        <%= field.label %>
+        <% if (field.type === 'textarea') { %>
+          <textarea name="<%= field.name %>"
+                    placeholder="<%= field.placeholder || '' %>"
+                    <% if (field.required) { %>required<% } %>
+          ><%= field.value || '' %></textarea>
+        <% } else if (field.type === 'select') { %>
+          <select name="<%= field.name %>"
+                  <% if (field.required) { %>required<% } %>>
+            <% if (field.options) { field.options.forEach(function(opt) { %>
+              <option value="<%= opt.value %>"
+                      <% if (field.value === opt.value) { %>selected<% } %>
+              ><%= opt.label %></option>
+            <% }) } %>
+          </select>
+        <% } else if (field.type === 'checkbox') { %>
+          <input type="checkbox" name="<%= field.name %>" value="1"
+                 <% if (field.value) { %>checked<% } %>
+                 role="switch">
+        <% } else { %>
+          <input type="<%= field.type || 'text' %>"
+                 name="<%= field.name %>"
+                 value="<%= field.value || '' %>"
+                 placeholder="<%= field.placeholder || '' %>"
+                 <% if (field.required) { %>required<% } %>>
+        <% } %>
+      </label>
+    <% }) %>
+    <div class="form-actions">
+      <button type="submit"><%= it.submitLabel || 'Save' %></button>
+      <a href="<%= it.cancelHref %>" role="button" class="outline secondary">Cancel</a>
+    </div>
+  </form>
+</div>

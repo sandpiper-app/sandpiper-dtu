@@ -1,0 +1,22 @@
+<nav class="sidebar-nav">
+  <div class="twin-name"><%= it.twinName %> Twin</div>
+  <ul class="nav-items">
+    <% if (it.navItems) { it.navItems.forEach(function(item) { %>
+      <li>
+        <a href="<%= item.href %>"<% if (item.href === it.currentPath || (it.nav && item.label.toLowerCase() === it.nav)) { %> class="active"<% } %>>
+          <%= item.label %>
+        </a>
+      </li>
+    <% }) } %>
+  </ul>
+  <hr>
+  <ul class="nav-items admin-items">
+    <% if (it.adminItems) { it.adminItems.forEach(function(item) { %>
+      <li>
+        <a href="<%= item.href %>"<% if (item.href === it.currentPath) { %> class="active"<% } %>>
+          <%= item.label %>
+        </a>
+      </li>
+    <% }) } %>
+  </ul>
+</nav>

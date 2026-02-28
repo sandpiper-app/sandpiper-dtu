@@ -1,0 +1,29 @@
+<div class="detail-view">
+  <div class="detail-header">
+    <h2><%= it.entityTitle %></h2>
+    <div class="detail-actions">
+      <a href="<%= it.editHref %>" role="button" class="outline">Edit</a>
+      <button hx-delete="<%= it.deleteHref %>"
+              hx-target="body"
+              hx-swap="none"
+              hx-on::after-request="if(event.detail.successful) window.location.href='<%= it.listHref %>'"
+              class="delete-btn secondary">Delete</button>
+    </div>
+  </div>
+
+  <dl class="detail-fields">
+    <% it.fields.forEach(function(field) { %>
+      <dt><%= field.label %></dt>
+      <dd><%= field.value != null ? field.value : '—' %></dd>
+    <% }) %>
+  </dl>
+
+  <details class="raw-json-toggle">
+    <summary>Raw JSON</summary>
+    <pre><code><%= it.rawJson %></code></pre>
+  </details>
+
+  <div class="detail-footer">
+    <a href="<%= it.listHref %>">&larr; Back to list</a>
+  </div>
+</div>

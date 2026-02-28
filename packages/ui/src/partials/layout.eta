@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" data-twin="<%= it.twin %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= it.pageTitle %> | <%= it.twinName %> Twin</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <link rel="stylesheet" href="/ui/static/styles.css">
+  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <%~ include('sidebar', it) %>
+    </aside>
+    <main class="main-content">
+      <%~ include('flash', it) %>
+      <%~ it.body %>
+    </main>
+  </div>
+</body>
+</html>
