@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 06-twin-uis
 source: 06-01-SUMMARY.md, 06-02-SUMMARY.md, 06-03-SUMMARY.md
 started: 2026-02-28T19:30:00Z
@@ -69,9 +69,14 @@ skipped: 0
   reason: "User reported: raw JSON shows &quot; instead of actual quotes — double-escaped HTML entities in the Raw JSON toggle on detail pages across both twins (orders, products, customers, channels)"
   severity: major
   test: 2
-  root_cause: ""
-  artifacts: []
-  missing: []
+  root_cause: "formatJson() in packages/ui/src/helpers.ts calls escapeHtml() manually, but Eta 3 has autoEscape:true by default so <%= %> auto-escapes again. Double-escaping turns \" into &amp;quot; which renders as literal &quot; text."
+  artifacts:
+    - path: "packages/ui/src/helpers.ts"
+      issue: "formatJson() line 29 calls escapeHtml() — redundant with Eta autoEscape"
+    - path: "packages/ui/src/partials/detail.eta"
+      issue: "line 23 uses <%= it.rawJson %> which auto-escapes the already-escaped output"
+  missing:
+    - "Remove escapeHtml() call from formatJson() — let Eta handle escaping via autoEscape"
   debug_session: ""
 
 - truth: "Both twin APIs conform fully to their upstream equivalents — Slack supports GET for read methods and form-urlencoded bodies; Shopify GraphQL and REST match official API behavior. Validated against client libraries and API documentation."
@@ -79,9 +84,16 @@ skipped: 0
   reason: "User reported: all twin API endpoints (both Slack and Shopify) need a full conformance audit against upstream client libraries and API documentation. Slack is currently POST-only with JSON bodies but real Slack supports GET for reads and form-urlencoded. Shopify needs equivalent validation."
   severity: major
   test: 10
-  root_cause: ""
-  artifacts: []
-  missing: []
+  root_cause: "Slack Web API routes registered as POST-only (fastify.post) but real Slack API accepts both GET and POST for read methods. OAuth endpoint only accepts JSON body but real Slack accepts application/x-www-form-urlencoded. Shopify needs equivalent audit."
+  artifacts:
+    - path: "twins/slack/src/plugins/web-api/conversations.ts"
+      issue: "fastify.post used for all routes — should also support GET for read methods"
+    - path: "twins/slack/src/plugins/oauth.ts"
+      issue: "Only accepts JSON body — should also accept form-urlencoded"
+  missing:
+    - "Full conformance audit of all Slack and Shopify endpoints against upstream API docs and client libraries"
+    - "Add GET route support for Slack read methods"
+    - "Add application/x-www-form-urlencoded body parsing for Slack API endpoints"
   debug_session: ""
 
 - truth: "Webhook subscriptions page allows adding new webhook subscriptions directly from the UI"
@@ -89,9 +101,15 @@ skipped: 0
   reason: "User requested: webhook subscriptions page should have input to add webhooks from UI rather than requiring API or GraphQL calls"
   severity: minor
   test: 1
-  root_cause: ""
-  artifacts: []
-  missing: []
+  root_cause: "Feature not implemented — webhooks page is read-only, shows existing subscriptions but has no form to create new ones"
+  artifacts:
+    - path: "twins/shopify/src/views/admin/webhooks.eta"
+      issue: "Read-only table — no create form"
+    - path: "twins/shopify/src/plugins/ui.ts"
+      issue: "No POST route for webhook creation from UI"
+  missing:
+    - "Add webhook subscription form to admin/webhooks page"
+    - "Add POST /ui/admin/webhooks route to create webhook subscriptions"
   debug_session: ""
 
 - truth: "Orders support attaching products from existing product list with prices"
@@ -99,9 +117,16 @@ skipped: 0
   reason: "User requested: should be able to attach products to orders from the list of products that currently exist, which also requires being able to assign prices to products"
   severity: minor
   test: 2
-  root_cause: ""
-  artifacts: []
-  missing: []
+  root_cause: "Feature not implemented — order form has no product association UI, and products lack a price field"
+  artifacts:
+    - path: "twins/shopify/src/views/orders/form.eta"
+      issue: "No product selection UI"
+    - path: "twins/shopify/src/plugins/ui.ts"
+      issue: "Order create/update handlers don't process line items"
+  missing:
+    - "Add price field to product form and schema"
+    - "Add product selection (multi-select or line items) to order form"
+    - "Process line items in order create/update handlers"
   debug_session: ""
 
 - truth: "Admin page has a Load Fixtures button to seed data from the UI"
@@ -109,7 +134,13 @@ skipped: 0
   reason: "User requested: should be able to trigger load fixtures from the admin UI page"
   severity: minor
   test: 9
-  root_cause: ""
-  artifacts: []
-  missing: []
+  root_cause: "Feature not implemented — admin page mentions fixtures capability but has no UI button to trigger it"
+  artifacts:
+    - path: "twins/slack/src/views/admin/index.eta"
+      issue: "No load fixtures button"
+    - path: "twins/shopify/src/views/admin/index.eta"
+      issue: "No load fixtures button"
+  missing:
+    - "Add Load Fixtures button to both twin admin pages"
+    - "Add POST /ui/admin/fixtures route to trigger fixture loading"
   debug_session: ""
