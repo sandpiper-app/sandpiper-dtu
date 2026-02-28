@@ -7,14 +7,14 @@
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 3 Plans 01 and 02 complete. @dtu/webhooks and @dtu/conformance built and tested. Plan 03-03 next.
+**Current Focus:** Phase 3 complete. @dtu/webhooks, @dtu/conformance, and Shopify conformance suite all shipped. Ready for Phase 4 (Shopify Advanced Features).
 
 ## Current Position
 
 **Phase:** Phase 3 - Webhook System & Conformance Framework
-**Plan:** 03-01 complete, 03-02 complete, 03-03 next
-**Status:** In progress
-**Progress:** [████████░░] 80%
+**Plan:** 03-01 complete, 03-02 complete, 03-03 complete
+**Status:** Phase 3 complete
+**Progress:** [██████████] 100%
 
 ## Performance Metrics
 
@@ -26,6 +26,12 @@
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-02-28 - Plan 03-03 Execution:**
+- tsx/esm loader strategy: 'node --import tsx/esm' enables running compiled CLI with TS source adapters without separate compilation step
+- DLQ not cleared on reset: StateManager.reset() closes SQLite connection invalidating DLQ store's cached DB reference - DLQ cleared via dedicated endpoint
+- deep-diff ESM interop fix: use default import with .diff accessor for CJS module under tsx/esm strict ESM resolution
+- webhookSubscriptionCreate ID: createWebhookSubscription() returns void; query listWebhookSubscriptions() after creation to find ID
 
 **2026-02-28 - Plan 03-02 Execution:**
 - Used deep-diff library for structural response comparison; maps N/D/E/A kinds to added/deleted/changed/array
@@ -103,19 +109,24 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 3 Plan 02 - @dtu/conformance framework
-**Stopped at:** Completed 03-02-PLAN.md
+**Last completed:** Phase 3 Plan 03 - Shopify integration with @dtu/webhooks and conformance suites
+**Stopped at:** Completed 03-03-PLAN.md
 **Timestamp:** 2026-02-28
 
 **For next session:**
-1. Phase 3 Plan 02 complete — @dtu/conformance package with runner, adapter interface, comparator, reporter, fixture store, and CLI
-2. All 11 unit tests pass. Build clean. dist/cli.js exists.
-3. Next: Plan 03-03 — Shopify conformance suite implementation using this framework
+1. Phase 3 complete — all 3 plans shipped:
+   - 03-01: @dtu/webhooks package (WebhookQueue, SqliteDeadLetterStore)
+   - 03-02: @dtu/conformance framework (runner, adapters, CLI)
+   - 03-03: Shopify integration (async queue, DLQ admin, GraphQL subscription, conformance suites)
+2. `pnpm --filter @dtu/twin-shopify run conformance:twin` passes 10/10 tests
+3. All 37 Shopify twin integration tests pass
+4. CI workflow at .github/workflows/conformance.yml ready for deployment
+5. Next: Phase 4 (Shopify Advanced Features) or research phase
 
 **Context required:**
-- .planning/phases/03-webhook-system-conformance-framework/03-02-SUMMARY.md (conformance framework details)
-- .planning/phases/03-webhook-system-conformance-framework/03-03-PLAN.md (next plan)
-- packages/conformance/src/adapter.ts (interface to implement for Shopify)
+- .planning/phases/03-webhook-system-conformance-framework/03-03-SUMMARY.md (this phase)
+- twins/shopify/conformance/ (suite/adapter patterns to reuse for Slack twin)
+- packages/webhooks/src/index.ts (webhook queue API)
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
