@@ -1,12 +1,16 @@
 /**
  * Users Web API routes for Slack twin
  *
- * POST /api/users.list — list workspace users
- * POST /api/users.info — get user details
+ * GET  /api/users.list — list workspace users (query params)
+ * POST /api/users.list — list workspace users (JSON or form-urlencoded body)
+ * GET  /api/users.info — get user details (query params)
+ * POST /api/users.info — get user details (JSON or form-urlencoded body)
+ *
+ * Real Slack Web API accepts GET with query params for read methods in addition to POST.
  */
 
-import type { FastifyPluginAsync } from 'fastify';
-import { extractBearerToken } from '../../services/token-validator.js';
+import type { FastifyPluginAsync, FastifyRequest } from 'fastify';
+import { extractToken } from '../../services/token-validator.js';
 import type { SlackStateManager } from '../../state/slack-state-manager.js';
 import type { SlackRateLimiter } from '../../services/rate-limiter.js';
 
@@ -36,13 +40,22 @@ function formatMember(user: any): any {
   };
 }
 
+/**
+ * Extract API parameters from GET query string or POST body.
+ * Real Slack Web API accepts both for read methods.
+ */
+function getParams(request: FastifyRequest): Record<string, any> {
+  if (request.method === 'GET') {
+    return (request.query as Record<string, any>) ?? {};
+  }
+  return (request.body as Record<string, any>) ?? {};
+}
+
 const usersPlugin: FastifyPluginAsync = async (fastify) => {
-  // POST /api/users.list
-  fastify.post<{
-    Body: { limit?: number; cursor?: string };
-  }>('/api/users.list', async (request, reply) => {
+  // Shared handler for users.list
+  async function handleUsersList(request: FastifyRequest, reply: any) {
     // Auth check
-    const token = extractBearerToken(request);
+    const token = extractToken(request);
     if (!token) {
       return reply.status(200).send({ ok: false, error: 'not_authed' });
     }
@@ -67,8 +80,9 @@ const usersPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.status(errorConfig.status_code ?? 200).send(errorBody);
     }
 
-    const limit = (request.body as any)?.limit ?? 100;
-    const cursor = (request.body as any)?.cursor;
+    const params = getParams(request);
+    const limit = params.limit ?? 100;
+    const cursor = params.cursor;
 
     const allUsers = fastify.slackStateManager.listUsers();
 
@@ -91,14 +105,12 @@ const usersPlugin: FastifyPluginAsync = async (fastify) => {
       members: page.map(formatMember),
       response_metadata: { next_cursor: nextCursor },
     };
-  });
+  }
 
-  // POST /api/users.info
-  fastify.post<{
-    Body: { user: string };
-  }>('/api/users.info', async (request, reply) => {
+  // Shared handler for users.info
+  async function handleUsersInfo(request: FastifyRequest, reply: any) {
     // Auth check
-    const token = extractBearerToken(request);
+    const token = extractToken(request);
     if (!token) {
       return reply.status(200).send({ ok: false, error: 'not_authed' });
     }
@@ -123,7 +135,8 @@ const usersPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.status(errorConfig.status_code ?? 200).send(errorBody);
     }
 
-    const userId = (request.body as any)?.user;
+    const params = getParams(request);
+    const userId = params.user;
     if (!userId) {
       return reply.status(200).send({ ok: false, error: 'user_not_found' });
     }
@@ -137,7 +150,17 @@ const usersPlugin: FastifyPluginAsync = async (fastify) => {
       ok: true,
       user: formatMember(user),
     };
-  });
+  }
+
+  // GET /api/users.list — query params
+  fastify.get('/api/users.list', handleUsersList);
+  // POST /api/users.list — JSON or form-urlencoded body
+  fastify.post('/api/users.list', handleUsersList);
+
+  // GET /api/users.info — query params
+  fastify.get('/api/users.info', handleUsersInfo);
+  // POST /api/users.info — JSON or form-urlencoded body
+  fastify.post('/api/users.info', handleUsersInfo);
 };
 
 export default usersPlugin;

@@ -9,6 +9,7 @@
  */
 
 import Fastify from 'fastify';
+import formbody from '@fastify/formbody';
 import { randomUUID } from 'node:crypto';
 import { readFileSync, existsSync } from 'node:fs';
 import { StateManager } from '@dtu/state';
@@ -89,6 +90,11 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
   fastify.decorate('webhookQueue', webhookQueue);
   fastify.decorate('deadLetterStore', deadLetterStore);
   fastify.decorate('rateLimiter', rateLimiter);
+
+  // Register formbody at root scope so ALL plugins can parse form-urlencoded bodies.
+  // Required for OAuth token exchange (POST /admin/oauth/access_token) which real Shopify
+  // accepts via form-urlencoded in addition to JSON.
+  await fastify.register(formbody);
 
   // Register plugins
   await fastify.register(healthPlugin);

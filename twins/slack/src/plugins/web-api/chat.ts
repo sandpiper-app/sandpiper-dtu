@@ -9,7 +9,7 @@
  */
 
 import type { FastifyPluginAsync } from 'fastify';
-import { extractBearerToken } from '../../services/token-validator.js';
+import { extractToken } from '../../services/token-validator.js';
 import { validateBlocks } from '../../services/block-kit-validator.js';
 import { generateMessageTs } from '../../services/id-generator.js';
 import type { SlackStateManager } from '../../state/slack-state-manager.js';
@@ -27,10 +27,10 @@ declare module 'fastify' {
 const chatPlugin: FastifyPluginAsync = async (fastify) => {
   // POST /api/chat.postMessage
   fastify.post<{
-    Body: { channel: string; text?: string; blocks?: any[] };
+    Body: { channel: string; text?: string; blocks?: any[] | string };
   }>('/api/chat.postMessage', async (request, reply) => {
-    // 1. Extract and validate Bearer token
-    const token = extractBearerToken(request);
+    // 1. Extract and validate token (Bearer header, body param, or query param)
+    const token = extractToken(request);
     if (!token) {
       return reply.status(200).send({ ok: false, error: 'not_authed' });
     }
@@ -57,13 +57,19 @@ const chatPlugin: FastifyPluginAsync = async (fastify) => {
     }
 
     // 4. Validate request
-    const { channel, text, blocks } = request.body ?? {};
+    const { channel, text, blocks: rawBlocks } = request.body ?? {};
     if (!channel) {
       return reply.status(200).send({ ok: false, error: 'channel_not_found' });
     }
 
-    if (!text && !blocks) {
+    if (!text && !rawBlocks) {
       return reply.status(200).send({ ok: false, error: 'no_text' });
+    }
+
+    // Parse blocks from JSON string when sent via form-urlencoded
+    let blocks = rawBlocks;
+    if (typeof blocks === 'string') {
+      try { blocks = JSON.parse(blocks); } catch { /* leave as-is */ }
     }
 
     // 5. Validate Block Kit blocks if present
@@ -130,10 +136,10 @@ const chatPlugin: FastifyPluginAsync = async (fastify) => {
 
   // POST /api/chat.update
   fastify.post<{
-    Body: { channel: string; ts: string; text?: string; blocks?: any[] };
+    Body: { channel: string; ts: string; text?: string; blocks?: any[] | string };
   }>('/api/chat.update', async (request, reply) => {
-    // 1. Extract and validate Bearer token
-    const token = extractBearerToken(request);
+    // 1. Extract and validate token (Bearer header, body param, or query param)
+    const token = extractToken(request);
     if (!token) {
       return reply.status(200).send({ ok: false, error: 'not_authed' });
     }
@@ -159,10 +165,16 @@ const chatPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.status(errorConfig.status_code ?? 200).send(errorBody);
     }
 
-    const { channel, ts, text, blocks } = request.body ?? {};
+    const { channel, ts, text, blocks: rawBlocks } = request.body ?? {};
 
     if (!channel || !ts) {
       return reply.status(200).send({ ok: false, error: 'message_not_found' });
+    }
+
+    // Parse blocks from JSON string when sent via form-urlencoded
+    let blocks = rawBlocks;
+    if (typeof blocks === 'string') {
+      try { blocks = JSON.parse(blocks); } catch { /* leave as-is */ }
     }
 
     // 4. Validate Block Kit blocks if present

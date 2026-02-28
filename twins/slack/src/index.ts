@@ -10,6 +10,7 @@
  */
 
 import Fastify from 'fastify';
+import formbody from '@fastify/formbody';
 import { randomUUID } from 'node:crypto';
 import { SqliteDeadLetterStore, WebhookQueue } from '@dtu/webhooks';
 import { SlackStateManager } from './state/slack-state-manager.js';
@@ -102,6 +103,11 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
   fastify.decorate('rateLimiter', rateLimiter);
   fastify.decorate('eventDispatcher', eventDispatcher);
   fastify.decorate('interactionHandler', interactionHandler);
+
+  // Register formbody at root scope so ALL plugins can parse form-urlencoded bodies.
+  // This is required for oauth.v2.access (which requires form-urlencoded per real Slack API)
+  // and for Web API methods that accept form-urlencoded bodies.
+  await fastify.register(formbody);
 
   // Register plugins
   await fastify.register(healthPlugin);

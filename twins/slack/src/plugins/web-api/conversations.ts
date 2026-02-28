@@ -1,15 +1,18 @@
 /**
  * Conversations Web API routes for Slack twin
  *
- * POST /api/conversations.list — list channels
- * POST /api/conversations.info — get channel details
- * POST /api/conversations.history — get messages in a channel
+ * GET  /api/conversations.list    — list channels (query params)
+ * POST /api/conversations.list    — list channels (JSON or form-urlencoded body)
+ * GET  /api/conversations.info    — get channel details (query params)
+ * POST /api/conversations.info    — get channel details (JSON or form-urlencoded body)
+ * GET  /api/conversations.history — get messages in a channel (query params)
+ * POST /api/conversations.history — get messages in a channel (JSON or form-urlencoded body)
  *
- * Note: Slack uses POST even for read operations.
+ * Real Slack Web API accepts GET with query params for read methods in addition to POST.
  */
 
-import type { FastifyPluginAsync } from 'fastify';
-import { extractBearerToken } from '../../services/token-validator.js';
+import type { FastifyPluginAsync, FastifyRequest } from 'fastify';
+import { extractToken } from '../../services/token-validator.js';
 import type { SlackStateManager } from '../../state/slack-state-manager.js';
 import type { SlackRateLimiter } from '../../services/rate-limiter.js';
 
@@ -66,13 +69,22 @@ function formatMessage(msg: any): any {
   return formatted;
 }
 
+/**
+ * Extract API parameters from GET query string or POST body.
+ * Real Slack Web API accepts both for read methods.
+ */
+function getParams(request: FastifyRequest): Record<string, any> {
+  if (request.method === 'GET') {
+    return (request.query as Record<string, any>) ?? {};
+  }
+  return (request.body as Record<string, any>) ?? {};
+}
+
 const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
-  // POST /api/conversations.list
-  fastify.post<{
-    Body: { limit?: number; cursor?: string; types?: string };
-  }>('/api/conversations.list', async (request, reply) => {
+  // Shared handler for conversations.list
+  async function handleConversationsList(request: FastifyRequest, reply: any) {
     // Auth check
-    const token = extractBearerToken(request);
+    const token = extractToken(request);
     if (!token) {
       return reply.status(200).send({ ok: false, error: 'not_authed' });
     }
@@ -97,8 +109,9 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.status(errorConfig.status_code ?? 200).send(errorBody);
     }
 
-    const limit = (request.body as any)?.limit ?? 100;
-    const cursor = (request.body as any)?.cursor;
+    const params = getParams(request);
+    const limit = params.limit ?? 100;
+    const cursor = params.cursor;
 
     const allChannels = fastify.slackStateManager.listChannels();
 
@@ -121,14 +134,12 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
       channels: page.map(formatChannel),
       response_metadata: { next_cursor: nextCursor },
     };
-  });
+  }
 
-  // POST /api/conversations.info
-  fastify.post<{
-    Body: { channel: string };
-  }>('/api/conversations.info', async (request, reply) => {
+  // Shared handler for conversations.info
+  async function handleConversationsInfo(request: FastifyRequest, reply: any) {
     // Auth check
-    const token = extractBearerToken(request);
+    const token = extractToken(request);
     if (!token) {
       return reply.status(200).send({ ok: false, error: 'not_authed' });
     }
@@ -153,7 +164,8 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.status(errorConfig.status_code ?? 200).send(errorBody);
     }
 
-    const channelId = (request.body as any)?.channel;
+    const params = getParams(request);
+    const channelId = params.channel;
     if (!channelId) {
       return reply.status(200).send({ ok: false, error: 'channel_not_found' });
     }
@@ -167,14 +179,12 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
       ok: true,
       channel: formatChannel(channel),
     };
-  });
+  }
 
-  // POST /api/conversations.history
-  fastify.post<{
-    Body: { channel: string; limit?: number; cursor?: string; oldest?: string; latest?: string };
-  }>('/api/conversations.history', async (request, reply) => {
+  // Shared handler for conversations.history
+  async function handleConversationsHistory(request: FastifyRequest, reply: any) {
     // Auth check
-    const token = extractBearerToken(request);
+    const token = extractToken(request);
     if (!token) {
       return reply.status(200).send({ ok: false, error: 'not_authed' });
     }
@@ -199,7 +209,8 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.status(errorConfig.status_code ?? 200).send(errorBody);
     }
 
-    const { channel: channelId, limit = 100, cursor, oldest, latest } = (request.body as any) ?? {};
+    const params = getParams(request);
+    const { channel: channelId, limit = 100, cursor, oldest, latest } = params;
 
     if (!channelId) {
       return reply.status(200).send({ ok: false, error: 'channel_not_found' });
@@ -231,7 +242,22 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
       has_more: hasMore,
       response_metadata: { next_cursor: nextCursor },
     };
-  });
+  }
+
+  // GET /api/conversations.list — query params
+  fastify.get('/api/conversations.list', handleConversationsList);
+  // POST /api/conversations.list — JSON or form-urlencoded body
+  fastify.post('/api/conversations.list', handleConversationsList);
+
+  // GET /api/conversations.info — query params
+  fastify.get('/api/conversations.info', handleConversationsInfo);
+  // POST /api/conversations.info — JSON or form-urlencoded body
+  fastify.post('/api/conversations.info', handleConversationsInfo);
+
+  // GET /api/conversations.history — query params
+  fastify.get('/api/conversations.history', handleConversationsHistory);
+  // POST /api/conversations.history — JSON or form-urlencoded body
+  fastify.post('/api/conversations.history', handleConversationsHistory);
 };
 
 export default conversationsPlugin;
