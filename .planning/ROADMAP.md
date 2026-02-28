@@ -81,7 +81,12 @@ Plans:
   3. Developer creates order, fulfills it, and observes realistic state transitions (pending → fulfilled → closed)
   4. Order fulfillment triggers `fulfillments/create` webhook delivery
   5. Invalid state transitions (fulfill already-fulfilled order) return appropriate GraphQL errors
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves
+
+Plans:
+- [ ] 04-01-PLAN.md — Query cost calculator and leaky bucket rate limiting
+- [ ] 04-02-PLAN.md — Cursor-based pagination across all connections
+- [ ] 04-03-PLAN.md — Order lifecycle state machine with orderClose mutation
 
 ### Phase 5: Slack Twin - Web API & Events
 **Goal**: Slack twin replicates Web API, Events API, OAuth, and Block Kit interactions
@@ -130,7 +135,7 @@ Plans:
 | 1. Foundation & Monorepo Setup | 2/2 | Complete | 2026-02-27 |
 | 2. Shopify Twin - Core Operations | 5/5 | Complete | 2026-02-27 |
 | 3. Webhook System & Conformance Framework | 3/3 | Complete    | 2026-02-28 |
-| 4. Shopify Twin - Advanced Features | 0/? | Not started | - |
+| 4. Shopify Twin - Advanced Features | 0/3 | Planning complete | - |
 | 5. Slack Twin - Web API & Events | 0/? | Not started | - |
 | 6. Twin UIs | 0/? | Not started | - |
 | 7. Integration & E2E Testing | 0/? | Not started | - |
@@ -159,4 +164,4 @@ Phase 2 (Shopify Core) ──→ Phase 3 (Webhooks/Conformance)
 - Phase 7 integrates twins with Sandpiper after UIs prove twins work independently
 
 ---
-*Last updated: 2026-02-27 after Phase 3 planning*
+*Last updated: 2026-02-28 after Phase 4 planning*
