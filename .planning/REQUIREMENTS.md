@@ -15,8 +15,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **INFRA-02**: Shared state management layer with SQLite/in-memory backends, resettable between test runs in <100ms
 - [x] **INFRA-03**: Admin API for programmatic test control — `POST /admin/reset`, `POST /admin/fixtures/load`, `GET /admin/state`
 - [x] **INFRA-04**: Configurable error simulation per endpoint — 401, 403, 429, 500, 503, timeout responses with realistic error bodies
-- [ ] **INFRA-05**: Conformance test framework — same test suite runs against twin AND real sandbox API, reports behavioral differences
-- [ ] **INFRA-06**: Conformance suites run periodically (CI schedule) to detect upstream API drift
+- [x] **INFRA-05**: Conformance test framework — same test suite runs against twin AND real sandbox API, reports behavioral differences
+- [x] **INFRA-06**: Conformance suites run periodically (CI schedule) to detect upstream API drift
 - [x] **INFRA-07**: Health check endpoint (`/health`) returns 200 when twin is initialized and ready
 - [x] **INFRA-08**: Structured JSON logging with correlation IDs for debugging twin behavior
 - [x] **INFRA-09**: Twin development grounded in StrongDM DTU methodology — replicate behavior at API boundary from contracts + edge cases, validate against real services
@@ -94,8 +94,8 @@ Deferred to future release. Tracked but not in current roadmap.
 | INFRA-02 | Phase 1 | Complete |
 | INFRA-03 | Phase 2 | Complete |
 | INFRA-04 | Phase 2 | Complete |
-| INFRA-05 | Phase 3 | Pending |
-| INFRA-06 | Phase 3 | Pending |
+| INFRA-05 | Phase 3 | Complete |
+| INFRA-06 | Phase 3 | Complete |
 | INFRA-07 | Phase 1 | Complete |
 | INFRA-08 | Phase 1 | Complete |
 | INFRA-09 | Phase 1 | Complete |

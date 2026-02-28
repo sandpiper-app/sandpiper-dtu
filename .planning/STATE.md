@@ -1,20 +1,20 @@
 # Project State: Sandpiper DTU
 
-**Last Updated:** 2026-02-27
-**Status:** Milestone complete
+**Last Updated:** 2026-02-28
+**Status:** In progress
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 3 context gathered. Ready for planning.
+**Current Focus:** Phase 3 Plans 01 and 02 complete. @dtu/webhooks and @dtu/conformance built and tested. Plan 03-03 next.
 
 ## Current Position
 
 **Phase:** Phase 3 - Webhook System & Conformance Framework
-**Plan:** Context gathered, planning next
-**Status:** Context gathered
-**Progress:** [░░░░░░░░░░] 0%
+**Plan:** 03-01 complete, 03-02 complete, 03-03 next
+**Status:** In progress
+**Progress:** [████████░░] 80%
 
 ## Performance Metrics
 
@@ -26,6 +26,13 @@
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-02-28 - Plan 03-02 Execution:**
+- Used deep-diff library for structural response comparison; maps N/D/E/A kinds to added/deleted/changed/array
+- Field normalization uses dot-path notation with * wildcard for array traversal (body.edges.*.node.id)
+- Twin-only mode compares response to itself (always passes) - useful for structural smoke testing
+- CLI requires --twin-adapter flag; suite path can be positional or --suite flag
+- Fixture IDs sanitized to filesystem-safe characters via regex
 
 **2026-02-27 - Plan 02-01 Execution:**
 - Use @graphql-tools/schema makeExecutableSchema for GraphQL Yoga 5.x compatibility
@@ -88,18 +95,19 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 3 context gathered
-**Timestamp:** 2026-02-27
+**Last completed:** Phase 3 Plan 02 - @dtu/conformance framework
+**Stopped at:** Completed 03-02-PLAN.md
+**Timestamp:** 2026-02-28
 
 **For next session:**
-1. Phase 3 context captured — webhook subscription model, delivery behavior, conformance test design, reporting all discussed
-2. Key decisions: mirror real Shopify API for webhooks, full HMAC signing, generic conformance framework, strict pass/fail, live + offline modes
-3. Ready to plan Phase 3 with `/gsd:plan-phase 3`
+1. Phase 3 Plan 02 complete — @dtu/conformance package with runner, adapter interface, comparator, reporter, fixture store, and CLI
+2. All 11 unit tests pass. Build clean. dist/cli.js exists.
+3. Next: Plan 03-03 — Shopify conformance suite implementation using this framework
 
 **Context required:**
-- .planning/phases/03-webhook-system-conformance-framework/03-CONTEXT.md (user decisions for Phase 3)
-- .planning/ROADMAP.md (Phase 3 goals and success criteria)
-- .planning/REQUIREMENTS.md (INFRA-05, INFRA-06)
+- .planning/phases/03-webhook-system-conformance-framework/03-02-SUMMARY.md (conformance framework details)
+- .planning/phases/03-webhook-system-conformance-framework/03-03-PLAN.md (next plan)
+- packages/conformance/src/adapter.ts (interface to implement for Shopify)
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
