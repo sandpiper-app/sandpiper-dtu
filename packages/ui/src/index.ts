@@ -12,23 +12,37 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import type { FastifyInstance } from 'fastify';
 
-// Resolve package root relative to this file
+// Resolve package root relative to this compiled file location.
+// At runtime, __dirname is packages/ui/dist/ (compiled) or packages/ui/src/ (tsx).
+// The partials and public dirs are always under src/, so we go up one level
+// from dist/ and then into src/.
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Determine the package root — works whether running from dist/ or src/
+function getPackageRoot(): string {
+  // If running from dist/, go up one level
+  if (__dirname.endsWith('/dist') || __dirname.endsWith('\\dist')) {
+    return path.dirname(__dirname);
+  }
+  // If running from src/, go up one level
+  if (__dirname.endsWith('/src') || __dirname.endsWith('\\src')) {
+    return path.dirname(__dirname);
+  }
+  return __dirname;
+}
 
 /**
  * Returns absolute path to the shared partials directory.
- * Used by registerUI to configure Eta template includes.
  */
 export function getPartialsDir(): string {
-  return path.join(__dirname, 'partials');
+  return path.join(getPackageRoot(), 'src', 'partials');
 }
 
 /**
  * Returns absolute path to the shared public assets directory.
- * Used by registerUI to configure @fastify/static.
  */
 export function getPublicDir(): string {
-  return path.join(__dirname, 'public');
+  return path.join(getPackageRoot(), 'src', 'public');
 }
 
 export interface RegisterUIOptions {
@@ -43,13 +57,16 @@ export interface RegisterUIOptions {
  *
  * Wires up:
  * - @fastify/formbody for HTML form POST parsing
- * - @fastify/view with Eta template engine (twin views + shared partials)
+ * - @fastify/view with Eta template engine, using built-in layout support
  * - @fastify/static serving shared CSS/JS at /ui/static/
  *
- * Template resolution: twin-specific views directory is primary.
- * If a template is not found there, falls back to shared partials from @dtu/ui.
- * This allows twin templates to use include('sidebar', data) and have it
- * resolve to the shared sidebar.eta partial.
+ * Template resolution: twin views directory is primary.
+ * Shared partials from @dtu/ui are available via Eta include() with
+ * automatic fallback resolution.
+ *
+ * Layout: The shared layout.eta is used as the global layout.
+ * Page templates render their content, which appears as `it.body` in layout.
+ * For Eta layout syntax: <%~ it.body %> in layout renders the page content.
  */
 export async function registerUI(fastify: FastifyInstance, options: RegisterUIOptions): Promise<void> {
   const { viewsDir } = options;
@@ -69,14 +86,23 @@ export async function registerUI(fastify: FastifyInstance, options: RegisterUIOp
   });
 
   // Override resolvePath to support shared partials from @dtu/ui.
-  // When a template does include('sidebar', ...), first look in the twin's
-  // views directory, then fall back to shared partials directory.
+  //
+  // Resolution order:
+  // 1. Try the twin views directory (default Eta behavior) — but SKIP the
+  //    result if it would resolve to the currently-rendering file, which causes
+  //    infinite recursion when e.g. orders/form.eta does include('form').
+  // 2. Try the shared @dtu/ui partials directory.
   const originalResolvePath = eta.resolvePath.bind(eta);
   eta.resolvePath = function (templatePath: string, options?: Record<string, unknown>) {
+    const callerFile = options?.filepath as string | undefined;
+
     // First try resolving against the twin's views directory (default behavior)
     try {
       const resolved = originalResolvePath(templatePath, options);
-      if (existsSync(resolved)) {
+      // Skip if the resolved path is the same as the calling template — this
+      // prevents infinite recursion when a sub-template (e.g. orders/form.eta)
+      // includes a shared partial by the same base name (e.g. 'form').
+      if (existsSync(resolved) && resolved !== callerFile) {
         return resolved;
       }
     } catch {
@@ -89,13 +115,18 @@ export async function registerUI(fastify: FastifyInstance, options: RegisterUIOp
     return sharedPath;
   };
 
-  // Register @fastify/view with Eta
+  // Register @fastify/view with Eta and layout support.
+  // @fastify/view joins `root + layout` to validate the layout file exists, so
+  // the layout path must be relative to viewsDir (even though it lives in the
+  // shared partials directory of @dtu/ui).
   const view = await import('@fastify/view');
+  const absoluteLayoutPath = path.join(partialsDir, 'layout.eta');
+  const relativeLayoutPath = path.relative(viewsDir, absoluteLayoutPath);
   await fastify.register(view.default, {
     engine: { eta },
     root: viewsDir,
     viewExt: 'eta',
-    propertyName: 'view',
+    layout: relativeLayoutPath,
   });
 
   // Register @fastify/static for shared CSS/JS assets

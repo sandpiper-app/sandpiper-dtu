@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@dtu/core": "workspace:*",
+    "@dtu/ui": "workspace:*",
     "@dtu/conformance": "workspace:*",
     "@dtu/state": "workspace:*",
     "@dtu/types": "workspace:*",
