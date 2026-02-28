@@ -13,6 +13,14 @@ type MoneySet {
   shopMoney: MoneyV2!
 }
 
+# Relay-spec PageInfo type for cursor-based pagination
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
 # Order types
 type Order {
   id: ID!
@@ -26,10 +34,12 @@ type Order {
 
 type LineItemConnection {
   edges: [LineItemEdge!]!
+  pageInfo: PageInfo!
 }
 
 type LineItemEdge {
   node: LineItem!
+  cursor: String!
 }
 
 type LineItem {
@@ -41,10 +51,12 @@ type LineItem {
 
 type OrderConnection {
   edges: [OrderEdge!]!
+  pageInfo: PageInfo!
 }
 
 type OrderEdge {
   node: Order!
+  cursor: String!
 }
 
 # Product types
@@ -60,10 +72,12 @@ type Product {
 
 type ProductConnection {
   edges: [ProductEdge!]!
+  pageInfo: PageInfo!
 }
 
 type ProductEdge {
   node: Product!
+  cursor: String!
 }
 
 # Customer types
@@ -78,10 +92,12 @@ type Customer {
 
 type CustomerConnection {
   edges: [CustomerEdge!]!
+  pageInfo: PageInfo!
 }
 
 type CustomerEdge {
   node: Customer!
+  cursor: String!
 }
 
 # Inventory types
@@ -203,13 +219,13 @@ input WebhookSubscriptionInput {
   callbackUrl: String!
 }
 
-# Query root
+# Query root — all connections support Relay-spec cursor pagination args
 type QueryRoot {
-  orders(first: Int = 10): OrderConnection!
+  orders(first: Int = 10, after: String, last: Int, before: String): OrderConnection!
   order(id: ID!): Order
-  products(first: Int = 10): ProductConnection!
+  products(first: Int = 10, after: String, last: Int, before: String): ProductConnection!
   product(id: ID!): Product
-  customers(first: Int = 10): CustomerConnection!
+  customers(first: Int = 10, after: String, last: Int, before: String): CustomerConnection!
   customer(id: ID!): Customer
 }
 
