@@ -8,7 +8,10 @@
  * Uses deep-diff for structural comparison.
  */
 
-import { diff } from 'deep-diff';
+// deep-diff is a CommonJS module; use default import for ESM interop
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+import deepDiffModule from 'deep-diff';
+const diff = (deepDiffModule as any).diff ?? deepDiffModule;
 import type {
   ConformanceResponse,
   FieldNormalizerConfig,

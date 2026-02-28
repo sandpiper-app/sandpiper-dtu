@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": "./conformance",
+    "outDir": "./dist-conformance",
+    "noEmit": false
+  },
+  "include": ["conformance/**/*"],
+  "references": [
+    { "path": "../../packages/types" },
+    { "path": "../../packages/state" },
+    { "path": "../../packages/core" },
+    { "path": "../../packages/webhooks" },
+    { "path": "../../packages/conformance" },
+    { "path": "." }
+  ]
+}
