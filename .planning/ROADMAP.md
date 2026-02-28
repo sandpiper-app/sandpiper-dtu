@@ -10,7 +10,7 @@
 - [x] **Phase 1: Foundation & Monorepo Setup** - Establish architectural foundation and shared infrastructure (completed 2026-02-27)
 - [x] **Phase 2: Shopify Twin - Core Operations** - First twin with GraphQL Admin API, OAuth, and basic webhooks (completed 2026-02-27)
 - [x] **Phase 3: Webhook System & Conformance Framework** - Production-grade async webhook delivery and behavioral validation (completed 2026-02-28)
-- [ ] **Phase 4: Shopify Twin - Advanced Features** - Query cost calculation, pagination, stateful order lifecycle
+- [x] **Phase 4: Shopify Twin - Advanced Features** - Query cost calculation, pagination, stateful order lifecycle (completed 2026-02-28)
 - [ ] **Phase 5: Slack Twin - Web API & Events** - Second major twin with REST API, events, Block Kit validation
 - [ ] **Phase 6: Twin UIs** - Web interfaces for state inspection and manual testing
 - [ ] **Phase 7: Integration & E2E Testing** - Docker Compose orchestration and Sandpiper integration
@@ -135,7 +135,7 @@ Plans:
 | 1. Foundation & Monorepo Setup | 2/2 | Complete | 2026-02-27 |
 | 2. Shopify Twin - Core Operations | 5/5 | Complete | 2026-02-27 |
 | 3. Webhook System & Conformance Framework | 3/3 | Complete    | 2026-02-28 |
-| 4. Shopify Twin - Advanced Features | 2/3 | In Progress|  |
+| 4. Shopify Twin - Advanced Features | 3/3 | Complete   | 2026-02-28 |
 | 5. Slack Twin - Web API & Events | 0/? | Not started | - |
 | 6. Twin UIs | 0/? | Not started | - |
 | 7. Integration & E2E Testing | 0/? | Not started | - |

@@ -7,14 +7,14 @@
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 4 in progress. Plans 04-01 (rate limiter + query cost) and 04-02 (cursor pagination) complete. Relay-spec cursor pagination and leaky bucket rate limiting now operational in Shopify twin.
+**Current Focus:** Phase 4 in progress. Plans 04-01 (rate limiter + query cost), 04-02 (cursor pagination), and 04-03 (order lifecycle state machine) complete. Order lifecycle with stateful fulfillment tracking, orderClose mutation, and state machine validation now operational in Shopify twin.
 
 ## Current Position
 
 **Phase:** Phase 4 - Shopify Twin Advanced Features
-**Plan:** 04-01 complete, 04-02 complete
+**Plan:** 04-01 complete, 04-02 complete, 04-03 complete
 **Status:** Phase 4 in progress
-**Progress:** [█████████░] 92%
+**Progress:** [██████████] 100%
 
 ## Performance Metrics
 
@@ -26,6 +26,13 @@
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-02-28 - Plan 04-03 Execution:**
+- State machine as pure functions: validateFulfillment/validateClose return string|null — no exceptions for business rule violations, easier to test and compose
+- Reject entire fulfillmentCreate on invalid transition: twin's simplified model rejects whole operation with userErrors rather than allowing partial fulfillment records
+- financialStatus seeding via OrderInput enum: allows tests to reach PAID state without implementing a payment flow
+- @dtu/state dist rebuild required after source changes: stale compiled JS causes integration tests to miss new schema columns
+- closedAt checked first in validateClose: gives specific "already closed" error before checking other preconditions
 
 **2026-02-28 - Plan 04-02 Execution:**
 - Relay cursor format includes resource type: base64(arrayconnection:{Type}:{id}) prevents cross-resource cursor injection
@@ -121,23 +128,25 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 4 Plan 02 - Relay cursor pagination and rate limiter integration
-**Stopped at:** Completed 04-01-PLAN.md
+**Last completed:** Phase 4 Plan 03 - Order lifecycle state machine with fulfillment and close transitions
+**Stopped at:** Completed 04-03-PLAN.md
 **Timestamp:** 2026-02-28
 
 **For next session:**
 1. Phase 4 plans complete so far:
    - 04-01: Query cost calculator + LeakyBucketRateLimiter services + app integration
    - 04-02: Relay cursor pagination (encodeCursor/decodeCursor, PageInfo, paginate() helper, id ASC ordering)
-2. All 88 Shopify twin tests pass (6 test files)
-3. Rate limiting (extensions.cost, HTTP 429) integrated into graphqlPlugin
-4. Ready for next Phase 4 plan (order lifecycle, webhooks bulk, or other advanced features)
+   - 04-03: Order lifecycle state machine (validateFulfillment/validateClose, orderClose mutation, status columns, 111 tests)
+2. All 111 Shopify twin tests pass (8 test files); 140 total monorepo tests pass
+3. Order lifecycle: create (UNFULFILLED/PENDING) -> fulfill (FULFILLED) -> close (closedAt set)
+4. Both fulfillmentCreate and orderClose trigger orders/update webhook on state transition
+5. Ready for next Phase 4 plan or Phase 5 (Slack twin)
 
 **Context required:**
-- .planning/phases/04-shopify-twin-advanced-features/04-01-SUMMARY.md
-- .planning/phases/04-shopify-twin-advanced-features/04-02-SUMMARY.md
-- twins/shopify/src/services/cursor.ts (cursor utilities)
-- twins/shopify/src/schema/resolvers.ts (paginate() helper pattern)
+- .planning/phases/04-shopify-twin-advanced-features/04-03-SUMMARY.md
+- twins/shopify/src/services/order-lifecycle.ts (state machine validators)
+- twins/shopify/src/schema/resolvers.ts (fulfillmentCreate + orderClose patterns)
+- packages/state/src/state-manager.ts (new status columns and methods)
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
