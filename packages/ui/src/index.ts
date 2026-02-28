@@ -8,6 +8,7 @@
  */
 
 import { fileURLToPath } from 'node:url';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import type { FastifyInstance } from 'fastify';
 
@@ -44,9 +45,14 @@ export interface RegisterUIOptions {
  * - @fastify/formbody for HTML form POST parsing
  * - @fastify/view with Eta template engine (twin views + shared partials)
  * - @fastify/static serving shared CSS/JS at /ui/static/
+ *
+ * Template resolution: twin-specific views directory is primary.
+ * If a template is not found there, falls back to shared partials from @dtu/ui.
+ * This allows twin templates to use include('sidebar', data) and have it
+ * resolve to the shared sidebar.eta partial.
  */
 export async function registerUI(fastify: FastifyInstance, options: RegisterUIOptions): Promise<void> {
-  const { viewsDir, twin } = options;
+  const { viewsDir } = options;
   const partialsDir = getPartialsDir();
   const publicDir = getPublicDir();
 
@@ -58,24 +64,19 @@ export async function registerUI(fastify: FastifyInstance, options: RegisterUIOp
   const { Eta } = await import('eta');
   const eta = new Eta({
     views: viewsDir,
-    // Enable shared partials from @dtu/ui via absolute path includes
-    // Twin templates use: <%~ include('/path/to/partial', data) %>
-    // We set up a views directory and allow absolute path includes
     cache: process.env.NODE_ENV === 'production',
-    // Allow templates to use absolute paths for includes
     defaultExtension: '.eta',
   });
 
-  // Monkey-patch include resolution to support shared partials
-  // When a template does include('sidebar', ...), look in shared partials dir too
+  // Override resolvePath to support shared partials from @dtu/ui.
+  // When a template does include('sidebar', ...), first look in the twin's
+  // views directory, then fall back to shared partials directory.
   const originalResolvePath = eta.resolvePath.bind(eta);
-  eta.resolvePath = function (templatePath: string, options?: any) {
+  eta.resolvePath = function (templatePath: string, options?: Record<string, unknown>) {
     // First try resolving against the twin's views directory (default behavior)
     try {
       const resolved = originalResolvePath(templatePath, options);
-      // Check if the file exists at the resolved path
-      const fs = require('node:fs');
-      if (fs.existsSync(resolved)) {
+      if (existsSync(resolved)) {
         return resolved;
       }
     } catch {
@@ -83,7 +84,8 @@ export async function registerUI(fastify: FastifyInstance, options: RegisterUIOp
     }
 
     // Try resolving against shared partials directory
-    const sharedPath = path.join(partialsDir, templatePath.endsWith('.eta') ? templatePath : templatePath + '.eta');
+    const ext = templatePath.endsWith('.eta') ? '' : '.eta';
+    const sharedPath = path.join(partialsDir, templatePath + ext);
     return sharedPath;
   };
 

@@ -1,0 +1,2 @@
+<p>Hello from test template</p>
+<p>Twin: <%= it.twin %></p>
