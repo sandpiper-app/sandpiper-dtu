@@ -1,0 +1,31 @@
+<h1>Admin Dashboard</h1>
+<div class="admin-stats">
+  <div class="stat-card">
+    <div class="stat-value"><%= it.stats.orders %></div>
+    <div class="stat-label">Orders</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= it.stats.products %></div>
+    <div class="stat-label">Products</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= it.stats.customers %></div>
+    <div class="stat-label">Customers</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= it.stats.tokens %></div>
+    <div class="stat-label">Tokens</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= it.stats.webhooks %></div>
+    <div class="stat-label">Webhooks</div>
+  </div>
+</div>
+
+<hr>
+
+<h2>Actions</h2>
+<form method="POST" action="/ui/admin/reset" style="display:inline">
+  <button type="submit" class="secondary outline">Reset All State</button>
+</form>
+<p><small>Resets all twin state including orders, products, customers, tokens, and webhooks. Rate limiter state is also cleared.</small></p>

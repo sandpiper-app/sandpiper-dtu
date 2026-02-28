@@ -1,0 +1,26 @@
+<h1>Webhook Subscriptions</h1>
+<% if (it.subscriptions.length === 0) { %>
+  <p class="empty-state">No webhook subscriptions registered.</p>
+  <p><small>Register webhooks via the GraphQL <code>webhookSubscriptionCreate</code> mutation or POST to <code>/admin/fixtures/load</code>.</small></p>
+<% } else { %>
+  <table role="grid" class="data-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Topic</th>
+        <th>Callback URL</th>
+        <th>Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% it.subscriptions.forEach(function(sub) { %>
+        <tr>
+          <td><%= sub.id %></td>
+          <td><%= sub.topic %></td>
+          <td><%= sub.callback_url %></td>
+          <td><%= it.formatDate(sub.created_at) %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
