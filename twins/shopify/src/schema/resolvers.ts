@@ -3,13 +3,14 @@
  *
  * Implements queries and mutations for orders, products, customers
  * with Shopify-realistic response structures including GID format IDs.
- * Mutations check error simulation and trigger webhook delivery.
+ * Mutations check error simulation and trigger webhook delivery via @dtu/webhooks queue.
  */
 
+import { randomUUID } from 'node:crypto';
 import { GraphQLScalarType, GraphQLError, Kind } from 'graphql';
 import { createGID, parseGID } from '../services/gid.js';
-import { sendWebhook } from '../services/webhook-sender.js';
 import type { StateManager } from '@dtu/state';
+import type { WebhookQueue } from '@dtu/webhooks';
 import type { ErrorSimulator } from '../services/error-simulator.js';
 
 interface Context {
@@ -18,6 +19,7 @@ interface Context {
   webhookSecret: string;
   shopDomain: string;
   authorized: boolean;
+  webhookQueue: WebhookQueue;
 }
 
 /** Throw GraphQLError if the request is not authenticated */
@@ -62,6 +64,29 @@ const DateTimeScalar = new GraphQLScalarType({
     throw new Error('DateTime literal must be a string');
   },
 });
+
+/** Enqueue a webhook delivery to all subscriptions for a given topic */
+async function enqueueWebhooks(
+  context: Context,
+  topic: string,
+  payload: Record<string, unknown>
+): Promise<void> {
+  const subscriptions = context.stateManager.listWebhookSubscriptions();
+  const matching = subscriptions.filter((s: any) => s.topic === topic);
+  for (const sub of matching) {
+    await context.webhookQueue.enqueue({
+      id: randomUUID(),
+      topic,
+      callbackUrl: sub.callback_url,
+      payload,
+      secret: context.webhookSecret,
+      headers: {
+        'X-Shopify-Shop-Domain': context.shopDomain,
+        'X-Shopify-API-Version': '2024-01',
+      },
+    });
+  }
+}
 
 export const resolvers = {
   DateTime: DateTimeScalar,
@@ -174,25 +199,16 @@ export const resolvers = {
 
       const order = context.stateManager.getOrder(orderId);
 
-      // Send webhooks (fire and forget)
+      // Enqueue webhooks via async queue
       if (order) {
-        const subscriptions = context.stateManager.listWebhookSubscriptions();
-        const orderSubs = subscriptions.filter((s: any) => s.topic === 'orders/create');
-        for (const sub of orderSubs) {
-          sendWebhook(
-            sub.callback_url,
-            'orders/create',
-            {
-              id: order.id,
-              admin_graphql_api_id: createGID('Order', order.id),
-              created_at: new Date(order.created_at * 1000).toISOString(),
-              name: order.name,
-              total_price: order.total_price,
-              line_items: JSON.parse(order.line_items || '[]'),
-            },
-            context.webhookSecret,
-          );
-        }
+        await enqueueWebhooks(context, 'orders/create', {
+          id: order.id,
+          admin_graphql_api_id: createGID('Order', order.id),
+          created_at: new Date(order.created_at * 1000).toISOString(),
+          name: order.name,
+          total_price: order.total_price,
+          line_items: JSON.parse(order.line_items || '[]'),
+        });
       }
 
       return { order, userErrors: [] };
@@ -241,26 +257,17 @@ export const resolvers = {
       context.stateManager.updateOrder(orderId, updateData);
       const updatedOrder = context.stateManager.getOrder(orderId);
 
-      // Send webhooks (fire and forget)
+      // Enqueue webhooks via async queue
       if (updatedOrder) {
-        const subscriptions = context.stateManager.listWebhookSubscriptions();
-        const orderUpdateSubs = subscriptions.filter((s: any) => s.topic === 'orders/update');
-        for (const sub of orderUpdateSubs) {
-          sendWebhook(
-            sub.callback_url,
-            'orders/update',
-            {
-              id: updatedOrder.id,
-              admin_graphql_api_id: createGID('Order', updatedOrder.id),
-              created_at: new Date(updatedOrder.created_at * 1000).toISOString(),
-              updated_at: new Date(updatedOrder.updated_at * 1000).toISOString(),
-              name: updatedOrder.name,
-              total_price: updatedOrder.total_price,
-              line_items: JSON.parse(updatedOrder.line_items || '[]'),
-            },
-            context.webhookSecret,
-          );
-        }
+        await enqueueWebhooks(context, 'orders/update', {
+          id: updatedOrder.id,
+          admin_graphql_api_id: createGID('Order', updatedOrder.id),
+          created_at: new Date(updatedOrder.created_at * 1000).toISOString(),
+          updated_at: new Date(updatedOrder.updated_at * 1000).toISOString(),
+          name: updatedOrder.name,
+          total_price: updatedOrder.total_price,
+          line_items: JSON.parse(updatedOrder.line_items || '[]'),
+        });
       }
 
       return { order: updatedOrder, userErrors: [] };
@@ -296,23 +303,14 @@ export const resolvers = {
 
       const product = context.stateManager.getProduct(productId);
 
-      // Send webhooks (fire and forget)
+      // Enqueue webhooks via async queue
       if (product) {
-        const subscriptions = context.stateManager.listWebhookSubscriptions();
-        const productSubs = subscriptions.filter((s: any) => s.topic === 'products/create');
-        for (const sub of productSubs) {
-          sendWebhook(
-            sub.callback_url,
-            'products/create',
-            {
-              id: product.id,
-              admin_graphql_api_id: createGID('Product', product.id),
-              created_at: new Date(product.created_at * 1000).toISOString(),
-              title: product.title,
-            },
-            context.webhookSecret,
-          );
-        }
+        await enqueueWebhooks(context, 'products/create', {
+          id: product.id,
+          admin_graphql_api_id: createGID('Product', product.id),
+          created_at: new Date(product.created_at * 1000).toISOString(),
+          title: product.title,
+        });
       }
 
       return { product, userErrors: [] };
@@ -353,24 +351,15 @@ export const resolvers = {
       context.stateManager.updateProduct(productId, updateData);
       const updatedProduct = context.stateManager.getProduct(productId);
 
-      // Send webhooks (fire and forget)
+      // Enqueue webhooks via async queue
       if (updatedProduct) {
-        const subscriptions = context.stateManager.listWebhookSubscriptions();
-        const productUpdateSubs = subscriptions.filter((s: any) => s.topic === 'products/update');
-        for (const sub of productUpdateSubs) {
-          sendWebhook(
-            sub.callback_url,
-            'products/update',
-            {
-              id: updatedProduct.id,
-              admin_graphql_api_id: createGID('Product', updatedProduct.id),
-              created_at: new Date(updatedProduct.created_at * 1000).toISOString(),
-              updated_at: new Date(updatedProduct.updated_at * 1000).toISOString(),
-              title: updatedProduct.title,
-            },
-            context.webhookSecret,
-          );
-        }
+        await enqueueWebhooks(context, 'products/update', {
+          id: updatedProduct.id,
+          admin_graphql_api_id: createGID('Product', updatedProduct.id),
+          created_at: new Date(updatedProduct.created_at * 1000).toISOString(),
+          updated_at: new Date(updatedProduct.updated_at * 1000).toISOString(),
+          title: updatedProduct.title,
+        });
       }
 
       return { product: updatedProduct, userErrors: [] };
@@ -411,25 +400,16 @@ export const resolvers = {
 
       const fulfillment = context.stateManager.getFulfillment(fulfillmentId);
 
-      // Send webhooks (fire and forget)
+      // Enqueue webhooks via async queue
       if (fulfillment) {
-        const subscriptions = context.stateManager.listWebhookSubscriptions();
-        const fulfillmentSubs = subscriptions.filter((s: any) => s.topic === 'fulfillments/create');
-        for (const sub of fulfillmentSubs) {
-          sendWebhook(
-            sub.callback_url,
-            'fulfillments/create',
-            {
-              id: fulfillment.id,
-              admin_graphql_api_id: createGID('Fulfillment', fulfillment.id),
-              created_at: new Date(fulfillment.created_at * 1000).toISOString(),
-              order_id: fulfillment.order_gid,
-              status: fulfillment.status,
-              tracking_number: fulfillment.tracking_number,
-            },
-            context.webhookSecret,
-          );
-        }
+        await enqueueWebhooks(context, 'fulfillments/create', {
+          id: fulfillment.id,
+          admin_graphql_api_id: createGID('Fulfillment', fulfillment.id),
+          created_at: new Date(fulfillment.created_at * 1000).toISOString(),
+          order_id: fulfillment.order_gid,
+          status: fulfillment.status,
+          tracking_number: fulfillment.tracking_number,
+        });
       }
 
       return { fulfillment, userErrors: [] };
@@ -464,28 +444,63 @@ export const resolvers = {
 
       const customer = context.stateManager.getCustomer(customerId);
 
-      // Send webhooks (fire and forget)
+      // Enqueue webhooks via async queue
       if (customer) {
-        const subscriptions = context.stateManager.listWebhookSubscriptions();
-        const customerSubs = subscriptions.filter((s: any) => s.topic === 'customers/create');
-        for (const sub of customerSubs) {
-          sendWebhook(
-            sub.callback_url,
-            'customers/create',
-            {
-              id: customer.id,
-              admin_graphql_api_id: createGID('Customer', customer.id),
-              created_at: new Date(customer.created_at * 1000).toISOString(),
-              email: customer.email,
-              first_name: customer.first_name,
-              last_name: customer.last_name,
-            },
-            context.webhookSecret,
-          );
-        }
+        await enqueueWebhooks(context, 'customers/create', {
+          id: customer.id,
+          admin_graphql_api_id: createGID('Customer', customer.id),
+          created_at: new Date(customer.created_at * 1000).toISOString(),
+          email: customer.email,
+          first_name: customer.first_name,
+          last_name: customer.last_name,
+        });
       }
 
       return { customer, userErrors: [] };
+    },
+
+    webhookSubscriptionCreate: async (
+      _parent: unknown,
+      args: { topic: string; webhookSubscription: { callbackUrl: string } },
+      context: Context
+    ) => {
+      requireAuth(context);
+
+      const { topic, webhookSubscription } = args;
+      const { callbackUrl } = webhookSubscription;
+
+      if (!topic) {
+        return {
+          webhookSubscription: null,
+          userErrors: [{ field: ['topic'], message: 'Topic is required' }],
+        };
+      }
+
+      if (!callbackUrl) {
+        return {
+          webhookSubscription: null,
+          userErrors: [{ field: ['webhookSubscription', 'callbackUrl'], message: 'Callback URL is required' }],
+        };
+      }
+
+      context.stateManager.createWebhookSubscription(topic, callbackUrl);
+
+      // Retrieve the subscription that was just created (most recently created with this topic+url)
+      const subscriptions = context.stateManager.listWebhookSubscriptions();
+      const created = subscriptions.find(
+        (s: any) => s.topic === topic && s.callback_url === callbackUrl
+      );
+
+      const subId = created?.id ?? Date.now();
+
+      return {
+        webhookSubscription: {
+          id: createGID('WebhookSubscription', subId),
+          topic,
+          callbackUrl,
+        },
+        userErrors: [],
+      };
     },
   },
 

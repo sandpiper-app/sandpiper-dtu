@@ -187,6 +187,22 @@ type CustomerCreatePayload {
   userErrors: [UserError!]!
 }
 
+# Webhook subscription types
+type WebhookSubscription {
+  id: ID!
+  topic: String!
+  callbackUrl: String!
+}
+
+type WebhookSubscriptionCreatePayload {
+  webhookSubscription: WebhookSubscription
+  userErrors: [UserError!]!
+}
+
+input WebhookSubscriptionInput {
+  callbackUrl: String!
+}
+
 # Query root
 type QueryRoot {
   orders(first: Int = 10): OrderConnection!
@@ -205,6 +221,7 @@ type MutationType {
   productUpdate(input: ProductUpdateInput!): ProductUpdatePayload!
   fulfillmentCreate(input: FulfillmentInput!): FulfillmentCreatePayload!
   customerCreate(input: CustomerInput!): CustomerCreatePayload!
+  webhookSubscriptionCreate(topic: String!, webhookSubscription: WebhookSubscriptionInput!): WebhookSubscriptionCreatePayload!
 }
 
 # Schema declaration

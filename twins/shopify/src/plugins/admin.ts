@@ -1,12 +1,15 @@
 /**
  * Admin plugin for Shopify twin
  * Provides test control endpoints: reset, fixtures, state inspection
+ * and DLQ inspection endpoints for webhook dead letter queue management.
  */
 
 import type { FastifyPluginAsync } from 'fastify';
 import type { StateManager } from '@dtu/state';
+import type { WebhookQueue, DeadLetterStore } from '@dtu/webhooks';
 import type { ResetResponse } from '@dtu/types';
 import { createGID } from '../services/gid.js';
+import { randomUUID } from 'node:crypto';
 
 interface FixturesLoadBody {
   orders?: any[];
@@ -33,6 +36,9 @@ interface StateResponse {
 declare module 'fastify' {
   interface FastifyInstance {
     stateManager: StateManager;
+    webhookQueue: WebhookQueue;
+    deadLetterStore: DeadLetterStore;
+    webhookSecret: string;
   }
 }
 
@@ -40,6 +46,10 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
   // POST /admin/reset - reset all state
   fastify.post<{ Reply: ResetResponse }>('/admin/reset', async (request) => {
     request.log.info('Resetting twin state');
+    // NOTE: deadLetterStore.clear() is NOT called here because StateManager.reset()
+    // closes and reopens the shared SQLite DB connection. The DLQ store holds a
+    // reference to the old DB instance, making it unusable after reset.
+    // DLQ can be cleared explicitly via DELETE /admin/dead-letter-queue.
     fastify.stateManager.reset();
     return {
       reset: true,
@@ -105,6 +115,76 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
       tokens: tokenCount.count,
       webhooks: fastify.stateManager.listWebhookSubscriptions().length,
     };
+  });
+
+  // ---------------------------------------------------------------------------
+  // Dead Letter Queue (DLQ) inspection endpoints
+  // ---------------------------------------------------------------------------
+
+  // GET /admin/dead-letter-queue - list all DLQ entries
+  fastify.get('/admin/dead-letter-queue', async (request) => {
+    request.log.info('Listing dead letter queue entries');
+    return fastify.deadLetterStore.list();
+  });
+
+  // GET /admin/dead-letter-queue/:id - get single DLQ entry
+  fastify.get<{ Params: { id: string } }>('/admin/dead-letter-queue/:id', async (request, reply) => {
+    const id = parseInt(request.params.id, 10);
+    if (isNaN(id)) {
+      return reply.status(400).send({ error: 'Invalid ID' });
+    }
+    const entry = fastify.deadLetterStore.get(id);
+    if (!entry) {
+      return reply.status(404).send({ error: 'Dead letter entry not found' });
+    }
+    return entry;
+  });
+
+  // POST /admin/dead-letter-queue/:id/retry - remove from DLQ and re-enqueue
+  fastify.post<{ Params: { id: string } }>('/admin/dead-letter-queue/:id/retry', async (request, reply) => {
+    const id = parseInt(request.params.id, 10);
+    if (isNaN(id)) {
+      return reply.status(400).send({ error: 'Invalid ID' });
+    }
+    const entry = fastify.deadLetterStore.get(id);
+    if (!entry) {
+      return reply.status(404).send({ error: 'Dead letter entry not found' });
+    }
+
+    // Remove from DLQ
+    fastify.deadLetterStore.remove(id);
+
+    // Re-enqueue for retry
+    await fastify.webhookQueue.enqueue({
+      id: randomUUID(),
+      topic: entry.topic,
+      callbackUrl: entry.callbackUrl,
+      payload: JSON.parse(entry.payload),
+      secret: fastify.webhookSecret,
+    });
+
+    request.log.info({ dlqId: id, topic: entry.topic }, 'Re-enqueued dead letter entry');
+    return { retried: true, topic: entry.topic, callbackUrl: entry.callbackUrl };
+  });
+
+  // DELETE /admin/dead-letter-queue - clear all DLQ entries
+  fastify.delete('/admin/dead-letter-queue', async (request) => {
+    request.log.info('Clearing dead letter queue');
+    fastify.deadLetterStore.clear();
+    return { cleared: true };
+  });
+
+  // DELETE /admin/dead-letter-queue/:id - remove single DLQ entry
+  fastify.delete<{ Params: { id: string } }>('/admin/dead-letter-queue/:id', async (request, reply) => {
+    const id = parseInt(request.params.id, 10);
+    if (isNaN(id)) {
+      return reply.status(400).send({ error: 'Invalid ID' });
+    }
+    const removed = fastify.deadLetterStore.remove(id);
+    if (!removed) {
+      return reply.status(404).send({ error: 'Dead letter entry not found' });
+    }
+    return { removed: true };
   });
 };
 

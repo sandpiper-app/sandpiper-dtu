@@ -69,6 +69,7 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
         stateManager: fastify.stateManager,
         errorSimulator: fastify.errorSimulator,
         webhookSecret: fastify.webhookSecret,
+        webhookQueue: fastify.webhookQueue,
         shopDomain,
         authorized,
       };

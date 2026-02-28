@@ -7,8 +7,9 @@
  * - GraphQL queries and mutations (SHOP-01)
  * - Token validation on API requests (SHOP-07)
  * - Error simulation (INFRA-04)
- * - Webhook triggering on mutations (SHOP-03)
- * - Order updates with state changes
+ * - Webhook triggering on mutations via @dtu/webhooks queue (SHOP-03)
+ * - DLQ admin endpoints
+ * - webhookSubscriptionCreate GraphQL mutation
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
@@ -18,11 +19,14 @@ describe('Shopify Twin Integration', () => {
   let app: Awaited<ReturnType<typeof buildApp>>;
 
   beforeEach(async () => {
+    // Use compressed timing and sync mode for test predictability
+    process.env.WEBHOOK_TIME_SCALE = '0.001';
     app = await buildApp({ logger: false });
     await app.ready();
   });
 
   afterEach(async () => {
+    delete process.env.WEBHOOK_TIME_SCALE;
     await app.close();
   });
 
@@ -542,6 +546,63 @@ describe('Shopify Twin Integration', () => {
       expect(body.data.customerCreate.customer.email).toBe('test@example.com');
       expect(body.data.customerCreate.userErrors).toHaveLength(0);
     });
+
+    // -- Mutations: webhookSubscriptionCreate --
+
+    it('registers webhook subscription via GraphQL mutation', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            webhookSubscriptionCreate(
+              topic: "orders/create",
+              webhookSubscription: { callbackUrl: "https://example.com/webhooks" }
+            ) {
+              webhookSubscription { id topic callbackUrl }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.data.webhookSubscriptionCreate.webhookSubscription).toBeDefined();
+      expect(body.data.webhookSubscriptionCreate.webhookSubscription.id).toMatch(
+        /^gid:\/\/shopify\/WebhookSubscription\/\d+$/
+      );
+      expect(body.data.webhookSubscriptionCreate.webhookSubscription.topic).toBe('orders/create');
+      expect(body.data.webhookSubscriptionCreate.webhookSubscription.callbackUrl).toBe(
+        'https://example.com/webhooks'
+      );
+      expect(body.data.webhookSubscriptionCreate.userErrors).toHaveLength(0);
+    });
+
+    it('webhookSubscriptionCreate is visible in state after creation', async () => {
+      // Create subscription via mutation
+      await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            webhookSubscriptionCreate(
+              topic: "products/create",
+              webhookSubscription: { callbackUrl: "https://example.com/webhooks" }
+            ) {
+              webhookSubscription { id }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+
+      // Verify visible in state
+      const stateRes = await app.inject({ method: 'GET', url: '/admin/state' });
+      const state = JSON.parse(stateRes.body);
+      expect(state.webhooks).toBe(1);
+    });
   });
 
   // ---------------------------------------------------------------------------
@@ -703,7 +764,7 @@ describe('Shopify Twin Integration', () => {
   });
 
   // ---------------------------------------------------------------------------
-  // Webhooks (SHOP-03)
+  // Webhooks via @dtu/webhooks queue (SHOP-03)
   // ---------------------------------------------------------------------------
   describe('Webhooks', () => {
     let token: string;
@@ -716,8 +777,7 @@ describe('Shopify Twin Integration', () => {
       });
       token = JSON.parse(oauthResponse.body).access_token;
 
-      // Subscribe to webhooks (using stateManager directly since
-      // webhook subscription endpoint is not yet implemented)
+      // Subscribe to webhooks via direct stateManager (fast setup)
       app.stateManager.createWebhookSubscription('orders/create', 'http://localhost:9999/webhook');
       app.stateManager.createWebhookSubscription('orders/update', 'http://localhost:9999/webhook');
       app.stateManager.createWebhookSubscription('products/update', 'http://localhost:9999/webhook');
@@ -725,8 +785,9 @@ describe('Shopify Twin Integration', () => {
     });
 
     it('triggers webhook on order creation (verifies order created successfully)', async () => {
-      // Webhook is fire-and-forget to localhost:9999 which won't be listening.
-      // We verify the mutation itself succeeds (webhook failure is logged, not thrown).
+      // Webhook is enqueued to localhost:9999 which won't be listening.
+      // With async queue and no syncMode, delivery fails silently.
+      // We verify the mutation itself succeeds.
       const response = await app.inject({
         method: 'POST',
         url: '/admin/api/2024-01/graphql.json',
@@ -772,7 +833,7 @@ describe('Shopify Twin Integration', () => {
       });
       const orderId = JSON.parse(createResponse.body).data.orderCreate.order.id;
 
-      // Update order -- webhook fires to localhost:9999 (will fail silently)
+      // Update order -- webhook enqueued to localhost:9999 (will fail silently)
       const updateResponse = await app.inject({
         method: 'POST',
         url: '/admin/api/2024-01/graphql.json',
@@ -810,7 +871,7 @@ describe('Shopify Twin Integration', () => {
       });
       const productId = JSON.parse(createResponse.body).data.productCreate.product.id;
 
-      // Update product -- webhook fires to localhost:9999 (will fail silently)
+      // Update product -- webhook enqueued to localhost:9999 (will fail silently)
       const updateResponse = await app.inject({
         method: 'POST',
         url: '/admin/api/2024-01/graphql.json',
@@ -852,7 +913,7 @@ describe('Shopify Twin Integration', () => {
       });
       const orderId = JSON.parse(orderResponse.body).data.orderCreate.order.id;
 
-      // Create fulfillment -- webhook fires to localhost:9999 (will fail silently)
+      // Create fulfillment -- webhook enqueued to localhost:9999 (will fail silently)
       const fulfillmentResponse = await app.inject({
         method: 'POST',
         url: '/admin/api/2024-01/graphql.json',
@@ -881,6 +942,109 @@ describe('Shopify Twin Integration', () => {
       const stateRes = await app.inject({ method: 'GET', url: '/admin/state' });
       const state = JSON.parse(stateRes.body);
       expect(state.webhooks).toBe(4);
+    });
+
+    it('failed webhook deliveries appear in dead letter queue after retries (compressed timing)', async () => {
+      // With WEBHOOK_TIME_SCALE=0.001, the 3 retries (0, 60000ms, 300000ms)
+      // complete in approximately (0 + 60 + 300) * 0.001 = 360ms
+      // Create an order to trigger webhook to unreachable localhost:9999
+      await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            orderCreate(input: {
+              lineItems: [{title: "Test", quantity: 1, price: "10.00"}],
+              totalPrice: "10.00",
+              currencyCode: "USD"
+            }) {
+              order { id }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+
+      // Wait for all retries to complete (360ms at 0.001x scale + buffer)
+      await new Promise(resolve => setTimeout(resolve, 600));
+
+      // Check DLQ via admin endpoint
+      const dlqRes = await app.inject({ method: 'GET', url: '/admin/dead-letter-queue' });
+      expect(dlqRes.statusCode).toBe(200);
+      const dlq = JSON.parse(dlqRes.body);
+      expect(Array.isArray(dlq)).toBe(true);
+      expect(dlq.length).toBeGreaterThan(0);
+      expect(dlq[0].topic).toBe('orders/create');
+      expect(dlq[0].callbackUrl).toBe('http://localhost:9999/webhook');
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // DLQ Admin Endpoints
+  // ---------------------------------------------------------------------------
+  describe('Dead Letter Queue Admin Endpoints', () => {
+    it('GET /admin/dead-letter-queue returns empty array when queue is empty', async () => {
+      const response = await app.inject({ method: 'GET', url: '/admin/dead-letter-queue' });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(Array.isArray(body)).toBe(true);
+      expect(body.length).toBe(0);
+    });
+
+    it('DELETE /admin/dead-letter-queue clears the queue', async () => {
+      // Add something to DLQ first via stateManager's deadLetterStore
+      // by creating a fake DLQ entry directly
+      // (We'll do this by triggering a webhook failure with compressed timing)
+      const oauthResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/oauth/access_token',
+        payload: { code: 'dlq-test' },
+      });
+      const token = JSON.parse(oauthResponse.body).access_token;
+
+      app.stateManager.createWebhookSubscription('orders/create', 'http://localhost:9999/webhook');
+
+      await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: {
+          query: `mutation {
+            orderCreate(input: {
+              lineItems: [{title: "T", quantity: 1, price: "1.00"}],
+              totalPrice: "1.00",
+              currencyCode: "USD"
+            }) {
+              order { id }
+              userErrors { field message }
+            }
+          }`,
+        },
+      });
+
+      // Wait for retries to complete
+      await new Promise(resolve => setTimeout(resolve, 600));
+
+      // Clear DLQ
+      const clearRes = await app.inject({ method: 'DELETE', url: '/admin/dead-letter-queue' });
+      expect(clearRes.statusCode).toBe(200);
+      expect(JSON.parse(clearRes.body).cleared).toBe(true);
+
+      // Verify empty
+      const listRes = await app.inject({ method: 'GET', url: '/admin/dead-letter-queue' });
+      const dlq = JSON.parse(listRes.body);
+      expect(dlq.length).toBe(0);
+    });
+
+    it('GET /admin/dead-letter-queue/:id returns 404 for missing entry', async () => {
+      const response = await app.inject({ method: 'GET', url: '/admin/dead-letter-queue/999' });
+      expect(response.statusCode).toBe(404);
+    });
+
+    it('DELETE /admin/dead-letter-queue/:id returns 404 for missing entry', async () => {
+      const response = await app.inject({ method: 'DELETE', url: '/admin/dead-letter-queue/999' });
+      expect(response.statusCode).toBe(404);
     });
   });
 
