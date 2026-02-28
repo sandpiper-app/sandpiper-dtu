@@ -7,14 +7,14 @@
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 5 complete. Next up: Phase 6 (Twin UIs).
+**Current Focus:** Phase 6 complete — all 3 plans done (UI package, Shopify UI, Slack UI).
 
 ## Current Position
 
-**Phase:** Phase 5 complete — Phase 6 next
-**Plan:** All phase 5 plans (05-01, 05-02, 05-03) complete
-**Status:** Ready for Phase 6
-**Progress:** [██████████░░░░] 71% (5/7 phases)
+**Phase:** Phase 6 complete — all plans done
+**Plan:** All phase 6 plans (06-01, 06-02, 06-03) complete
+**Status:** Phase 6 complete
+**Progress:** [██████████] 100%
 
 ## Performance Metrics
 
@@ -26,6 +26,12 @@
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-02-28 - Plan 06-03 Execution:**
+- Channel detail as message timeline: chronological messages with user name lookup, inline Post Message form at bottom — matching Slack UX metaphor
+- Event dispatch from UI: channel_created and message events via eventDispatcher.dispatch() matching API side effects
+- updateUser via direct SQL: SlackStateManager lacks updateUser method; direct SQL used for user edits
+- @dtu/ui layout path fix: relativeLayoutPath broken when viewsDir outside package tree; fixed with root=partialsDir + explicit viewsDir resolvePath override
 
 **2026-02-28 - Plan 05-03 Execution:**
 - EventDispatcher wraps WebhookQueue with Slack event_callback envelope format (type, token, team_id, api_app_id, event, event_id, event_time, authorizations)
@@ -149,25 +155,24 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 5 Plan 03 - Events API, interactions, integration tests
-**Stopped at:** Phase 6 context gathered
+**Last completed:** Phase 6 Plan 03 - Slack Twin UI with message timeline
+**Stopped at:** Completed 06-03-PLAN.md — Slack Twin UI with message timeline, user management, admin dashboard
 **Timestamp:** 2026-02-28
 
 **For next session:**
-1. Phase 5 plans complete:
-   - 05-01: Slack twin foundation (SlackStateManager, OAuth v2, admin endpoints, default seeding)
-   - 05-02: 7 Web API methods (chat, conversations, users) with token auth, Block Kit validation, rate limiting
-   - 05-03: Events API delivery, url_verification, block_actions interactions, response URLs
-2. 39 Slack twin tests pass (11 smoke + 18 Web API + 10 integration)
-3. 179 total monorepo tests pass — zero regressions
-4. All 8 phase success criteria verified by integration tests
-5. Ready for Phase 6 (Twin UIs)
+1. Phase 6 plans complete:
+   - 06-01: @dtu/ui shared package with registerUI(), 6 Eta partials, Pico CSS
+   - 06-02: Shopify twin UI (orders, products, customers, admin with webhooks)
+   - 06-03: Slack twin UI (channels with message timeline, users, admin with event subscriptions)
+2. 58 Slack twin tests pass (11 smoke + 18 web-api + 19 UI + 10 integration)
+3. 217/218 monorepo tests pass — 1 pre-existing flaky DLQ timing test in Shopify integration
+4. All Phase 6 success criteria met
+5. Ready for Phase 7 (final phase - integration/polish)
 
 **Context required:**
-- .planning/phases/05-slack-twin-web-api-events/05-03-SUMMARY.md
-- twins/slack/src/index.ts (buildApp pattern)
-- twins/slack/src/state/slack-state-manager.ts (Slack state management)
-- twins/slack/src/plugins/ (all plugin patterns)
+- .planning/phases/06-twin-uis/06-03-SUMMARY.md
+- twins/slack/src/plugins/ui.ts (Slack UI plugin)
+- twins/shopify/src/plugins/ui.ts (Shopify UI plugin)
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
