@@ -1,20 +1,20 @@
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-02-28
-**Status:** Milestone complete
+**Status:** In progress
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 4 in progress. Plans 04-01 (rate limiter + query cost), 04-02 (cursor pagination), and 04-03 (order lifecycle state machine) complete. Order lifecycle with stateful fulfillment tracking, orderClose mutation, and state machine validation now operational in Shopify twin.
+**Current Focus:** Phase 4 complete. Next up: Phase 5 (Slack Twin - Web API & Events).
 
 ## Current Position
 
-**Phase:** Phase 4 - Shopify Twin Advanced Features
-**Plan:** 04-01 complete, 04-02 complete, 04-03 complete
-**Status:** Phase 4 in progress
-**Progress:** [██████████] 100%
+**Phase:** Phase 4 complete — Phase 5 next
+**Plan:** All phase 4 plans (04-01, 04-02, 04-03) complete
+**Status:** Ready for Phase 5
+**Progress:** [████████░░░░░░] 57% (4/7 phases)
 
 ## Performance Metrics
 
