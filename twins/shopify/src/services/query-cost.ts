@@ -85,26 +85,24 @@ function getPageSize(
 
 /**
  * Calculate the cost of a selection set within a given parent type.
+ *
  * @param selectionSet - The selection set to evaluate
- * @param parentType - The GraphQL type of the object being selected from
- * @param schema - The full schema (for type lookups)
+ * @param parentType - The GraphQL type of the object (typed as any to bypass cross-module type checks)
  * @param multiplierStack - Stack of connection page sizes for nested cost multiplication
  * @param variables - Query variables for resolving variable references
  * @returns Total cost of this selection set
  */
 function calculateSelectionSetCost(
   selectionSet: SelectionSetNode | undefined,
-  parentType: GraphQLObjectType | null,
-  schema: GraphQLSchema,
+  parentType: any,
   multiplierStack: number[],
   variables: Record<string, unknown> | undefined
 ): number {
   if (!selectionSet) return 0;
 
   let cost = 0;
-  const currentMultiplier = multiplierStack.length > 0
-    ? multiplierStack[multiplierStack.length - 1]
-    : 1;
+  const currentMultiplier =
+    multiplierStack.length > 0 ? multiplierStack[multiplierStack.length - 1] : 1;
 
   for (const selection of selectionSet.selections) {
     if (selection.kind !== 'Field') continue;
@@ -115,10 +113,16 @@ function calculateSelectionSetCost(
     // Skip introspection fields
     if (fieldName.startsWith('__')) continue;
 
-    // Find the field definition in the parent type
-    const fieldDef = parentType ? parentType.getFields()[fieldName] : null;
-    const fieldType = fieldDef ? unwrapType(fieldDef.type) : null;
-    const fieldTypeName = fieldType?.name ?? '';
+    // Find the field definition in the parent type using duck-typed getFields()
+    let fieldDef: any = null;
+    if (parentType && typeof parentType.getFields === 'function') {
+      const fields = parentType.getFields();
+      fieldDef = fields[fieldName] ?? null;
+    }
+
+    // Unwrap NonNull/List wrappers using duck-typed ofType traversal
+    const fieldType: any = fieldDef ? unwrapType(fieldDef.type) : null;
+    const fieldTypeName: string = fieldType?.name ?? '';
 
     if (isConnectionType(fieldTypeName)) {
       // Connection field: cost = 2 + pageSize, multiplied by current multiplier
@@ -128,13 +132,7 @@ function calculateSelectionSetCost(
 
       // Recurse with new multiplier = pageSize pushed onto stack
       const newStack = [...multiplierStack, pageSize];
-      cost += calculateSelectionSetCost(
-        fieldNode.selectionSet,
-        fieldType as GraphQLObjectType,
-        schema,
-        newStack,
-        variables
-      );
+      cost += calculateSelectionSetCost(fieldNode.selectionSet, fieldType, newStack, variables);
     } else if (fieldType && typeof fieldType.getFields === 'function') {
       // Object field (non-connection): cost = 1 * currentMultiplier
       // Use duck typing (getFields present) instead of isObjectType() to avoid
@@ -144,15 +142,12 @@ function calculateSelectionSetCost(
       // Recurse with same multiplier stack
       cost += calculateSelectionSetCost(
         fieldNode.selectionSet,
-        fieldType as GraphQLObjectType,
-        schema,
+        fieldType,
         multiplierStack,
         variables
       );
-    } else {
-      // Scalar or Enum: 0 cost
-      // (no recursion needed)
     }
+    // else: Scalar or Enum — 0 cost, no recursion
   }
 
   return cost;
@@ -178,21 +173,19 @@ export function calculateQueryCost(
       if (definition.operation === 'mutation') {
         // Mutations have a base cost of 10 plus field costs
         totalCost += 10;
-        const mutationType = schema.getMutationType() as GraphQLObjectType | null;
+        const mutationType = schema.getMutationType();
         totalCost += calculateSelectionSetCost(
           definition.selectionSet,
           mutationType,
-          schema,
           [],
           variables
         );
       } else {
         // Query or subscription
-        const queryType = schema.getQueryType() as GraphQLObjectType | null;
+        const queryType = schema.getQueryType();
         totalCost += calculateSelectionSetCost(
           definition.selectionSet,
           queryType,
-          schema,
           [],
           variables
         );
