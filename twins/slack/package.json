@@ -9,9 +9,14 @@
     "build": "tsc --build",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
-    "test": "vitest"
+    "test": "vitest",
+    "conformance:twin": "node --import tsx/esm node_modules/@dtu/conformance/dist/cli.js --mode twin --suite ./conformance/index.ts --twin-adapter ./conformance/adapters/twin-adapter.ts",
+    "conformance:live": "node --import tsx/esm node_modules/@dtu/conformance/dist/cli.js --mode live --suite ./conformance/index.ts --twin-adapter ./conformance/adapters/twin-adapter.ts --live-adapter ./conformance/adapters/live-adapter.ts",
+    "conformance:offline": "node --import tsx/esm node_modules/@dtu/conformance/dist/cli.js --mode offline --suite ./conformance/index.ts --twin-adapter ./conformance/adapters/twin-adapter.ts --fixtures ./conformance/fixtures",
+    "conformance:record": "node --import tsx/esm node_modules/@dtu/conformance/dist/cli.js --record --suite ./conformance/index.ts --twin-adapter ./conformance/adapters/twin-adapter.ts --live-adapter ./conformance/adapters/live-adapter.ts --fixtures ./conformance/fixtures"
   },
   "dependencies": {
+    "@dtu/conformance": "workspace:*",
     "@dtu/core": "workspace:*",
     "@dtu/state": "workspace:*",
     "@dtu/types": "workspace:*",

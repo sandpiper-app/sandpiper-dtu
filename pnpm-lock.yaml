@@ -198,6 +198,9 @@ importers:
 
   twins/slack:
     dependencies:
+      '@dtu/conformance':
+        specifier: workspace:*
+        version: link:../../packages/conformance
       '@dtu/core':
         specifier: workspace:*
         version: link:../../packages/core
