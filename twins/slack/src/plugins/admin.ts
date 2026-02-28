@@ -6,6 +6,7 @@
 
 import type { FastifyPluginAsync } from 'fastify';
 import type { SlackStateManager } from '../state/slack-state-manager.js';
+import type { SlackRateLimiter } from '../services/rate-limiter.js';
 import type { WebhookQueue, DeadLetterStore } from '@dtu/webhooks';
 import {
   generateChannelId,
@@ -21,6 +22,7 @@ declare module 'fastify' {
     webhookQueue: WebhookQueue;
     deadLetterStore: DeadLetterStore;
     signingSecret: string;
+    rateLimiter: SlackRateLimiter;
   }
 }
 
@@ -33,6 +35,8 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
     // reference to the old DB instance, making it unusable after reset.
     // DLQ can be cleared explicitly via DELETE /admin/dead-letter-queue.
     fastify.slackStateManager.reset();
+    // Reset rate limiter buckets alongside state
+    fastify.rateLimiter.reset();
     return {
       reset: true,
       timestamp: Date.now(),

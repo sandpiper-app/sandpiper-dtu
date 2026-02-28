@@ -13,9 +13,13 @@ import Fastify from 'fastify';
 import { randomUUID } from 'node:crypto';
 import { SqliteDeadLetterStore, WebhookQueue } from '@dtu/webhooks';
 import { SlackStateManager } from './state/slack-state-manager.js';
+import { SlackRateLimiter } from './services/rate-limiter.js';
 import healthPlugin from './plugins/health.js';
 import oauthPlugin from './plugins/oauth.js';
 import adminPlugin from './plugins/admin.js';
+import chatPlugin from './plugins/web-api/chat.js';
+import conversationsPlugin from './plugins/web-api/conversations.js';
+import usersPlugin from './plugins/web-api/users.js';
 
 import type { DeadLetterStore } from '@dtu/webhooks';
 
@@ -25,6 +29,7 @@ declare module 'fastify' {
     webhookQueue: WebhookQueue;
     deadLetterStore: DeadLetterStore;
     signingSecret: string;
+    rateLimiter: SlackRateLimiter;
   }
 }
 
@@ -66,16 +71,23 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
     logger: fastify.log as any,
   });
 
+  // Initialize rate limiter
+  const rateLimiter = new SlackRateLimiter();
+
   // Decorate Fastify with services
   fastify.decorate('slackStateManager', slackStateManager);
   fastify.decorate('webhookQueue', webhookQueue);
   fastify.decorate('deadLetterStore', deadLetterStore);
   fastify.decorate('signingSecret', signingSecret);
+  fastify.decorate('rateLimiter', rateLimiter);
 
   // Register plugins
   await fastify.register(healthPlugin);
   await fastify.register(oauthPlugin);
   await fastify.register(adminPlugin);
+  await fastify.register(chatPlugin);
+  await fastify.register(conversationsPlugin);
+  await fastify.register(usersPlugin);
 
   // Graceful shutdown
   fastify.addHook('onClose', async () => {
