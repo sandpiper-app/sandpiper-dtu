@@ -246,6 +246,7 @@ export class StateManager {
         description TEXT,
         vendor TEXT,
         product_type TEXT,
+        price TEXT,
         created_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL
       );
@@ -330,7 +331,7 @@ export class StateManager {
     this.listOrdersStmt = db.prepare('SELECT * FROM orders ORDER BY id ASC');
 
     this.createProductStmt = db.prepare(
-      'INSERT INTO products (gid, title, description, vendor, product_type, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
+      'INSERT INTO products (gid, title, description, vendor, product_type, price, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
     );
     this.getProductByGidStmt = db.prepare('SELECT * FROM products WHERE gid = ?');
     this.listProductsStmt = db.prepare('SELECT * FROM products ORDER BY id ASC');
@@ -342,7 +343,7 @@ export class StateManager {
     this.listCustomersStmt = db.prepare('SELECT * FROM customers ORDER BY id ASC');
 
     this.updateProductStmt = db.prepare(
-      'UPDATE products SET title = ?, description = ?, vendor = ?, product_type = ?, updated_at = ? WHERE id = ?'
+      'UPDATE products SET title = ?, description = ?, vendor = ?, product_type = ?, price = ?, updated_at = ? WHERE id = ?'
     );
     this.createFulfillmentStmt = db.prepare(
       'INSERT INTO fulfillments (gid, order_gid, status, tracking_number, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)'
@@ -484,7 +485,7 @@ export class StateManager {
   }
 
   /** Create a product and return its ID */
-  createProduct(data: { gid: string; title?: string; description?: string; vendor?: string; product_type?: string }): number {
+  createProduct(data: { gid: string; title?: string; description?: string; vendor?: string; product_type?: string; price?: string }): number {
     if (!this.createProductStmt) {
       throw new Error('StateManager not initialized. Call init() first.');
     }
@@ -495,6 +496,7 @@ export class StateManager {
       data.description ?? null,
       data.vendor ?? null,
       data.product_type ?? null,
+      data.price ?? null,
       now,
       now
     );
@@ -524,7 +526,7 @@ export class StateManager {
   }
 
   /** Update an existing product by ID, setting updated_at to current timestamp */
-  updateProduct(id: number, data: { title?: string; description?: string; vendor?: string; product_type?: string }): void {
+  updateProduct(id: number, data: { title?: string; description?: string; vendor?: string; product_type?: string; price?: string }): void {
     if (!this.updateProductStmt) {
       throw new Error('StateManager not initialized. Call init() first.');
     }
@@ -534,6 +536,7 @@ export class StateManager {
       data.description ?? null,
       data.vendor ?? null,
       data.product_type ?? null,
+      data.price ?? null,
       now,
       id
     );
