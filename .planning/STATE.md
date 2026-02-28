@@ -7,14 +7,14 @@
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 2 complete. Shopify twin core operations (GraphQL API, admin endpoints, fixtures, webhooks, error simulation) all delivered and tested.
+**Current Focus:** Phase 3 context gathered. Ready for planning.
 
 ## Current Position
 
-**Phase:** Phase 2 - Shopify Twin - Core Operations
-**Plan:** 05 of 05 (gap closure complete)
-**Status:** Complete
-**Progress:** [██████████] 100%
+**Phase:** Phase 3 - Webhook System & Conformance Framework
+**Plan:** Context gathered, planning next
+**Status:** Context gathered
+**Progress:** [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
@@ -88,20 +88,18 @@ None.
 
 ## Session Continuity
 
-**Last completed:** 02-05-PLAN.md (productUpdate + fulfillmentCreate Gap Closure)
-**Timestamp:** 2026-02-27T17:19:00Z
+**Last completed:** Phase 3 context gathered
+**Timestamp:** 2026-02-27
 
 **For next session:**
-1. Phase 2 fully complete — all 5 plans executed (4 original + 1 gap closure), 30/30 integration tests passing
-2. Phase 2 delivered: OAuth flow, GraphQL Admin API (orders/products/customers + productUpdate/fulfillmentCreate), webhooks for all 4 topics, error simulation, admin endpoints (reset/fixtures/state)
-3. SHOP-03 verification gap closed: productUpdate and fulfillmentCreate mutations with webhook delivery
-4. Ready to plan Phase 3: Webhooks & Conformance Framework
+1. Phase 3 context captured — webhook subscription model, delivery behavior, conformance test design, reporting all discussed
+2. Key decisions: mirror real Shopify API for webhooks, full HMAC signing, generic conformance framework, strict pass/fail, live + offline modes
+3. Ready to plan Phase 3 with `/gsd:plan-phase 3`
 
 **Context required:**
-- .planning/phases/02-shopify-twin-core-operations/02-05-SUMMARY.md (SHOP-03 gap closure just completed)
-- .planning/phases/02-shopify-twin-core-operations/02-04-SUMMARY.md (fixtures GID gap closure)
-- .planning/ROADMAP.md (Phase 3 goals)
-- .planning/REQUIREMENTS.md (remaining requirements)
+- .planning/phases/03-webhook-system-conformance-framework/03-CONTEXT.md (user decisions for Phase 3)
+- .planning/ROADMAP.md (Phase 3 goals and success criteria)
+- .planning/REQUIREMENTS.md (INFRA-05, INFRA-06)
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
