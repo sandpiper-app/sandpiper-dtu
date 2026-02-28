@@ -88,45 +88,38 @@ export async function registerUI(fastify: FastifyInstance, options: RegisterUIOp
   // Override resolvePath to support shared partials from @dtu/ui.
   //
   // Resolution order:
-  // 1. Try the twin views directory (default Eta behavior) — but SKIP the
-  //    result if it would resolve to the currently-rendering file, which causes
-  //    infinite recursion when e.g. orders/form.eta does include('form').
+  // 1. Try the twin views directory explicitly — but SKIP the result if it is
+  //    the same as the calling template, which prevents infinite recursion when
+  //    e.g. orders/form.eta does include('form').
   // 2. Try the shared @dtu/ui partials directory.
-  const originalResolvePath = eta.resolvePath.bind(eta);
+  //
+  // We check viewsDir explicitly (not via originalResolvePath) because
+  // @fastify/view reconfigures eta.views = root at render time, so
+  // originalResolvePath would use the wrong base directory.
   eta.resolvePath = function (templatePath: string, options?: Record<string, unknown>) {
     const callerFile = options?.filepath as string | undefined;
+    const ext = templatePath.endsWith('.eta') ? '' : '.eta';
 
-    // First try resolving against the twin's views directory (default behavior)
-    try {
-      const resolved = originalResolvePath(templatePath, options);
-      // Skip if the resolved path is the same as the calling template — this
-      // prevents infinite recursion when a sub-template (e.g. orders/form.eta)
-      // includes a shared partial by the same base name (e.g. 'form').
-      if (existsSync(resolved) && resolved !== callerFile) {
-        return resolved;
-      }
-    } catch {
-      // Fall through to shared partials
+    // 1. Try the twin views directory
+    const viewsPath = path.join(viewsDir, templatePath + ext);
+    if (existsSync(viewsPath) && viewsPath !== callerFile) {
+      return viewsPath;
     }
 
-    // Try resolving against shared partials directory
-    const ext = templatePath.endsWith('.eta') ? '' : '.eta';
+    // 2. Try the shared @dtu/ui partials directory
     const sharedPath = path.join(partialsDir, templatePath + ext);
     return sharedPath;
   };
 
   // Register @fastify/view with Eta and layout support.
-  // @fastify/view joins `root + layout` to validate the layout file exists, so
-  // the layout path must be relative to viewsDir (even though it lives in the
-  // shared partials directory of @dtu/ui).
+  // Set root=partialsDir so @fastify/view can validate 'layout.eta' exists.
+  // Twin-specific views are resolved via the resolvePath override above.
   const view = await import('@fastify/view');
-  const absoluteLayoutPath = path.join(partialsDir, 'layout.eta');
-  const relativeLayoutPath = path.relative(viewsDir, absoluteLayoutPath);
   await fastify.register(view.default, {
     engine: { eta },
-    root: viewsDir,
+    root: partialsDir,
     viewExt: 'eta',
-    layout: relativeLayoutPath,
+    layout: 'layout',
   });
 
   // Register @fastify/static for shared CSS/JS assets
