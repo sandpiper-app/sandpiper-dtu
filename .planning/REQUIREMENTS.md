@@ -36,7 +36,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **SLCK-01**: Web API methods Sandpiper uses — chat.postMessage, chat.update, conversations.list, conversations.info, conversations.history, users.list, users.info
 - [ ] **SLCK-02**: Events API delivery — POST event payloads (message, app_mention, reaction_added) to configured app URL on state changes
 - [ ] **SLCK-03**: OAuth installation flow — workspace authorization → bot token + user token issuance
-- [ ] **SLCK-04**: Block Kit interaction handling — button click payloads, modal submission payloads, message action payloads with response URL support
+- [ ] **SLCK-04**: Block Kit interaction handling — button click payloads, modal submission payloads, message action payloads with response URL support *(Phase 5 covers block_actions/button clicks only; view_submission and message_action deferred — modals are out of Phase 5 scope)*
 - [ ] **SLCK-05**: Bolt-compatible challenge verification (url_verification) and event envelope format
 - [ ] **SLCK-06**: Rate limiting — tier-based per method with 429 + Retry-After headers
 
