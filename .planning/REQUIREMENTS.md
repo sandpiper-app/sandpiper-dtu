@@ -42,8 +42,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Twin UIs
 
-- [ ] **UI-01**: Shopify twin web UI — sidebar navigation (Orders, Products, Customers, Inventory), list views with search/filter, detail views per entity
-- [ ] **UI-02**: Shopify twin web UI — create, edit, delete orders, products, customers through forms
+- [x] **UI-01**: Shopify twin web UI — sidebar navigation (Orders, Products, Customers, Inventory), list views with search/filter, detail views per entity
+- [x] **UI-02**: Shopify twin web UI — create, edit, delete orders, products, customers through forms
 - [x] **UI-03**: Slack twin web UI — channel sidebar, message timeline view, user list, workspace navigation
 - [x] **UI-04**: Slack twin web UI — create channels, post messages, manage users through the interface
 - [ ] **UI-05**: Shared UI framework — consistent barebones styling across twins, reusable list/detail/form components
@@ -112,8 +112,8 @@ Deferred to future release. Tracked but not in current roadmap.
 | SLCK-04 | Phase 5 | Complete |
 | SLCK-05 | Phase 5 | Complete |
 | SLCK-06 | Phase 5 | Complete |
-| UI-01 | Phase 6 | Pending |
-| UI-02 | Phase 6 | Pending |
+| UI-01 | Phase 6 | Complete |
+| UI-02 | Phase 6 | Complete |
 | UI-03 | Phase 6 | Complete |
 | UI-04 | Phase 6 | Complete |
 | UI-05 | Phase 6 | Pending |

@@ -33,6 +33,14 @@
 - updateUser via direct SQL: SlackStateManager lacks updateUser method; direct SQL used for user edits
 - @dtu/ui layout path fix: relativeLayoutPath broken when viewsDir outside package tree; fixed with root=partialsDir + explicit viewsDir resolvePath override
 
+**2026-02-28 - Plan 06-02 Execution:**
+- fastify-plugin wrapper for uiPlugin to share stateManager/webhookQueue/webhookSecret decorators from parent Fastify scope
+- Register /ui/orders/new BEFORE /ui/orders/:id to prevent "new" being captured as an ID parameter (same for products, customers)
+- @fastify/view layout path must be relative to viewsDir — absolute paths cause join(root, absPath) to produce wrong resolved path during layout validation
+- Eta resolvePath override must skip self-references: orders/form.eta include('form') resolves to itself causing infinite recursion
+- Customer update uses direct SQL prepare() inline — no updateCustomer method in StateManager
+- dispatchWebhooks() helper pattern: UI create/update operations dispatch to same WebhookQueue as GraphQL mutations
+
 **2026-02-28 - Plan 05-03 Execution:**
 - EventDispatcher wraps WebhookQueue with Slack event_callback envelope format (type, token, team_id, api_app_id, event, event_id, event_time, authorizations)
 - Fire-and-forget event dispatch: events dispatched without await (matching real Slack behavior), syncMode for tests
