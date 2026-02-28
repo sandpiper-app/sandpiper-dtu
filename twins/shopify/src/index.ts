@@ -19,6 +19,7 @@ import adminPlugin from './plugins/admin.js';
 import { graphqlPlugin } from './plugins/graphql.js';
 import { errorsPlugin } from './plugins/errors.js';
 import { ErrorSimulator } from './services/error-simulator.js';
+import { LeakyBucketRateLimiter } from './services/rate-limiter.js';
 
 /**
  * Build the Fastify application instance.
@@ -77,12 +78,16 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
     }
   }
 
-  // Decorate Fastify with stateManager, errorSimulator, webhookSecret, and queue
+  // Initialize rate limiter (Shopify defaults: 1000 pts max, 50 pts/sec)
+  const rateLimiter = new LeakyBucketRateLimiter(1000, 50);
+
+  // Decorate Fastify with stateManager, errorSimulator, webhookSecret, queue, and rateLimiter
   fastify.decorate('stateManager', stateManager);
   fastify.decorate('errorSimulator', errorSimulator);
   fastify.decorate('webhookSecret', webhookSecret);
   fastify.decorate('webhookQueue', webhookQueue);
   fastify.decorate('deadLetterStore', deadLetterStore);
+  fastify.decorate('rateLimiter', rateLimiter);
 
   // Register plugins
   await fastify.register(healthPlugin);

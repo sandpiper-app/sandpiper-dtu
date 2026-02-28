@@ -33,12 +33,15 @@ interface StateResponse {
   webhooks: number;
 }
 
+import type { LeakyBucketRateLimiter } from '../services/rate-limiter.js';
+
 declare module 'fastify' {
   interface FastifyInstance {
     stateManager: StateManager;
     webhookQueue: WebhookQueue;
     deadLetterStore: DeadLetterStore;
     webhookSecret: string;
+    rateLimiter: LeakyBucketRateLimiter;
   }
 }
 
@@ -51,6 +54,9 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
     // reference to the old DB instance, making it unusable after reset.
     // DLQ can be cleared explicitly via DELETE /admin/dead-letter-queue.
     fastify.stateManager.reset();
+    // Reset rate limiter buckets so rate limit state is cleared alongside
+    // all other twin state.
+    fastify.rateLimiter.reset();
     return {
       reset: true,
       timestamp: Date.now(),

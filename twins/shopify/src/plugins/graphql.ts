@@ -3,6 +3,11 @@
  *
  * Integrates GraphQL Yoga with Fastify, handles token validation,
  * and provides GraphQL endpoint at /admin/api/2024-01/graphql.json
+ *
+ * Also integrates rate limiting using Shopify's leaky bucket algorithm:
+ * - Pre-checks query cost before executing
+ * - Returns HTTP 429 with Retry-After header when bucket is depleted
+ * - Injects extensions.cost into successful responses
  */
 
 import { createYoga } from 'graphql-yoga';
@@ -11,12 +16,20 @@ import type { FastifyReply, FastifyRequest, FastifyPluginAsync } from 'fastify';
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { GraphQLError } from 'graphql';
+import { parse as gqlParse } from 'graphql';
 import { resolvers } from '../schema/resolvers.js';
 import { validateAccessToken } from '../services/token-validator.js';
+import { calculateQueryCost } from '../services/query-cost.js';
+import type { LeakyBucketRateLimiter } from '../services/rate-limiter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+declare module 'fastify' {
+  interface FastifyInstance {
+    rateLimiter: LeakyBucketRateLimiter;
+  }
+}
 
 export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
   // Load GraphQL schema SDL from source directory
@@ -93,6 +106,64 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
           }
         }
 
+        // -------------------------------------------------------------------
+        // Rate limiting pre-check
+        // -------------------------------------------------------------------
+
+        // Extract rate limit key from x-shopify-access-token header
+        const rateLimitKey =
+          (req.headers['x-shopify-access-token'] as string | undefined) ?? 'anonymous';
+
+        // Parse the request body to get query string and variables
+        const body = req.body as { query?: string; variables?: Record<string, unknown> } | undefined;
+        const queryString = body?.query;
+        const variables = body?.variables;
+
+        let queryCost = 0;
+
+        if (queryString) {
+          try {
+            const document = gqlParse(queryString);
+            queryCost = calculateQueryCost(document, schema, variables);
+          } catch {
+            // If query fails to parse, let Yoga handle the parse error (cost = 0)
+            queryCost = 0;
+          }
+        }
+
+        const throttleResult = fastify.rateLimiter.tryConsume(rateLimitKey, queryCost);
+
+        if (!throttleResult.allowed) {
+          // Return HTTP 429 with Retry-After and Shopify-format error body
+          const retryAfterSeconds = Math.ceil(throttleResult.retryAfterMs / 1000);
+
+          reply
+            .status(429)
+            .header('Content-Type', 'application/json')
+            .header('Retry-After', String(retryAfterSeconds));
+
+          return reply.send(
+            JSON.stringify({
+              errors: [{ message: 'Throttled' }],
+              extensions: {
+                cost: {
+                  requestedQueryCost: queryCost,
+                  actualQueryCost: null,
+                  throttleStatus: {
+                    maximumAvailable: fastify.rateLimiter.maxAvailable,
+                    currentlyAvailable: throttleResult.currentlyAvailable,
+                    restoreRate: fastify.rateLimiter.restoreRate,
+                  },
+                },
+              },
+            })
+          );
+        }
+
+        // -------------------------------------------------------------------
+        // Execute GraphQL via Yoga
+        // -------------------------------------------------------------------
+
         const response = await yoga.fetch(
           url.toString(),
           {
@@ -105,11 +176,44 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
           { req, reply },
         );
 
+        // Inject extensions.cost into successful responses
+        const responseText = await response.text();
+        let responseBody: Record<string, unknown>;
+        try {
+          responseBody = JSON.parse(responseText);
+        } catch {
+          // Non-JSON response — pass through as-is
+          reply.status(response.status);
+          response.headers.forEach((value: string, key: string) => {
+            reply.header(key, value);
+          });
+          reply.send(responseText);
+          return reply;
+        }
+
+        // Inject cost extensions (mirrors Shopify's format for successful requests)
+        responseBody.extensions = {
+          ...(typeof responseBody.extensions === 'object' && responseBody.extensions !== null
+            ? responseBody.extensions
+            : {}),
+          cost: {
+            requestedQueryCost: queryCost,
+            actualQueryCost: queryCost,
+            throttleStatus: {
+              maximumAvailable: fastify.rateLimiter.maxAvailable,
+              currentlyAvailable: throttleResult.currentlyAvailable,
+              restoreRate: fastify.rateLimiter.restoreRate,
+            },
+          },
+        };
+
         reply.status(response.status);
         response.headers.forEach((value: string, key: string) => {
           reply.header(key, value);
         });
-        reply.send(await response.text());
+        // Override content-type to ensure JSON
+        reply.header('content-type', 'application/json');
+        reply.send(JSON.stringify(responseBody));
         return reply;
       } catch (err: any) {
         // If Yoga fails to handle the error internally (e.g. plugin throws),

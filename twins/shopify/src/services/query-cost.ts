@@ -11,24 +11,20 @@
  */
 
 import {
-  visit,
   type DocumentNode,
   type GraphQLSchema,
   type SelectionSetNode,
   type FieldNode,
-  GraphQLObjectType,
-  GraphQLNonNull,
-  GraphQLList,
-  isObjectType,
-  isScalarType,
-  isEnumType,
 } from 'graphql';
 
 /**
  * Unwrap NonNull and List wrappers to get the base named type.
+ * Uses duck typing (checking ofType property) to avoid cross-realm instanceof failures
+ * when multiple graphql module instances exist (e.g., in test environments with tsx).
  */
 function unwrapType(type: any): any {
-  if (type instanceof GraphQLNonNull || type instanceof GraphQLList) {
+  // NonNull and List wrappers have an `ofType` property; named types do not
+  if (type && typeof type === 'object' && type.ofType !== undefined) {
     return unwrapType(type.ofType);
   }
   return type;
@@ -139,8 +135,10 @@ function calculateSelectionSetCost(
         newStack,
         variables
       );
-    } else if (fieldType && isObjectType(fieldType)) {
+    } else if (fieldType && typeof fieldType.getFields === 'function') {
       // Object field (non-connection): cost = 1 * currentMultiplier
+      // Use duck typing (getFields present) instead of isObjectType() to avoid
+      // cross-realm instanceof failures when multiple graphql instances exist.
       cost += 1 * currentMultiplier;
 
       // Recurse with same multiplier stack
