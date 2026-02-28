@@ -25,7 +25,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **SHOP-01**: GraphQL Admin API handles queries and mutations Sandpiper uses — orders, products, customers, inventory, fulfillments
 - [x] **SHOP-02**: OAuth token exchange flow — authorization code → access token, with token validation on subsequent requests
-- [ ] **SHOP-03**: Webhook delivery — state mutations (orderCreate, orderUpdate, productUpdate, fulfillmentCreate) trigger POST to configured callback URLs
+- [x] **SHOP-03**: Webhook delivery — state mutations (orderCreate, orderUpdate, productUpdate, fulfillmentCreate) trigger POST to configured callback URLs
 - [ ] **SHOP-04**: Rate limiting by GraphQL query cost — returns 429 + Retry-After header when cost threshold exceeded
 - [ ] **SHOP-05**: Cursor-based pagination with deterministic, stable results across test runs
 - [ ] **SHOP-06**: Stateful order lifecycle — create → update → fulfill → close with realistic state transitions
@@ -101,7 +101,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | INFRA-09 | Phase 1 | Complete |
 | SHOP-01 | Phase 2 | Complete |
 | SHOP-02 | Phase 2 | Complete |
-| SHOP-03 | Phase 2 | Pending |
+| SHOP-03 | Phase 2 | Complete |
 | SHOP-04 | Phase 4 | Pending |
 | SHOP-05 | Phase 4 | Pending |
 | SHOP-06 | Phase 4 | Pending |

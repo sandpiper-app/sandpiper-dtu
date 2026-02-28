@@ -186,7 +186,7 @@ export const resolvers = {
         return { order: null, userErrors: errors };
       }
 
-      // Create order — use unique placeholder GID, then update with actual ID
+      // Create order with pre-generated GID (DB uses numeric ID; GID returned via type resolver)
       const tempId = Date.now() + Math.floor(Math.random() * 100000);
       const orderId = context.stateManager.createOrder({
         gid: createGID('Order', tempId),
