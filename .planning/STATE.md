@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 06-05-PLAN.md — UI gap closure (webhook form, product price, order line items, load fixtures)
-last_updated: "2026-02-28T22:48:55.263Z"
+stopped_at: Completed 06-04-PLAN.md
+last_updated: "2026-02-28T22:52:12.304Z"
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 22
-  completed_plans: 20
-  percent: 91
+  completed_plans: 21
+  percent: 95
 ---
 
 # Project State: Sandpiper DTU
@@ -22,14 +22,14 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 6 in progress — 06-05 gap closure complete (webhook form, product price, order line items, load fixtures).
+**Current Focus:** Phase 6 in progress — 06-04 API conformance audit complete (GET methods, form-urlencoded, token-in-body/query auth).
 
 ## Current Position
 
-**Phase:** Phase 6 — 06-05 complete
-**Plan:** 06-05 — UI gap closure: webhook subscription form, product price, order-product association, load fixtures buttons
+**Phase:** Phase 6 — 06-04 complete
+**Plan:** 06-04 — Comprehensive API conformance audit and fix for Slack and Shopify twins
 **Status:** Phase 6 in progress
-**Progress:** [█████████░] 91%
+**Progress:** [██████████] 95%
 
 ## Performance Metrics
 
@@ -41,6 +41,13 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-02-28 - Plan 06-04 Execution:**
+- extractBearerToken() replaced by extractToken() with 3-way priority: Bearer header > body.token > query.token (matching real Slack API)
+- GET routes added for all Slack read methods — getParams(request) helper unifies GET query / POST body extraction
+- @fastify/formbody registered at root Fastify scope in index.ts before other plugins so oauth and web-api routes parse form-urlencoded
+- @fastify/formbody added as direct dependency to twins/slack and twins/shopify (was only transitive via @dtu/ui)
+- Blocks JSON string parsing in chat.postMessage/update: typeof blocks === 'string' ? JSON.parse(blocks) : blocks
 
 **2026-02-28 - Plan 06-05 Execution:**
 - hasContentTypeParser() guard in registerUI(): parent scope registers formbody at root; child uiPlugin must skip re-registration to avoid FST_ERR_CTP_ALREADY_PRESENT in Fastify v5
@@ -185,7 +192,7 @@ None.
 ## Session Continuity
 
 **Last completed:** Phase 6 Plan 05 - UI gap closure (webhook form, product price, order line items, load fixtures)
-**Stopped at:** Completed 06-05-PLAN.md — UI gap closure (webhook form, product price, order line items, load fixtures)
+**Stopped at:** Completed 06-04-PLAN.md
 **Timestamp:** 2026-02-28
 
 **For next session:**
