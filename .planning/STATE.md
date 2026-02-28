@@ -1,3 +1,18 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: completed
+stopped_at: Completed 06-05-PLAN.md — UI gap closure (webhook form, product price, order line items, load fixtures)
+last_updated: "2026-02-28T22:48:55.263Z"
+progress:
+  total_phases: 6
+  completed_phases: 5
+  total_plans: 22
+  completed_plans: 20
+  percent: 91
+---
+
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-02-28
@@ -7,14 +22,14 @@
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 6 complete — all 3 plans done (UI package, Shopify UI, Slack UI).
+**Current Focus:** Phase 6 in progress — 06-05 gap closure complete (webhook form, product price, order line items, load fixtures).
 
 ## Current Position
 
-**Phase:** Phase 6 complete — all plans done
-**Plan:** All phase 6 plans (06-01, 06-02, 06-03) complete
-**Status:** Phase 6 complete
-**Progress:** [██████████] 100%
+**Phase:** Phase 6 — 06-05 complete
+**Plan:** 06-05 — UI gap closure: webhook subscription form, product price, order-product association, load fixtures buttons
+**Status:** Phase 6 in progress
+**Progress:** [█████████░] 91%
 
 ## Performance Metrics
 
@@ -26,6 +41,12 @@
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-02-28 - Plan 06-05 Execution:**
+- hasContentTypeParser() guard in registerUI(): parent scope registers formbody at root; child uiPlugin must skip re-registration to avoid FST_ERR_CTP_ALREADY_PRESENT in Fastify v5
+- Self-contained orders/form.eta: replaced include('form', it) passthrough with full template supporting product line item checkboxes not expressible via shared form partial field array
+- extractLineItems() helper: parses form checkbox pairs (line_product_{id} + line_qty_{id}) into JSON line_items array for order storage
+- Price field added to StateManager products schema: TEXT column matching Shopify's decimal-string format
 
 **2026-02-28 - Plan 06-03 Execution:**
 - Channel detail as message timeline: chronological messages with user name lookup, inline Post Message form at bottom — matching Slack UX metaphor
@@ -163,19 +184,20 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 6 Plan 03 - Slack Twin UI with message timeline
-**Stopped at:** Completed 06-03-PLAN.md — Slack Twin UI with message timeline, user management, admin dashboard
+**Last completed:** Phase 6 Plan 05 - UI gap closure (webhook form, product price, order line items, load fixtures)
+**Stopped at:** Completed 06-05-PLAN.md — UI gap closure (webhook form, product price, order line items, load fixtures)
 **Timestamp:** 2026-02-28
 
 **For next session:**
-1. Phase 6 plans complete:
+1. Phase 6 plans complete so far:
    - 06-01: @dtu/ui shared package with registerUI(), 6 Eta partials, Pico CSS
    - 06-02: Shopify twin UI (orders, products, customers, admin with webhooks)
    - 06-03: Slack twin UI (channels with message timeline, users, admin with event subscriptions)
-2. 58 Slack twin tests pass (11 smoke + 18 web-api + 19 UI + 10 integration)
-3. 217/218 monorepo tests pass — 1 pre-existing flaky DLQ timing test in Shopify integration
-4. All Phase 6 success criteria met
-5. Ready for Phase 7 (final phase - integration/polish)
+   - 06-05: UI gap closure (webhook create form, product price field, order-product association, load fixtures buttons)
+2. 59 Slack twin tests pass (11 smoke + 18 web-api + 20 UI + 10 integration)
+3. 222/223 monorepo tests pass — 1 pre-existing flaky DLQ timing test in Shopify integration
+4. Phase 6 plan 06-04 and 06-06 still pending (UAT plan and API conformance plan)
+5. Pre-existing uncommitted changes in twins/shopify/src/index.ts and twins/slack/src/index.ts (formbody at root scope)
 
 **Context required:**
 - .planning/phases/06-twin-uis/06-03-SUMMARY.md
