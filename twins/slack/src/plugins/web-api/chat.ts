@@ -14,11 +14,13 @@ import { validateBlocks } from '../../services/block-kit-validator.js';
 import { generateMessageTs } from '../../services/id-generator.js';
 import type { SlackStateManager } from '../../state/slack-state-manager.js';
 import type { SlackRateLimiter } from '../../services/rate-limiter.js';
+import type { EventDispatcher } from '../../services/event-dispatcher.js';
 
 declare module 'fastify' {
   interface FastifyInstance {
     slackStateManager: SlackStateManager;
     rateLimiter: SlackRateLimiter;
+    eventDispatcher: EventDispatcher;
   }
 }
 
@@ -90,7 +92,29 @@ const chatPlugin: FastifyPluginAsync = async (fastify) => {
       ts,
     });
 
-    // 8. Return Slack-format response (ts is STRING, not number)
+    // 8. Dispatch Events API events (fire-and-forget, like real Slack)
+    // Dispatch message event
+    fastify.eventDispatcher.dispatch('message', {
+      channel,
+      user: userId,
+      text: text ?? '',
+      ts,
+      channel_type: 'channel',
+    });
+
+    // Dispatch app_mention if message mentions bot
+    if (text && text.includes('<@U_BOT_TWIN>')) {
+      fastify.eventDispatcher.dispatch('app_mention', {
+        type: 'app_mention',
+        user: userId,
+        text,
+        ts,
+        channel,
+        channel_type: 'channel',
+      });
+    }
+
+    // 9. Return Slack-format response (ts is STRING, not number)
     return {
       ok: true,
       channel,

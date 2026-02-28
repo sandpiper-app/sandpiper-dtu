@@ -14,12 +14,16 @@ import { randomUUID } from 'node:crypto';
 import { SqliteDeadLetterStore, WebhookQueue } from '@dtu/webhooks';
 import { SlackStateManager } from './state/slack-state-manager.js';
 import { SlackRateLimiter } from './services/rate-limiter.js';
+import { EventDispatcher } from './services/event-dispatcher.js';
+import { InteractionHandler } from './services/interaction-handler.js';
 import healthPlugin from './plugins/health.js';
 import oauthPlugin from './plugins/oauth.js';
 import adminPlugin from './plugins/admin.js';
 import chatPlugin from './plugins/web-api/chat.js';
 import conversationsPlugin from './plugins/web-api/conversations.js';
 import usersPlugin from './plugins/web-api/users.js';
+import eventsApiPlugin from './plugins/events-api.js';
+import interactionsPlugin from './plugins/interactions.js';
 
 import type { DeadLetterStore } from '@dtu/webhooks';
 
@@ -30,6 +34,8 @@ declare module 'fastify' {
     deadLetterStore: DeadLetterStore;
     signingSecret: string;
     rateLimiter: SlackRateLimiter;
+    eventDispatcher: EventDispatcher;
+    interactionHandler: InteractionHandler;
   }
 }
 
@@ -74,12 +80,27 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
   // Initialize rate limiter
   const rateLimiter = new SlackRateLimiter();
 
+  // Initialize event dispatcher
+  const eventDispatcher = new EventDispatcher({
+    webhookQueue,
+    slackStateManager,
+    signingSecret,
+  });
+
+  // Initialize interaction handler
+  const interactionHandler = new InteractionHandler({
+    slackStateManager,
+    signingSecret,
+  });
+
   // Decorate Fastify with services
   fastify.decorate('slackStateManager', slackStateManager);
   fastify.decorate('webhookQueue', webhookQueue);
   fastify.decorate('deadLetterStore', deadLetterStore);
   fastify.decorate('signingSecret', signingSecret);
   fastify.decorate('rateLimiter', rateLimiter);
+  fastify.decorate('eventDispatcher', eventDispatcher);
+  fastify.decorate('interactionHandler', interactionHandler);
 
   // Register plugins
   await fastify.register(healthPlugin);
@@ -88,6 +109,8 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
   await fastify.register(chatPlugin);
   await fastify.register(conversationsPlugin);
   await fastify.register(usersPlugin);
+  await fastify.register(eventsApiPlugin);
+  await fastify.register(interactionsPlugin);
 
   // Graceful shutdown
   fastify.addHook('onClose', async () => {
