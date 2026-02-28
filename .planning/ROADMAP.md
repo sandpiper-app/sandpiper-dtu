@@ -101,7 +101,12 @@ Plans:
   6. Developer submits message with 51 blocks and receives validation error (50-block limit)
   7. Developer makes rapid API calls and receives 429 response with tier-appropriate rate limit
   8. Twin passes Bolt-style url_verification challenge on Events API endpoint
-**Plans**: TBD
+**Plans**: 3 plans in 3 waves
+
+Plans:
+- [ ] 05-01-PLAN.md — Slack twin foundation: package, SlackStateManager, buildApp, health/admin/OAuth plugins
+- [ ] 05-02-PLAN.md — Web API methods, token auth, Block Kit validation, tier-based rate limiting
+- [ ] 05-03-PLAN.md — Events API delivery, url_verification, Block Kit interactions, response URLs, integration tests
 
 ### Phase 6: Twin UIs
 **Goal**: Web interfaces enable manual state inspection and testing without API calls
@@ -136,7 +141,7 @@ Plans:
 | 2. Shopify Twin - Core Operations | 5/5 | Complete | 2026-02-27 |
 | 3. Webhook System & Conformance Framework | 3/3 | Complete    | 2026-02-28 |
 | 4. Shopify Twin - Advanced Features | 3/3 | Complete    | 2026-02-28 |
-| 5. Slack Twin - Web API & Events | 0/? | Not started | - |
+| 5. Slack Twin - Web API & Events | 0/3 | Not started | - |
 | 6. Twin UIs | 0/? | Not started | - |
 | 7. Integration & E2E Testing | 0/? | Not started | - |
 
@@ -164,4 +169,4 @@ Phase 2 (Shopify Core) ──→ Phase 3 (Webhooks/Conformance)
 - Phase 7 integrates twins with Sandpiper after UIs prove twins work independently
 
 ---
-*Last updated: 2026-02-28 after Phase 4 planning*
+*Last updated: 2026-02-28 after Phase 5 planning*
