@@ -64,7 +64,12 @@ Plans:
   3. Developer can run conformance suite against both Shopify twin and real Shopify dev store with single command
   4. Conformance suite reports behavioral differences (response mismatches, missing fields, incorrect error codes)
   5. CI runs conformance suites on schedule to detect upstream API drift
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves
+
+Plans:
+- [ ] 03-01-PLAN.md — Create @dtu/webhooks shared package with async queue, retry/backoff, and dead letter store
+- [ ] 03-02-PLAN.md — Create @dtu/conformance shared package with runner, adapter interface, comparator, and CLI
+- [ ] 03-03-PLAN.md — Integrate webhooks into Shopify twin, create conformance suites, and set up CI
 
 ### Phase 4: Shopify Twin - Advanced Features
 **Goal**: Shopify twin handles complex features like query cost, pagination, and order lifecycle
@@ -124,7 +129,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Foundation & Monorepo Setup | 0/2 | Not started | - |
 | 2. Shopify Twin - Core Operations | 0/3 | Not started | - |
-| 3. Webhook System & Conformance Framework | 0/? | Not started | - |
+| 3. Webhook System & Conformance Framework | 0/3 | Not started | - |
 | 4. Shopify Twin - Advanced Features | 0/? | Not started | - |
 | 5. Slack Twin - Web API & Events | 0/? | Not started | - |
 | 6. Twin UIs | 0/? | Not started | - |
@@ -154,4 +159,4 @@ Phase 2 (Shopify Core) ──→ Phase 3 (Webhooks/Conformance)
 - Phase 7 integrates twins with Sandpiper after UIs prove twins work independently
 
 ---
-*Last updated: 2026-02-27 after Phase 2 planning*
+*Last updated: 2026-02-27 after Phase 3 planning*
