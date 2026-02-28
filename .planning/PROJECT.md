@@ -14,23 +14,23 @@ Sandpiper's integration tests can run against twins that behave identically to r
 
 ### Validated
 
-(None yet — ship to validate)
+- Shopify twin replicates GraphQL API surface used by Sandpiper — Phases 2, 4
+- Shopify twin handles OAuth flows (token exchange) — Phase 2
+- Shopify twin delivers webhooks to configured callback URLs on state changes — Phase 3
+- Slack twin replicates Web API, Events API, and OAuth installation flow — Phase 5
+- Slack twin supports Block Kit interactions (block_actions/button clicks) — Phase 5
+- Slack twin delivers event webhooks on state changes (messages, app_mention, reaction_added) — Phase 5
+- Each twin manages internal state (SQLite, resettable in <100ms) — Phases 1-5
+- Each twin simulates error responses, rate limiting, auth failures, and pagination — Phases 2, 4, 5
+- Conformance test suites validate twin behavior against real sandbox APIs — Phase 3
+- Conformance suites run periodically to catch upstream API drift — Phase 3
+- Shared monorepo infrastructure (test harness, HTTP framework, validation tools) — Phase 1
 
 ### Active
 
-- [ ] Shopify twin replicates GraphQL API surface used by Sandpiper (orders, products, customers, inventory, fulfillments)
-- [ ] Shopify twin handles OAuth flows (token exchange, refresh)
-- [ ] Shopify twin delivers webhooks to configured callback URLs on state changes
-- [ ] Slack twin replicates Web API, Events API, and OAuth installation flow
-- [ ] Slack twin supports Block Kit interactions (actions, modals, message updates)
-- [ ] Slack twin delivers event webhooks on state changes (messages, reactions, app mentions)
-- [ ] Each twin manages internal state (SQLite or in-memory, whichever fits)
-- [ ] Each twin simulates error responses, rate limiting, auth failures, and pagination
-- [ ] Conformance test suites validate twin behavior against real sandbox APIs
-- [ ] Conformance suites run periodically to catch upstream API drift
 - [ ] Base URL swap lets Sandpiper point integration clients at twin URLs
 - [ ] Docker-compose overlay wires twins + Sandpiper together for CI/E2E
-- [ ] Shared monorepo infrastructure (test harness, HTTP framework, validation tools)
+- [ ] Twin UIs for state inspection and manual testing
 
 ### Out of Scope
 
@@ -71,12 +71,14 @@ Sandpiper's integration tests can run against twins that behave identically to r
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| TypeScript + Express over Go | Same language as Sandpiper, shared types, team familiarity | — Pending |
-| Monorepo with shared tooling | Twins share HTTP framework, test harness, validation tools | — Pending |
-| Shopify + Slack first | Critical tier in Sandpiper, largest API surface, highest test value | — Pending |
-| Conformance suites against real APIs | Catches twin drift, guarantees behavioral fidelity | — Pending |
-| Active webhook push | Full simulation of real service behavior, not just request-response | — Pending |
-| SQLite/in-memory state | Fast, deterministic, no external deps, resettable between runs | — Pending |
+| TypeScript + Fastify over Go | Same language as Sandpiper, shared types, Fastify plugin architecture | Validated — both twins work well |
+| Monorepo with shared tooling | Twins share HTTP framework, state management, webhooks, test harness | Validated — @dtu/* packages reused across twins |
+| Shopify + Slack first | Critical tier in Sandpiper, largest API surface, highest test value | Validated — both twins complete |
+| Conformance suites against real APIs | Catches twin drift, guarantees behavioral fidelity | Validated — framework built |
+| Active webhook push | Full simulation of real service behavior, not just request-response | Validated — WebhookQueue with retry/DLQ |
+| SQLite/in-memory state | Fast, deterministic, no external deps, resettable between runs | Validated — <100ms reset |
+| Composition over inheritance for state | SlackStateManager wraps StateManager, keeps base clean | Validated — better separation |
+| HTTP 200 for Slack API errors | Matching real Slack convention ({ok: false} on 200, not 4xx) | Validated — SDK-compatible |
 
 ---
-*Last updated: 2026-02-27 after initialization*
+*Last updated: 2026-02-28 after Phase 5*
