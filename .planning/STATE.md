@@ -1,20 +1,20 @@
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-02-28
-**Status:** Milestone complete
+**Status:** Phase 4 in progress
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 3 complete. @dtu/webhooks, @dtu/conformance, and Shopify conformance suite all shipped. Ready for Phase 4 (Shopify Advanced Features).
+**Current Focus:** Phase 4 in progress. Plans 04-01 (rate limiter + query cost) and 04-02 (cursor pagination) complete. Relay-spec cursor pagination and leaky bucket rate limiting now operational in Shopify twin.
 
 ## Current Position
 
-**Phase:** Phase 3 - Webhook System & Conformance Framework
-**Plan:** 03-01 complete, 03-02 complete, 03-03 complete
-**Status:** Phase 3 complete
-**Progress:** [██████████] 100%
+**Phase:** Phase 4 - Shopify Twin Advanced Features
+**Plan:** 04-01 complete, 04-02 complete
+**Status:** Phase 4 in progress
+**Progress:** [█████████░] 85%
 
 ## Performance Metrics
 
@@ -26,6 +26,18 @@
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-02-28 - Plan 04-02 Execution:**
+- Relay cursor format includes resource type: base64(arrayconnection:{Type}:{id}) prevents cross-resource cursor injection
+- ORDER BY id ASC replaces created_at DESC: AUTOINCREMENT id guarantees monotonic ordering; created_at unreliable when fixtures loaded rapidly
+- Duck typing for GraphQL cross-realm type checking: ofType property for NonNull/List, getFields() for object type detection — replaces instanceof/isObjectType which fail when graphql module loads twice under tsx/ESM
+- hasPreviousPage = true when after cursor provided OR when last sliced fewer than available items
+
+**2026-02-28 - Plan 04-01 Execution:**
+- Query cost: scalars=0, objects=1, connections=2+(first??10), mutations=10 base; nested connections multiply child costs by page size
+- LeakyBucketRateLimiter: 1000pt max, 50pt/s restore, per-token-key bucket; tryConsume returns allowed+retryAfterMs
+- Rate limit integration in graphqlPlugin: pre-check before Yoga execution, HTTP 429 on exhaustion, extensions.cost in all successful responses
+- Cross-realm instanceof fix: use duck typing (ofType, getFields) instead of instanceof/isObjectType for graphql types under tsx/ESM
 
 **2026-02-28 - Plan 03-03 Execution:**
 - tsx/esm loader strategy: 'node --import tsx/esm' enables running compiled CLI with TS source adapters without separate compilation step
@@ -109,24 +121,23 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 3 Plan 03 - Shopify integration with @dtu/webhooks and conformance suites
-**Stopped at:** Completed 03-03-PLAN.md
+**Last completed:** Phase 4 Plan 02 - Relay cursor pagination and rate limiter integration
+**Stopped at:** Completed 04-02-PLAN.md
 **Timestamp:** 2026-02-28
 
 **For next session:**
-1. Phase 3 complete — all 3 plans shipped:
-   - 03-01: @dtu/webhooks package (WebhookQueue, SqliteDeadLetterStore)
-   - 03-02: @dtu/conformance framework (runner, adapters, CLI)
-   - 03-03: Shopify integration (async queue, DLQ admin, GraphQL subscription, conformance suites)
-2. `pnpm --filter @dtu/twin-shopify run conformance:twin` passes 10/10 tests
-3. All 37 Shopify twin integration tests pass
-4. CI workflow at .github/workflows/conformance.yml ready for deployment
-5. Next: Phase 4 (Shopify Advanced Features) or research phase
+1. Phase 4 plans complete so far:
+   - 04-01: Query cost calculator + LeakyBucketRateLimiter services + app integration
+   - 04-02: Relay cursor pagination (encodeCursor/decodeCursor, PageInfo, paginate() helper, id ASC ordering)
+2. All 88 Shopify twin tests pass (6 test files)
+3. Rate limiting (extensions.cost, HTTP 429) integrated into graphqlPlugin
+4. Ready for next Phase 4 plan (order lifecycle, webhooks bulk, or other advanced features)
 
 **Context required:**
-- .planning/phases/03-webhook-system-conformance-framework/03-03-SUMMARY.md (this phase)
-- twins/shopify/conformance/ (suite/adapter patterns to reuse for Slack twin)
-- packages/webhooks/src/index.ts (webhook queue API)
+- .planning/phases/04-shopify-twin-advanced-features/04-01-SUMMARY.md
+- .planning/phases/04-shopify-twin-advanced-features/04-02-SUMMARY.md
+- twins/shopify/src/services/cursor.ts (cursor utilities)
+- twins/shopify/src/schema/resolvers.ts (paginate() helper pattern)
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*

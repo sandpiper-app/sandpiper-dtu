@@ -27,7 +27,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **SHOP-02**: OAuth token exchange flow — authorization code → access token, with token validation on subsequent requests
 - [x] **SHOP-03**: Webhook delivery — state mutations (orderCreate, orderUpdate, productUpdate, fulfillmentCreate) trigger POST to configured callback URLs
 - [ ] **SHOP-04**: Rate limiting by GraphQL query cost — returns 429 + Retry-After header when cost threshold exceeded
-- [ ] **SHOP-05**: Cursor-based pagination with deterministic, stable results across test runs
+- [x] **SHOP-05**: Cursor-based pagination with deterministic, stable results across test runs
 - [ ] **SHOP-06**: Stateful order lifecycle — create → update → fulfill → close with realistic state transitions
 - [x] **SHOP-07**: X-Shopify-Access-Token header validation on all API requests
 
@@ -103,7 +103,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | SHOP-02 | Phase 2 | Complete |
 | SHOP-03 | Phase 2 | Complete |
 | SHOP-04 | Phase 4 | Pending |
-| SHOP-05 | Phase 4 | Pending |
+| SHOP-05 | Phase 4 | Complete |
 | SHOP-06 | Phase 4 | Pending |
 | SHOP-07 | Phase 2 | Complete |
 | SLCK-01 | Phase 5 | Pending |
