@@ -13,12 +13,15 @@ CREATE TABLE IF NOT EXISTS tokens (
 -- Orders
 CREATE TABLE IF NOT EXISTS orders (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  gid TEXT UNIQUE NOT NULL,          -- Shopify GID: gid://shopify/Order/{id}
-  name TEXT,                          -- Order name: #1001
-  total_price TEXT,                   -- Total price as string
-  currency_code TEXT,                 -- Currency code: USD
-  customer_gid TEXT,                  -- Reference to customer GID
-  line_items TEXT,                    -- JSON array of line items
+  gid TEXT UNIQUE NOT NULL,                            -- Shopify GID: gid://shopify/Order/{id}
+  name TEXT,                                           -- Order name: #1001
+  total_price TEXT,                                    -- Total price as string
+  currency_code TEXT,                                  -- Currency code: USD
+  customer_gid TEXT,                                   -- Reference to customer GID
+  line_items TEXT,                                     -- JSON array of line items
+  display_fulfillment_status TEXT DEFAULT 'UNFULFILLED', -- Fulfillment lifecycle status
+  display_financial_status TEXT DEFAULT 'PENDING',     -- Financial lifecycle status
+  closed_at INTEGER,                                   -- Unix timestamp when order was closed, NULL if open
   created_at INTEGER NOT NULL,
   updated_at INTEGER NOT NULL
 );

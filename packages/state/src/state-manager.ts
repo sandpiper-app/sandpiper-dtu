@@ -47,6 +47,9 @@ export class StateManager {
   private createErrorConfigStmt: Database.Statement | null = null;
   private getErrorConfigStmt: Database.Statement | null = null;
   private clearErrorConfigsStmt: Database.Statement | null = null;
+  private updateOrderFulfillmentStatusStmt: Database.Statement | null = null;
+  private updateOrderFinancialStatusStmt: Database.Statement | null = null;
+  private closeOrderStmt: Database.Statement | null = null;
 
   constructor(options: StateManagerOptions = {}) {
     this.dbPath = options.dbPath ?? ':memory:';
@@ -99,6 +102,9 @@ export class StateManager {
       this.createErrorConfigStmt = null;
       this.getErrorConfigStmt = null;
       this.clearErrorConfigsStmt = null;
+      this.updateOrderFulfillmentStatusStmt = null;
+      this.updateOrderFinancialStatusStmt = null;
+      this.closeOrderStmt = null;
     }
     this.init();
   }
@@ -136,6 +142,9 @@ export class StateManager {
       this.createErrorConfigStmt = null;
       this.getErrorConfigStmt = null;
       this.clearErrorConfigsStmt = null;
+      this.updateOrderFulfillmentStatusStmt = null;
+      this.updateOrderFinancialStatusStmt = null;
+      this.closeOrderStmt = null;
     }
   }
 
@@ -223,6 +232,9 @@ export class StateManager {
         currency_code TEXT,
         customer_gid TEXT,
         line_items TEXT,
+        display_fulfillment_status TEXT DEFAULT 'UNFULFILLED',
+        display_financial_status TEXT DEFAULT 'PENDING',
+        closed_at INTEGER,
         created_at INTEGER NOT NULL,
         updated_at INTEGER NOT NULL
       );
@@ -308,7 +320,7 @@ export class StateManager {
     this.getTokenStmt = db.prepare('SELECT * FROM tokens WHERE token = ?');
 
     this.createOrderStmt = db.prepare(
-      'INSERT INTO orders (gid, name, total_price, currency_code, customer_gid, line_items, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+      'INSERT INTO orders (gid, name, total_price, currency_code, customer_gid, line_items, display_fulfillment_status, display_financial_status, closed_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
     );
     this.updateOrderStmt = db.prepare(
       'UPDATE orders SET name = ?, total_price = ?, currency_code = ?, customer_gid = ?, line_items = ?, updated_at = ? WHERE id = ?'
@@ -348,6 +360,16 @@ export class StateManager {
     );
     this.getErrorConfigStmt = db.prepare('SELECT * FROM error_configs WHERE operation_name = ?');
     this.clearErrorConfigsStmt = db.prepare('DELETE FROM error_configs');
+
+    this.updateOrderFulfillmentStatusStmt = db.prepare(
+      'UPDATE orders SET display_fulfillment_status = ?, updated_at = ? WHERE id = ?'
+    );
+    this.updateOrderFinancialStatusStmt = db.prepare(
+      'UPDATE orders SET display_financial_status = ?, updated_at = ? WHERE id = ?'
+    );
+    this.closeOrderStmt = db.prepare(
+      'UPDATE orders SET closed_at = ?, updated_at = ? WHERE id = ?'
+    );
   }
 
   // Shopify-specific methods
@@ -370,7 +392,7 @@ export class StateManager {
   }
 
   /** Create an order and return its ID */
-  createOrder(data: { gid: string; name?: string; total_price?: string; currency_code?: string; customer_gid?: string; line_items?: any }): number {
+  createOrder(data: { gid: string; name?: string; total_price?: string; currency_code?: string; customer_gid?: string; line_items?: any; financial_status?: string }): number {
     if (!this.createOrderStmt) {
       throw new Error('StateManager not initialized. Call init() first.');
     }
@@ -383,6 +405,9 @@ export class StateManager {
       data.currency_code ?? null,
       data.customer_gid ?? null,
       lineItemsJson,
+      'UNFULFILLED',
+      data.financial_status ?? 'PENDING',
+      null, // closed_at
       now,
       now
     );
@@ -429,6 +454,33 @@ export class StateManager {
       throw new Error('StateManager not initialized. Call init() first.');
     }
     return this.listOrdersStmt.all();
+  }
+
+  /** Update the display_fulfillment_status of an order */
+  updateOrderFulfillmentStatus(id: number, status: string): void {
+    if (!this.updateOrderFulfillmentStatusStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    const now = Math.floor(Date.now() / 1000);
+    this.updateOrderFulfillmentStatusStmt.run(status, now, id);
+  }
+
+  /** Update the display_financial_status of an order */
+  updateOrderFinancialStatus(id: number, status: string): void {
+    if (!this.updateOrderFinancialStatusStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    const now = Math.floor(Date.now() / 1000);
+    this.updateOrderFinancialStatusStmt.run(status, now, id);
+  }
+
+  /** Close an order by setting closed_at to the current unix timestamp */
+  closeOrder(id: number): void {
+    if (!this.closeOrderStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    const now = Math.floor(Date.now() / 1000);
+    this.closeOrderStmt.run(now, now, id);
   }
 
   /** Create a product and return its ID */
