@@ -1,0 +1,27 @@
+{
+  "name": "@dtu/conformance",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "dtu-conformance": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "dependencies": {
+    "deep-diff": "^1.0.2"
+  },
+  "devDependencies": {
+    "@types/deep-diff": "^1.0.5",
+    "typescript": "^5.7.3"
+  }
+}
