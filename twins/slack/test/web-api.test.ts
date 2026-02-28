@@ -275,4 +275,179 @@ describe('Slack Web API', () => {
       expect(limited[0].body.error).toBe('ratelimited');
     });
   });
+
+  // =========================================================================
+  // API Conformance: GET access for read methods
+  // =========================================================================
+  describe('API Conformance: GET access for read methods', () => {
+    it('GET /api/conversations.list with Bearer token returns channels', async () => {
+      const res = await app.inject({
+        method: 'GET',
+        url: '/api/conversations.list',
+        headers: { authorization: `Bearer ${botToken}` },
+      });
+      expect(res.statusCode).toBe(200);
+      const body = JSON.parse(res.body);
+      expect(body.ok).toBe(true);
+      expect(body.channels).toBeInstanceOf(Array);
+      expect(body.channels.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('GET /api/conversations.list without auth returns not_authed', async () => {
+      const res = await app.inject({
+        method: 'GET',
+        url: '/api/conversations.list',
+      });
+      expect(res.statusCode).toBe(200);
+      const body = JSON.parse(res.body);
+      expect(body.ok).toBe(false);
+      expect(body.error).toBe('not_authed');
+    });
+
+    it('GET /api/conversations.info?channel=C_GENERAL returns channel data', async () => {
+      const res = await app.inject({
+        method: 'GET',
+        url: '/api/conversations.info?channel=C_GENERAL',
+        headers: { authorization: `Bearer ${botToken}` },
+      });
+      expect(res.statusCode).toBe(200);
+      const body = JSON.parse(res.body);
+      expect(body.ok).toBe(true);
+      expect(body.channel.id).toBe('C_GENERAL');
+    });
+
+    it('GET /api/conversations.history?channel=C_GENERAL returns messages', async () => {
+      // Post a message first
+      await apiPost('chat.postMessage', { channel: 'C_GENERAL', text: 'get-history-test' });
+
+      const res = await app.inject({
+        method: 'GET',
+        url: '/api/conversations.history?channel=C_GENERAL',
+        headers: { authorization: `Bearer ${botToken}` },
+      });
+      expect(res.statusCode).toBe(200);
+      const body = JSON.parse(res.body);
+      expect(body.ok).toBe(true);
+      expect(body.messages).toBeInstanceOf(Array);
+      expect(body.messages.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('GET /api/users.list with Bearer token returns members', async () => {
+      const res = await app.inject({
+        method: 'GET',
+        url: '/api/users.list',
+        headers: { authorization: `Bearer ${botToken}` },
+      });
+      expect(res.statusCode).toBe(200);
+      const body = JSON.parse(res.body);
+      expect(body.ok).toBe(true);
+      expect(body.members).toBeInstanceOf(Array);
+      expect(body.members.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('GET /api/users.info?user=U_BOT_TWIN returns user data', async () => {
+      const res = await app.inject({
+        method: 'GET',
+        url: '/api/users.info?user=U_BOT_TWIN',
+        headers: { authorization: `Bearer ${botToken}` },
+      });
+      expect(res.statusCode).toBe(200);
+      const body = JSON.parse(res.body);
+      expect(body.ok).toBe(true);
+      expect(body.user.id).toBe('U_BOT_TWIN');
+    });
+  });
+
+  // =========================================================================
+  // API Conformance: form-urlencoded body support
+  // =========================================================================
+  describe('API Conformance: form-urlencoded body', () => {
+    it('POST /api/chat.postMessage with form-urlencoded body works', async () => {
+      const res = await app.inject({
+        method: 'POST',
+        url: '/api/chat.postMessage',
+        headers: {
+          authorization: `Bearer ${botToken}`,
+          'content-type': 'application/x-www-form-urlencoded',
+        },
+        payload: 'channel=C_GENERAL&text=form-urlencoded+message',
+      });
+      expect(res.statusCode).toBe(200);
+      const body = JSON.parse(res.body);
+      expect(body.ok).toBe(true);
+      expect(body.ts).toBeDefined();
+    });
+
+    it('POST /api/chat.postMessage with blocks as JSON string in form-urlencoded parses blocks', async () => {
+      const blocks = JSON.stringify([{ type: 'section', text: { type: 'mrkdwn', text: 'Hello' } }]);
+      const payload = `channel=C_GENERAL&text=fallback&blocks=${encodeURIComponent(blocks)}`;
+
+      const res = await app.inject({
+        method: 'POST',
+        url: '/api/chat.postMessage',
+        headers: {
+          authorization: `Bearer ${botToken}`,
+          'content-type': 'application/x-www-form-urlencoded',
+        },
+        payload,
+      });
+      expect(res.statusCode).toBe(200);
+      const body = JSON.parse(res.body);
+      expect(body.ok).toBe(true);
+    });
+
+    it('POST /api/oauth.v2.access with form-urlencoded body works', async () => {
+      const res = await app.inject({
+        method: 'POST',
+        url: '/api/oauth.v2.access',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        payload: 'code=test-form-code',
+      });
+      expect(res.statusCode).toBe(200);
+      const body = JSON.parse(res.body);
+      expect(body.ok).toBe(true);
+      expect(body.access_token).toMatch(/^xoxb-/);
+    });
+  });
+
+  // =========================================================================
+  // API Conformance: token-in-body and token-in-query auth
+  // =========================================================================
+  describe('API Conformance: token-in-body and token-in-query auth', () => {
+    it('POST /api/conversations.list with token in JSON body (no Bearer header) authenticates', async () => {
+      const res = await app.inject({
+        method: 'POST',
+        url: '/api/conversations.list',
+        payload: { token: botToken },
+      });
+      expect(res.statusCode).toBe(200);
+      const body = JSON.parse(res.body);
+      expect(body.ok).toBe(true);
+      expect(body.channels).toBeInstanceOf(Array);
+    });
+
+    it('GET /api/conversations.list?token=... (no Bearer header) authenticates', async () => {
+      const res = await app.inject({
+        method: 'GET',
+        url: `/api/conversations.list?token=${botToken}`,
+      });
+      expect(res.statusCode).toBe(200);
+      const body = JSON.parse(res.body);
+      expect(body.ok).toBe(true);
+      expect(body.channels).toBeInstanceOf(Array);
+    });
+
+    it('POST /api/conversations.list with token in form-urlencoded body authenticates', async () => {
+      const res = await app.inject({
+        method: 'POST',
+        url: '/api/conversations.list',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        payload: `token=${botToken}`,
+      });
+      expect(res.statusCode).toBe(200);
+      const body = JSON.parse(res.body);
+      expect(body.ok).toBe(true);
+      expect(body.channels).toBeInstanceOf(Array);
+    });
+  });
 });

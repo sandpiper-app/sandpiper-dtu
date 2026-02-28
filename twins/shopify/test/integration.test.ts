@@ -1062,4 +1062,47 @@ describe('Shopify Twin Integration', () => {
       expect(body.status).toBe('ok');
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // API Conformance: OAuth form-urlencoded (SHOP-02)
+  // ---------------------------------------------------------------------------
+  describe('API Conformance: OAuth form-urlencoded', () => {
+    it('accepts form-urlencoded body for token exchange', async () => {
+      const res = await app.inject({
+        method: 'POST',
+        url: '/admin/oauth/access_token',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        payload: 'code=test-auth-code',
+      });
+      expect(res.statusCode).toBe(200);
+      const body = res.json();
+      expect(body.access_token).toBeDefined();
+      expect(body.scope).toContain('read_orders');
+    });
+
+    it('issues unique token via form-urlencoded and it works for GraphQL auth', async () => {
+      // Get token via form-urlencoded OAuth
+      const oauthRes = await app.inject({
+        method: 'POST',
+        url: '/admin/oauth/access_token',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        payload: 'code=form-test-code',
+      });
+      expect(oauthRes.statusCode).toBe(200);
+      const { access_token } = oauthRes.json();
+      expect(access_token).toBeDefined();
+
+      // Use that token for a GraphQL query
+      const gqlRes = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': access_token },
+        payload: { query: '{ orders(first:5) { edges { node { id } } } }' },
+      });
+      expect(gqlRes.statusCode).toBe(200);
+      const gqlBody = gqlRes.json();
+      expect(gqlBody.data.orders).toBeDefined();
+      expect(gqlBody.errors).toBeUndefined();
+    });
+  });
 });
