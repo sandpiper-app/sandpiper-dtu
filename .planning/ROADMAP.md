@@ -17,6 +17,8 @@
 - [x] **Phase 8: CI & Integration Polish** - Slack conformance in CI, @dtu/core cleanup, Slack error config API, docs fixes (completed 2026-03-01)
 - [x] **Phase 9: Code Quality Cleanup** - Logging fixes, StateManager method gaps, flaky test fix (completed 2026-02-28)
 - [x] **Phase 10: Tech Debt Cleanup** - Wire up InventoryItem, Slack live conformance CI, tsconfig fixes, Dockerfile fixes, ROADMAP staleness (completed 2026-03-01)
+- [ ] **Phase 11: Final Polish** - Shopify /admin/errors endpoint, tsconfig fixes, SUMMARY frontmatter backfill
+- [ ] **Phase 12: Manual Verification** - Automated HMAC e2e test, webhook timing assertion, UI verification script
 
 ## Phase Details
 
@@ -192,6 +194,34 @@ Plans:
 - [ ] 10-01-PLAN.md — Wire up InventoryItem: StateManager CRUD, GraphQL schema/resolvers, admin fixtures, UI views
 - [ ] 10-02-PLAN.md — Slack live conformance CI, tsconfig @dtu/ui paths, Dockerfile EXPOSE fix, ROADMAP staleness
 
+### Phase 11: Final Polish
+**Goal**: Close all remaining integration and documentation tech debt from v1.0 audit
+**Depends on**: Phase 10
+**Requirements**: None (tech debt closure — all requirements already satisfied)
+**Gap Closure:** Closes integration and documentation tech debt from v1.0 final audit
+**Success Criteria** (what must be TRUE):
+  1. Shopify twin exposes `GET /admin/errors`, `GET /admin/errors/:operation`, matching Slack twin's error inspection API
+  2. `twins/shopify/tsconfig.conformance.json` has no reference to deleted `@dtu/core` package
+  3. `twins/slack/tsconfig.json` includes `@dtu/conformance` project reference (matching Shopify)
+  4. All 30 phase SUMMARY.md files include `requirements_completed` in frontmatter
+
+Plans:
+- [ ] 11-01-PLAN.md — Shopify /admin/errors endpoint, tsconfig fixes, SUMMARY frontmatter backfill
+
+### Phase 12: Manual Verification
+**Goal**: Validate human-observable behaviors through automated tests and verification scripts
+**Depends on**: Phase 11
+**Requirements**: None (verification of existing functionality)
+**Gap Closure:** Closes human verification items from v1.0 final audit
+**Success Criteria** (what must be TRUE):
+  1. Automated test verifies HMAC webhook signature end-to-end (sign → deliver → verify)
+  2. Automated test asserts async webhook delivery timing (queued → delivered within expected window)
+  3. UI verification script confirms Shopify layout and Slack message timeline render correctly
+  4. All verification results documented in VERIFICATION.md
+
+Plans:
+- [ ] 12-01-PLAN.md — HMAC e2e test, webhook timing assertion, UI verification script
+
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
@@ -206,6 +236,8 @@ Plans:
 | 8. CI & Integration Polish | 1/1 | Complete   | 2026-03-01 |
 | 9. Code Quality Cleanup | 1/1 | Complete | 2026-02-28 |
 | 10. Tech Debt Cleanup | 2/2 | Complete    | 2026-03-01 |
+| 11. Final Polish | 0/1 | Pending | — |
+| 12. Manual Verification | 0/1 | Pending | — |
 
 ## Dependencies
 
@@ -224,6 +256,10 @@ Phase 2 (Shopify Core) ──→ Phase 3 (Webhooks/Conformance)
                                           Phase 9 (Code Quality)
                                                    ↓
                                           Phase 10 (Tech Debt)
+                                                   ↓
+                                          Phase 11 (Final Polish)
+                                                   ↓
+                                          Phase 12 (Manual Verification)
 ```
 
 **Rationale:**
@@ -237,6 +273,8 @@ Phase 2 (Shopify Core) ──→ Phase 3 (Webhooks/Conformance)
 - Phase 8 polishes CI and integration wiring identified by v1.0 audit
 - Phase 9 resolves code quality tech debt identified by v1.0 audit
 - Phase 10 resolves remaining tech debt from v1.0 re-audit (InventoryItem, CI, build config, Docker)
+- Phase 11 closes final integration and documentation polish from v1.0 final audit
+- Phase 12 validates human-observable behaviors (HMAC, webhook timing, UI) with automated tests
 
 ---
-*Last updated: 2026-03-01 after tech debt cleanup phase added from v1.0 re-audit*
+*Last updated: 2026-03-01 after gap closure phases 11-12 added from v1.0 final audit*
