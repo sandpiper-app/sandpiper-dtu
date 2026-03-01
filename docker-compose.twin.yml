@@ -1,0 +1,51 @@
+# Twin Stack — Shopify + Slack digital twins
+# Usage: docker compose -f docker-compose.twin.yml up --build
+# For CI: docker compose -f docker-compose.twin.yml up -d --build --wait
+# Custom ports: SHOPIFY_TWIN_PORT=4000 SLACK_TWIN_PORT=4001 docker compose -f docker-compose.twin.yml up --build
+
+services:
+  shopify-twin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        TWIN_NAME: shopify
+    ports:
+      - "${SHOPIFY_TWIN_PORT:-3000}:3000"
+    environment:
+      PORT: "3000"
+      DB_PATH: ":memory:"
+      NODE_ENV: production
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.mjs"]
+      interval: 10s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+    networks:
+      - twin-network
+
+  slack-twin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        TWIN_NAME: slack
+    ports:
+      - "${SLACK_TWIN_PORT:-3001}:3001"
+    environment:
+      PORT: "3001"
+      DB_PATH: ":memory:"
+      NODE_ENV: production
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.mjs"]
+      interval: 10s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+    networks:
+      - twin-network
+
+networks:
+  twin-network:
+    driver: bridge
