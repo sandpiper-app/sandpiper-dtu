@@ -10,6 +10,7 @@
     { "path": "../../packages/types" },
     { "path": "../../packages/state" },
     { "path": "../../packages/webhooks" },
-    { "path": "../../packages/conformance" }
+    { "path": "../../packages/conformance" },
+    { "path": "../../packages/ui" }
   ]
 }

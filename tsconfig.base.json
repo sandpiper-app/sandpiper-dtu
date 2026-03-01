@@ -16,7 +16,8 @@
       "@dtu/types": ["./packages/types/src"],
       "@dtu/state": ["./packages/state/src"],
       "@dtu/webhooks": ["./packages/webhooks/src"],
-      "@dtu/conformance": ["./packages/conformance/src"]
+      "@dtu/conformance": ["./packages/conformance/src"],
+      "@dtu/ui": ["./packages/ui/src"]
     }
   },
   "exclude": ["node_modules", "dist"]
