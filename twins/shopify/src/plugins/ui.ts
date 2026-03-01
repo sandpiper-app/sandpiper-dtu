@@ -446,9 +446,11 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
   fastify.post<{ Params: { id: string } }>('/ui/customers/:id', async (req, reply) => {
     const id = parseInt(req.params.id);
     const data = req.body as Record<string, string>;
-    fastify.stateManager.database.prepare(
-      'UPDATE customers SET email = ?, first_name = ?, last_name = ?, updated_at = ? WHERE id = ?'
-    ).run(data.email, data.first_name, data.last_name, Math.floor(Date.now() / 1000), id);
+    fastify.stateManager.updateCustomer(id, {
+      email: data.email,
+      first_name: data.first_name,
+      last_name: data.last_name,
+    });
     return reply.redirect(`/ui/customers/${id}`);
   });
 

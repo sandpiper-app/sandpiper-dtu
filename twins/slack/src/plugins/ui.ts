@@ -296,16 +296,12 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
   fastify.post<{ Params: { id: string } }>('/ui/users/:id', async (req, reply) => {
     const { id } = req.params;
     const data = req.body as Record<string, string>;
-    // SlackStateManager doesn't have an updateUser method, so use direct SQL
-    fastify.slackStateManager.database.prepare(
-      'UPDATE slack_users SET name = ?, real_name = ?, display_name = ?, email = ? WHERE id = ?'
-    ).run(
-      data.name,
-      data.real_name || '',
-      data.display_name || '',
-      data.email || null,
-      id,
-    );
+    fastify.slackStateManager.updateUser(id, {
+      name: data.name,
+      real_name: data.real_name || '',
+      display_name: data.display_name || '',
+      email: data.email || null,
+    });
     return reply.redirect(`/ui/users/${id}`);
   });
 

@@ -31,6 +31,7 @@ export class SlackStateManager {
   private createUserStmt: Database.Statement | null = null;
   private getUserStmt: Database.Statement | null = null;
   private listUsersStmt: Database.Statement | null = null;
+  private updateUserStmt: Database.Statement | null = null;
 
   private createMessageStmt: Database.Statement | null = null;
   private getMessageStmt: Database.Statement | null = null;
@@ -198,6 +199,23 @@ export class SlackStateManager {
 
   listUsers(): any[] {
     return this.listUsersStmt!.all();
+  }
+
+  updateUser(id: string, data: Partial<{
+    name: string;
+    real_name: string;
+    display_name: string;
+    email: string;
+  }>): void {
+    const user = this.getUser(id);
+    if (!user) return;
+    this.updateUserStmt!.run(
+      data.name ?? user.name,
+      data.real_name ?? user.real_name,
+      data.display_name ?? user.display_name,
+      data.email ?? user.email,
+      id,
+    );
   }
 
   // ---------------------------------------------------------------------------
@@ -467,6 +485,9 @@ export class SlackStateManager {
     );
     this.getUserStmt = db.prepare('SELECT * FROM slack_users WHERE id = ?');
     this.listUsersStmt = db.prepare('SELECT * FROM slack_users ORDER BY name ASC');
+    this.updateUserStmt = db.prepare(
+      'UPDATE slack_users SET name = ?, real_name = ?, display_name = ?, email = ? WHERE id = ?'
+    );
 
     this.createMessageStmt = db.prepare(
       'INSERT INTO slack_messages (channel_id, user_id, text, blocks, ts, thread_ts, subtype, edited_user, edited_ts, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
@@ -539,6 +560,7 @@ export class SlackStateManager {
     this.createUserStmt = null;
     this.getUserStmt = null;
     this.listUsersStmt = null;
+    this.updateUserStmt = null;
     this.createMessageStmt = null;
     this.getMessageStmt = null;
     this.listMessagesStmt = null;

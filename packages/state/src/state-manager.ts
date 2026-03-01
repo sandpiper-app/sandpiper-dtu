@@ -38,6 +38,7 @@ export class StateManager {
   private createCustomerStmt: Database.Statement | null = null;
   private getCustomerByGidStmt: Database.Statement | null = null;
   private listCustomersStmt: Database.Statement | null = null;
+  private updateCustomerStmt: Database.Statement | null = null;
   private createWebhookSubscriptionStmt: Database.Statement | null = null;
   private listWebhookSubscriptionsStmt: Database.Statement | null = null;
   private updateProductStmt: Database.Statement | null = null;
@@ -93,6 +94,7 @@ export class StateManager {
       this.createCustomerStmt = null;
       this.getCustomerByGidStmt = null;
       this.listCustomersStmt = null;
+      this.updateCustomerStmt = null;
       this.createWebhookSubscriptionStmt = null;
       this.listWebhookSubscriptionsStmt = null;
       this.updateProductStmt = null;
@@ -133,6 +135,7 @@ export class StateManager {
       this.createCustomerStmt = null;
       this.getCustomerByGidStmt = null;
       this.listCustomersStmt = null;
+      this.updateCustomerStmt = null;
       this.createWebhookSubscriptionStmt = null;
       this.listWebhookSubscriptionsStmt = null;
       this.updateProductStmt = null;
@@ -341,6 +344,9 @@ export class StateManager {
     );
     this.getCustomerByGidStmt = db.prepare('SELECT * FROM customers WHERE gid = ?');
     this.listCustomersStmt = db.prepare('SELECT * FROM customers ORDER BY id ASC');
+    this.updateCustomerStmt = db.prepare(
+      'UPDATE customers SET email = ?, first_name = ?, last_name = ?, updated_at = ? WHERE id = ?'
+    );
 
     this.updateProductStmt = db.prepare(
       'UPDATE products SET title = ?, description = ?, vendor = ?, product_type = ?, price = ?, updated_at = ? WHERE id = ?'
@@ -612,6 +618,21 @@ export class StateManager {
       throw new Error('StateManager not initialized. Call init() first.');
     }
     return this.listCustomersStmt.all();
+  }
+
+  /** Update an existing customer by ID, setting updated_at to current timestamp */
+  updateCustomer(id: number, data: { email?: string; first_name?: string; last_name?: string }): void {
+    if (!this.updateCustomerStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    const now = Math.floor(Date.now() / 1000);
+    this.updateCustomerStmt.run(
+      data.email ?? null,
+      data.first_name ?? null,
+      data.last_name ?? null,
+      now,
+      id
+    );
   }
 
   /** Create a webhook subscription */
