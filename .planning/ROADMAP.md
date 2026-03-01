@@ -142,8 +142,8 @@ Plans:
 **Plans**: 2 plans in 2 waves
 
 Plans:
-- [ ] 07-01-PLAN.md — Docker images for both twins, healthcheck script, integration smoke tests
-- [ ] 07-02-PLAN.md — Docker Compose orchestration and GitHub Actions E2E workflow
+- [x] 07-01-PLAN.md — Docker images for both twins, healthcheck script, integration smoke tests
+- [x] 07-02-PLAN.md — Docker Compose orchestration and GitHub Actions E2E workflow
 
 ### Phase 8: CI & Integration Polish
 **Goal**: Close integration gaps from v1.0 audit — Slack conformance in CI, dead code cleanup, missing API surface, documentation fixes
@@ -202,7 +202,7 @@ Plans:
 | 4. Shopify Twin - Advanced Features | 3/3 | Complete    | 2026-02-28 |
 | 5. Slack Twin - Web API & Events | 3/3 | Complete | 2026-02-28 |
 | 6. Twin UIs | 6/6 | Complete   | 2026-02-28 |
-| 7. Integration & E2E Testing | 0/2 | Not started | - |
+| 7. Integration & E2E Testing | 2/2 | Complete | 2026-03-01 |
 | 8. CI & Integration Polish | 1/1 | Complete   | 2026-03-01 |
 | 9. Code Quality Cleanup | 1/1 | Complete | 2026-02-28 |
 | 10. Tech Debt Cleanup | 0/2 | Not started | - |

@@ -10,6 +10,7 @@ services:
       dockerfile: Dockerfile
       args:
         TWIN_NAME: shopify
+        TWIN_PORT: "3000"
     ports:
       - "${SHOPIFY_TWIN_PORT:-3000}:3000"
     environment:
@@ -31,6 +32,7 @@ services:
       dockerfile: Dockerfile
       args:
         TWIN_NAME: slack
+        TWIN_PORT: "3001"
     ports:
       - "${SLACK_TWIN_PORT:-3001}:3001"
     environment:

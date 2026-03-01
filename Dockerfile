@@ -27,7 +27,7 @@ COPY twins/${TWIN_NAME}/ ./twins/${TWIN_NAME}/
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile
 
-# Build shared packages first (order matters: types → state → core → webhooks → conformance → ui)
+# Build shared packages first (order matters: types → state → webhooks → conformance → ui)
 RUN pnpm --filter="./packages/*" run build
 
 # Build the target twin
@@ -40,6 +40,7 @@ RUN pnpm deploy --filter="@dtu/twin-${TWIN_NAME}" --prod /prod/${TWIN_NAME}
 FROM node:20-slim AS runtime
 
 ARG TWIN_NAME
+ARG TWIN_PORT=3000
 ENV NODE_ENV=production
 
 WORKDIR /app
@@ -79,7 +80,7 @@ COPY scripts/healthcheck.mjs ./healthcheck.mjs
 # Run as non-root user for security
 USER node
 
-EXPOSE 3000
+EXPOSE $TWIN_PORT
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \
   CMD ["node", "healthcheck.mjs"]
