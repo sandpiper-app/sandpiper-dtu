@@ -3,32 +3,32 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 08-01-PLAN.md
-last_updated: "2026-03-01T04:11:56.289Z"
+stopped_at: Completed 09-01-PLAN.md
+last_updated: "2026-02-28T23:57:00.000Z"
 progress:
   total_phases: 9
-  completed_phases: 8
-  total_plans: 25
-  completed_plans: 25
+  completed_phases: 9
+  total_plans: 26
+  completed_plans: 26
   percent: 100
 ---
 
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-01
-**Status:** Ready to plan
+**Status:** Phase 9 complete
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 8 complete — CI integration polish, @dtu/core removal, Slack error admin API.
+**Current Focus:** Phase 9 complete — code quality cleanup, StateManager methods, DLQ test fix.
 
 ## Current Position
 
-**Phase:** Phase 8 — CI Integration Polish (1/1 plans complete)
-**Plan:** 08-01 — CI integration gaps, @dtu/core removal, Slack error config API
-**Status:** Phase 7 complete — all 7 phases done
+**Phase:** Phase 9 — Code Quality Cleanup (1/1 plans complete)
+**Plan:** 09-01 — StateManager methods, UI migration, flaky test fix
+**Status:** All 9 phases complete
 **Progress:** [██████████] 100%
 
 ## Performance Metrics
@@ -41,6 +41,11 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-02-28 - Plan 09-01 Execution:**
+- Use 127.0.0.1:1 instead of localhost:9999 for DLQ tests — port 1 requires root privileges, guaranteeing ECONNREFUSED regardless of dev environment
+- DLQ tests use polling with 50ms interval and 10s deadline instead of fixed setTimeout(600)
+- updateCustomer follows existing updateProduct pattern; updateUser follows existing updateChannel fetch-then-merge pattern
 
 **2026-03-01 - Plan 08-01 Execution:**
 - Separate CI jobs for Shopify vs Slack conformance so failures are independently visible
@@ -208,9 +213,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 8 Plan 01 - CI integration polish, @dtu/core removal, Slack error admin API
-**Stopped at:** Completed 08-01-PLAN.md
-**Timestamp:** 2026-03-01
+**Last completed:** Phase 9 Plan 01 - StateManager methods, UI migration, DLQ test fix
+**Stopped at:** Completed 09-01-PLAN.md
+**Timestamp:** 2026-02-28
 
 **All Phase 6 plans complete:**
 1. 06-01: @dtu/ui shared package with registerUI(), 6 Eta partials, Pico CSS

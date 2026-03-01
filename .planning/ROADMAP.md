@@ -171,7 +171,7 @@ Plans:
   4. DLQ timing test is reliable (no race condition flakiness)
 
 Plans:
-- [ ] 09-01-PLAN.md — Logging fix, StateManager methods, flaky test fix
+- [x] 09-01-PLAN.md — Logging fix, StateManager methods, flaky test fix
 
 ## Progress
 
@@ -185,7 +185,7 @@ Plans:
 | 6. Twin UIs | 6/6 | Complete   | 2026-02-28 |
 | 7. Integration & E2E Testing | 0/2 | Not started | - |
 | 8. CI & Integration Polish | 1/1 | Complete   | 2026-03-01 |
-| 9. Code Quality Cleanup | 0/1 | Not started | - |
+| 9. Code Quality Cleanup | 1/1 | Complete | 2026-02-28 |
 
 ## Dependencies
 
