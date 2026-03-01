@@ -2,34 +2,34 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Completed 06-06-PLAN.md
-last_updated: "2026-02-28T23:08:50.177Z"
+status: in_progress
+stopped_at: Completed 07-01-PLAN.md
+last_updated: "2026-03-01T01:19:06.208Z"
 progress:
-  total_phases: 6
+  total_phases: 7
   completed_phases: 6
-  total_plans: 22
-  completed_plans: 22
-  percent: 100
+  total_plans: 24
+  completed_plans: 23
+  percent: 96
 ---
 
 # Project State: Sandpiper DTU
 
-**Last Updated:** 2026-02-28
-**Status:** Milestone complete
+**Last Updated:** 2026-03-01
+**Status:** Phase 7 in progress
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 6 complete — 06-06 Slack conformance infrastructure (21 tests) and CONFORMANCE.md process documentation complete.
+**Current Focus:** Phase 7 — Docker images built, integration smoke tests passing, Docker Compose next.
 
 ## Current Position
 
-**Phase:** Phase 6 — All plans complete
-**Plan:** 06-06 — Slack conformance infrastructure and CONFORMANCE.md process documentation
-**Status:** Phase 6 complete — milestone v1.0 complete
-**Progress:** [██████████] 100%
+**Phase:** Phase 7 — Integration & E2E Testing (1/2 plans complete)
+**Plan:** 07-01 — Docker images and integration smoke tests
+**Status:** Plan 07-01 complete, executing 07-02
+**Progress:** [██████████] 96%
 
 ## Performance Metrics
 
@@ -41,6 +41,13 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-01 - Plan 07-01 Execution:**
+- node:20-slim (not Alpine) for Docker base: better-sqlite3 native module requires glibc
+- Entire twins/${TWIN_NAME}/src/ copied in runtime stage: .eta views and .graphql schema are runtime dependencies not compiled by tsc
+- pnpm deploy --prod for isolated production node_modules in Docker images
+- Dual-mode smoke tests: in-process via buildApp() for local dev, env var base URLs for Docker/CI
+- @fastify/view triple-slash reference fixes pre-existing tsc --build type errors from pnpm strict isolation
 
 **2026-02-28 - Plan 06-04 Execution:**
 - extractBearerToken() replaced by extractToken() with 3-way priority: Bearer header > body.token > query.token (matching real Slack API)
@@ -196,9 +203,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 6 Plan 06 - Slack conformance infrastructure (21 tests) and CONFORMANCE.md
-**Stopped at:** Completed 06-06-PLAN.md
-**Timestamp:** 2026-02-28
+**Last completed:** Phase 7 Plan 01 - Docker images and integration smoke tests
+**Stopped at:** Completed 07-01-PLAN.md
+**Timestamp:** 2026-03-01
 
 **All Phase 6 plans complete:**
 1. 06-01: @dtu/ui shared package with registerUI(), 6 Eta partials, Pico CSS

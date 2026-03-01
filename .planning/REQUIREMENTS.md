@@ -50,9 +50,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Integration
 
-- [ ] **INTG-01**: Base URL swap — Sandpiper's IntegrationClient points at twin URLs via environment config
+- [x] **INTG-01**: Base URL swap — Sandpiper's IntegrationClient points at twin URLs via environment config
 - [ ] **INTG-02**: Docker Compose overlay (`docker-compose.twin.yml`) starts all twins + Sandpiper, wired together
-- [ ] **INTG-03**: Docker images for each twin with health checks and configurable ports
+- [x] **INTG-03**: Docker images for each twin with health checks and configurable ports
 
 ## v2 Requirements
 
@@ -117,9 +117,9 @@ Deferred to future release. Tracked but not in current roadmap.
 | UI-03 | Phase 6 | Complete |
 | UI-04 | Phase 6 | Complete |
 | UI-05 | Phase 6 | Complete |
-| INTG-01 | Phase 7 | Pending |
+| INTG-01 | Phase 7 | Complete |
 | INTG-02 | Phase 7 | Pending |
-| INTG-03 | Phase 7 | Pending |
+| INTG-03 | Phase 7 | Complete |
 
 **Coverage:**
 - v1 requirements: 30 total
