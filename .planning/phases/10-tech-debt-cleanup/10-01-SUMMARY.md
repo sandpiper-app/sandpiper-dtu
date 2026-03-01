@@ -42,7 +42,7 @@ key-decisions:
 patterns-established:
   - "InventoryItem CRUD follows products pattern: prepared statements, init/reset/close null, public methods"
 
-requirements-completed: [SHOP-01]
+requirements_completed: [SHOP-01]
 
 duration: 8min
 completed: 2026-03-01

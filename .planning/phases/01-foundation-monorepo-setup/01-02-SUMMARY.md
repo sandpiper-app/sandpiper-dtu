@@ -46,7 +46,7 @@ patterns-established:
   - "Test pattern: beforeEach/afterEach with buildApp({ logger: false }), inject() for HTTP"
   - "Plugin pattern: FastifyPluginAsync, no fastify-plugin wrapper, access stateManager via decorator"
 
-requirements-completed: [INFRA-02, INFRA-07, INFRA-08]
+requirements_completed: [INFRA-02, INFRA-07, INFRA-08]
 
 duration: 4 min
 completed: 2026-02-27

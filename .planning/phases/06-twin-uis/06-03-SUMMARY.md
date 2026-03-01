@@ -52,7 +52,7 @@ patterns-established:
   - "Slack UI uiPlugin follows exact same structure as Shopify uiPlugin for consistency"
   - "Channel route ordering: /channels/new before /channels/:id prevents new from being treated as an ID"
 
-requirements-completed: [UI-03, UI-04]
+requirements_completed: [UI-03, UI-04]
 
 duration: 9min
 completed: 2026-02-28

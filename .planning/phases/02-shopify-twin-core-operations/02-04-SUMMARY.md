@@ -33,7 +33,7 @@ key-decisions:
 patterns-established:
   - "Fixtures endpoint pattern: generate GID before any StateManager create call — same as mutation resolvers"
 
-requirements-completed: [SHOP-07, INFRA-04]
+requirements_completed: []
 
 # Metrics
 duration: 3min

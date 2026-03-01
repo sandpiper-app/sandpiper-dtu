@@ -43,7 +43,7 @@ key-decisions:
   - Implement simplified OAuth flow without client_id/client_secret validation (twin-friendly)
   - Add getProduct and getCustomer methods to StateManager for resolver lookups
   - Use prepared statements for all Shopify-specific queries
-requirements-completed: [SHOP-02, SHOP-07, INFRA-03]
+requirements_completed: [SHOP-02, SHOP-07, INFRA-03]
 metrics:
   duration: 6 min
   tasks-completed: 2

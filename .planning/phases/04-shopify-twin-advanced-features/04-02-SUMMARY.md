@@ -58,8 +58,7 @@ patterns-established:
   - "Relay cursor pagination pattern: encodeCursor/decodeCursor with resource type, paginate() generic helper, PageInfo on all connections"
   - "GraphQL type introspection without instanceof: use duck typing (ofType, getFields) for cross-ESM-realm safety"
 
-requirements-completed:
-  - SHOP-05
+requirements_completed: [SHOP-05]
 
 # Metrics
 duration: 9min

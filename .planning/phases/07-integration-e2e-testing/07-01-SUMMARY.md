@@ -44,7 +44,7 @@ patterns-established:
   - "healthcheck.mjs pattern: Node.js http module, no external dependencies"
   - "Integration test base URL swap: SHOPIFY_API_URL / SLACK_API_URL env vars"
 
-requirements-completed: [INTG-01, INTG-03]
+requirements_completed: [INTG-01, INTG-03]
 
 duration: 15min
 completed: 2026-03-01

@@ -63,7 +63,7 @@ patterns-established:
   - "pageData() helper consolidates navItems, adminItems, twin, twinName and page-specific data in one call"
   - "dispatchWebhooks() centralized pattern for UI create/update webhook dispatch"
 
-requirements-completed: [UI-01, UI-02]
+requirements_completed: [UI-01, UI-02]
 
 duration: 10min
 completed: 2026-02-28

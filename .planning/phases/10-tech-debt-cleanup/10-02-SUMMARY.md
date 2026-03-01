@@ -39,7 +39,7 @@ key-decisions:
 patterns-established:
   - "Live conformance jobs follow consistent structure: checkout, pnpm, node, install, build, run conformance:live"
 
-requirements-completed: [INFRA-06]
+requirements_completed: [INFRA-06]
 
 duration: 5min
 completed: 2026-03-01

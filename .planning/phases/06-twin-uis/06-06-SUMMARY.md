@@ -28,6 +28,7 @@ decisions:
   - "authorization header override: set headers.authorization='' in test ops to bypass adapter's default bearer injection for no-auth and oauth tests"
   - "chat.update test implemented as second postMessage: avoids ts-capture complexity in twin mode (twin compares to itself, ts normalization handles non-determinism)"
   - "slackNormalizer.stripFields includes 'ts' at top-level for message timestamp; normalizeFields handles nested paths separately"
+requirements_completed: []
 metrics:
   duration: "~5 minutes"
   tasks_completed: 2

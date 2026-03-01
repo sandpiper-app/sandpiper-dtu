@@ -55,8 +55,7 @@ patterns-established:
   - "State transition validator pattern: pure function (order: { statusFields }) => string | null — use for future resource lifecycle (e.g. Slack channel archive)"
   - "Orders/update webhook triggered by any order state change (fulfillment OR close) — reflects real Shopify behavior"
 
-requirements-completed:
-  - SHOP-06
+requirements_completed: [SHOP-06]
 
 # Metrics
 duration: 8min

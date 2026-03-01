@@ -75,9 +75,7 @@ patterns-established:
   - "Live adapter: validates credentials in init(), uses fetch() in execute()"
   - "CI strategy: twin conformance on every push (fast, no credentials), live conformance weekly (requires secrets)"
 
-requirements-completed:
-  - INFRA-05
-  - INFRA-06
+requirements_completed: [INFRA-06]
 
 # Metrics
 duration: 14min

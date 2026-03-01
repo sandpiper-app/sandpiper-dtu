@@ -43,7 +43,7 @@ patterns-established:
   - "Product update pattern: parse GID -> check exists -> merge fields -> update -> webhook"
   - "Fulfillment create pattern: validate orderId GID -> generate fulfillment GID -> create -> webhook"
 
-requirements-completed: [SHOP-01, SHOP-02, SHOP-03, SHOP-07, INFRA-03, INFRA-04]
+requirements_completed: []
 
 # Metrics
 duration: 5min

@@ -60,9 +60,7 @@ patterns-established:
   - "Strict pass/fail: every field difference is a failure, no known-differences concept"
   - "JSON output mode for CI consumption, human-readable markdown table for local runs"
 
-requirements-completed:
-  - INFRA-05
-  - INFRA-06
+requirements_completed: [INFRA-05]
 
 # Metrics
 duration: 15min

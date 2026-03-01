@@ -53,7 +53,7 @@ patterns-established:
   - "getParams(request) pattern: single function for unified GET query / POST body extraction in read methods"
   - "Blocks form-urlencoded parsing: JSON.parse with silent catch so invalid JSON is passed as-is (graceful degradation)"
 
-requirements-completed: [SLCK-01, SLCK-03, SHOP-02, INFRA-09]
+requirements_completed: []
 
 duration: 30min
 completed: 2026-02-28

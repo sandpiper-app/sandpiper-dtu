@@ -32,7 +32,7 @@ patterns-established:
   - "Twin stack lifecycle: up --build --wait / test / down --volumes"
   - "Zero-credential CI: E2E tests against behavioral clones, no API keys needed"
 
-requirements-completed: [INTG-02]
+requirements_completed: [INTG-02]
 
 duration: 8min
 completed: 2026-03-01

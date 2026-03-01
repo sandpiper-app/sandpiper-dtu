@@ -49,8 +49,7 @@ patterns-established:
   - "Duck-typing for cross-module GraphQL type checks: use ofType property presence instead of instanceof GraphQLNonNull/GraphQLList, and typeof type.getFields === 'function' instead of isObjectType()"
   - "Extensions injection pattern: parse Yoga's JSON response and merge extensions before sending"
 
-requirements-completed:
-  - SHOP-04
+requirements_completed: [SHOP-04]
 
 duration: 11min
 completed: 2026-02-28

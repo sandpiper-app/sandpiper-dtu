@@ -44,7 +44,7 @@ patterns-established:
   - "Twin accent color via data-twin HTML attribute and CSS custom properties"
   - "Shared partials include() with automatic fallback to @dtu/ui directory"
 
-requirements-completed: [UI-05]
+requirements_completed: [UI-05]
 
 duration: 8min
 completed: 2026-02-28

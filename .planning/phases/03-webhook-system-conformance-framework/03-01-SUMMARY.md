@@ -63,7 +63,7 @@ patterns-established:
   - "SqliteDeadLetterStore: construct with existing Database, migrate on init, share with StateManager"
   - "Test pattern: in-memory SQLite + local HTTP server as callback target + syncMode for assertions"
 
-requirements-completed: [INFRA-05]
+requirements_completed: [INFRA-05]
 
 # Metrics
 duration: 13min

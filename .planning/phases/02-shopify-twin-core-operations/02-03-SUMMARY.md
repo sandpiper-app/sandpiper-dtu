@@ -1,3 +1,7 @@
+---
+requirements_completed: [SHOP-03, INFRA-04]
+---
+
 ## Plan 02-03: Webhooks, Error Simulation, and Integration Tests
 
 **Status:** COMPLETE

@@ -52,10 +52,7 @@ patterns-established:
   - "Form line items pattern: checkbox name=line_product_{id} + number name=line_qty_{id} pairs; server extracts via prefix matching on Object.keys(data)"
   - "Fixtures button pattern: POST form action targeting /ui/admin/fixtures with redirect to /ui/admin; no request body needed"
 
-requirements-completed:
-  - UI-02
-  - UI-04
-  - UI-05
+requirements_completed: []
 
 # Metrics
 duration: 15min

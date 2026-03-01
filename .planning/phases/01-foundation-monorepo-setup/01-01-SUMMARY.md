@@ -43,7 +43,7 @@ patterns-established:
   - "Build order: types first, then state and core (via project references)"
   - "ESM-first: type: module in all packages"
 
-requirements-completed: [INFRA-01, INFRA-09]
+requirements_completed: [INFRA-01, INFRA-09]
 
 duration: 3 min
 completed: 2026-02-27
