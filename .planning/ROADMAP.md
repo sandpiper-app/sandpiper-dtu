@@ -14,6 +14,8 @@
 - [x] **Phase 5: Slack Twin - Web API & Events** - Second major twin with REST API, events, Block Kit validation (completed 2026-02-28)
 - [x] **Phase 6: Twin UIs** - Web interfaces for state inspection and manual testing (completed 2026-02-28)
 - [ ] **Phase 7: Integration & E2E Testing** - Docker Compose orchestration and Sandpiper integration
+- [ ] **Phase 8: CI & Integration Polish** - Slack conformance in CI, @dtu/core cleanup, Slack error config API, docs fixes
+- [ ] **Phase 9: Code Quality Cleanup** - Logging fixes, StateManager method gaps, flaky test fix
 
 ## Phase Details
 
@@ -142,6 +144,35 @@ Plans:
 - [ ] 07-01-PLAN.md — Docker images for both twins, healthcheck script, integration smoke tests
 - [ ] 07-02-PLAN.md — Docker Compose orchestration and GitHub Actions E2E workflow
 
+### Phase 8: CI & Integration Polish
+**Goal**: Close integration gaps from v1.0 audit — Slack conformance in CI, dead code cleanup, missing API surface, documentation fixes
+**Depends on**: Phase 7
+**Requirements**: INFRA-06, INFRA-09 (integration polish)
+**Gap Closure:** Closes integration gaps from v1.0 audit
+**Success Criteria** (what must be TRUE):
+  1. Slack conformance suite runs in `conformance.yml` CI workflow alongside Shopify conformance
+  2. `conformance-offline` CI job renamed to accurately reflect what it does (twin-mode)
+  3. `@dtu/core` either provides runtime value to consumers or is removed as a dependency
+  4. Slack twin exposes `/admin/errors/*` API surface matching its error config DB schema
+  5. Phase 5 SUMMARY frontmatter includes `requirements_completed` for SLCK-02, SLCK-04, SLCK-05, SLCK-06
+
+Plans:
+- [ ] 08-01-PLAN.md — CI workflow fixes, @dtu/core cleanup, Slack error config API, frontmatter fixes
+
+### Phase 9: Code Quality Cleanup
+**Goal**: Resolve accumulated code quality tech debt — logging, StateManager gaps, test reliability
+**Depends on**: Phase 7
+**Requirements**: None (tech debt cleanup)
+**Gap Closure:** Closes tech debt items from v1.0 audit
+**Success Criteria** (what must be TRUE):
+  1. webhook-sender.ts uses `fastify.log` instead of `console.error` for failure logging
+  2. Shopify StateManager has `updateCustomer` method and UI uses it instead of direct SQL
+  3. Slack StateManager has `updateUser` method and UI uses it instead of direct SQL
+  4. DLQ timing test is reliable (no race condition flakiness)
+
+Plans:
+- [ ] 09-01-PLAN.md — Logging fix, StateManager methods, flaky test fix
+
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
@@ -153,6 +184,8 @@ Plans:
 | 5. Slack Twin - Web API & Events | 3/3 | Complete | 2026-02-28 |
 | 6. Twin UIs | 6/6 | Complete   | 2026-02-28 |
 | 7. Integration & E2E Testing | 0/2 | Not started | - |
+| 8. CI & Integration Polish | 0/1 | Not started | - |
+| 9. Code Quality Cleanup | 0/1 | Not started | - |
 
 ## Dependencies
 
@@ -166,6 +199,9 @@ Phase 2 (Shopify Core) ──→ Phase 3 (Webhooks/Conformance)
                             Phase 5 (Slack) ──→ Phase 6 (UIs)
                                                    ↓
                                                 Phase 7 (Integration)
+                                                   ↓
+                                          Phase 8 (CI Polish)
+                                          Phase 9 (Code Quality)
 ```
 
 **Rationale:**
@@ -176,6 +212,8 @@ Phase 2 (Shopify Core) ──→ Phase 3 (Webhooks/Conformance)
 - Phase 5 builds Slack twin using battle-tested infrastructure from Phase 3
 - Phase 6 adds UIs after both twins are feature-complete (needs stable APIs)
 - Phase 7 integrates twins with Sandpiper after UIs prove twins work independently
+- Phase 8 polishes CI and integration wiring identified by v1.0 audit
+- Phase 9 resolves code quality tech debt identified by v1.0 audit
 
 ---
-*Last updated: 2026-02-28 after Phase 5 execution complete*
+*Last updated: 2026-02-28 after gap closure phases added from v1.0 audit*
