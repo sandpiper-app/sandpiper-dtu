@@ -73,7 +73,7 @@ const chatPlugin: FastifyPluginAsync = async (fastify) => {
     }
 
     // 5. Validate Block Kit blocks if present
-    if (blocks) {
+    if (blocks && Array.isArray(blocks)) {
       const validation = validateBlocks(blocks);
       if (!validation.valid) {
         return reply.status(200).send({ ok: false, error: validation.error });
@@ -178,7 +178,7 @@ const chatPlugin: FastifyPluginAsync = async (fastify) => {
     }
 
     // 4. Validate Block Kit blocks if present
-    if (blocks) {
+    if (blocks && Array.isArray(blocks)) {
       const validation = validateBlocks(blocks);
       if (!validation.valid) {
         return reply.status(200).send({ ok: false, error: validation.error });

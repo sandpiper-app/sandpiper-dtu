@@ -4,6 +4,7 @@
  * Uses shared @dtu/ui partials for consistent styling.
  */
 
+/// <reference types="@fastify/view" />
 import type { FastifyPluginAsync } from 'fastify';
 import type { StateManager } from '@dtu/state';
 import type { WebhookQueue } from '@dtu/webhooks';

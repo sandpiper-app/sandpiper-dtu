@@ -7,6 +7,7 @@
  * timeline with an inline "Post Message" form — matching the Slack UX metaphor.
  */
 
+/// <reference types="@fastify/view" />
 import type { FastifyPluginAsync } from 'fastify';
 import { registerUI, formatDate, formatJson } from '@dtu/ui';
 import {
