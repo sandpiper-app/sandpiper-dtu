@@ -203,7 +203,8 @@ Plans:
   1. Shopify twin exposes `GET /admin/errors`, `GET /admin/errors/:operation`, matching Slack twin's error inspection API
   2. `twins/shopify/tsconfig.conformance.json` has no reference to deleted `@dtu/core` package
   3. `twins/slack/tsconfig.json` includes `@dtu/conformance` project reference (matching Shopify)
-  4. All 30 phase SUMMARY.md files include `requirements_completed` in frontmatter
+  4. All 28 phase SUMMARY.md files include `requirements_completed` in frontmatter
+**Plans**: 1 plan in 1 wave
 
 Plans:
 - [ ] 11-01-PLAN.md — Shopify /admin/errors endpoint, tsconfig fixes, SUMMARY frontmatter backfill
