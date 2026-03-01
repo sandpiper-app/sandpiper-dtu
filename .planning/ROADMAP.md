@@ -14,7 +14,7 @@
 - [x] **Phase 5: Slack Twin - Web API & Events** - Second major twin with REST API, events, Block Kit validation (completed 2026-02-28)
 - [x] **Phase 6: Twin UIs** - Web interfaces for state inspection and manual testing (completed 2026-02-28)
 - [ ] **Phase 7: Integration & E2E Testing** - Docker Compose orchestration and Sandpiper integration
-- [ ] **Phase 8: CI & Integration Polish** - Slack conformance in CI, @dtu/core cleanup, Slack error config API, docs fixes
+- [x] **Phase 8: CI & Integration Polish** - Slack conformance in CI, @dtu/core cleanup, Slack error config API, docs fixes (completed 2026-03-01)
 - [ ] **Phase 9: Code Quality Cleanup** - Logging fixes, StateManager method gaps, flaky test fix
 
 ## Phase Details
@@ -184,7 +184,7 @@ Plans:
 | 5. Slack Twin - Web API & Events | 3/3 | Complete | 2026-02-28 |
 | 6. Twin UIs | 6/6 | Complete   | 2026-02-28 |
 | 7. Integration & E2E Testing | 0/2 | Not started | - |
-| 8. CI & Integration Polish | 0/1 | Not started | - |
+| 8. CI & Integration Polish | 1/1 | Complete   | 2026-03-01 |
 | 9. Code Quality Cleanup | 0/1 | Not started | - |
 
 ## Dependencies
