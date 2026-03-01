@@ -56,11 +56,22 @@ COPY --from=build /app/twins/${TWIN_NAME}/dist ./dist
 # Copying the entire src/ dir is safe — .ts files are ignored at runtime, adds negligible size.
 COPY --from=build /app/twins/${TWIN_NAME}/src ./src
 
-# Copy shared @dtu/ui partials and public assets into the expected node_modules path.
-# At runtime, @dtu/ui resolves getPackageRoot()/src/partials and getPackageRoot()/src/public.
-# pnpm deploy places @dtu/ui in node_modules/@dtu/ui/ with dist/ but without src/.
-COPY --from=build /app/packages/ui/src/partials ./node_modules/@dtu/ui/src/partials
-COPY --from=build /app/packages/ui/src/public ./node_modules/@dtu/ui/src/public
+# Create views symlink for dist-mode path resolution.
+# Compiled UI plugin: __dirname=dist/plugins/, viewsDir=path.join(__dirname, '../views')=dist/views/
+# But views are in src/views/. Symlink dist/views -> ../src/views makes this work.
+RUN ln -s ../src/views dist/views
+
+# Copy shared @dtu/ui partials and public assets.
+# pnpm deploy uses symlinks: node_modules/@dtu/ui -> .pnpm/.../@dtu/ui
+# We must copy into the REAL directory (the pnpm store path), not just the symlink.
+# Use $(readlink -f ...) to resolve the actual @dtu/ui directory.
+COPY --from=build /app/packages/ui/src/partials ./ui-assets/partials
+COPY --from=build /app/packages/ui/src/public ./ui-assets/public
+RUN UI_REAL=$(readlink -f node_modules/@dtu/ui 2>/dev/null || echo node_modules/@dtu/ui) && \
+    mkdir -p "$UI_REAL/src" && \
+    cp -r ui-assets/partials "$UI_REAL/src/partials" && \
+    cp -r ui-assets/public "$UI_REAL/src/public" && \
+    rm -rf ui-assets
 
 # Copy healthcheck script
 COPY scripts/healthcheck.mjs ./healthcheck.mjs
