@@ -16,7 +16,6 @@
     "conformance:record": "node --import tsx/esm node_modules/@dtu/conformance/dist/cli.js --record --suite ./conformance/index.ts --twin-adapter ./conformance/adapters/twin-adapter.ts --live-adapter ./conformance/adapters/live-adapter.ts --fixtures ./conformance/fixtures"
   },
   "dependencies": {
-    "@dtu/core": "workspace:*",
     "@dtu/ui": "workspace:*",
     "@dtu/conformance": "workspace:*",
     "@dtu/state": "workspace:*",

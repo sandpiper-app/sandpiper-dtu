@@ -11,7 +11,6 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@dtu/core": "workspace:*",
     "@dtu/state": "workspace:*",
     "@dtu/types": "workspace:*",
     "fastify": "^5.3.3",

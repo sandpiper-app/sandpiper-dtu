@@ -9,7 +9,6 @@
   "references": [
     { "path": "../../packages/types" },
     { "path": "../../packages/state" },
-    { "path": "../../packages/core" },
     { "path": "../../packages/webhooks" }
   ]
 }

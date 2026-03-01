@@ -9,7 +9,7 @@ on:
 
 jobs:
   conformance-twin:
-    name: Twin Conformance
+    name: Shopify Twin Conformance
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,8 +29,32 @@ jobs:
       - name: Build packages
         run: pnpm build
 
-      - name: Run twin conformance suite
+      - name: Run Shopify twin conformance suite
         run: pnpm --filter @dtu/twin-shopify run conformance:twin
+
+  conformance-twin-slack:
+    name: Slack Twin Conformance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Run Slack twin conformance suite
+        run: pnpm --filter @dtu/twin-slack run conformance:twin
 
   conformance-live:
     name: Live Conformance (scheduled only)
