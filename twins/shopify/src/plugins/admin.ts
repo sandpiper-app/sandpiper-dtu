@@ -15,6 +15,7 @@ interface FixturesLoadBody {
   orders?: any[];
   products?: any[];
   customers?: any[];
+  inventoryItems?: any[];
 }
 
 interface FixturesLoadResponse {
@@ -22,6 +23,7 @@ interface FixturesLoadResponse {
     orders: number;
     products: number;
     customers: number;
+    inventoryItems: number;
   };
 }
 
@@ -29,6 +31,7 @@ interface StateResponse {
   orders: number;
   products: number;
   customers: number;
+  inventoryItems: number;
   tokens: number;
   webhooks: number;
 }
@@ -68,10 +71,10 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
     Body: FixturesLoadBody;
     Reply: FixturesLoadResponse;
   }>('/admin/fixtures/load', async (request) => {
-    const { orders = [], products = [], customers = [] } = request.body;
+    const { orders = [], products = [], customers = [], inventoryItems = [] } = request.body;
 
     request.log.info(
-      { orderCount: orders.length, productCount: products.length, customerCount: customers.length },
+      { orderCount: orders.length, productCount: products.length, customerCount: customers.length, inventoryItemCount: inventoryItems.length },
       'Loading fixtures'
     );
 
@@ -96,11 +99,19 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
       fastify.stateManager.createCustomer({ ...customer, gid: customerGid });
     }
 
+    // Load inventory items — generate GIDs before insertion
+    for (const item of inventoryItems) {
+      const itemId = Date.now() + Math.floor(Math.random() * 100000);
+      const itemGid = createGID('InventoryItem', itemId);
+      fastify.stateManager.createInventoryItem({ ...item, gid: itemGid });
+    }
+
     return {
       loaded: {
         orders: orders.length,
         products: products.length,
         customers: customers.length,
+        inventoryItems: inventoryItems.length,
       },
     };
   });
@@ -118,6 +129,7 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
       orders: fastify.stateManager.listOrders().length,
       products: fastify.stateManager.listProducts().length,
       customers: fastify.stateManager.listCustomers().length,
+      inventoryItems: fastify.stateManager.listInventoryItems().length,
       tokens: tokenCount.count,
       webhooks: fastify.stateManager.listWebhookSubscriptions().length,
     };

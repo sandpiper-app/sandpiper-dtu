@@ -28,6 +28,7 @@ const navItems = [
   { label: 'Orders', href: '/ui/orders' },
   { label: 'Products', href: '/ui/products' },
   { label: 'Customers', href: '/ui/customers' },
+  { label: 'Inventory', href: '/ui/inventory' },
 ];
 
 const adminItems = [
@@ -456,6 +457,105 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
 
   fastify.delete<{ Params: { id: string } }>('/ui/customers/:id', async (req, reply) => {
     fastify.stateManager.database.prepare('DELETE FROM customers WHERE id = ?').run(parseInt(req.params.id));
+    return reply.send('');
+  });
+
+  // ========================
+  // INVENTORY
+  // ========================
+
+  fastify.get('/ui/inventory/new', async (_req, reply) => {
+    return reply.viewAsync('inventory/form.eta', pageData('inventory', 'New Inventory Item', {
+      formTitle: 'New Inventory Item',
+      action: '/ui/inventory',
+      submitLabel: 'Create Item',
+      cancelHref: '/ui/inventory',
+      fields: [
+        { name: 'sku', label: 'SKU', type: 'text', placeholder: 'SKU-001' },
+        { name: 'available', label: 'Available', type: 'number', value: '0' },
+      ],
+      item: null,
+    }));
+  });
+
+  fastify.get('/ui/inventory', async (_req, reply) => {
+    const items = fastify.stateManager.listInventoryItems();
+    return reply.viewAsync('inventory/list.eta', pageData('inventory', 'Inventory Items', {
+      columns: [
+        { key: 'id', label: 'ID' },
+        { key: 'sku', label: 'SKU' },
+        { key: 'tracked', label: 'Tracked' },
+        { key: 'available', label: 'Available' },
+      ],
+      rows: items,
+      basePath: '/ui/inventory',
+      idKey: 'id',
+      createHref: '/ui/inventory/new',
+    }));
+  });
+
+  fastify.get<{ Params: { id: string } }>('/ui/inventory/:id/edit', async (req, reply) => {
+    const item = fastify.stateManager.getInventoryItem(parseInt(req.params.id));
+    if (!item) return reply.status(404).send('Inventory item not found');
+    return reply.viewAsync('inventory/form.eta', pageData('inventory', 'Edit Inventory Item', {
+      formTitle: `Edit Inventory Item #${item.id}`,
+      action: `/ui/inventory/${item.id}`,
+      submitLabel: 'Update Item',
+      cancelHref: `/ui/inventory/${item.id}`,
+      fields: [
+        { name: 'sku', label: 'SKU', type: 'text', value: item.sku },
+        { name: 'available', label: 'Available', type: 'number', value: item.available },
+      ],
+      item,
+    }));
+  });
+
+  fastify.get<{ Params: { id: string } }>('/ui/inventory/:id', async (req, reply) => {
+    const item = fastify.stateManager.getInventoryItem(parseInt(req.params.id));
+    if (!item) return reply.status(404).send('Inventory item not found');
+    return reply.viewAsync('inventory/detail.eta', pageData('inventory', 'Inventory Item Detail', {
+      entityTitle: `Inventory Item ${item.sku || '#' + item.id}`,
+      editHref: `/ui/inventory/${item.id}/edit`,
+      deleteHref: `/ui/inventory/${item.id}`,
+      listHref: '/ui/inventory',
+      fields: [
+        { label: 'ID', value: item.id },
+        { label: 'GID', value: item.gid },
+        { label: 'SKU', value: item.sku },
+        { label: 'Tracked', value: item.tracked ? 'Yes' : 'No' },
+        { label: 'Available', value: item.available },
+        { label: 'Created', value: formatDate(item.created_at) },
+        { label: 'Updated', value: formatDate(item.updated_at) },
+      ],
+      rawJson: formatJson(item),
+    }));
+  });
+
+  fastify.post('/ui/inventory', async (req, reply) => {
+    const data = req.body as Record<string, string>;
+    const gid = createGID('InventoryItem', Date.now() + Math.floor(Math.random() * 100000));
+    fastify.stateManager.createInventoryItem({
+      gid,
+      sku: data.sku || undefined,
+      tracked: data.tracked === 'on' || data.tracked === 'true',
+      available: parseInt(data.available, 10) || 0,
+    });
+    return reply.redirect('/ui/inventory');
+  });
+
+  fastify.post<{ Params: { id: string } }>('/ui/inventory/:id', async (req, reply) => {
+    const id = parseInt(req.params.id);
+    const data = req.body as Record<string, string>;
+    fastify.stateManager.updateInventoryItem(id, {
+      sku: data.sku || undefined,
+      tracked: data.tracked === 'on' || data.tracked === 'true',
+      available: parseInt(data.available, 10) || 0,
+    });
+    return reply.redirect(`/ui/inventory/${id}`);
+  });
+
+  fastify.delete<{ Params: { id: string } }>('/ui/inventory/:id', async (req, reply) => {
+    fastify.stateManager.database.prepare('DELETE FROM inventory_items WHERE id = ?').run(parseInt(req.params.id));
     return reply.send('');
   });
 
