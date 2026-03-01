@@ -186,8 +186,11 @@ Plans:
   4. Slack Dockerfile exposes correct port (3001) and comments reference only existing packages
   5. ROADMAP.md Phase 7 entry reflects actual completion status
 
+**Plans**: 2 plans in 1 wave
+
 Plans:
-- [ ] 10-01-PLAN.md — Wire up InventoryItem, CI fixes, tsconfig fixes, Dockerfile fixes, ROADMAP staleness
+- [ ] 10-01-PLAN.md — Wire up InventoryItem: StateManager CRUD, GraphQL schema/resolvers, admin fixtures, UI views
+- [ ] 10-02-PLAN.md — Slack live conformance CI, tsconfig @dtu/ui paths, Dockerfile EXPOSE fix, ROADMAP staleness
 
 ## Progress
 
@@ -202,7 +205,7 @@ Plans:
 | 7. Integration & E2E Testing | 0/2 | Not started | - |
 | 8. CI & Integration Polish | 1/1 | Complete   | 2026-03-01 |
 | 9. Code Quality Cleanup | 1/1 | Complete | 2026-02-28 |
-| 10. Tech Debt Cleanup | 0/1 | Not started | - |
+| 10. Tech Debt Cleanup | 0/2 | Not started | - |
 
 ## Dependencies
 
