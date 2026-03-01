@@ -136,7 +136,11 @@ Plans:
   3. Developer runs `docker compose -f docker-compose.twin.yml up` and all twins start with health checks passing
   4. Sandpiper container communicates with twin containers via Docker network
   5. CI pipeline runs Sandpiper E2E tests against twins without requiring sandbox API credentials
-**Plans**: TBD
+**Plans**: 2 plans in 2 waves
+
+Plans:
+- [ ] 07-01-PLAN.md — Docker images for both twins, healthcheck script, integration smoke tests
+- [ ] 07-02-PLAN.md — Docker Compose orchestration and GitHub Actions E2E workflow
 
 ## Progress
 
@@ -148,7 +152,7 @@ Plans:
 | 4. Shopify Twin - Advanced Features | 3/3 | Complete    | 2026-02-28 |
 | 5. Slack Twin - Web API & Events | 3/3 | Complete | 2026-02-28 |
 | 6. Twin UIs | 6/6 | Complete   | 2026-02-28 |
-| 7. Integration & E2E Testing | 0/? | Not started | - |
+| 7. Integration & E2E Testing | 0/2 | Not started | - |
 
 ## Dependencies
 
