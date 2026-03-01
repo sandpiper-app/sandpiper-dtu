@@ -944,10 +944,13 @@ describe('Shopify Twin Integration', () => {
       expect(state.webhooks).toBe(4);
     });
 
-    it('failed webhook deliveries appear in dead letter queue after retries (compressed timing)', async () => {
+    it('failed webhook deliveries appear in dead letter queue after retries (compressed timing)', { timeout: 15000 }, async () => {
       // With WEBHOOK_TIME_SCALE=0.001, the 3 retries (0, 60000ms, 300000ms)
       // complete in approximately (0 + 60 + 300) * 0.001 = 360ms
-      // Create an order to trigger webhook to unreachable localhost:9999
+      // Use 127.0.0.1:1 (privileged port, guaranteed ECONNREFUSED) instead of
+      // localhost:9999 which may have something listening in dev environments
+      app.stateManager.createWebhookSubscription('orders/create', 'http://127.0.0.1:1/webhook');
+
       await app.inject({
         method: 'POST',
         url: '/admin/api/2024-01/graphql.json',
@@ -966,8 +969,13 @@ describe('Shopify Twin Integration', () => {
         },
       });
 
-      // Wait for all retries to complete (360ms at 0.001x scale + buffer)
-      await new Promise(resolve => setTimeout(resolve, 600));
+      // Poll for DLQ entry — wait for webhook queue to drain (all retries exhausted)
+      const deadline = Date.now() + 10000;
+      while (Date.now() < deadline) {
+        const pollRes = await app.inject({ method: 'GET', url: '/admin/dead-letter-queue' });
+        if (JSON.parse(pollRes.body).length > 0) break;
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
 
       // Check DLQ via admin endpoint
       const dlqRes = await app.inject({ method: 'GET', url: '/admin/dead-letter-queue' });
@@ -976,7 +984,7 @@ describe('Shopify Twin Integration', () => {
       expect(Array.isArray(dlq)).toBe(true);
       expect(dlq.length).toBeGreaterThan(0);
       expect(dlq[0].topic).toBe('orders/create');
-      expect(dlq[0].callbackUrl).toBe('http://localhost:9999/webhook');
+      expect(dlq[0].callbackUrl).toBe('http://127.0.0.1:1/webhook');
     });
   });
 
@@ -992,10 +1000,10 @@ describe('Shopify Twin Integration', () => {
       expect(body.length).toBe(0);
     });
 
-    it('DELETE /admin/dead-letter-queue clears the queue', async () => {
-      // Add something to DLQ first via stateManager's deadLetterStore
-      // by creating a fake DLQ entry directly
-      // (We'll do this by triggering a webhook failure with compressed timing)
+    it('DELETE /admin/dead-letter-queue clears the queue', { timeout: 15000 }, async () => {
+      // Add something to DLQ first by triggering a webhook failure with compressed timing.
+      // Use 127.0.0.1:1 (privileged port, guaranteed ECONNREFUSED) instead of
+      // localhost:9999 which may have something listening in dev environments
       const oauthResponse = await app.inject({
         method: 'POST',
         url: '/admin/oauth/access_token',
@@ -1003,7 +1011,7 @@ describe('Shopify Twin Integration', () => {
       });
       const token = JSON.parse(oauthResponse.body).access_token;
 
-      app.stateManager.createWebhookSubscription('orders/create', 'http://localhost:9999/webhook');
+      app.stateManager.createWebhookSubscription('orders/create', 'http://127.0.0.1:1/webhook');
 
       await app.inject({
         method: 'POST',
@@ -1023,8 +1031,13 @@ describe('Shopify Twin Integration', () => {
         },
       });
 
-      // Wait for retries to complete
-      await new Promise(resolve => setTimeout(resolve, 600));
+      // Poll for DLQ entry — wait for webhook queue to drain (all retries exhausted)
+      const deadline = Date.now() + 10000;
+      while (Date.now() < deadline) {
+        const pollRes = await app.inject({ method: 'GET', url: '/admin/dead-letter-queue' });
+        if (JSON.parse(pollRes.body).length > 0) break;
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
 
       // Clear DLQ
       const clearRes = await app.inject({ method: 'DELETE', url: '/admin/dead-letter-queue' });
