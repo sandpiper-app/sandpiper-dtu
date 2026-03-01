@@ -4,6 +4,7 @@ plan: 03
 status: complete
 started: 2026-02-28
 completed: 2026-02-28
+requirements_completed: [SLCK-02, SLCK-05]
 ---
 
 # Plan 05-03 Summary: Events API, Interactions, Integration Tests
