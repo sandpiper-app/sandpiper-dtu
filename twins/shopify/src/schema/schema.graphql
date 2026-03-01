@@ -121,9 +121,21 @@ type CustomerEdge {
 # Inventory types
 type InventoryItem {
   id: ID!
-  sku: String!
+  sku: String
   tracked: Boolean!
   available: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type InventoryItemConnection {
+  edges: [InventoryItemEdge!]!
+  pageInfo: PageInfo!
+}
+
+type InventoryItemEdge {
+  node: InventoryItem!
+  cursor: String!
 }
 
 # Fulfillment types
@@ -195,6 +207,13 @@ input CustomerInput {
   lastName: String
 }
 
+input InventoryItemUpdateInput {
+  id: ID!
+  sku: String
+  tracked: Boolean
+  available: Int
+}
+
 # Mutation payloads
 type OrderCreatePayload {
   order: Order
@@ -223,6 +242,11 @@ type FulfillmentCreatePayload {
 
 type OrderClosePayload {
   order: Order
+  userErrors: [UserError!]!
+}
+
+type InventoryItemUpdatePayload {
+  inventoryItem: InventoryItem
   userErrors: [UserError!]!
 }
 
@@ -255,6 +279,8 @@ type QueryRoot {
   product(id: ID!): Product
   customers(first: Int = 10, after: String, last: Int, before: String): CustomerConnection!
   customer(id: ID!): Customer
+  inventoryItems(first: Int = 10, after: String, last: Int, before: String): InventoryItemConnection!
+  inventoryItem(id: ID!): InventoryItem
 }
 
 # Mutation root
@@ -266,6 +292,7 @@ type MutationType {
   productUpdate(input: ProductUpdateInput!): ProductUpdatePayload!
   fulfillmentCreate(input: FulfillmentInput!): FulfillmentCreatePayload!
   customerCreate(input: CustomerInput!): CustomerCreatePayload!
+  inventoryItemUpdate(input: InventoryItemUpdateInput!): InventoryItemUpdatePayload!
   webhookSubscriptionCreate(topic: String!, webhookSubscription: WebhookSubscriptionInput!): WebhookSubscriptionCreatePayload!
 }
 

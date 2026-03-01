@@ -235,6 +235,24 @@ export const resolvers = {
       const customer = context.stateManager.getCustomerByGid(gid);
       return customer ?? null;
     },
+
+    inventoryItems: async (
+      _parent: unknown,
+      args: { first?: number; after?: string; last?: number; before?: string },
+      context: Context
+    ) => {
+      requireAuth(context);
+      const items = context.stateManager.listInventoryItems();
+      return paginate(items, args, 'InventoryItem');
+    },
+
+    inventoryItem: async (_parent: unknown, args: { id: string }, context: Context) => {
+      requireAuth(context);
+      const { id } = parseGID(args.id);
+      const gid = createGID('InventoryItem', id);
+      const item = context.stateManager.getInventoryItemByGid(gid);
+      return item ?? null;
+    },
   },
 
   // Mutation resolvers
@@ -632,6 +650,37 @@ export const resolvers = {
       return { customer, userErrors: [] };
     },
 
+    inventoryItemUpdate: async (_parent: unknown, args: { input: any }, context: Context) => {
+      requireAuth(context);
+      await context.errorSimulator.throwIfConfigured('inventoryItemUpdate');
+
+      const { input } = args;
+      const errors: UserError[] = [];
+
+      let itemId: number;
+      try {
+        const { id } = parseGID(input.id);
+        itemId = parseInt(id, 10);
+      } catch (err) {
+        errors.push({ field: ['id'], message: 'Invalid inventory item ID format' });
+        return { inventoryItem: null, userErrors: errors };
+      }
+
+      const existing = context.stateManager.getInventoryItem(itemId);
+      if (!existing) {
+        errors.push({ field: ['id'], message: 'Inventory item not found' });
+        return { inventoryItem: null, userErrors: errors };
+      }
+
+      context.stateManager.updateInventoryItem(itemId, {
+        sku: input.sku ?? existing.sku,
+        tracked: input.tracked ?? (existing.tracked === 1 ? true : false),
+        available: input.available ?? existing.available,
+      });
+      const updated = context.stateManager.getInventoryItem(itemId);
+      return { inventoryItem: updated, userErrors: [] };
+    },
+
     webhookSubscriptionCreate: async (
       _parent: unknown,
       args: { topic: string; webhookSubscription: { callbackUrl: string } },
@@ -735,6 +784,8 @@ export const resolvers = {
 
   InventoryItem: {
     id: (parent: any) => createGID('InventoryItem', parent.id),
+    createdAt: (parent: any) => parent.created_at,
+    updatedAt: (parent: any) => parent.updated_at,
   },
 
   Fulfillment: {

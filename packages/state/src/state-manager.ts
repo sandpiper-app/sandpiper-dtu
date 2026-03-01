@@ -52,6 +52,13 @@ export class StateManager {
   private updateOrderFinancialStatusStmt: Database.Statement | null = null;
   private closeOrderStmt: Database.Statement | null = null;
 
+  // InventoryItem prepared statements
+  private createInventoryItemStmt: Database.Statement | null = null;
+  private getInventoryItemStmt: Database.Statement | null = null;
+  private getInventoryItemByGidStmt: Database.Statement | null = null;
+  private listInventoryItemsStmt: Database.Statement | null = null;
+  private updateInventoryItemStmt: Database.Statement | null = null;
+
   constructor(options: StateManagerOptions = {}) {
     this.dbPath = options.dbPath ?? ':memory:';
   }
@@ -107,6 +114,12 @@ export class StateManager {
       this.updateOrderFulfillmentStatusStmt = null;
       this.updateOrderFinancialStatusStmt = null;
       this.closeOrderStmt = null;
+      // Reset InventoryItem statements
+      this.createInventoryItemStmt = null;
+      this.getInventoryItemStmt = null;
+      this.getInventoryItemByGidStmt = null;
+      this.listInventoryItemsStmt = null;
+      this.updateInventoryItemStmt = null;
     }
     this.init();
   }
@@ -148,6 +161,12 @@ export class StateManager {
       this.updateOrderFulfillmentStatusStmt = null;
       this.updateOrderFinancialStatusStmt = null;
       this.closeOrderStmt = null;
+      // Clear InventoryItem statements
+      this.createInventoryItemStmt = null;
+      this.getInventoryItemStmt = null;
+      this.getInventoryItemByGidStmt = null;
+      this.listInventoryItemsStmt = null;
+      this.updateInventoryItemStmt = null;
     }
   }
 
@@ -376,6 +395,17 @@ export class StateManager {
     );
     this.closeOrderStmt = db.prepare(
       'UPDATE orders SET closed_at = ?, updated_at = ? WHERE id = ?'
+    );
+
+    // InventoryItem prepared statements
+    this.createInventoryItemStmt = db.prepare(
+      'INSERT INTO inventory_items (gid, sku, tracked, available, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)'
+    );
+    this.getInventoryItemStmt = db.prepare('SELECT * FROM inventory_items WHERE id = ?');
+    this.getInventoryItemByGidStmt = db.prepare('SELECT * FROM inventory_items WHERE gid = ?');
+    this.listInventoryItemsStmt = db.prepare('SELECT * FROM inventory_items ORDER BY id ASC');
+    this.updateInventoryItemStmt = db.prepare(
+      'UPDATE inventory_items SET sku = ?, tracked = ?, available = ?, updated_at = ? WHERE id = ?'
     );
   }
 
@@ -681,5 +711,63 @@ export class StateManager {
       throw new Error('StateManager not initialized. Call init() first.');
     }
     this.clearErrorConfigsStmt.run();
+  }
+
+  // InventoryItem methods
+
+  /** Create an inventory item and return its ID */
+  createInventoryItem(data: { gid: string; sku?: string; tracked?: boolean; available?: number }): number {
+    if (!this.createInventoryItemStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    const now = Math.floor(Date.now() / 1000);
+    const result = this.createInventoryItemStmt.run(
+      data.gid,
+      data.sku ?? null,
+      data.tracked !== undefined ? (data.tracked ? 1 : 0) : 1,
+      data.available ?? 0,
+      now,
+      now
+    );
+    return result.lastInsertRowid as number;
+  }
+
+  /** Get an inventory item by internal ID */
+  getInventoryItem(id: number): any | undefined {
+    if (!this.getInventoryItemStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    return this.getInventoryItemStmt.get(id);
+  }
+
+  /** Get an inventory item by GID */
+  getInventoryItemByGid(gid: string): any | undefined {
+    if (!this.getInventoryItemByGidStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    return this.getInventoryItemByGidStmt.get(gid);
+  }
+
+  /** List all inventory items */
+  listInventoryItems(): any[] {
+    if (!this.listInventoryItemsStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    return this.listInventoryItemsStmt.all();
+  }
+
+  /** Update an existing inventory item by ID */
+  updateInventoryItem(id: number, data: { sku?: string; tracked?: boolean; available?: number }): void {
+    if (!this.updateInventoryItemStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    const now = Math.floor(Date.now() / 1000);
+    this.updateInventoryItemStmt.run(
+      data.sku ?? null,
+      data.tracked !== undefined ? (data.tracked ? 1 : 0) : 1,
+      data.available ?? 0,
+      now,
+      id
+    );
   }
 }
