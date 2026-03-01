@@ -1,0 +1,52 @@
+name: E2E Twins
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  e2e-twins:
+    name: E2E Twin Integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and start twin stack
+        run: docker compose -f docker-compose.twin.yml up -d --build --wait
+        timeout-minutes: 5
+
+      - name: Verify twin health
+        run: |
+          curl -sf http://localhost:3000/health | jq .
+          curl -sf http://localhost:3001/health | jq .
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Run integration smoke tests
+        run: pnpm exec vitest run tests/integration/smoke.test.ts --config tests/integration/vitest.config.ts
+        env:
+          SHOPIFY_API_URL: http://localhost:3000
+          SLACK_API_URL: http://localhost:3001
+
+      - name: Run full test suite
+        run: pnpm test
+
+      - name: Tear down twin stack
+        if: always()
+        run: docker compose -f docker-compose.twin.yml down --volumes
