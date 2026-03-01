@@ -2,33 +2,33 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Completed 09-01-PLAN.md
-last_updated: "2026-02-28T23:57:00.000Z"
+status: completed
+stopped_at: Completed 10-02-PLAN.md
+last_updated: "2026-03-01T07:33:43.961Z"
 progress:
-  total_phases: 9
-  completed_phases: 9
-  total_plans: 26
-  completed_plans: 26
+  total_phases: 10
+  completed_phases: 10
+  total_plans: 28
+  completed_plans: 28
   percent: 100
 ---
 
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-01
-**Status:** Phase 9 complete
+**Status:** Phase 10 complete
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 9 complete — code quality cleanup, StateManager methods, DLQ test fix.
+**Current Focus:** Phase 10 complete — InventoryItem wired up, Slack live conformance CI, tsconfig/Docker/ROADMAP fixes.
 
 ## Current Position
 
-**Phase:** Phase 9 — Code Quality Cleanup (1/1 plans complete)
-**Plan:** 09-01 — StateManager methods, UI migration, flaky test fix
-**Status:** All 9 phases complete
+**Phase:** Phase 10 — Tech Debt Cleanup (2/2 plans complete)
+**Plan:** 10-02 — Slack live conformance CI, tsconfig, Dockerfile, ROADMAP fixes
+**Status:** All 10 phases complete
 **Progress:** [██████████] 100%
 
 ## Performance Metrics
@@ -41,6 +41,15 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-01 - Plan 10-01 Execution:**
+- sku made nullable in InventoryItem GraphQL schema — matches real Shopify API where sku is optional
+- No inventoryItemCreate mutation (Shopify has no such mutation) — creation via admin fixtures endpoint and UI only
+- Boolean tracked stored as 0/1 integer in SQLite, converted via ternary in TypeScript
+
+**2026-03-01 - Plan 10-02 Execution:**
+- Slack live conformance uses SLACK_BOT_TOKEN secret (matching Shopify pattern with SHOPIFY_ACCESS_TOKEN)
+- TWIN_PORT defaults to 3000 in Dockerfile, overridden to 3001 for slack in docker-compose
 
 **2026-02-28 - Plan 09-01 Execution:**
 - Use 127.0.0.1:1 instead of localhost:9999 for DLQ tests — port 1 requires root privileges, guaranteeing ECONNREFUSED regardless of dev environment
@@ -213,9 +222,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 9 Plan 01 - StateManager methods, UI migration, DLQ test fix
-**Stopped at:** Completed 09-01-PLAN.md
-**Timestamp:** 2026-02-28
+**Last completed:** Phase 10 Plan 02 - Slack live conformance CI, tsconfig, Dockerfile, ROADMAP fixes
+**Stopped at:** Completed 10-02-PLAN.md
+**Timestamp:** 2026-03-01
 
 **All Phase 6 plans complete:**
 1. 06-01: @dtu/ui shared package with registerUI(), 6 Eta partials, Pico CSS
