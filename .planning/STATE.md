@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Completed 10-02-PLAN.md
-last_updated: "2026-03-01T07:36:01.247Z"
+stopped_at: Completed 11-01-PLAN.md
+last_updated: "2026-03-01T19:27:42.880Z"
 progress:
-  total_phases: 10
-  completed_phases: 10
-  total_plans: 28
-  completed_plans: 28
+  total_phases: 12
+  completed_phases: 11
+  total_plans: 29
+  completed_plans: 29
   percent: 100
 ---
 
@@ -22,12 +22,12 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 10 complete — InventoryItem wired up, Slack live conformance CI, tsconfig/Docker/ROADMAP fixes.
+**Current Focus:** Phase 11 complete — Shopify error inspection endpoints, TypeScript build graph clean, all 28 SUMMARY.md files normalized.
 
 ## Current Position
 
-**Phase:** Phase 10 — Tech Debt Cleanup (2/2 plans complete)
-**Plan:** 10-02 — Slack live conformance CI, tsconfig, Dockerfile, ROADMAP fixes
+**Phase:** Phase 11 — Final Polish (1/1 plans complete)
+**Plan:** 11-01 — Shopify error endpoints, tsconfig fixes, SUMMARY.md requirements_completed backfill
 **Status:** All 10 phases complete
 **Progress:** [██████████] 100%
 
@@ -46,6 +46,11 @@ progress:
 - sku made nullable in InventoryItem GraphQL schema — matches real Shopify API where sku is optional
 - No inventoryItemCreate mutation (Shopify has no such mutation) — creation via admin fixtures endpoint and UI only
 - Boolean tracked stored as 0/1 integer in SQLite, converted via ternary in TypeScript
+
+**2026-03-01 - Plan 11-01 Execution:**
+- GET /admin/errors uses direct SQL on stateManager.database (SELECT * FROM error_configs) matching Slack twin pattern
+- GET /admin/errors/:operation uses existing getErrorConfig() state manager method, returns { config: null } for not-found
+- requirements_completed (underscore) normalized across all 28 SUMMARY.md files; hyphenated keys renamed and plan mapping values used as authoritative source
 
 **2026-03-01 - Plan 10-02 Execution:**
 - Slack live conformance uses SLACK_BOT_TOKEN secret (matching Shopify pattern with SHOPIFY_ACCESS_TOKEN)
@@ -222,8 +227,8 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 10 Plan 02 - Slack live conformance CI, tsconfig, Dockerfile, ROADMAP fixes
-**Stopped at:** Completed 10-02-PLAN.md
+**Last completed:** Phase 11 Plan 01 - Shopify error endpoints, tsconfig fixes, SUMMARY.md requirements_completed backfill
+**Stopped at:** Completed 11-01-PLAN.md
 **Timestamp:** 2026-03-01
 
 **All Phase 6 plans complete:**
