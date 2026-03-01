@@ -12,6 +12,13 @@
         <option value="orders/delete">orders/delete</option>
         <option value="products/create">products/create</option>
         <option value="products/update">products/update</option>
+        <option value="products/delete">products/delete</option>
+        <option value="customers/create">customers/create</option>
+        <option value="customers/update">customers/update</option>
+        <option value="customers/delete">customers/delete</option>
+        <option value="customers/data_request">customers/data_request</option>
+        <option value="customers/redact">customers/redact</option>
+        <option value="shop/redact">shop/redact</option>
         <option value="fulfillments/create">fulfillments/create</option>
       </select>
     </label>

@@ -48,6 +48,13 @@ function pageData(nav: string, pageTitle: string, extra: Record<string, any> = {
   };
 }
 
+function normalizePrice(value: string | undefined): string | undefined {
+  if (!value) return value;
+  const n = parseFloat(value);
+  if (isNaN(n)) return value;
+  return n.toFixed(2);
+}
+
 function parseLineItems(lineItemsJson: string | null): Record<number, number> {
   if (!lineItemsJson) return {};
   try {
@@ -325,7 +332,7 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
       description: data.description,
       vendor: data.vendor,
       product_type: data.product_type,
-      price: data.price,
+      price: normalizePrice(data.price),
     });
     const product = fastify.stateManager.getProduct(id);
     await dispatchWebhooks(fastify.stateManager, fastify.webhookQueue, fastify.webhookSecret, 'products/create', product);
@@ -340,7 +347,7 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
       description: data.description,
       vendor: data.vendor,
       product_type: data.product_type,
-      price: data.price,
+      price: normalizePrice(data.price),
     });
     const product = fastify.stateManager.getProduct(id);
     await dispatchWebhooks(fastify.stateManager, fastify.webhookQueue, fastify.webhookSecret, 'products/update', product);
