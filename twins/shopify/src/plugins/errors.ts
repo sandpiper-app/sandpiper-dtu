@@ -45,4 +45,20 @@ export const errorsPlugin: FastifyPluginAsync = async (fastify) => {
     fastify.errorSimulator.disable();
     return { enabled: false };
   });
+
+  // GET /admin/errors
+  // Lists all configured error configs for inspection.
+  fastify.get('/admin/errors', async () => {
+    const rows = fastify.stateManager.database
+      .prepare('SELECT * FROM error_configs')
+      .all();
+    return { configs: rows };
+  });
+
+  // GET /admin/errors/:operation
+  // Returns config for a specific operation, or { config: null } if not found.
+  fastify.get<{ Params: { operation: string } }>('/admin/errors/:operation', async (request) => {
+    const config = fastify.stateManager.getErrorConfig(request.params.operation);
+    return { config: config ?? null };
+  });
 };
