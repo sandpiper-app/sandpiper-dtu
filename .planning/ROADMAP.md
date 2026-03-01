@@ -13,9 +13,10 @@
 - [x] **Phase 4: Shopify Twin - Advanced Features** - Query cost calculation, pagination, stateful order lifecycle (completed 2026-02-28)
 - [x] **Phase 5: Slack Twin - Web API & Events** - Second major twin with REST API, events, Block Kit validation (completed 2026-02-28)
 - [x] **Phase 6: Twin UIs** - Web interfaces for state inspection and manual testing (completed 2026-02-28)
-- [ ] **Phase 7: Integration & E2E Testing** - Docker Compose orchestration and Sandpiper integration
+- [x] **Phase 7: Integration & E2E Testing** - Docker Compose orchestration and Sandpiper integration
 - [x] **Phase 8: CI & Integration Polish** - Slack conformance in CI, @dtu/core cleanup, Slack error config API, docs fixes (completed 2026-03-01)
 - [x] **Phase 9: Code Quality Cleanup** - Logging fixes, StateManager method gaps, flaky test fix (completed 2026-02-28)
+- [ ] **Phase 10: Tech Debt Cleanup** - Wire up InventoryItem, Slack live conformance CI, tsconfig fixes, Dockerfile fixes, ROADMAP staleness
 
 ## Phase Details
 
@@ -173,6 +174,21 @@ Plans:
 Plans:
 - [x] 09-01-PLAN.md — Logging fix, StateManager methods, flaky test fix
 
+### Phase 10: Tech Debt Cleanup
+**Goal**: Resolve all remaining tech debt from v1.0 audit — wire up orphaned InventoryItem, CI coverage, build config, Docker fixes
+**Depends on**: Phase 9
+**Requirements**: SHOP-01 (InventoryItem wiring), INFRA-06 (Slack live conformance CI)
+**Gap Closure:** Closes all tech debt items from v1.0 re-audit
+**Success Criteria** (what must be TRUE):
+  1. InventoryItem is queryable via GraphQL QueryRoot field and has StateManager CRUD methods (research Shopify API docs to replicate fully — may require UI changes)
+  2. Slack live conformance runs on CI schedule alongside Shopify conformance
+  3. `@dtu/ui` has path aliases in `tsconfig.base.json` and twin tsconfig references for `tsc --build` incremental support
+  4. Slack Dockerfile exposes correct port (3001) and comments reference only existing packages
+  5. ROADMAP.md Phase 7 entry reflects actual completion status
+
+Plans:
+- [ ] 10-01-PLAN.md — Wire up InventoryItem, CI fixes, tsconfig fixes, Dockerfile fixes, ROADMAP staleness
+
 ## Progress
 
 | Phase | Plans Complete | Status | Completed |
@@ -186,6 +202,7 @@ Plans:
 | 7. Integration & E2E Testing | 0/2 | Not started | - |
 | 8. CI & Integration Polish | 1/1 | Complete   | 2026-03-01 |
 | 9. Code Quality Cleanup | 1/1 | Complete | 2026-02-28 |
+| 10. Tech Debt Cleanup | 0/1 | Not started | - |
 
 ## Dependencies
 
@@ -202,6 +219,8 @@ Phase 2 (Shopify Core) ──→ Phase 3 (Webhooks/Conformance)
                                                    ↓
                                           Phase 8 (CI Polish)
                                           Phase 9 (Code Quality)
+                                                   ↓
+                                          Phase 10 (Tech Debt)
 ```
 
 **Rationale:**
@@ -214,6 +233,7 @@ Phase 2 (Shopify Core) ──→ Phase 3 (Webhooks/Conformance)
 - Phase 7 integrates twins with Sandpiper after UIs prove twins work independently
 - Phase 8 polishes CI and integration wiring identified by v1.0 audit
 - Phase 9 resolves code quality tech debt identified by v1.0 audit
+- Phase 10 resolves remaining tech debt from v1.0 re-audit (InventoryItem, CI, build config, Docker)
 
 ---
-*Last updated: 2026-02-28 after gap closure phases added from v1.0 audit*
+*Last updated: 2026-03-01 after tech debt cleanup phase added from v1.0 re-audit*
