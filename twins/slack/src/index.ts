@@ -58,6 +58,7 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
     },
     requestIdHeader: 'x-request-id',
     genReqId: () => randomUUID(),
+    ignoreTrailingSlash: true,
   });
 
   // Initialize Slack state manager
