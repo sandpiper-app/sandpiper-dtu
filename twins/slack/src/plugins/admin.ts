@@ -120,6 +120,36 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
   });
 
   // ---------------------------------------------------------------------------
+  // Token seeding endpoint — for sdk-verification tests
+  // ---------------------------------------------------------------------------
+
+  // POST /admin/tokens - seed a known bot token directly (bypasses OAuth flow)
+  // Used by seedSlackBotToken() in tests/sdk-verification/setup/seeders.ts.
+  // The OAuth flow (/api/oauth.v2.access) returns a dynamically generated token
+  // that may not match a hardcoded expected value; this endpoint creates a token
+  // with an exact, known value via slackStateManager.createToken().
+  fastify.post<{
+    Body: {
+      token: string;
+      tokenType: string;
+      teamId: string;
+      userId: string;
+      scope: string;
+      appId: string;
+    };
+  }>('/admin/tokens', async (request, reply) => {
+    const { token, tokenType, teamId, userId, scope, appId } = request.body ?? {};
+    if (!token || !tokenType || !teamId || !userId || !scope || !appId) {
+      return reply.status(400).send({
+        error: 'Missing required fields: token, tokenType, teamId, userId, scope, appId',
+      });
+    }
+    fastify.slackStateManager.createToken(token, tokenType, teamId, userId, scope, appId);
+    request.log.info({ token, tokenType, teamId }, 'Seeded Slack token via admin endpoint');
+    return { ok: true };
+  });
+
+  // ---------------------------------------------------------------------------
   // Dead Letter Queue (DLQ) inspection endpoints
   // ---------------------------------------------------------------------------
 
