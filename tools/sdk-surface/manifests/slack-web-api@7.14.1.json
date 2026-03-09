@@ -1,0 +1,5314 @@
+{
+  "package": "@slack/web-api",
+  "version": "7.14.1",
+  "generatedAt": "2026-03-09T05:21:34.067Z",
+  "symbolCount": 879,
+  "minimumExpectedSymbols": 20,
+  "symbols": {
+    "CodedError": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "code"
+      ]
+    },
+    "ErrorCode": {
+      "kind": "EnumDeclaration"
+    },
+    "WebAPICallError": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "WebAPIHTTPError": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "code",
+        "statusCode",
+        "statusMessage",
+        "headers",
+        "body"
+      ]
+    },
+    "WebAPIPlatformError": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "code",
+        "data"
+      ]
+    },
+    "WebAPIRateLimitedError": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "code",
+        "retryAfter"
+      ]
+    },
+    "WebAPIRequestError": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "code",
+        "original"
+      ]
+    },
+    "addAppMetadata": {
+      "kind": "FunctionDeclaration"
+    },
+    "Logger": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "debug",
+        "info",
+        "warn",
+        "error",
+        "setLevel",
+        "getLevel",
+        "setName"
+      ]
+    },
+    "LogLevel": {
+      "kind": "EnumDeclaration"
+    },
+    "retryPolicies": {
+      "kind": "VariableDeclaration"
+    },
+    "RetryOptions": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ChatStreamer": {
+      "kind": "ClassDeclaration",
+      "members": [
+        "append",
+        "stop"
+      ]
+    },
+    "ChatStreamerOptions": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "buffer_size"
+      ]
+    },
+    "PageAccumulator": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "PageReducer": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "PaginatePredicate": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TLSOptions": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "WebAPICallResult": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "ok",
+        "error",
+        "response_metadata"
+      ]
+    },
+    "WebClient": {
+      "kind": "ClassDeclaration",
+      "members": [
+        "apiCall",
+        "paginate",
+        "chatStream",
+        "filesUploadV2",
+        "slackApiUrl.toString",
+        "slackApiUrl.charAt",
+        "slackApiUrl.charCodeAt",
+        "slackApiUrl.concat",
+        "slackApiUrl.indexOf",
+        "slackApiUrl.lastIndexOf",
+        "slackApiUrl.localeCompare",
+        "slackApiUrl.match",
+        "slackApiUrl.replace",
+        "slackApiUrl.search",
+        "slackApiUrl.slice",
+        "slackApiUrl.split",
+        "slackApiUrl.substring",
+        "slackApiUrl.toLowerCase",
+        "slackApiUrl.toLocaleLowerCase",
+        "slackApiUrl.toUpperCase",
+        "slackApiUrl.toLocaleUpperCase",
+        "slackApiUrl.trim",
+        "slackApiUrl.length.toString",
+        "slackApiUrl.length.toFixed",
+        "slackApiUrl.length.toExponential",
+        "slackApiUrl.length.toPrecision",
+        "slackApiUrl.length.valueOf",
+        "slackApiUrl.length.toLocaleString",
+        "slackApiUrl.substr",
+        "slackApiUrl.valueOf",
+        "slackApiUrl.codePointAt",
+        "slackApiUrl.includes",
+        "slackApiUrl.endsWith",
+        "slackApiUrl.normalize",
+        "slackApiUrl.repeat",
+        "slackApiUrl.startsWith",
+        "slackApiUrl.anchor",
+        "slackApiUrl.big",
+        "slackApiUrl.blink",
+        "slackApiUrl.bold",
+        "slackApiUrl.fixed",
+        "slackApiUrl.fontcolor",
+        "slackApiUrl.fontsize",
+        "slackApiUrl.italics",
+        "slackApiUrl.link",
+        "slackApiUrl.small",
+        "slackApiUrl.strike",
+        "slackApiUrl.sub",
+        "slackApiUrl.sup",
+        "slackApiUrl.padStart",
+        "slackApiUrl.padEnd",
+        "slackApiUrl.trimEnd",
+        "slackApiUrl.trimStart",
+        "slackApiUrl.trimLeft",
+        "slackApiUrl.trimRight",
+        "slackApiUrl.matchAll",
+        "slackApiUrl.at",
+        "token.toString",
+        "token.charAt",
+        "token.charCodeAt",
+        "token.concat",
+        "token.indexOf",
+        "token.lastIndexOf",
+        "token.localeCompare",
+        "token.match",
+        "token.replace",
+        "token.search",
+        "token.slice",
+        "token.split",
+        "token.substring",
+        "token.toLowerCase",
+        "token.toLocaleLowerCase",
+        "token.toUpperCase",
+        "token.toLocaleUpperCase",
+        "token.trim",
+        "token.length.toString",
+        "token.length.toFixed",
+        "token.length.toExponential",
+        "token.length.toPrecision",
+        "token.length.valueOf",
+        "token.length.toLocaleString",
+        "token.substr",
+        "token.valueOf",
+        "token.codePointAt",
+        "token.includes",
+        "token.endsWith",
+        "token.normalize",
+        "token.repeat",
+        "token.startsWith",
+        "token.anchor",
+        "token.big",
+        "token.blink",
+        "token.bold",
+        "token.fixed",
+        "token.fontcolor",
+        "token.fontsize",
+        "token.italics",
+        "token.link",
+        "token.small",
+        "token.strike",
+        "token.sub",
+        "token.sup",
+        "token.padStart",
+        "token.padEnd",
+        "token.trimEnd",
+        "token.trimStart",
+        "token.trimLeft",
+        "token.trimRight",
+        "token.matchAll",
+        "token.at",
+        "admin.analytics.getFile",
+        "admin.apps.activities.list",
+        "admin.apps.approve",
+        "admin.apps.approved.list",
+        "admin.apps.clearResolution",
+        "admin.apps.config.lookup",
+        "admin.apps.config.set",
+        "admin.apps.requests.cancel",
+        "admin.apps.requests.list",
+        "admin.apps.restrict",
+        "admin.apps.restricted.list",
+        "admin.apps.uninstall",
+        "admin.auth.policy.assignEntities",
+        "admin.auth.policy.getEntities",
+        "admin.auth.policy.removeEntities",
+        "admin.barriers.create",
+        "admin.barriers.delete",
+        "admin.barriers.list",
+        "admin.barriers.update",
+        "admin.conversations.archive",
+        "admin.conversations.bulkArchive",
+        "admin.conversations.bulkDelete",
+        "admin.conversations.bulkMove",
+        "admin.conversations.convertToPrivate",
+        "admin.conversations.convertToPublic",
+        "admin.conversations.create",
+        "admin.conversations.delete",
+        "admin.conversations.disconnectShared",
+        "admin.conversations.ekm.listOriginalConnectedChannelInfo",
+        "admin.conversations.getConversationPrefs",
+        "admin.conversations.getCustomRetention",
+        "admin.conversations.getTeams",
+        "admin.conversations.invite",
+        "admin.conversations.lookup",
+        "admin.conversations.removeCustomRetention",
+        "admin.conversations.rename",
+        "admin.conversations.restrictAccess.addGroup",
+        "admin.conversations.restrictAccess.listGroups",
+        "admin.conversations.restrictAccess.removeGroup",
+        "admin.conversations.search",
+        "admin.conversations.setConversationPrefs",
+        "admin.conversations.setCustomRetention",
+        "admin.conversations.setTeams",
+        "admin.conversations.unarchive",
+        "admin.emoji.add",
+        "admin.emoji.addAlias",
+        "admin.emoji.list",
+        "admin.emoji.remove",
+        "admin.emoji.rename",
+        "admin.functions.list",
+        "admin.functions.permissions.lookup",
+        "admin.functions.permissions.set",
+        "admin.inviteRequests.approve",
+        "admin.inviteRequests.approved.list",
+        "admin.inviteRequests.denied.list",
+        "admin.inviteRequests.deny",
+        "admin.inviteRequests.list",
+        "admin.roles.addAssignments",
+        "admin.roles.listAssignments",
+        "admin.roles.removeAssignments",
+        "admin.teams.admins.list",
+        "admin.teams.create",
+        "admin.teams.list",
+        "admin.teams.owners.list",
+        "admin.teams.settings.info",
+        "admin.teams.settings.setDefaultChannels",
+        "admin.teams.settings.setDescription",
+        "admin.teams.settings.setDiscoverability",
+        "admin.teams.settings.setIcon",
+        "admin.teams.settings.setName",
+        "admin.usergroups.addChannels",
+        "admin.usergroups.addTeams",
+        "admin.usergroups.listChannels",
+        "admin.usergroups.removeChannels",
+        "admin.users.assign",
+        "admin.users.invite",
+        "admin.users.list",
+        "admin.users.remove",
+        "admin.users.session.clearSettings",
+        "admin.users.session.getSettings",
+        "admin.users.session.invalidate",
+        "admin.users.session.list",
+        "admin.users.session.reset",
+        "admin.users.session.resetBulk",
+        "admin.users.session.setSettings",
+        "admin.users.setAdmin",
+        "admin.users.setExpiration",
+        "admin.users.setOwner",
+        "admin.users.setRegular",
+        "admin.users.unsupportedVersions.export",
+        "admin.workflows.collaborators.add",
+        "admin.workflows.collaborators.remove",
+        "admin.workflows.permissions.lookup",
+        "admin.workflows.search",
+        "admin.workflows.unpublish",
+        "api.test",
+        "assistant.threads.setStatus",
+        "assistant.threads.setSuggestedPrompts",
+        "assistant.threads.setTitle",
+        "apps.connections.open",
+        "apps.event.authorizations.list",
+        "apps.manifest.create",
+        "apps.manifest.delete",
+        "apps.manifest.export",
+        "apps.manifest.update",
+        "apps.manifest.validate",
+        "apps.uninstall",
+        "auth.revoke",
+        "auth.teams.list",
+        "auth.test",
+        "bookmarks.add",
+        "bookmarks.edit",
+        "bookmarks.list",
+        "bookmarks.remove",
+        "bots.info",
+        "calls.add",
+        "calls.end",
+        "calls.info",
+        "calls.update",
+        "calls.participants.add",
+        "calls.participants.remove",
+        "canvases.access.delete",
+        "canvases.access.set",
+        "canvases.create",
+        "canvases.delete",
+        "canvases.edit",
+        "canvases.sections.lookup",
+        "chat.appendStream",
+        "chat.delete",
+        "chat.deleteScheduledMessage",
+        "chat.getPermalink",
+        "chat.meMessage",
+        "chat.postEphemeral",
+        "chat.postMessage",
+        "chat.scheduleMessage",
+        "chat.scheduledMessages.list",
+        "chat.startStream",
+        "chat.stopStream",
+        "chat.unfurl",
+        "chat.update",
+        "conversations.acceptSharedInvite",
+        "conversations.approveSharedInvite",
+        "conversations.archive",
+        "conversations.canvases.create",
+        "conversations.close",
+        "conversations.create",
+        "conversations.declineSharedInvite",
+        "conversations.externalInvitePermissions.set",
+        "conversations.history",
+        "conversations.info",
+        "conversations.invite",
+        "conversations.inviteShared",
+        "conversations.join",
+        "conversations.kick",
+        "conversations.leave",
+        "conversations.list",
+        "conversations.listConnectInvites",
+        "conversations.mark",
+        "conversations.members",
+        "conversations.open",
+        "conversations.rename",
+        "conversations.replies",
+        "conversations.requestSharedInvite.approve",
+        "conversations.requestSharedInvite.deny",
+        "conversations.requestSharedInvite.list",
+        "conversations.setPurpose",
+        "conversations.setTopic",
+        "conversations.unarchive",
+        "dialog.open",
+        "dnd.endDnd",
+        "dnd.endSnooze",
+        "dnd.info",
+        "dnd.setSnooze",
+        "dnd.teamInfo",
+        "emoji.list",
+        "entity.presentDetails",
+        "files.completeUploadExternal",
+        "files.delete",
+        "files.getUploadURLExternal",
+        "files.info",
+        "files.list",
+        "files.revokePublicURL",
+        "files.sharedPublicURL",
+        "files.upload",
+        "files.uploadV2",
+        "files.comments.delete",
+        "files.remote.add",
+        "files.remote.info",
+        "files.remote.list",
+        "files.remote.remove",
+        "files.remote.share",
+        "files.remote.update",
+        "functions.completeError",
+        "functions.completeSuccess",
+        "migration.exchange",
+        "oauth.access",
+        "oauth.v2.access",
+        "oauth.v2.exchange",
+        "openid.connect.token",
+        "openid.connect.userInfo",
+        "pins.add",
+        "pins.list",
+        "pins.remove",
+        "reactions.add",
+        "reactions.get",
+        "reactions.list",
+        "reactions.remove",
+        "reminders.add",
+        "reminders.complete",
+        "reminders.delete",
+        "reminders.info",
+        "reminders.list",
+        "rtm.connect",
+        "rtm.start",
+        "search.all",
+        "search.files",
+        "search.messages",
+        "slackLists.access.delete",
+        "slackLists.access.set",
+        "slackLists.create",
+        "slackLists.download.get",
+        "slackLists.download.start",
+        "slackLists.items.create",
+        "slackLists.items.delete",
+        "slackLists.items.deleteMultiple",
+        "slackLists.items.info",
+        "slackLists.items.list",
+        "slackLists.items.update",
+        "slackLists.update",
+        "team.accessLogs",
+        "team.billableInfo",
+        "team.billing.info",
+        "team.externalTeams.disconnect",
+        "team.externalTeams.list",
+        "team.info",
+        "team.integrationLogs",
+        "team.preferences.list",
+        "team.profile.get",
+        "tooling.tokens.rotate",
+        "usergroups.create",
+        "usergroups.disable",
+        "usergroups.enable",
+        "usergroups.list",
+        "usergroups.update",
+        "usergroups.users.list",
+        "usergroups.users.update",
+        "users.conversations",
+        "users.deletePhoto",
+        "users.discoverableContacts.lookup",
+        "users.getPresence",
+        "users.identity",
+        "users.info",
+        "users.list",
+        "users.lookupByEmail",
+        "users.setPhoto",
+        "users.setPresence",
+        "users.profile.get",
+        "users.profile.set",
+        "views.open",
+        "views.publish",
+        "views.push",
+        "views.update",
+        "stars.add",
+        "stars.list",
+        "stars.remove",
+        "workflows.featured.add",
+        "workflows.featured.list",
+        "workflows.featured.remove",
+        "workflows.featured.set",
+        "workflows.stepCompleted",
+        "workflows.stepFailed",
+        "workflows.updateStep",
+        "eventNames",
+        "listeners",
+        "listenerCount",
+        "emit",
+        "on",
+        "addListener",
+        "once",
+        "removeListener",
+        "off",
+        "removeAllListeners"
+      ]
+    },
+    "WebClientEvent": {
+      "kind": "EnumDeclaration"
+    },
+    "WebClientOptions": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "slackApiUrl",
+        "logger",
+        "logLevel",
+        "maxRequestConcurrency",
+        "retryConfig",
+        "agent",
+        "tls",
+        "timeout",
+        "rejectRateLimitedCalls",
+        "headers",
+        "teamId",
+        "allowAbsoluteUrls",
+        "attachOriginalToWebAPIRequestError",
+        "requestInterceptor",
+        "adapter"
+      ]
+    },
+    "Method": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAnalyticsGetFileArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsActivitiesListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsApproveArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsApprovedListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsClearResolutionArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsConfigLookupArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "app_ids"
+      ]
+    },
+    "AdminAppsConfigSetArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "domain_restrictions",
+        "workflow_auth_strategy"
+      ]
+    },
+    "AdminAppsRequestsCancelArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsRequestsListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsRestrictArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsRestrictedListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsUninstallArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAuthPolicyAssignEntitiesArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminAuthPolicyGetEntitiesArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminAuthPolicyRemoveEntitiesArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminBarriersCreateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "barriered_from_usergroup_ids",
+        "primary_usergroup_id",
+        "restricted_subjects"
+      ]
+    },
+    "AdminBarriersDeleteArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminBarriersListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminBarriersUpdateArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminConversationsArchiveArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminConversationsBulkArchiveArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminConversationsBulkDeleteArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminConversationsBulkMoveArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "target_team_id"
+      ]
+    },
+    "AdminConversationsConvertToPrivateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "name"
+      ]
+    },
+    "AdminConversationsConvertToPublicArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminConversationsCreateArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsDeleteArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminConversationsDisconnectSharedArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "leaving_team_ids"
+      ]
+    },
+    "AdminConversationsEKMListOriginalConnectedChannelInfoArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsGetConversationPrefsArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminConversationsGetCustomRetentionArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminConversationsGetTeamsArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminConversationsInviteArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminConversationsLookupArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "last_message_activity_before",
+        "max_member_count"
+      ]
+    },
+    "AdminConversationsRemoveCustomRetentionArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminConversationsRenameArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "name"
+      ]
+    },
+    "AdminConversationsRestrictAccessAddGroupArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminConversationsRestrictAccessListGroupsArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminConversationsRestrictAccessRemoveGroupArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminConversationsSearchArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsSetConversationPrefsArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "prefs"
+      ]
+    },
+    "AdminConversationsSetCustomRetentionArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "duration_days"
+      ]
+    },
+    "AdminConversationsSetTeamsArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "org_channel",
+        "target_team_ids",
+        "team_id"
+      ]
+    },
+    "AdminConversationsUnarchiveArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminEmojiAddAliasArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "alias_for"
+      ]
+    },
+    "AdminEmojiAddArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "url"
+      ]
+    },
+    "AdminEmojiListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminEmojiRemoveArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminEmojiRenameArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "new_name"
+      ]
+    },
+    "AdminFunctionsListArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "app_ids",
+        "team_id"
+      ]
+    },
+    "AdminFunctionsPermissionsLookupArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "function_ids"
+      ]
+    },
+    "AdminFunctionsPermissionsSetArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "function_id",
+        "visibility"
+      ]
+    },
+    "AdminInviteRequestsApproveArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminInviteRequestsApprovedListArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminInviteRequestsDeniedListArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminInviteRequestsDenyArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminInviteRequestsListArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminRolesAddAssignmentsArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminRolesListAssignmentsArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminRolesRemoveAssignmentsArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminTeamsAdminsListArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminTeamsCreateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "team_domain",
+        "team_name",
+        "team_description",
+        "team_discoverability"
+      ]
+    },
+    "AdminTeamsListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminTeamsOwnersListArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminTeamsSettingsInfoArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminTeamsSettingsSetDefaultChannelsArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminTeamsSettingsSetDescriptionArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "description"
+      ]
+    },
+    "AdminTeamsSettingsSetDiscoverabilityArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "discoverability"
+      ]
+    },
+    "AdminTeamsSettingsSetIconArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "image_url"
+      ]
+    },
+    "AdminTeamsSettingsSetNameArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "name"
+      ]
+    },
+    "AdminUsergroupsAddChannelsArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminUsergroupsAddTeamsArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "team_ids",
+        "auto_provision"
+      ]
+    },
+    "AdminUsergroupsListChannelsArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "include_num_members"
+      ]
+    },
+    "AdminUsergroupsRemoveChannelsArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminUsersAssignArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminUsersInviteArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "email",
+        "custom_message",
+        "email_password_policy_enabled",
+        "guest_expiration_ts",
+        "real_name",
+        "resend"
+      ]
+    },
+    "AdminUsersListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersRemoveArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminUsersSessionClearSettingsArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminUsersSessionGetSettingsArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminUsersSessionInvalidateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "session_id"
+      ]
+    },
+    "AdminUsersSessionListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersSessionResetArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminUsersSessionResetBulkArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminUsersSessionSetSettingsArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "desktop_app_browser_quit",
+        "duration"
+      ]
+    },
+    "AdminUsersSetAdminArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminUsersSetExpirationArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "expiration_ts"
+      ]
+    },
+    "AdminUsersSetOwnerArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminUsersSetRegularArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminUsersUnsupportedVersionsExportArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "date_end_of_support",
+        "date_sessions_started"
+      ]
+    },
+    "AdminWorkflowsCollaboratorsAddArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminWorkflowsCollaboratorsRemoveArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AdminWorkflowsPermissionsLookupArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "max_workflow_triggers"
+      ]
+    },
+    "AdminWorkflowsSearchArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminWorkflowsUnpublishArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "APITestArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppsConnectionsOpenArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppsEventAuthorizationsListArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "event_context"
+      ]
+    },
+    "AppsManifestCreateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "manifest"
+      ]
+    },
+    "AppsManifestDeleteArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AppsManifestExportArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AppsManifestUpdateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "manifest"
+      ]
+    },
+    "AppsManifestValidateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "manifest"
+      ]
+    },
+    "AppsUninstallArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "AssistantThreadsSetStatusArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "channel_id",
+        "status",
+        "thread_ts",
+        "loading_messages"
+      ]
+    },
+    "AssistantThreadsSetSuggestedPromptsArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "channel_id",
+        "prompts",
+        "thread_ts",
+        "title"
+      ]
+    },
+    "AssistantThreadsSetTitleArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "channel_id",
+        "thread_ts",
+        "title"
+      ]
+    },
+    "AuthRevokeArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AuthTeamsListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AuthTestArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "BookmarksAddArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "entity_id",
+        "parent_id"
+      ]
+    },
+    "BookmarksEditArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "BookmarksListArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "BookmarksRemoveArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "BotsInfoArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "CallsAddArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "external_unique_id",
+        "created_by",
+        "date_start",
+        "external_display_id"
+      ]
+    },
+    "CallsEndArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "duration"
+      ]
+    },
+    "CallsInfoArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "CallsParticipantsAddArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "CallsParticipantsRemoveArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "CallsUpdateArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "CanvasesAccessDeleteArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "CanvasesAccessSetArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "access_level"
+      ]
+    },
+    "CanvasesCreateArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "CanvasesDeleteArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "CanvasesEditArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "changes"
+      ]
+    },
+    "CanvasesSectionsLookupArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "criteria"
+      ]
+    },
+    "ConversationsCanvasesCreateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "document_content",
+        "title"
+      ]
+    },
+    "ChatAppendStreamArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "chunks"
+      ]
+    },
+    "ChatDeleteArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ChatDeleteScheduledMessageArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "scheduled_message_id"
+      ]
+    },
+    "ChatGetPermalinkArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ChatMeMessageArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ChatPostEphemeralArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatPostMessageArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatScheduledMessagesListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatScheduleMessageArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatStartStreamArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "chunks",
+        "recipient_team_id",
+        "recipient_user_id",
+        "task_display_mode"
+      ]
+    },
+    "ChatStopStreamArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatUnfurlArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatUpdateArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsAcceptSharedInviteArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsApproveSharedInviteArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ConversationsArchiveArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ConversationsCloseArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ConversationsCreateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "name"
+      ]
+    },
+    "ConversationsDeclineSharedInviteArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ConversationsExternalInvitePermissionsSetArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "action"
+      ]
+    },
+    "ConversationsHistoryArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ConversationsInfoArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "include_num_members"
+      ]
+    },
+    "ConversationsInviteArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "force"
+      ]
+    },
+    "ConversationsInviteSharedArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsJoinArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ConversationsKickArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "user"
+      ]
+    },
+    "ConversationsLeaveArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ConversationsListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsListConnectInvitesArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsMarkArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ConversationsMembersArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ConversationsOpenArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsRenameArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "name"
+      ]
+    },
+    "ConversationsRepliesArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ConversationsRequestSharedInviteApproveArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "is_external_limited",
+        "message"
+      ]
+    },
+    "ConversationsRequestSharedInviteDenyArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ConversationsRequestSharedInviteListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsSetPurposeArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "purpose"
+      ]
+    },
+    "ConversationsSetTopicArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "topic"
+      ]
+    },
+    "ConversationsUnarchiveArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "DialogOpenArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "trigger_id",
+        "dialog"
+      ]
+    },
+    "DndEndDndArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "DndEndSnoozeArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "DndInfoArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "DndSetSnoozeArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "num_minutes"
+      ]
+    },
+    "DndTeamInfoArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "users"
+      ]
+    },
+    "EmojiListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "EntityPresentDetailsArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesCommentsDeleteArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "id"
+      ]
+    },
+    "FilesCompleteUploadExternalArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesDeleteArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "FilesGetUploadURLExternalArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "filename",
+        "length",
+        "alt_text",
+        "snippet_type"
+      ]
+    },
+    "FilesInfoArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "FilesListArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "channel",
+        "show_files_hidden_by_limit",
+        "ts_from",
+        "ts_to",
+        "types",
+        "user"
+      ]
+    },
+    "FilesRemoteAddArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "FilesRemoteInfoArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesRemoteListArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "channel",
+        "ts_from",
+        "ts_to"
+      ]
+    },
+    "FilesRemoteRemoveArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesRemoteShareArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesRemoteUpdateArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesRevokePublicURLArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "FilesSharedPublicURLArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "FilesUploadArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesUploadV2Arguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FunctionsCompleteErrorArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "error"
+      ]
+    },
+    "FunctionsCompleteSuccessArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "outputs"
+      ]
+    },
+    "MigrationExchangeArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "users",
+        "to_old"
+      ]
+    },
+    "OAuthAccessArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "single_channel"
+      ]
+    },
+    "OAuthV2AccessArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "OAuthV2ExchangeArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "token"
+      ]
+    },
+    "OpenIDConnectTokenArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "OpenIDConnectUserInfoArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "PinsAddArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "PinsListArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "channel"
+      ]
+    },
+    "PinsRemoveArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ReactionsAddArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "ReactionsGetArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ReactionsListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ReactionsRemoveArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "RemindersAddArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "text",
+        "time",
+        "user",
+        "recurrence"
+      ]
+    },
+    "RemindersCompleteArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "reminder"
+      ]
+    },
+    "RemindersDeleteArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "reminder"
+      ]
+    },
+    "RemindersInfoArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "reminder"
+      ]
+    },
+    "RemindersListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "RTMConnectArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "RTMStartArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SearchAllArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "SearchFilesArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "SearchMessagesArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "SlackListsAccessDeleteArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "list_id",
+        "channel_ids",
+        "user_ids"
+      ]
+    },
+    "SlackListsAccessSetArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "list_id",
+        "access_level",
+        "channel_ids",
+        "user_ids"
+      ]
+    },
+    "SlackListsCreateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "name",
+        "description_blocks",
+        "schema",
+        "copy_from_list_id",
+        "include_copied_list_records",
+        "todo_mode"
+      ]
+    },
+    "SlackListsDownloadGetArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "list_id",
+        "job_id"
+      ]
+    },
+    "SlackListsDownloadStartArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "list_id",
+        "include_archived"
+      ]
+    },
+    "SlackListsItemsCreateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "list_id",
+        "duplicated_item_id",
+        "parent_item_id",
+        "initial_fields"
+      ]
+    },
+    "SlackListsItemsDeleteArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "list_id",
+        "id"
+      ]
+    },
+    "SlackListsItemsDeleteMultipleArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "list_id",
+        "ids"
+      ]
+    },
+    "SlackListsItemsInfoArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "list_id",
+        "id",
+        "include_is_subscribed"
+      ]
+    },
+    "SlackListsItemsListArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "list_id",
+        "limit",
+        "cursor",
+        "archived"
+      ]
+    },
+    "SlackListsItemsUpdateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "list_id",
+        "cells"
+      ]
+    },
+    "SlackListsUpdateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "id",
+        "name",
+        "description_blocks",
+        "todo_mode"
+      ]
+    },
+    "StarsAddRemoveArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "StarsListArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "TeamAccessLogsArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamBillableInfoArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamBillingInfoArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamExternalTeamsDisconnectArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamExternalTeamsListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamInfoArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamIntegrationLogsArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamPreferencesListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamProfileGetArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ToolingTokensRotateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "refresh_token"
+      ]
+    },
+    "UsergroupsCreateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "name",
+        "channels",
+        "description",
+        "handle"
+      ]
+    },
+    "UsergroupsDisableArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "usergroup"
+      ]
+    },
+    "UsergroupsEnableArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "usergroup"
+      ]
+    },
+    "UsergroupsListArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsergroupsUpdateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "usergroup"
+      ]
+    },
+    "UsergroupsUsersListArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "usergroup",
+        "include_disabled"
+      ]
+    },
+    "UsergroupsUsersUpdateArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "usergroup",
+        "users"
+      ]
+    },
+    "UsersConversationsArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "exclude_archived",
+        "types",
+        "user"
+      ]
+    },
+    "UsersDeletePhotoArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "UsersDiscoverableContactsLookupArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "UsersGetPresenceArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "user"
+      ]
+    },
+    "UsersIdentityArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "UsersInfoArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "user"
+      ]
+    },
+    "UsersListArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "UsersLookupByEmailArguments": {
+      "kind": "InterfaceDeclaration"
+    },
+    "UsersProfileGetArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "include_labels",
+        "user"
+      ]
+    },
+    "UsersProfileSetArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "profile",
+        "user",
+        "name",
+        "value"
+      ]
+    },
+    "UsersSetPhotoArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "image",
+        "crop_w",
+        "crop_x",
+        "crop_y"
+      ]
+    },
+    "UsersSetPresenceArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "presence"
+      ]
+    },
+    "ViewsOpenArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ViewsPublishArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "user_id"
+      ]
+    },
+    "ViewsPushArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ViewsUpdateArguments": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "WorkflowsFeaturedAddArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "channel_id",
+        "trigger_ids"
+      ]
+    },
+    "WorkflowsFeaturedListArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "channel_ids"
+      ]
+    },
+    "WorkflowsFeaturedRemoveArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "channel_id",
+        "trigger_ids"
+      ]
+    },
+    "WorkflowsFeaturedSetArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "channel_id",
+        "trigger_ids"
+      ]
+    },
+    "WorkflowsStepCompletedArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "workflow_step_execute_id",
+        "outputs"
+      ]
+    },
+    "WorkflowsStepFailedArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "workflow_step_execute_id",
+        "error"
+      ]
+    },
+    "WorkflowsUpdateStepArguments": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "workflow_step_edit_id",
+        "step_image_url",
+        "step_name",
+        "inputs",
+        "outputs"
+      ]
+    },
+    "AdminAnalyticsGetFileResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAnalyticsMemberDetails": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "enterprise_id",
+        "team_id",
+        "date",
+        "user_id",
+        "email_address",
+        "is_guest",
+        "is_billable_seat",
+        "is_active",
+        "is_active_ios",
+        "is_active_android",
+        "is_active_desktop",
+        "reactions_added_count",
+        "messages_posted_count",
+        "channel_messages_posted_count",
+        "files_added_count",
+        "is_active_apps",
+        "is_active_workflows",
+        "is_active_slack_connect",
+        "total_calls_count",
+        "slack_calls_count",
+        "slack_huddles_count",
+        "search_count",
+        "date_claimed"
+      ]
+    },
+    "AdminAnalyticsPublicChannelDetails": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "enterprise_id",
+        "originating_team",
+        "channel_id",
+        "date_created",
+        "date_last_active",
+        "total_members_count",
+        "full_members_count",
+        "guest_member_count",
+        "messages_posted_count",
+        "messages_posted_by_members_count",
+        "members_who_viewed_count",
+        "members_who_posted_count",
+        "reactions_added_count",
+        "visibility",
+        "channel_type",
+        "is_shared_externally",
+        "shared_with",
+        "externally_shared_with_organizations",
+        "date"
+      ]
+    },
+    "AdminAnalyticsPublicChannelMetadataDetails": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "channel_id",
+        "name",
+        "topic",
+        "description",
+        "date"
+      ]
+    },
+    "AdminAppsActivitiesListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsApprovedListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsApproveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsClearResolutionResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsConfigLookupResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsConfigSetResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsRequestsCancelResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsRequestsListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsRestrictedListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsRestrictResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAppsUninstallResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAuthPolicyAssignEntitiesResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAuthPolicyGetEntitiesResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminAuthPolicyRemoveEntitiesResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminBarriersCreateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminBarriersDeleteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminBarriersListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminBarriersUpdateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsArchiveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsBulkArchiveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsBulkDeleteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsBulkMoveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsConvertToPrivateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsConvertToPublicResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsCreateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsDeleteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsDisconnectSharedResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsEkmListOriginalConnectedChannelInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsGetConversationPrefsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsGetCustomRetentionResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsGetTeamsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsInviteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsLookupResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsRemoveCustomRetentionResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsRenameResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsRestrictAccessAddGroupResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsRestrictAccessListGroupsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsRestrictAccessRemoveGroupResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsSearchResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsSetConversationPrefsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsSetCustomRetentionResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsSetTeamsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsUnarchiveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsWhitelistAddResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsWhitelistListGroupsLinkedToChannelResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminConversationsWhitelistRemoveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminEmojiAddAliasResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminEmojiAddResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminEmojiListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminEmojiRemoveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminEmojiRenameResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminFunctionsListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminFunctionsPermissionsLookupResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminFunctionsPermissionsSetResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminInviteRequestsApprovedListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminInviteRequestsApproveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminInviteRequestsDeniedListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminInviteRequestsDenyResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminInviteRequestsListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminRolesAddAssignmentsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminRolesListAssignmentsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminRolesRemoveAssignmentsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminTeamsAdminsListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminTeamsCreateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminTeamsListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminTeamsOwnersListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminTeamsSettingsInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminTeamsSettingsSetDefaultChannelsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminTeamsSettingsSetDescriptionResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminTeamsSettingsSetDiscoverabilityResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminTeamsSettingsSetIconResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminTeamsSettingsSetNameResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsergroupsAddChannelsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsergroupsAddTeamsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsergroupsListChannelsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsergroupsRemoveChannelsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersAssignResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersInviteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersRemoveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersSessionClearSettingsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersSessionGetSettingsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersSessionInvalidateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersSessionListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersSessionResetBulkResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersSessionResetResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersSessionSetSettingsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersSetAdminResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersSetExpirationResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersSetOwnerResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersSetRegularResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminUsersUnsupportedVersionsExportResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminWorkflowsCollaboratorsAddResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminWorkflowsCollaboratorsRemoveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminWorkflowsPermissionsLookupResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminWorkflowsSearchResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AdminWorkflowsUnpublishResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ApiTestResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppsConnectionsOpenResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppsEventAuthorizationsListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppsManifestCreateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppsManifestDeleteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppsManifestExportResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppsManifestUpdateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppsManifestValidateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppsPermissionsInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppsPermissionsRequestResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppsPermissionsResourcesListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppsPermissionsScopesListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppsPermissionsUsersListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppsPermissionsUsersRequestResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppsUninstallResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AssistantThreadsSetStatusResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AssistantThreadsSetSuggestedPromptsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AssistantThreadsSetTitleResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AuthRevokeResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AuthTeamsListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AuthTestResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "BookmarksAddResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "BookmarksEditResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "BookmarksListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "BookmarksRemoveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "BotsInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "CallsAddResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "CallsEndResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "CallsInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "CallsParticipantsAddResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "CallsParticipantsRemoveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "CallsUpdateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "CanvasesAccessDeleteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "CanvasesAccessSetResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "CanvasesCreateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "CanvasesDeleteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "CanvasesEditResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "CanvasesSectionsLookupResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChannelsArchiveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChannelsCreateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChannelsHistoryResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChannelsInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChannelsInviteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChannelsJoinResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChannelsKickResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChannelsLeaveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChannelsListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChannelsMarkResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChannelsRenameResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChannelsRepliesResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChannelsSetPurposeResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChannelsSetTopicResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChannelsUnarchiveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatAppendStreamResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatDeleteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatDeleteScheduledMessageResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatGetPermalinkResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatMeMessageResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatPostEphemeralResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatPostMessageResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatScheduledMessagesListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatScheduleMessageResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatStartStreamResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatStopStreamResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatUnfurlResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ChatUpdateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsAcceptSharedInviteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsApproveSharedInviteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsArchiveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsCanvasesCreateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsCloseResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsCreateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsDeclineSharedInviteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsExternalInvitePermissionsSetResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsHistoryResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsInviteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsInviteSharedResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsJoinResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsKickResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsLeaveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsListConnectInvitesResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsMarkResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsMembersResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsOpenResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsRenameResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsRepliesResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsRequestSharedInviteApproveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsRequestSharedInviteDenyResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsRequestSharedInviteListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsSetPurposeResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsSetTopicResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationsUnarchiveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "DialogOpenResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "DndEndDndResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "DndEndSnoozeResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "DndInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "DndSetSnoozeResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "DndTeamInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "EmojiListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "EntityPresentDetailsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesCommentsAddResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesCommentsDeleteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesCommentsEditResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesCompleteUploadExternalResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesDeleteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesGetUploadURLExternalResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesRemoteAddResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesRemoteInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesRemoteListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesRemoteRemoveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesRemoteShareResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesRemoteUpdateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesRevokePublicURLResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesSharedPublicURLResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FilesUploadResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FunctionsCompleteErrorResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "FunctionsCompleteSuccessResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsArchiveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsCloseResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsCreateChildResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsCreateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsHistoryResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsInviteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsKickResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsLeaveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsMarkResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsOpenResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsRenameResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsRepliesResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsSetPurposeResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsSetTopicResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GroupsUnarchiveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ImCloseResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ImHistoryResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ImListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ImMarkResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ImOpenResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ImRepliesResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "MigrationExchangeResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "MpimCloseResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "MpimHistoryResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "MpimListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "MpimMarkResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "MpimOpenResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "MpimRepliesResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "OauthAccessResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "OauthTokenResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "OauthV2AccessResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "OauthV2ExchangeResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "OpenIDConnectTokenResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "OpenIDConnectUserInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "PinsAddResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "PinsListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "PinsRemoveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ReactionsAddResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ReactionsGetResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ReactionsListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ReactionsRemoveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "RemindersAddResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "RemindersCompleteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "RemindersDeleteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "RemindersInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "RemindersListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "RtmConnectResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "RtmStartResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SearchAllResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SearchFilesResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SearchMessagesResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SlackListsAccessDeleteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SlackListsAccessSetResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SlackListsCreateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SlackListsDownloadGetResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SlackListsDownloadStartResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SlackListsItemsCreateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SlackListsItemsDeleteMultipleResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SlackListsItemsDeleteResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SlackListsItemsInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SlackListsItemsListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SlackListsItemsUpdateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SlackListsUpdateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "StarsAddResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "StarsListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "StarsRemoveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamAccessLogsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamBillableInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamBillingInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamExternalTeamsDisconnectResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamExternalTeamsListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamIntegrationLogsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamPreferencesListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "TeamProfileGetResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ToolingTokensRotateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsergroupsCreateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsergroupsDisableResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsergroupsEnableResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsergroupsListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsergroupsUpdateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsergroupsUsersListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsergroupsUsersUpdateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsersConversationsResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsersDeletePhotoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsersDiscoverableContactsLookupResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsersGetPresenceResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsersIdentityResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsersInfoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsersListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsersLookupByEmailResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsersProfileGetResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsersProfileSetResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsersSetActiveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsersSetPhotoResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsersSetPresenceResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ViewsOpenResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ViewsPublishResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ViewsPushResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ViewsUpdateResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "WorkflowsFeaturedAddResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "WorkflowsFeaturedListResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "WorkflowsFeaturedRemoveResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "WorkflowsFeaturedSetResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "WorkflowsStepCompletedResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "WorkflowsStepFailedResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "WorkflowsUpdateStepResponse": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "Methods": {
+      "kind": "ClassDeclaration",
+      "members": [
+        "apiCall",
+        "filesUploadV2",
+        "admin.analytics.getFile",
+        "admin.apps.activities.list",
+        "admin.apps.approve",
+        "admin.apps.approved.list",
+        "admin.apps.clearResolution",
+        "admin.apps.config.lookup",
+        "admin.apps.config.set",
+        "admin.apps.requests.cancel",
+        "admin.apps.requests.list",
+        "admin.apps.restrict",
+        "admin.apps.restricted.list",
+        "admin.apps.uninstall",
+        "admin.auth.policy.assignEntities",
+        "admin.auth.policy.getEntities",
+        "admin.auth.policy.removeEntities",
+        "admin.barriers.create",
+        "admin.barriers.delete",
+        "admin.barriers.list",
+        "admin.barriers.update",
+        "admin.conversations.archive",
+        "admin.conversations.bulkArchive",
+        "admin.conversations.bulkDelete",
+        "admin.conversations.bulkMove",
+        "admin.conversations.convertToPrivate",
+        "admin.conversations.convertToPublic",
+        "admin.conversations.create",
+        "admin.conversations.delete",
+        "admin.conversations.disconnectShared",
+        "admin.conversations.ekm.listOriginalConnectedChannelInfo",
+        "admin.conversations.getConversationPrefs",
+        "admin.conversations.getCustomRetention",
+        "admin.conversations.getTeams",
+        "admin.conversations.invite",
+        "admin.conversations.lookup",
+        "admin.conversations.removeCustomRetention",
+        "admin.conversations.rename",
+        "admin.conversations.restrictAccess.addGroup",
+        "admin.conversations.restrictAccess.listGroups",
+        "admin.conversations.restrictAccess.removeGroup",
+        "admin.conversations.search",
+        "admin.conversations.setConversationPrefs",
+        "admin.conversations.setCustomRetention",
+        "admin.conversations.setTeams",
+        "admin.conversations.unarchive",
+        "admin.emoji.add",
+        "admin.emoji.addAlias",
+        "admin.emoji.list",
+        "admin.emoji.remove",
+        "admin.emoji.rename",
+        "admin.functions.list",
+        "admin.functions.permissions.lookup",
+        "admin.functions.permissions.set",
+        "admin.inviteRequests.approve",
+        "admin.inviteRequests.approved.list",
+        "admin.inviteRequests.denied.list",
+        "admin.inviteRequests.deny",
+        "admin.inviteRequests.list",
+        "admin.roles.addAssignments",
+        "admin.roles.listAssignments",
+        "admin.roles.removeAssignments",
+        "admin.teams.admins.list",
+        "admin.teams.create",
+        "admin.teams.list",
+        "admin.teams.owners.list",
+        "admin.teams.settings.info",
+        "admin.teams.settings.setDefaultChannels",
+        "admin.teams.settings.setDescription",
+        "admin.teams.settings.setDiscoverability",
+        "admin.teams.settings.setIcon",
+        "admin.teams.settings.setName",
+        "admin.usergroups.addChannels",
+        "admin.usergroups.addTeams",
+        "admin.usergroups.listChannels",
+        "admin.usergroups.removeChannels",
+        "admin.users.assign",
+        "admin.users.invite",
+        "admin.users.list",
+        "admin.users.remove",
+        "admin.users.session.clearSettings",
+        "admin.users.session.getSettings",
+        "admin.users.session.invalidate",
+        "admin.users.session.list",
+        "admin.users.session.reset",
+        "admin.users.session.resetBulk",
+        "admin.users.session.setSettings",
+        "admin.users.setAdmin",
+        "admin.users.setExpiration",
+        "admin.users.setOwner",
+        "admin.users.setRegular",
+        "admin.users.unsupportedVersions.export",
+        "admin.workflows.collaborators.add",
+        "admin.workflows.collaborators.remove",
+        "admin.workflows.permissions.lookup",
+        "admin.workflows.search",
+        "admin.workflows.unpublish",
+        "api.test",
+        "assistant.threads.setStatus",
+        "assistant.threads.setSuggestedPrompts",
+        "assistant.threads.setTitle",
+        "apps.connections.open",
+        "apps.event.authorizations.list",
+        "apps.manifest.create",
+        "apps.manifest.delete",
+        "apps.manifest.export",
+        "apps.manifest.update",
+        "apps.manifest.validate",
+        "apps.uninstall",
+        "auth.revoke",
+        "auth.teams.list",
+        "auth.test",
+        "bookmarks.add",
+        "bookmarks.edit",
+        "bookmarks.list",
+        "bookmarks.remove",
+        "bots.info",
+        "calls.add",
+        "calls.end",
+        "calls.info",
+        "calls.update",
+        "calls.participants.add",
+        "calls.participants.remove",
+        "canvases.access.delete",
+        "canvases.access.set",
+        "canvases.create",
+        "canvases.delete",
+        "canvases.edit",
+        "canvases.sections.lookup",
+        "chat.appendStream",
+        "chat.delete",
+        "chat.deleteScheduledMessage",
+        "chat.getPermalink",
+        "chat.meMessage",
+        "chat.postEphemeral",
+        "chat.postMessage",
+        "chat.scheduleMessage",
+        "chat.scheduledMessages.list",
+        "chat.startStream",
+        "chat.stopStream",
+        "chat.unfurl",
+        "chat.update",
+        "conversations.acceptSharedInvite",
+        "conversations.approveSharedInvite",
+        "conversations.archive",
+        "conversations.canvases.create",
+        "conversations.close",
+        "conversations.create",
+        "conversations.declineSharedInvite",
+        "conversations.externalInvitePermissions.set",
+        "conversations.history",
+        "conversations.info",
+        "conversations.invite",
+        "conversations.inviteShared",
+        "conversations.join",
+        "conversations.kick",
+        "conversations.leave",
+        "conversations.list",
+        "conversations.listConnectInvites",
+        "conversations.mark",
+        "conversations.members",
+        "conversations.open",
+        "conversations.rename",
+        "conversations.replies",
+        "conversations.requestSharedInvite.approve",
+        "conversations.requestSharedInvite.deny",
+        "conversations.requestSharedInvite.list",
+        "conversations.setPurpose",
+        "conversations.setTopic",
+        "conversations.unarchive",
+        "dialog.open",
+        "dnd.endDnd",
+        "dnd.endSnooze",
+        "dnd.info",
+        "dnd.setSnooze",
+        "dnd.teamInfo",
+        "emoji.list",
+        "entity.presentDetails",
+        "files.completeUploadExternal",
+        "files.delete",
+        "files.getUploadURLExternal",
+        "files.info",
+        "files.list",
+        "files.revokePublicURL",
+        "files.sharedPublicURL",
+        "files.upload",
+        "files.uploadV2",
+        "files.comments.delete",
+        "files.remote.add",
+        "files.remote.info",
+        "files.remote.list",
+        "files.remote.remove",
+        "files.remote.share",
+        "files.remote.update",
+        "functions.completeError",
+        "functions.completeSuccess",
+        "migration.exchange",
+        "oauth.access",
+        "oauth.v2.access",
+        "oauth.v2.exchange",
+        "openid.connect.token",
+        "openid.connect.userInfo",
+        "pins.add",
+        "pins.list",
+        "pins.remove",
+        "reactions.add",
+        "reactions.get",
+        "reactions.list",
+        "reactions.remove",
+        "reminders.add",
+        "reminders.complete",
+        "reminders.delete",
+        "reminders.info",
+        "reminders.list",
+        "rtm.connect",
+        "rtm.start",
+        "search.all",
+        "search.files",
+        "search.messages",
+        "slackLists.access.delete",
+        "slackLists.access.set",
+        "slackLists.create",
+        "slackLists.download.get",
+        "slackLists.download.start",
+        "slackLists.items.create",
+        "slackLists.items.delete",
+        "slackLists.items.deleteMultiple",
+        "slackLists.items.info",
+        "slackLists.items.list",
+        "slackLists.items.update",
+        "slackLists.update",
+        "team.accessLogs",
+        "team.billableInfo",
+        "team.billing.info",
+        "team.externalTeams.disconnect",
+        "team.externalTeams.list",
+        "team.info",
+        "team.integrationLogs",
+        "team.preferences.list",
+        "team.profile.get",
+        "tooling.tokens.rotate",
+        "usergroups.create",
+        "usergroups.disable",
+        "usergroups.enable",
+        "usergroups.list",
+        "usergroups.update",
+        "usergroups.users.list",
+        "usergroups.users.update",
+        "users.conversations",
+        "users.deletePhoto",
+        "users.discoverableContacts.lookup",
+        "users.getPresence",
+        "users.identity",
+        "users.info",
+        "users.list",
+        "users.lookupByEmail",
+        "users.setPhoto",
+        "users.setPresence",
+        "users.profile.get",
+        "users.profile.set",
+        "views.open",
+        "views.publish",
+        "views.push",
+        "views.update",
+        "stars.add",
+        "stars.list",
+        "stars.remove",
+        "workflows.featured.add",
+        "workflows.featured.list",
+        "workflows.featured.remove",
+        "workflows.featured.set",
+        "workflows.stepCompleted",
+        "workflows.stepFailed",
+        "workflows.updateStep",
+        "eventNames",
+        "listeners",
+        "listenerCount",
+        "emit",
+        "on",
+        "addListener",
+        "once",
+        "removeListener",
+        "off",
+        "removeAllListeners"
+      ]
+    },
+    "Button": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "text",
+        "value",
+        "url",
+        "style",
+        "accessibility_label"
+      ]
+    },
+    "Checkboxes": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_options",
+        "options"
+      ]
+    },
+    "Datepicker": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_date"
+      ]
+    },
+    "DateTimepicker": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_date_time"
+      ]
+    },
+    "EmailInput": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_value"
+      ]
+    },
+    "FeedbackButtons": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "positive_button",
+        "negative_button"
+      ]
+    },
+    "FileInput": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "filetypes",
+        "max_files"
+      ]
+    },
+    "IconButton": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "icon",
+        "text",
+        "accessibility_label",
+        "value",
+        "visible_to_user_ids"
+      ]
+    },
+    "ImageElement": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "Select": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "MultiSelect": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UsersSelect": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_user"
+      ]
+    },
+    "MultiUsersSelect": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_users"
+      ]
+    },
+    "StaticSelect": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_option",
+        "options",
+        "option_groups"
+      ]
+    },
+    "MultiStaticSelect": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_options",
+        "options",
+        "option_groups"
+      ]
+    },
+    "ConversationsSelect": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_conversation",
+        "default_to_current_conversation",
+        "filter"
+      ]
+    },
+    "MultiConversationsSelect": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_conversations",
+        "default_to_current_conversation",
+        "filter"
+      ]
+    },
+    "ChannelsSelect": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_channel"
+      ]
+    },
+    "MultiChannelsSelect": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_channels"
+      ]
+    },
+    "ExternalSelect": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_option",
+        "min_query_length"
+      ]
+    },
+    "MultiExternalSelect": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_options",
+        "min_query_length"
+      ]
+    },
+    "NumberInput": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "is_decimal_allowed",
+        "initial_value",
+        "min_value",
+        "max_value"
+      ]
+    },
+    "Overflow": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "options"
+      ]
+    },
+    "PlainTextInput": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_value",
+        "multiline",
+        "min_length",
+        "max_length"
+      ]
+    },
+    "RadioButtons": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_option",
+        "options"
+      ]
+    },
+    "Timepicker": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_time",
+        "timezone"
+      ]
+    },
+    "URLInput": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_value"
+      ]
+    },
+    "URLSourceElement": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "url",
+        "text"
+      ]
+    },
+    "WorkflowButton": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "text",
+        "workflow",
+        "style",
+        "accessibility_label"
+      ]
+    },
+    "RichTextBroadcastMention": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "range"
+      ]
+    },
+    "RichTextColor": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "value"
+      ]
+    },
+    "RichTextChannelMention": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "channel_id"
+      ]
+    },
+    "RichTextDate": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "timestamp",
+        "format",
+        "url",
+        "fallback"
+      ]
+    },
+    "RichTextEmoji": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "name",
+        "unicode",
+        "url"
+      ]
+    },
+    "RichTextLink": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "text",
+        "unsafe",
+        "url"
+      ]
+    },
+    "RichTextTeamMention": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "team_id"
+      ]
+    },
+    "RichTextText": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "text"
+      ]
+    },
+    "RichTextUserMention": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user_id"
+      ]
+    },
+    "RichTextUsergroupMention": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "usergroup_id"
+      ]
+    },
+    "RichTextElement": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "RichTextSection": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "elements"
+      ]
+    },
+    "RichTextList": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "elements",
+        "style",
+        "indent"
+      ]
+    },
+    "RichTextQuote": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "elements"
+      ]
+    },
+    "RichTextPreformatted": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "elements"
+      ]
+    },
+    "RichTextInput": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "initial_value"
+      ]
+    },
+    "Block": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "block_id"
+      ]
+    },
+    "KnownBlock": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AnyBlock": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ActionsBlockElement": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ActionsBlock": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "elements"
+      ]
+    },
+    "ContextBlockElement": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ContextBlock": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "elements"
+      ]
+    },
+    "ContextActionsBlockElement": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ContextActionsBlock": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "elements"
+      ]
+    },
+    "DividerBlock": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type"
+      ]
+    },
+    "FileBlock": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "source",
+        "external_id"
+      ]
+    },
+    "HeaderBlock": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "text"
+      ]
+    },
+    "ImageBlock": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "InputBlockElement": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "InputBlock": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "label",
+        "hint",
+        "optional",
+        "element",
+        "dispatch_action"
+      ]
+    },
+    "MarkdownBlock": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "text"
+      ]
+    },
+    "RichTextBlockElement": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "RichTextBlock": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "elements"
+      ]
+    },
+    "SectionBlockAccessory": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SectionBlock": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "text",
+        "fields",
+        "accessory",
+        "expand"
+      ]
+    },
+    "TableBlock": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "rows",
+        "column_settings"
+      ]
+    },
+    "TaskCardBlock": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "task_id",
+        "title",
+        "details",
+        "output",
+        "sources",
+        "status"
+      ]
+    },
+    "PlanBlock": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "title",
+        "tasks"
+      ]
+    },
+    "VideoBlock": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "video_url",
+        "thumbnail_url",
+        "alt_text",
+        "title",
+        "title_url",
+        "author_name",
+        "provider_name",
+        "provider_icon_url",
+        "description"
+      ]
+    },
+    "ColorScheme": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "ConversationType": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "Confirm": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "title",
+        "text",
+        "confirm",
+        "deny",
+        "style"
+      ]
+    },
+    "ConfirmationDialog": {
+      "kind": "InterfaceDeclaration"
+    },
+    "DispatchActionConfig": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "trigger_actions_on"
+      ]
+    },
+    "MrkdwnOption": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "text"
+      ]
+    },
+    "PlainTextOption": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "text"
+      ]
+    },
+    "Option": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "OptionGroup": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "label",
+        "options"
+      ]
+    },
+    "TextObject": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "PlainTextElement": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "text",
+        "emoji"
+      ]
+    },
+    "MrkdwnElement": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "text",
+        "verbatim"
+      ]
+    },
+    "RawTextElement": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "text"
+      ]
+    },
+    "ConversationFilter": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "UrlImageObject": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "image_url"
+      ]
+    },
+    "SlackFileImageObject": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "slack_file"
+      ]
+    },
+    "SlackFile": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "Action": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "action_id"
+      ]
+    },
+    "Actionable": {
+      "kind": "InterfaceDeclaration"
+    },
+    "Confirmable": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "confirm"
+      ]
+    },
+    "Dispatchable": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "dispatch_action_config"
+      ]
+    },
+    "Focusable": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "focus_on_load"
+      ]
+    },
+    "MaxItemsSelectable": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "max_selected_items"
+      ]
+    },
+    "Placeholdable": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "placeholder"
+      ]
+    },
+    "URLRespondable": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "response_url_enabled"
+      ]
+    },
+    "RichTextBorderable": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "border"
+      ]
+    },
+    "RichTextStyleable": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "style"
+      ]
+    },
+    "CallUser": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "CallUserSlack": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "slack_id"
+      ]
+    },
+    "CallUserExternal": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "external_id",
+        "display_name",
+        "avatar_url"
+      ]
+    },
+    "Chunk": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type"
+      ]
+    },
+    "MarkdownTextChunk": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "text"
+      ]
+    },
+    "PlanUpdateChunk": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "title"
+      ]
+    },
+    "TaskUpdateChunk": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "id",
+        "title",
+        "status",
+        "details",
+        "output",
+        "sources"
+      ]
+    },
+    "AnyChunk": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "Dialog": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "title",
+        "callback_id",
+        "elements",
+        "submit_label",
+        "notify_on_cancel",
+        "state"
+      ]
+    },
+    "SelectOption": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "label",
+        "value"
+      ]
+    },
+    "SlackEvent": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "AppRequestedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "app_request",
+        "previous_resolution",
+        "is_user_app_collaborator",
+        "user",
+        "team",
+        "scopes",
+        "message",
+        "date_created"
+      ]
+    },
+    "AppHomeOpenedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "channel",
+        "tab",
+        "view",
+        "event_ts"
+      ]
+    },
+    "AppInstalledEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "app_id",
+        "app_name",
+        "app_owner_id",
+        "user_id",
+        "team_id",
+        "team_domain",
+        "event_ts"
+      ]
+    },
+    "AppDeletedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "app_id",
+        "app_name",
+        "app_owner_id",
+        "team_id",
+        "team_domain",
+        "event_ts"
+      ]
+    },
+    "AppUninstalledTeamEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "app_id",
+        "app_name",
+        "app_owner_id",
+        "team_id",
+        "team_domain",
+        "user_id",
+        "event_ts"
+      ]
+    },
+    "AppMentionEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "bot_id",
+        "bot_profile",
+        "username",
+        "team",
+        "user_team",
+        "source_team",
+        "user_profile",
+        "user",
+        "text",
+        "attachments",
+        "blocks",
+        "files",
+        "upload",
+        "display_as_bot",
+        "edited",
+        "ts",
+        "channel",
+        "event_ts",
+        "thread_ts",
+        "client_msg_id"
+      ]
+    },
+    "AppRateLimitedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "token",
+        "team_id",
+        "minute_rate_limited",
+        "api_app_id"
+      ]
+    },
+    "AppUninstalledEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type"
+      ]
+    },
+    "AssistantThreadStartedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "assistant_thread",
+        "event_ts"
+      ]
+    },
+    "AssistantThreadContextChangedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "assistant_thread",
+        "event_ts"
+      ]
+    },
+    "CallRejectedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "call_id",
+        "user_id",
+        "channel_id",
+        "external_unique_id"
+      ]
+    },
+    "ChannelArchiveEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "channel",
+        "user",
+        "is_moved",
+        "event_ts"
+      ]
+    },
+    "ChannelCreatedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "event_ts",
+        "channel"
+      ]
+    },
+    "ChannelDeletedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "channel"
+      ]
+    },
+    "ChannelHistoryChangedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "latest",
+        "ts",
+        "event_ts"
+      ]
+    },
+    "ChannelIDChangedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "old_channel_id",
+        "new_channel_id",
+        "event_ts"
+      ]
+    },
+    "ChannelLeftEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "channel",
+        "actor_id",
+        "event_ts"
+      ]
+    },
+    "ChannelRenameEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "channel",
+        "event_ts"
+      ]
+    },
+    "ChannelSharedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "connected_team_id",
+        "channel",
+        "event_ts"
+      ]
+    },
+    "ChannelUnarchiveEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "channel",
+        "user",
+        "event_ts"
+      ]
+    },
+    "ChannelUnsharedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "previously_connected_team_id",
+        "channel",
+        "is_ext_shared",
+        "event_ts"
+      ]
+    },
+    "DNDUpdatedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "dnd_status",
+        "event_ts"
+      ]
+    },
+    "DNDUpdatedUserEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "dnd_status",
+        "event_ts"
+      ]
+    },
+    "EmailDomainChangedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "email_domain",
+        "event_ts"
+      ]
+    },
+    "EmojiChangedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "names",
+        "name",
+        "value",
+        "old_name",
+        "new_name",
+        "event_ts"
+      ]
+    },
+    "FileChangeEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "file_id",
+        "file"
+      ]
+    },
+    "FileCommentDeletedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "comment",
+        "file_id",
+        "file"
+      ]
+    },
+    "FileCreatedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "file_id",
+        "user_id",
+        "file",
+        "event_ts"
+      ]
+    },
+    "FileDeletedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "file_id",
+        "channel_ids",
+        "event_ts"
+      ]
+    },
+    "FilePublicEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "file_id",
+        "user_id",
+        "file",
+        "event_ts"
+      ]
+    },
+    "FileSharedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "file_id",
+        "user_id",
+        "file",
+        "channel_id",
+        "event_ts"
+      ]
+    },
+    "FileUnsharedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "file_id",
+        "user_id",
+        "file",
+        "channel_id",
+        "event_ts"
+      ]
+    },
+    "FunctionExecutedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "function",
+        "inputs",
+        "function_execution_id",
+        "workflow_execution_id",
+        "event_ts",
+        "bot_access_token"
+      ]
+    },
+    "GridMigrationFinishedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "enterprise_id"
+      ]
+    },
+    "GridMigrationStartedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "enterprise_id"
+      ]
+    },
+    "GroupArchiveEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "channel",
+        "user",
+        "is_moved",
+        "event_ts"
+      ]
+    },
+    "GroupCloseEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "channel"
+      ]
+    },
+    "GroupDeletedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "channel",
+        "date_deleted",
+        "actor_id",
+        "event_ts"
+      ]
+    },
+    "GroupHistoryChangedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "latest",
+        "ts",
+        "event_ts"
+      ]
+    },
+    "GroupLeftEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "channel",
+        "actor_id",
+        "event_ts"
+      ]
+    },
+    "GroupOpenEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "channel"
+      ]
+    },
+    "GroupRenameEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "channel",
+        "event_ts"
+      ]
+    },
+    "GroupUnarchiveEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "channel",
+        "actor_id",
+        "event_ts"
+      ]
+    },
+    "IMCloseEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "channel",
+        "event_ts"
+      ]
+    },
+    "IMCreatedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "channel"
+      ]
+    },
+    "IMHistoryChangedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "latest",
+        "ts",
+        "event_ts"
+      ]
+    },
+    "IMOpenEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "channel",
+        "event_ts"
+      ]
+    },
+    "InviteRequestedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "invite_request"
+      ]
+    },
+    "LinkSharedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "channel",
+        "is_bot_user_member",
+        "user",
+        "message_ts",
+        "thread_ts",
+        "links",
+        "unfurl_id",
+        "source",
+        "event_ts"
+      ]
+    },
+    "MemberJoinedChannelEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "channel",
+        "channel_type",
+        "team",
+        "inviter",
+        "enterprise",
+        "event_ts"
+      ]
+    },
+    "MemberLeftChannelEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "channel",
+        "channel_type",
+        "team",
+        "event_ts"
+      ]
+    },
+    "AllMessageEvents": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "MessageEvent": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "GenericMessageEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "event_ts",
+        "team",
+        "channel",
+        "user",
+        "bot_id",
+        "bot_profile",
+        "text",
+        "ts",
+        "thread_ts",
+        "channel_type",
+        "attachments",
+        "blocks",
+        "files",
+        "edited",
+        "client_msg_id",
+        "parent_user_id",
+        "is_starred",
+        "pinned_to",
+        "reactions",
+        "assistant_thread"
+      ]
+    },
+    "BotMessageEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "event_ts",
+        "channel",
+        "channel_type",
+        "streaming_state",
+        "ts",
+        "text",
+        "bot_id",
+        "username",
+        "icons",
+        "user",
+        "attachments",
+        "blocks",
+        "edited",
+        "thread_ts"
+      ]
+    },
+    "ChannelArchiveMessageEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "team",
+        "user",
+        "channel",
+        "channel_type",
+        "text",
+        "ts",
+        "event_ts"
+      ]
+    },
+    "ChannelJoinMessageEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "team",
+        "user",
+        "inviter",
+        "channel",
+        "channel_type",
+        "text",
+        "ts",
+        "event_ts"
+      ]
+    },
+    "ChannelLeaveMessageEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "team",
+        "user",
+        "channel",
+        "channel_type",
+        "text",
+        "ts",
+        "event_ts"
+      ]
+    },
+    "ChannelNameMessageEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "team",
+        "user",
+        "name",
+        "old_name",
+        "channel",
+        "channel_type",
+        "text",
+        "ts",
+        "event_ts"
+      ]
+    },
+    "ChannelPostingPermissionsMessageEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "user",
+        "channel",
+        "channel_type",
+        "text",
+        "ts",
+        "event_ts"
+      ]
+    },
+    "ChannelPurposeMessageEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "user",
+        "channel",
+        "channel_type",
+        "text",
+        "purpose",
+        "ts",
+        "event_ts"
+      ]
+    },
+    "ChannelTopicMessageEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "user",
+        "channel",
+        "channel_type",
+        "text",
+        "topic",
+        "ts",
+        "event_ts"
+      ]
+    },
+    "ChannelUnarchiveMessageEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "team",
+        "user",
+        "channel",
+        "channel_type",
+        "text",
+        "ts",
+        "event_ts"
+      ]
+    },
+    "EKMAccessDeniedMessageEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "event_ts",
+        "channel",
+        "channel_type",
+        "ts",
+        "text",
+        "user"
+      ]
+    },
+    "FileShareMessageEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "text",
+        "attachments",
+        "blocks",
+        "files",
+        "upload",
+        "display_as_bot",
+        "x_files",
+        "user",
+        "parent_user_id",
+        "ts",
+        "thread_ts",
+        "channel",
+        "channel_type",
+        "event_ts"
+      ]
+    },
+    "MeMessageEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "event_ts",
+        "channel",
+        "channel_type",
+        "user",
+        "text",
+        "ts"
+      ]
+    },
+    "MessageChangedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "event_ts",
+        "hidden",
+        "channel",
+        "channel_type",
+        "ts",
+        "message",
+        "previous_message"
+      ]
+    },
+    "MessageDeletedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "event_ts",
+        "hidden",
+        "channel",
+        "channel_type",
+        "ts",
+        "deleted_ts",
+        "previous_message"
+      ]
+    },
+    "MessageRepliedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "event_ts",
+        "hidden",
+        "channel",
+        "channel_type",
+        "ts",
+        "message"
+      ]
+    },
+    "ThreadBroadcastMessageEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subtype",
+        "event_ts",
+        "text",
+        "attachments",
+        "blocks",
+        "user",
+        "ts",
+        "thread_ts",
+        "root",
+        "client_msg_id",
+        "channel",
+        "channel_type"
+      ]
+    },
+    "AllMessageMetadataEvents": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "MessageMetadataPostedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "app_id",
+        "bot_id",
+        "user_id",
+        "team_id",
+        "channel_id",
+        "metadata",
+        "message_ts",
+        "event_ts"
+      ]
+    },
+    "MessageMetadataUpdatedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "channel_id",
+        "event_ts",
+        "previous_metadata",
+        "app_id",
+        "bot_id",
+        "user_id",
+        "team_id",
+        "message_ts",
+        "metadata"
+      ]
+    },
+    "MessageMetadataDeletedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "channel_id",
+        "event_ts",
+        "previous_metadata",
+        "app_id",
+        "bot_id",
+        "user_id",
+        "team_id",
+        "message_ts",
+        "deleted_ts"
+      ]
+    },
+    "PinAddedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "channel_id",
+        "item",
+        "item_user",
+        "pin_count",
+        "pinned_info",
+        "event_ts"
+      ]
+    },
+    "PinRemovedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "channel_id",
+        "item",
+        "item_user",
+        "pin_count",
+        "pinned_info",
+        "has_pins",
+        "event_ts"
+      ]
+    },
+    "ReactionAddedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "reaction",
+        "item_user",
+        "item",
+        "event_ts"
+      ]
+    },
+    "ReactionRemovedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "reaction",
+        "item_user",
+        "item",
+        "event_ts"
+      ]
+    },
+    "SharedChannelInviteAcceptedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "approval_required",
+        "invite",
+        "channel",
+        "teams_in_channel",
+        "accepting_user",
+        "event_ts"
+      ]
+    },
+    "SharedChannelInviteAccepted": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SharedChannelInviteApprovedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "invite",
+        "channel",
+        "approving_team_id",
+        "teams_in_channel",
+        "approving_user",
+        "event_ts"
+      ]
+    },
+    "SharedChannelInviteApproved": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SharedChannelInviteDeclinedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "invite",
+        "channel",
+        "declining_team_id",
+        "teams_in_channel",
+        "declining_user",
+        "event_ts"
+      ]
+    },
+    "SharedChannelInviteDeclined": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SharedChannelInviteReceivedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "invite",
+        "channel",
+        "event_ts"
+      ]
+    },
+    "SharedChannelInviteReceived": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SharedChannelInviteRequestedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "actor",
+        "channel_id",
+        "event_type",
+        "channel_name",
+        "channel_type",
+        "target_users",
+        "teams_in_channel",
+        "is_external_limited",
+        "channel_date_created",
+        "channel_message_latest_counted_timestamp",
+        "event_ts"
+      ]
+    },
+    "StarAddedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "item",
+        "event_ts"
+      ]
+    },
+    "StarRemovedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "item",
+        "event_ts"
+      ]
+    },
+    "WorkflowDeletedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "workflow_id",
+        "workflow_draft_configuration",
+        "event_ts"
+      ]
+    },
+    "WorkflowPublishedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "workflow_id",
+        "workflow_published_configuration",
+        "event_ts"
+      ]
+    },
+    "WorkflowUnpublishedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "workflow_id",
+        "workflow_draft_configuration",
+        "event_ts"
+      ]
+    },
+    "WorkflowStepDeletedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "workflow_id",
+        "workflow_draft_configuration",
+        "workflow_published_configuration",
+        "event_ts"
+      ]
+    },
+    "WorkflowStepExecuteEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "callback_id",
+        "workflow_step",
+        "event_ts"
+      ]
+    },
+    "SubteamCreatedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subteam",
+        "event_ts"
+      ]
+    },
+    "SubteamCreated": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SubteamMembersChangedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subteam_id",
+        "team_id",
+        "date_previous_update",
+        "date_update",
+        "added_users",
+        "added_users_count",
+        "removed_users",
+        "removed_users_count",
+        "event_ts"
+      ]
+    },
+    "SubteamMembersChanged": {
+      "kind": "TypeAliasDeclaration"
+    },
+    "SubteamSelfAddedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subteam_id",
+        "event_ts"
+      ]
+    },
+    "SubteamSelfRemovedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subteam_id",
+        "event_ts"
+      ]
+    },
+    "SubteamUpdatedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "subteam",
+        "event_ts"
+      ]
+    },
+    "TeamAccessGrantedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "team_ids",
+        "event_ts"
+      ]
+    },
+    "TeamAccessRevokedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "team_ids",
+        "event_ts"
+      ]
+    },
+    "TeamDomainChangeEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "url",
+        "domain"
+      ]
+    },
+    "TeamJoinEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "cache_ts",
+        "event_ts"
+      ]
+    },
+    "TeamRenameEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "name"
+      ]
+    },
+    "TokensRevokedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "tokens"
+      ]
+    },
+    "UserChangeEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "cache_ts",
+        "event_ts"
+      ]
+    },
+    "UserHuddleChangedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "cache_ts",
+        "event_ts"
+      ]
+    },
+    "UserProfileChangedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "cache_ts",
+        "event_ts"
+      ]
+    },
+    "UserStatusChangedEvent": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "user",
+        "cache_ts",
+        "event_ts"
+      ]
+    },
+    "MessageAttachment": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "blocks",
+        "fallback",
+        "color",
+        "pretext",
+        "author_name",
+        "author_link",
+        "author_icon",
+        "author_subname",
+        "title",
+        "title_link",
+        "text",
+        "fields",
+        "image_url",
+        "thumb_url",
+        "footer",
+        "footer_icon",
+        "ts",
+        "actions",
+        "callback_id",
+        "mrkdwn_in",
+        "app_unfurl_url",
+        "is_app_unfurl",
+        "app_id",
+        "bot_id",
+        "preview"
+      ]
+    },
+    "MessageAttachmentField": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "title",
+        "value",
+        "short"
+      ]
+    },
+    "Confirmation": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "dismiss_text",
+        "ok_text",
+        "text",
+        "title"
+      ]
+    },
+    "LinkUnfurls": {
+      "kind": "InterfaceDeclaration"
+    },
+    "MessageMetadata": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "event_type",
+        "event_payload"
+      ]
+    },
+    "MessageMetadataEventPayloadObject": {
+      "kind": "InterfaceDeclaration"
+    },
+    "EntityMetadata": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "entity_type",
+        "entity_payload",
+        "external_ref",
+        "url",
+        "app_unfurl_url"
+      ]
+    },
+    "ExternalRef": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "id",
+        "type"
+      ]
+    },
+    "EntityType": {
+      "kind": "EnumDeclaration"
+    },
+    "FileEntitySlackFile": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "id",
+        "type"
+      ]
+    },
+    "EntityAttributes": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "title",
+        "display_type",
+        "display_id",
+        "product_icon",
+        "product_name",
+        "locale",
+        "full_size_preview",
+        "metadata_last_modified"
+      ]
+    },
+    "EntityIconField": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "alt_text",
+        "url",
+        "slack_file"
+      ]
+    },
+    "EntityEditSupport": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "enabled",
+        "placeholder",
+        "hint",
+        "optional",
+        "select",
+        "number",
+        "text"
+      ]
+    },
+    "EntityFullSizePreview": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "is_supported",
+        "preview_url",
+        "mime_type",
+        "error"
+      ]
+    },
+    "FileEntityFields": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "preview",
+        "created_by",
+        "date_created",
+        "date_updated",
+        "last_modified_by",
+        "file_size",
+        "mime_type",
+        "full_size_preview"
+      ]
+    },
+    "TaskEntityFields": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "description",
+        "created_by",
+        "date_created",
+        "date_updated",
+        "assignee",
+        "status",
+        "due_date",
+        "priority"
+      ]
+    },
+    "IncidentEntityFields": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "status",
+        "priority",
+        "urgency",
+        "created_by",
+        "assigned_to",
+        "date_created",
+        "date_updated",
+        "description",
+        "service"
+      ]
+    },
+    "ContentItemEntityFields": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "preview",
+        "description",
+        "created_by",
+        "date_created",
+        "date_updated",
+        "last_modified_by"
+      ]
+    },
+    "EntityArrayItemField": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type"
+      ]
+    },
+    "EntityTypedField": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "label",
+        "value",
+        "link",
+        "icon",
+        "long",
+        "format",
+        "image_url",
+        "slack_file",
+        "alt_text",
+        "edit",
+        "tag_color",
+        "user",
+        "entity_ref"
+      ]
+    },
+    "EntityStringField": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "value",
+        "label",
+        "format",
+        "link",
+        "icon",
+        "long",
+        "type",
+        "tag_color",
+        "edit"
+      ]
+    },
+    "EntityUserIDField": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "user_id"
+      ]
+    },
+    "EntityUserField": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "text",
+        "url",
+        "email",
+        "icon"
+      ]
+    },
+    "EntityRefField": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "entity_url",
+        "external_ref",
+        "title",
+        "display_type",
+        "icon"
+      ]
+    },
+    "EntityBooleanCheckboxField": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "text",
+        "description"
+      ]
+    },
+    "EntityBooleanTextField": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "true_text",
+        "false_text",
+        "true_description",
+        "false_description"
+      ]
+    },
+    "EntityTimestampField": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "value",
+        "label",
+        "type",
+        "edit"
+      ]
+    },
+    "EntityImageField": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "alt_text",
+        "label",
+        "image_url",
+        "slack_file",
+        "title",
+        "type"
+      ]
+    },
+    "EntityCustomField": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "label",
+        "key",
+        "type",
+        "value",
+        "link",
+        "icon",
+        "long",
+        "format",
+        "image_url",
+        "slack_file",
+        "alt_text",
+        "tag_color",
+        "edit",
+        "item_type",
+        "user",
+        "entity_ref",
+        "boolean"
+      ]
+    },
+    "CustomFieldType": {
+      "kind": "EnumDeclaration"
+    },
+    "EntityActionButton": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "text",
+        "action_id",
+        "value",
+        "style",
+        "url",
+        "accessibility_label",
+        "processing_state"
+      ]
+    },
+    "HomeView": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type"
+      ]
+    },
+    "ModalView": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "title",
+        "close",
+        "submit",
+        "clear_on_close",
+        "notify_on_close"
+      ]
+    },
+    "WorkflowStepView": {
+      "kind": "InterfaceDeclaration",
+      "members": [
+        "type",
+        "submit_disabled"
+      ]
+    },
+    "View": {
+      "kind": "TypeAliasDeclaration"
+    }
+  }
+}
