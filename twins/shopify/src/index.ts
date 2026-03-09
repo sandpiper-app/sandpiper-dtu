@@ -19,6 +19,7 @@ import oauthPlugin from './plugins/oauth.js';
 import adminPlugin from './plugins/admin.js';
 import { graphqlPlugin } from './plugins/graphql.js';
 import { errorsPlugin } from './plugins/errors.js';
+import restPlugin from './plugins/rest.js';
 import uiPlugin from './plugins/ui.js';
 import { ErrorSimulator } from './services/error-simulator.js';
 import { LeakyBucketRateLimiter } from './services/rate-limiter.js';
@@ -103,6 +104,7 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
   await fastify.register(adminPlugin);
   await fastify.register(errorsPlugin);
   await fastify.register(graphqlPlugin);
+  await fastify.register(restPlugin);
   await fastify.register(uiPlugin);
 
   // Graceful shutdown
