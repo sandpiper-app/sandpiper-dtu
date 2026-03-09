@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Phase 17 context gathered
-last_updated: "2026-03-09T21:35:25.171Z"
+stopped_at: Completed 17-01-PLAN.md
+last_updated: "2026-03-09T22:21:20.327Z"
 progress:
   total_phases: 8
   completed_phases: 4
-  total_plans: 15
-  completed_plans: 15
-  percent: 100
+  total_plans: 19
+  completed_plans: 16
+  percent: 94
 ---
 
 # Project State: Sandpiper DTU
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 **Phase:** Phase 17 — Shopify Client Surfaces & Strategic REST Stubs
-**Plan:** Not started
-**Status:** Ready to plan
-**Progress:** [████████████████████] 44/44 plans (100%)
+**Plan:** Plan 01 complete — Plan 02 next
+**Status:** In Progress
+**Progress:** [█████████░] 94%
 
 ## Performance Metrics
 
@@ -41,6 +41,10 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 17-01 Execution:**
+- query() in SDK v12.x throws FeatureDeprecatedError (hard-removed via logger.deprecated() version compare >= 12.0.0); backward-compat test must assert throws, not body
+- GraphqlClient accessed via shopify.clients.Graphql (instance property, not direct import) — SDK public surface pattern from Phase 16 research
 
 **2026-03-09 - Plan 16-04 Execution:**
 - AppPricingDetails interface uses 'interval: String' as shared field — __typename is invalid SDL (built-in meta-field cannot be declared as interface field); both AppRecurringPricing and AppUsagePricing implement via interval
@@ -329,9 +333,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 16 complete — shopify-api platform surface: 4 plans, 24 tests (auth x7, session x7, webhooks x7, billing x3), SHOP-10/11/12/13 all verified
-**Stopped at:** Phase 17 context gathered
-**Timestamp:** 2026-03-09T22:30:00Z
+**Last completed:** Phase 17 Plan 01 — 9-test GraphqlClient + graphqlProxy suite, SHOP-14 verified
+**Stopped at:** Completed 17-01-PLAN.md
+**Timestamp:** 2026-03-09T22:20:28Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
