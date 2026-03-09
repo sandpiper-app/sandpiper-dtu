@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Completed 16-01-PLAN.md
-last_updated: "2026-03-09T20:51:15Z"
+stopped_at: Completed 16-02-PLAN.md
+last_updated: "2026-03-09T21:00:00Z"
 progress:
   total_phases: 8
   completed_phases: 3
-  total_plans: 11
-  completed_plans: 11
-  percent: 100
+  total_plans: 15
+  completed_plans: 14
+  percent: 98
 ---
 
 # Project State: Sandpiper DTU
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 **Phase:** Phase 16 — Shopify shopify-api Platform Surface
-**Plan:** Plan 01 of 5 complete
-**Status:** Plan 16-01 complete — shopify-api-client.ts helper factory (setAbstractFetchFunc twin redirect) + 7 SHOP-12 webhook/flow/fulfillmentService validate tests; all passing.
-**Progress:** [██░░░░░░░░] 20%
+**Plan:** Plan 03 of 5 complete
+**Status:** Plan 16-03 complete — SHOP-10 auth helper tests (7 tests): tokenExchange, refreshToken, clientCredentials live twin calls; begin mock adapter redirect test; callback begin→callback OAuth round-trip; embedded URL helpers.
+**Progress:** [██████████] 98%
 
 ## Performance Metrics
 
@@ -41,6 +41,13 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 16-03 Execution:**
+- computeCallbackHmac uses hex format (not base64) — validateHmac() in SDK calls createSHA256HMAC with HashFormat.Hex for OAuth callback query params; computeShopifyHmac uses base64 (webhooks only)
+- Mock ServerResponse for node adapter must include getHeaders() — nodeConvertIncomingResponse reads rawResponse.getHeaders() to initialize NormalizedResponse headers
+- begin→callback cookie round-trip: shopify_app_state + shopify_app_state.sig both required in callback cookie header; getAndVerify() validates the .sig HMAC companion
+- URLSearchParams encoding for HMAC: computeCallbackHmac uses new URLSearchParams(sortedEntries).toString() to match ProcessedQuery.stringify(true) in SDK hmac-validator
+- refreshToken signature: { shop: string, refreshToken: string } — pass session.accessToken as the refreshToken string; twin accepts any grant_type body
 
 **2026-03-09 - Plan 16-01 Execution:**
 - setAbstractFetchFunc imported from @shopify/shopify-api/runtime (not runtime/http subpath — not in exports map)
@@ -310,9 +317,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 16 Plan 01 — shopify-api-client.ts factory (setAbstractFetchFunc) + 7 SHOP-12 validate tests; jose added as devDep; SHOP-12 complete
-**Stopped at:** Completed 16-01-PLAN.md
-**Timestamp:** 2026-03-09T20:51:15Z
+**Last completed:** Phase 16 Plan 03 — SHOP-10 auth helper tests (7 tests): tokenExchange, refreshToken, clientCredentials live twin; begin mock adapter; callback begin→callback round-trip; embedded URL helpers
+**Stopped at:** Completed 16-03-PLAN.md
+**Timestamp:** 2026-03-09T20:59:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
