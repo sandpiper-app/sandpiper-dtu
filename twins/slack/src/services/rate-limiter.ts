@@ -19,6 +19,7 @@ export interface MethodRateConfig {
 
 /** Built-in tier assignments for Phase 5 Web API methods */
 const DEFAULT_RATE_TIERS: Record<string, MethodRateConfig> = {
+  'auth.test': { tier: 1, requestsPerMinute: 20 },
   'chat.postMessage': { tier: 'special', requestsPerMinute: 60 },
   'chat.update': { tier: 3, requestsPerMinute: 50 },
   'conversations.list': { tier: 2, requestsPerMinute: 20 },

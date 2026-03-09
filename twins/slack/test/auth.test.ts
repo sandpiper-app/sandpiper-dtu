@@ -86,9 +86,9 @@ describe('Slack Auth Web API', () => {
     });
 
     it('returns 429 with Retry-After header when rate limited', async () => {
-      // auth.test is tier 1 (100/min). Exceed it.
+      // auth.test is tier 1 (20/min). Exceed it.
       const results: { status: number }[] = [];
-      for (let i = 0; i < 105; i++) {
+      for (let i = 0; i < 25; i++) {
         const res = await apiPost('auth.test', {});
         results.push({ status: res.statusCode });
         if (res.statusCode === 429) break; // stop as soon as we see a 429
@@ -101,11 +101,11 @@ describe('Slack Auth Web API', () => {
       // Configure error simulation via admin endpoint
       await app.inject({
         method: 'POST',
-        url: '/admin/errors',
+        url: '/admin/errors/configure',
         payload: {
-          method: 'auth.test',
-          status_code: 200,
-          error_body: { ok: false, error: 'team_added_to_org' },
+          methodName: 'auth.test',
+          statusCode: 200,
+          errorBody: { ok: false, error: 'team_added_to_org' },
         },
       });
 
