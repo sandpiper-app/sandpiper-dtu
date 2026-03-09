@@ -1,131 +1,96 @@
 # Requirements: Sandpiper DTU
 
-**Defined:** 2026-02-27
+**Defined:** 2026-03-09
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Methodology:** Grounded in StrongDM's [Digital Twin Universe](https://factory.strongdm.ai/techniques/dtu) concept ([overview](https://simonwillison.net/2026/Feb/7/software-factory/)) — behavioral clones of third-party dependencies, built from API contracts and edge cases, validated against real services until behavioral differences disappear.
+## v1.1 Requirements
 
-## v1 Requirements
+Requirements for milestone `v1.1 Official SDK Conformance`. Each maps to one roadmap phase.
 
-Requirements for initial release. Each maps to roadmap phases.
+### Conformance Infrastructure
 
-### Shared Infrastructure
+- [ ] **INFRA-10**: Developer can check out repo-owned fork submodules of the targeted upstream SDK repos under `third_party/upstream/`, with each submodule pinned to a recorded commit and package version
+- [ ] **INFRA-11**: Developer can run a manifest generator that inventories every public export and method in the targeted packages and writes a checked-in coverage ledger
+- [ ] **INFRA-12**: Developer can see, for each inventoried symbol, whether it is verified by a live twin test or a local-only utility test, and CI fails if any `v1.1` symbol lacks declared coverage
+- [ ] **INFRA-13**: Developer can run one verification command that executes SDK conformance, HMAC signature, async webhook timing, and UI structure checks together
+- [ ] **INFRA-14**: CI can detect upstream drift by comparing pinned submodule refs, installed package versions, and generated manifests on milestone updates
 
-- [x] **INFRA-01**: Monorepo with pnpm workspaces — shared packages (types, core, state, webhooks, conformance) and per-twin apps
-- [x] **INFRA-02**: Shared state management layer with SQLite/in-memory backends, resettable between test runs in <100ms
-- [x] **INFRA-03**: Admin API for programmatic test control — `POST /admin/reset`, `POST /admin/fixtures/load`, `GET /admin/state`
-- [x] **INFRA-04**: Configurable error simulation per endpoint — 401, 403, 429, 500, 503, timeout responses with realistic error bodies
-- [x] **INFRA-05**: Conformance test framework — same test suite runs against twin AND real sandbox API, reports behavioral differences
-- [x] **INFRA-06**: Conformance suites run periodically (CI schedule) to detect upstream API drift
-- [x] **INFRA-07**: Health check endpoint (`/health`) returns 200 when twin is initialized and ready
-- [x] **INFRA-08**: Structured JSON logging with correlation IDs for debugging twin behavior
-- [x] **INFRA-09**: Twin development grounded in StrongDM DTU methodology — replicate behavior at API boundary from contracts + edge cases, validate against real services
+### Shopify SDK Coverage
 
-### Shopify Twin
+- [ ] **SHOP-08**: Developer can use `@shopify/admin-api-client` GraphQL client methods (`request`, `fetch`, `getHeaders`, `getApiUrl`) against the Shopify twin across pinned and per-request API versions
+- [ ] **SHOP-09**: Developer can use `@shopify/admin-api-client` generic REST client methods (`get`, `post`, `put`, `delete`) against the Shopify twin with supported headers, search params, payloads, and retry behavior
+- [ ] **SHOP-10**: Developer can use `@shopify/shopify-api` auth helpers (`begin`, `callback`, `tokenExchange`, `refreshToken`, `clientCredentials`, and embedded URL helpers) against the Shopify twin
+- [ ] **SHOP-11**: Developer can use `@shopify/shopify-api` session and utility helpers to create, decode, validate, and resolve Shopify session data for twin-backed requests
+- [ ] **SHOP-12**: Developer can use `@shopify/shopify-api` webhook, Flow, and fulfillment-service validation helpers with twin-generated requests and signatures
+- [ ] **SHOP-13**: Developer can use `@shopify/shopify-api` billing helpers to request, inspect, cancel, and mutate billing state against the Shopify twin
+- [ ] **SHOP-14**: Developer can use `@shopify/shopify-api` client surfaces (`Graphql`, `Rest`, `Storefront`, `graphqlProxy`) against the Shopify twin with the pinned package configuration
+- [ ] **SHOP-15**: Developer can use every exported REST resource class in the pinned `@shopify/shopify-api/rest/admin/[version]` bundle against the Shopify twin for the methods that class exposes
 
-- [x] **SHOP-01**: GraphQL Admin API handles queries and mutations Sandpiper uses — orders, products, customers, inventory, fulfillments
-- [x] **SHOP-02**: OAuth token exchange flow — authorization code → access token, with token validation on subsequent requests
-- [x] **SHOP-03**: Webhook delivery — state mutations (orderCreate, orderUpdate, productUpdate, fulfillmentCreate) trigger POST to configured callback URLs
-- [x] **SHOP-04**: Rate limiting by GraphQL query cost — returns 429 + Retry-After header when cost threshold exceeded
-- [x] **SHOP-05**: Cursor-based pagination with deterministic, stable results across test runs
-- [x] **SHOP-06**: Stateful order lifecycle — create → update → fulfill → close with realistic state transitions
-- [x] **SHOP-07**: X-Shopify-Access-Token header validation on all API requests
+### Slack SDK Coverage
 
-### Slack Twin
-
-- [x] **SLCK-01**: Web API methods Sandpiper uses — chat.postMessage, chat.update, conversations.list, conversations.info, conversations.history, users.list, users.info
-- [x] **SLCK-02**: Events API delivery — POST event payloads (message, app_mention, reaction_added) to configured app URL on state changes
-- [x] **SLCK-03**: OAuth installation flow — workspace authorization → bot token + user token issuance
-- [x] **SLCK-04**: Block Kit interaction handling — button click payloads, modal submission payloads, message action payloads with response URL support *(Phase 5 covers block_actions/button clicks only; view_submission and message_action deferred — modals are out of Phase 5 scope)*
-- [x] **SLCK-05**: Bolt-compatible challenge verification (url_verification) and event envelope format
-- [x] **SLCK-06**: Rate limiting — tier-based per method with 429 + Retry-After headers
-
-### Twin UIs
-
-- [x] **UI-01**: Shopify twin web UI — sidebar navigation (Orders, Products, Customers, Inventory), list views with search/filter, detail views per entity
-- [x] **UI-02**: Shopify twin web UI — create, edit, delete orders, products, customers through forms
-- [x] **UI-03**: Slack twin web UI — channel sidebar, message timeline view, user list, workspace navigation
-- [x] **UI-04**: Slack twin web UI — create channels, post messages, manage users through the interface
-- [x] **UI-05**: Shared UI framework — consistent barebones styling across twins, reusable list/detail/form components
-
-### Integration
-
-- [x] **INTG-01**: Base URL swap — Sandpiper's IntegrationClient points at twin URLs via environment config
-- [x] **INTG-02**: Docker Compose overlay (`docker-compose.twin.yml`) starts all twins + Sandpiper, wired together
-- [x] **INTG-03**: Docker images for each twin with health checks and configurable ports
+- [ ] **SLCK-07**: Developer can use `@slack/web-api` `WebClient` base behaviors (`apiCall`, `paginate`, `filesUploadV2`, `ChatStreamer`, retries, and rate-limit handling) against the Slack twin
+- [ ] **SLCK-08**: Developer can call every bound method exposed by the pinned `@slack/web-api` package against the Slack twin, including admin, files, views, workflows, assistant, canvases, and other advanced method families
+- [ ] **SLCK-09**: Developer can use `@slack/oauth` `InstallProvider` flows (`handleInstallPath`, `generateInstallUrl`, `handleCallback`, `authorize`) against the Slack twin with valid state, cookie, redirect, and installation-store behavior
+- [ ] **SLCK-10**: Developer can use `@slack/bolt` `App` listener APIs (`event`, `message`, `action`, `command`, `options`, `shortcut`, `view`, `function`, and `assistant`) against twin-backed Slack requests with correct ack semantics
+- [ ] **SLCK-11**: Developer can use `@slack/bolt` HTTP and Express receiver flows against the Slack twin, including request verification, URL verification, response_url behavior, and custom routes
+- [ ] **SLCK-12**: Developer can use `@slack/bolt` Socket Mode and AWS Lambda receiver flows against twin-backed harnesses with equivalent event delivery and acknowledgement semantics
 
 ## v2 Requirements
 
-Deferred to future release. Tracked but not in current roadmap.
+Deferred after the literal `v1.1` package-surface baseline exists.
 
-### Additional Twins
+### Additional SDK Targets
 
-- **NYLA-01**: Nylas email twin — email read/send API, OAuth grants, webhooks + polling
-- **SHPO-01**: Shippo shipping twin — tracking, rates, label creation, webhook delivery
-- **TWHL-01**: Triple Whale analytics twin — OAuth, metrics polling
+- **SLCK-13**: Developer can validate standalone Slack packages outside the v1.1 target set (`@slack/rtm-api`, `@slack/webhook`, standalone `@slack/socket-mode`) against dedicated twins or harnesses
+- **SHOP-16**: Developer can validate Shopify app-framework packages (`shopify-app-express`, `shopify-app-remix`, `shopify-app-react-router`) against the twin ecosystem when app-framework fidelity becomes valuable
 
-### Advanced Features
+### Automation
 
-- **ADV-01**: Request recording/playback from real sandbox APIs to generate fixtures
-- **ADV-02**: Scenario-based test fixtures — pre-configured workflow data (abandoned cart flow, multi-item fulfillment)
-- **ADV-03**: Shopify bulk operations state machine (CREATED → RUNNING → COMPLETED)
-- **ADV-04**: Multi-version Shopify API support (2026-01, 2026-04)
-- **ADV-05**: Slack Socket Mode (WebSocket alternative to Events API)
-- **ADV-06**: Chaos engineering — intermittent errors, partial responses, cascading failures
-- **ADV-07**: Activity monitoring in twin UIs — incoming requests, outgoing webhooks, error log
+- **INFRA-15**: Developer can open an automated update PR that bumps pinned SDK refs, regenerates manifests, and summarizes compatibility diffs
+- **INFRA-16**: Developer can run a multi-version package matrix across more than one pinned Shopify or Slack package release
 
 ## Out of Scope
 
+Explicitly excluded from `v1.1` to keep the milestone aligned with the targeted package set.
+
 | Feature | Reason |
 |---------|--------|
-| Full Shopify Admin API coverage | Only endpoints Sandpiper uses — build on-demand, not speculatively |
-| Perfect real-time fidelity | High-fidelity for tested scenarios, not pixel-perfect API reproduction |
-| Production deployment of twins | Dev/test infrastructure only — real APIs in production |
-| GUI for twin configuration | Code-first config (TypeScript, env vars). UIs are for state inspection/manipulation only |
-| Shared/remote twin state | Isolated state per instance for determinism — no multi-user coordination |
-| Go implementation | TypeScript for shared types with Sandpiper and team familiarity |
-| Real-time WebSocket for everything | HTTP-first; WebSocket only if Slack Socket Mode needed later |
+| APIs not reachable through the targeted package surfaces | Would expand beyond the literal SDK contract approved for this milestone |
+| Multi-version package support in the initial v1.1 build | One pinned version per package is already a large scope increase |
+| New service twins (Nylas, Shippo, Triple Whale) | Deferred until the SDK-grounded validation pattern is proven on Shopify and Slack |
+| Production deployment work | Sandpiper DTU remains development and test infrastructure |
 
 ## Traceability
 
+Which phases cover which requirements. Updated during roadmap creation.
+
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | Phase 1 | Complete |
-| INFRA-02 | Phase 1 | Complete |
-| INFRA-03 | Phase 2 | Complete |
-| INFRA-04 | Phase 2 | Complete |
-| INFRA-05 | Phase 3 | Complete |
-| INFRA-06 | Phase 3 | Complete |
-| INFRA-07 | Phase 1 | Complete |
-| INFRA-08 | Phase 1 | Complete |
-| INFRA-09 | Phase 1 | Complete |
-| SHOP-01 | Phase 2 | Complete |
-| SHOP-02 | Phase 2 | Complete |
-| SHOP-03 | Phase 2 | Complete |
-| SHOP-04 | Phase 4 | Complete |
-| SHOP-05 | Phase 4 | Complete |
-| SHOP-06 | Phase 4 | Complete |
-| SHOP-07 | Phase 2 | Complete |
-| SLCK-01 | Phase 5 | Complete |
-| SLCK-02 | Phase 5 | Complete |
-| SLCK-03 | Phase 5 | Complete |
-| SLCK-04 | Phase 5 | Complete |
-| SLCK-05 | Phase 5 | Complete |
-| SLCK-06 | Phase 5 | Complete |
-| UI-01 | Phase 6 | Complete |
-| UI-02 | Phase 6 | Complete |
-| UI-03 | Phase 6 | Complete |
-| UI-04 | Phase 6 | Complete |
-| UI-05 | Phase 6 | Complete |
-| INTG-01 | Phase 7 | Complete |
-| INTG-02 | Phase 7 | Complete |
-| INTG-03 | Phase 7 | Complete |
+| INFRA-10 | Phase 13 | Pending |
+| INFRA-11 | Phase 13 | Pending |
+| INFRA-12 | Phase 14 | Pending |
+| INFRA-13 | Phase 14 | Pending |
+| INFRA-14 | Phase 20 | Pending |
+| SHOP-08 | Phase 15 | Pending |
+| SHOP-09 | Phase 15 | Pending |
+| SHOP-10 | Phase 16 | Pending |
+| SHOP-11 | Phase 16 | Pending |
+| SHOP-12 | Phase 16 | Pending |
+| SHOP-13 | Phase 16 | Pending |
+| SHOP-14 | Phase 17 | Pending |
+| SHOP-15 | Phase 17 | Pending |
+| SLCK-07 | Phase 18 | Pending |
+| SLCK-08 | Phase 18 | Pending |
+| SLCK-09 | Phase 19 | Pending |
+| SLCK-10 | Phase 19 | Pending |
+| SLCK-11 | Phase 19 | Pending |
+| SLCK-12 | Phase 20 | Pending |
 
 **Coverage:**
-- v1 requirements: 30 total
-- Mapped to phases: 30
+- v1.1 requirements: 19 total
+- Mapped to phases: 19
 - Unmapped: 0
 
 ---
-*Requirements defined: 2026-02-27*
-*Last updated: 2026-02-27 after roadmap creation*
+*Requirements defined: 2026-03-09*
+*Last updated: 2026-03-09 after v1.1 roadmap creation*
