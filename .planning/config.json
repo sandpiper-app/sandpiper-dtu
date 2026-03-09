@@ -1,6 +1,5 @@
 {
   "mode": "yolo",
-  "depth": "comprehensive",
   "model_profile": "quality",
   "commit_docs": true,
   "search_gitignored": false,
@@ -14,5 +13,6 @@
     "auto_advance": true
   },
   "parallelization": true,
-  "brave_search": false
+  "brave_search": false,
+  "granularity": "fine"
 }
