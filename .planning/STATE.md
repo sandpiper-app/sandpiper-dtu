@@ -15,7 +15,7 @@ progress:
 
 # Project State: Sandpiper DTU
 
-**Last Updated:** 2026-03-09
+**Last Updated:** 2026-03-09T17:03:00Z
 **Status:** Ready to plan
 
 ## Project Reference
@@ -27,8 +27,8 @@ progress:
 ## Current Position
 
 **Phase:** Phase 14 — Verification Harness Foundation & Legacy Gap Merge (IN PROGRESS)
-**Plan:** Plan 02 of 5 complete
-**Status:** Phase 14 in progress — 2 of 5 plans done
+**Plan:** Plan 03 of 5 complete
+**Status:** Phase 14 in progress — 3 of 5 plans done
 **Progress:** [█████████░] 92%
 
 ## Performance Metrics
@@ -41,6 +41,11 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 14-03 Execution:**
+- Plans 01 and 02 infrastructure was complete: both SDK gateway test files passed immediately on first run without any implementation changes needed
+- Legacy test failures (hmac-signature.test.ts, webhook-timing.test.ts) are pre-existing untracked files — deferred, not in scope for Plan 03
+- process.env.SLACK_API_URL in createSlackClient() confirmed to propagate correctly from globalSetup to Vitest 3.x workers; no inject() call needed in test files
 
 **2026-03-09 - Plan 14-01 Execution:**
 - auth.test assigned tier 1 (20/min) in SlackRateLimiter DEFAULT_RATE_TIERS — Slack docs place auth endpoints in tier 1; unknown methods skip rate limiting silently
@@ -273,9 +278,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 13 Plan 03 — Three SDK submodules with version-pinned SHAs and sdk-pins.json
-**Stopped at:** Completed 14-01-PLAN.md
-**Timestamp:** 2026-03-09T06:27:00Z
+**Last completed:** Phase 14 Plan 03 — Slack auth gateway tests (SLCK-06.5) and Shopify SDK wire-up test (INFRA-15)
+**Stopped at:** Completed 14-03-PLAN.md
+**Timestamp:** 2026-03-09T17:03:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
