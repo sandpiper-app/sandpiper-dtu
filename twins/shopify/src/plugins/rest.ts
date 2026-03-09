@@ -17,6 +17,24 @@ import { validateAccessToken } from '../services/token-validator.js';
 
 const restPlugin: FastifyPluginAsync = async (fastify) => {
   /**
+   * Allow DELETE (and other) requests that send Content-Type: application/json
+   * with no body. The Shopify admin-api-client always sends this header even
+   * for DELETE requests. Without this parser, Fastify v5 returns 400 when the
+   * JSON content-type parser encounters an empty body.
+   */
+  fastify.addContentTypeParser('application/json', { parseAs: 'string' }, (req, body, done) => {
+    if (!body || (body as string).trim() === '') {
+      done(null, undefined);
+      return;
+    }
+    try {
+      done(null, JSON.parse(body as string));
+    } catch (err) {
+      done(err as Error, undefined);
+    }
+  });
+
+  /**
    * Validate X-Shopify-Access-Token header.
    * Returns true if valid, false if reply was already sent with 401.
    */
