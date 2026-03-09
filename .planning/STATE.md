@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Phase 14 planned — 5 plans in 3 waves, ready for execution
-last_updated: "2026-03-09T07:18:19.719Z"
+stopped_at: Completed 14-02-PLAN.md
+last_updated: "2026-03-09T16:55:41.732Z"
 progress:
   total_phases: 8
   completed_phases: 1
   total_plans: 8
-  completed_plans: 3
-  percent: 100
+  completed_plans: 4
+  percent: 89
 ---
 
 # Project State: Sandpiper DTU
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-**Phase:** Phase 13 — Upstream SDK Mirrors & Surface Inventory (COMPLETE)
-**Plan:** All 3 plans complete
-**Status:** Phase 13 complete, ready for Phase 14
-**Progress:** [██████████] 100%
+**Phase:** Phase 14 — Verification Harness Foundation & Legacy Gap Merge (IN PROGRESS)
+**Plan:** Plan 02 of 5 complete
+**Status:** Phase 14 in progress — 2 of 5 plans done
+**Progress:** [█████████░] 89%
 
 ## Performance Metrics
 
@@ -41,6 +41,11 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 14-02 Execution:**
+- POST /admin/tokens added to Slack twin admin plugin: direct slackStateManager.createToken() produces deterministic token values; OAuth flow (/api/oauth.v2.access) returns dynamic tokens that would break auth.test lookups
+- Version normalization in customFetchApi for Shopify SDK: replaces /admin/api/[any-version]/ with /admin/api/2024-01/; twin only serves this version, rewrite avoids any twin route changes
+- Both ctx.provide() and process.env used in globalSetup: process.env propagates to Vitest 3.x workers; ctx.provide() adds forward compatibility
 
 **2026-03-09 - Plan 13-03 Execution:**
 - bolt-js has no git tags for releases — SHA manually identified by user from commit message; no tag-based lookup possible for bolt-js version pinning
@@ -264,7 +269,7 @@ None.
 ## Session Continuity
 
 **Last completed:** Phase 13 Plan 03 — Three SDK submodules with version-pinned SHAs and sdk-pins.json
-**Stopped at:** Phase 14 planned — 5 plans in 3 waves, ready for execution
+**Stopped at:** Completed 14-02-PLAN.md
 **Timestamp:** 2026-03-09T06:27:00Z
 
 ---
