@@ -22,14 +22,14 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 13 complete — all 3 plans executed. Ready for Phase 14 (SDK Verification Harness).
+**Current Focus:** Phase 17 — Shopify Client Surfaces & Strategic REST Stubs
 
 ## Current Position
 
-**Phase:** Phase 16 — Shopify shopify-api Platform Surface
-**Plan:** Plan 04 of 5 complete (Phase 16 complete)
-**Status:** Plan 16-04 complete — SHOP-13 billing stubs: appSubscriptionCreate/cancel/currentAppInstallation twin resolvers; 3 billing tests (request/check/cancel); coverage ledger updated for all Phase 16 symbols.
-**Progress:** [██████████] 100%
+**Phase:** Phase 17 — Shopify Client Surfaces & Strategic REST Stubs
+**Plan:** Not started
+**Status:** Ready to plan
+**Progress:** [████████████████████] 44/44 plans (100%)
 
 ## Performance Metrics
 
@@ -329,9 +329,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 16 Plan 04 — SHOP-13 billing stubs: twin billing resolvers (appSubscriptionCreate, appPurchaseOneTimeCreate, appSubscriptionCancel, currentAppInstallation); 3 billing tests; coverage ledger updated for all Phase 16 symbols (24 total tests green)
-**Stopped at:** Completed 16-04-PLAN.md
-**Timestamp:** 2026-03-09T21:12:00Z
+**Last completed:** Phase 16 complete — shopify-api platform surface: 4 plans, 24 tests (auth x7, session x7, webhooks x7, billing x3), SHOP-10/11/12/13 all verified
+**Stopped at:** Phase 16 complete, ready to plan Phase 17
+**Timestamp:** 2026-03-09T22:30:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*

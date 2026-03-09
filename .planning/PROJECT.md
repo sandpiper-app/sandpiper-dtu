@@ -39,12 +39,14 @@ Sandpiper's integration tests can run against twins that behave identically to r
 - Twin UIs for state inspection and manual testing — Phase 6
 - Base URL swap lets Sandpiper point integration clients at twin URLs — Phase 7
 - Docker-compose overlay wires twins + Sandpiper together for CI/E2E — Phase 7
+- ✓ Official upstream SDK forks live in-repo as pinned git submodules under `third_party/upstream/` — Phase 13
+- ✓ Machine-generated public-surface manifests cover every targeted package symbol and method — Phase 13
+- ✓ Shopify twin passes `@shopify/admin-api-client` GraphQL and REST client tests — Phases 14-15
+- ✓ Shopify twin passes `@shopify/shopify-api` auth, session, webhook, and billing helpers — Phase 16
 
 ### Active
 
-- [ ] Official upstream SDK forks live in-repo as pinned git submodules under `third_party/upstream/`
-- [ ] Machine-generated public-surface manifests cover every targeted package symbol and method
-- [ ] Shopify twin passes official `@shopify/admin-api-client` and `@shopify/shopify-api` suites across their literal public surface
+- [ ] Shopify twin passes `@shopify/shopify-api` client surfaces (Graphql, Rest, Storefront, graphqlProxy) and strategic REST stubs
 - [ ] Slack twin passes official `@slack/web-api`, `@slack/oauth`, and `@slack/bolt` suites across their literal public surface
 - [ ] SDK conformance, HMAC/timing/UI verification, and drift detection run together in CI
 
@@ -86,10 +88,12 @@ Sandpiper's integration tests can run against twins that behave identically to r
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Official Shopify and Slack SDKs define the v1.1 fidelity boundary | Developer trust depends on the same packages application code actually uses | Pending — milestone scope |
-| Clone upstream repos first, then vendor repo-owned fork submodules | Source-level planning and export inventory must happen before long-term vendoring | Pending — implement in Phase 13 |
-| Phase numbering resumes at 13 for v1.1 | Existing Phase 12 artifacts already exist and are being rolled into this milestone's scope | Pending — roadmap continuation |
-| One pinned version per targeted package for v1.1 | Literal full-surface scope is already large; multi-version matrices come later | Pending — revisit after v1.1 |
+| Official Shopify and Slack SDKs define the v1.1 fidelity boundary | Developer trust depends on the same packages application code actually uses | Validated — Phases 13-16 |
+| Clone upstream repos first, then vendor repo-owned fork submodules | Source-level planning and export inventory must happen before long-term vendoring | Validated — Phase 13 |
+| Phase numbering resumes at 13 for v1.1 | Existing Phase 12 artifacts already exist and are being rolled into this milestone's scope | Validated — roadmap continuation |
+| One pinned version per targeted package for v1.1 | Literal full-surface scope is already large; multi-version matrices come later | Validated — revisit after v1.1 |
+| setAbstractFetchFunc for shopify-api twin redirect | Overrides globalThis.fetch after node adapter import; redirects all shopify-api HTTP to twin | Validated — Phase 16 |
+| Billing stubs acceptable for Phase 16 | Auth+session+webhooks are the core; billing uses minimal valid shapes without state machine | Validated — Phase 16 |
 | TypeScript + Fastify over Go | Same language as Sandpiper, shared types, Fastify plugin architecture | Validated — both twins work well |
 | Monorepo with shared tooling | Twins share HTTP framework, state management, webhooks, test harness | Validated — `@dtu/*` packages reused across twins |
 | Shopify + Slack first | Critical tier in Sandpiper, largest API surface, highest test value | Validated — both twins complete |
@@ -100,4 +104,4 @@ Sandpiper's integration tests can run against twins that behave identically to r
 | HTTP 200 for Slack API errors | Matching real Slack convention (`{ok: false}` on 200, not 4xx) | Validated — SDK-compatible |
 
 ---
-*Last updated: 2026-03-09 after starting milestone v1.1*
+*Last updated: 2026-03-09 after Phase 16*
