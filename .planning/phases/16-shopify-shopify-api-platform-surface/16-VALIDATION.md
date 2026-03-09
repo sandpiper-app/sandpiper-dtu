@@ -18,17 +18,17 @@ created: 2026-03-09
 | Property | Value |
 |----------|-------|
 | **Framework** | vitest ^3.0.0 |
-| **Config file** | vitest.config.sdk-verification.ts |
-| **Quick run command** | `npx vitest run --config vitest.config.sdk-verification.ts --reporter=verbose tests/sdk-verification/sdk/shopify-api-*.test.ts` |
-| **Full suite command** | `npx vitest run --config vitest.config.sdk-verification.ts --reporter=verbose` |
+| **Config file** | tests/sdk-verification/vitest.config.ts |
+| **Quick run command** | `npx vitest run --config tests/sdk-verification/vitest.config.ts --reporter=verbose tests/sdk-verification/sdk/shopify-api-*.test.ts` |
+| **Full suite command** | `npx vitest run --config tests/sdk-verification/vitest.config.ts --reporter=verbose` |
 | **Estimated runtime** | ~15 seconds |
 
 ---
 
 ## Sampling Rate
 
-- **After every task commit:** Run `npx vitest run --config vitest.config.sdk-verification.ts --reporter=verbose tests/sdk-verification/sdk/shopify-api-*.test.ts`
-- **After every plan wave:** Run `npx vitest run --config vitest.config.sdk-verification.ts --reporter=verbose`
+- **After every task commit:** Run `npx vitest run --config tests/sdk-verification/vitest.config.ts --reporter=verbose tests/sdk-verification/sdk/shopify-api-*.test.ts`
+- **After every plan wave:** Run `npx vitest run --config tests/sdk-verification/vitest.config.ts --reporter=verbose`
 - **Before `/gsd:verify-work`:** Full suite must be green
 - **Max feedback latency:** 15 seconds
 
@@ -38,10 +38,10 @@ created: 2026-03-09
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 16-01-01 | 01 | 1 | SHOP-12 | unit | `npx vitest run --config vitest.config.sdk-verification.ts tests/sdk-verification/sdk/shopify-api-webhooks.test.ts` | ❌ W0 | ⬜ pending |
-| 16-02-01 | 02 | 1 | SHOP-11 | unit | `npx vitest run --config vitest.config.sdk-verification.ts tests/sdk-verification/sdk/shopify-api-session.test.ts` | ❌ W0 | ⬜ pending |
-| 16-03-01 | 03 | 2 | SHOP-10 | integration | `npx vitest run --config vitest.config.sdk-verification.ts tests/sdk-verification/sdk/shopify-api-auth.test.ts` | ❌ W0 | ⬜ pending |
-| 16-04-01 | 04 | 3 | SHOP-13 | integration | `npx vitest run --config vitest.config.sdk-verification.ts tests/sdk-verification/sdk/shopify-api-billing.test.ts` | ❌ W0 | ⬜ pending |
+| 16-01-01 | 01 | 1 | SHOP-12 | unit | `npx vitest run --config tests/sdk-verification/vitest.config.ts tests/sdk-verification/sdk/shopify-api-webhooks.test.ts` | ❌ W0 | ⬜ pending |
+| 16-02-01 | 02 | 1 | SHOP-11 | unit | `npx vitest run --config tests/sdk-verification/vitest.config.ts tests/sdk-verification/sdk/shopify-api-session.test.ts` | ❌ W0 | ⬜ pending |
+| 16-03-01 | 03 | 2 | SHOP-10 | integration | `npx vitest run --config tests/sdk-verification/vitest.config.ts tests/sdk-verification/sdk/shopify-api-auth.test.ts` | ❌ W0 | ⬜ pending |
+| 16-04-01 | 04 | 3 | SHOP-13 | integration | `npx vitest run --config tests/sdk-verification/vitest.config.ts tests/sdk-verification/sdk/shopify-api-billing.test.ts` | ❌ W0 | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -50,9 +50,10 @@ created: 2026-03-09
 ## Wave 0 Requirements
 
 - [ ] `tests/sdk-verification/helpers/shopify-api-client.ts` — `createShopifyApiClient()` factory with `setAbstractFetchFunc` override
-- [ ] `tests/sdk-verification/helpers/shopify-api-request-adapter.ts` — mock request builders for adapter-based tests
 - [ ] JWT minting helper using `jose.SignJWT` for session token tests
 - [ ] HMAC computation helper using `node:crypto` for webhook/flow/fulfillment tests
+
+*Note: Mock request objects are built inline in each test file — no separate adapter helper file is needed.*
 
 *Existing infrastructure covers framework and twin lifecycle.*
 
