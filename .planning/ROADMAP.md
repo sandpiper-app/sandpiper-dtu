@@ -66,10 +66,12 @@ Plans:
   1. `createAdminApiClient()` request, fetch, getHeaders, and getApiUrl behaviors pass against the Shopify twin for pinned and per-request API versions
   2. `createAdminRestApiClient()` get, post, put, and delete behaviors pass against the Shopify twin with correct headers, search params, payload encoding, and retry semantics
   3. Twin-side auth, versioning, and error semantics match what the low-level Shopify clients expect
-**Plans:** 0 plans
+**Plans:** 3 plans
 
 Plans:
-- [ ] TBD (run `$gsd-plan-phase 15` to break down)
+- [ ] 15-01-PLAN.md — GraphQL client method tests (request, fetch, getHeaders, getApiUrl) for SHOP-08
+- [ ] 15-02-PLAN.md — REST plugin for Shopify twin + createRestClient() helper for SHOP-09
+- [ ] 15-03-PLAN.md — REST client tests (all 4 verbs, searchParams, headers, retry, auth error) + coverage ledger update
 
 ### Phase 16: Shopify `shopify-api` Platform Surface
 **Goal**: Make the high-level Shopify platform helpers work against the twin. Auth, session, and webhooks are the core; billing is lower priority and can be stubbed initially.
@@ -146,7 +148,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 13. Upstream SDK Mirrors & Surface Inventory | 3/3 | Complete    | 2026-03-09 |
 | 14. Verification Harness Foundation & Legacy Gap Merge | 5/5 | Complete    | 2026-03-09 |
-| 15. Shopify Admin Client Compatibility | 0/0 | Pending | — |
+| 15. Shopify Admin Client Compatibility | 0/3 | In Progress | — |
 | 16. Shopify `shopify-api` Platform Surface | 0/0 | Pending | — |
 | 17. Shopify Client Surfaces & Strategic REST Stubs | 0/0 | Pending | — |
 | 18. Slack WebClient Full Surface | 0/0 | Pending | — |
