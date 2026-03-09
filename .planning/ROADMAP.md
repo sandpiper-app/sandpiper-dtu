@@ -116,10 +116,14 @@ Plans:
   3. Tier 2 method families (files, search, reminders) are stubbed with valid response shapes
   4. Tier 3 method families (admin.*) are deferred — tracked in manifest but not implemented in this phase
   5. Every bound method in the pinned `@slack/web-api` package maps to a declared coverage entry (live test, stub, or deferred)
-**Plans:** 0 plans
+**Plans:** 5 plans
 
 Plans:
-- [ ] TBD (run `$gsd-plan-phase 18` to break down)
+- [ ] 18-01-PLAN.md — rate-limiter expansion + files.ts plugin (filesUploadV2 chain) + chat.ts expansion (13 methods) + slack-webclient-base.test.ts + slack-chat.test.ts (SLCK-07, SLCK-08)
+- [ ] 18-02-PLAN.md — conversations.ts expansion (28 methods) + users.ts expansion (12 methods) + slack-conversations.test.ts + slack-users.test.ts (SLCK-08)
+- [ ] 18-03-PLAN.md — reactions.ts + pins.ts + views.ts plugins + index.ts registration + 3 test files (SLCK-08)
+- [ ] 18-04-PLAN.md — stubs.ts plugin (Tier 2 + misc families) + index.ts registration + slack-stubs-smoke.test.ts (SLCK-08)
+- [ ] 18-05-PLAN.md — Coverage ledger update: generate-report.ts LIVE_SYMBOLS + pnpm coverage:generate (SLCK-07, SLCK-08)
 
 ### Phase 19: Slack OAuth & Bolt HTTP Surface
 **Goal**: Make Slack OAuth and Bolt's HTTP-oriented framework surface work against the twin.
@@ -157,7 +161,7 @@ Plans:
 | 15. Shopify Admin Client Compatibility | 3/3 | Complete    | 2026-03-09 |
 | 16. Shopify `shopify-api` Platform Surface | 4/4 | Complete    | 2026-03-09 |
 | 17. Shopify Client Surfaces & Strategic REST Stubs | 4/4 | Complete    | 2026-03-09 |
-| 18. Slack WebClient Full Surface | 0/0 | Pending | — |
+| 18. Slack WebClient Full Surface | 0/5 | Pending | — |
 | 19. Slack OAuth & Bolt HTTP Surface | 0/0 | Pending | — |
 | 20. Bolt Alternate Receivers & Drift Automation | 0/0 | Pending | — |
 
