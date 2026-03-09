@@ -49,6 +49,11 @@ progress:
 - URLSearchParams encoding for HMAC: computeCallbackHmac uses new URLSearchParams(sortedEntries).toString() to match ProcessedQuery.stringify(true) in SDK hmac-validator
 - refreshToken signature: { shop: string, refreshToken: string } — pass session.accessToken as the refreshToken string; twin accepts any grant_type body
 
+**2026-03-09 - Plan 16-02 Execution:**
+- getCurrentId requires isEmbeddedApp: true to extract session ID from Authorization header; isEmbeddedApp: false falls back to cookie extraction and returns undefined when no cookie is present
+- embeddedShopify instance pattern: separate createShopifyApiClient({ isEmbeddedApp: true }) in beforeAll for getCurrentId test; default instance for decodeSessionToken and utility tests
+- vitest globalSetup absolute path required in vitest 3.x project workspace mode: resolve(__dirname, 'setup/global-setup.ts') prevents CWD-relative resolution error when config is in a sub-directory
+
 **2026-03-09 - Plan 16-01 Execution:**
 - setAbstractFetchFunc imported from @shopify/shopify-api/runtime (not runtime/http subpath — not in exports map)
 - jose added as direct devDependency at workspace root: pnpm hoistPattern=* marks transitive deps private, unreachable from test files
