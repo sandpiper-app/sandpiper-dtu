@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Completed 15-03-PLAN.md
-last_updated: "2026-03-09T19:50:35.546Z"
+stopped_at: Completed 16-01-PLAN.md
+last_updated: "2026-03-09T20:51:15Z"
 progress:
   total_phases: 8
   completed_phases: 3
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-**Phase:** Phase 15 — Shopify Admin Client Compatibility
-**Plan:** Plan 03 of 5 complete
-**Status:** Plan 15-03 complete — REST SDK tests (8 tests, all verbs), coverage ledger updated (10 live symbols). SHOP-08 and SHOP-09 satisfied.
-**Progress:** [██████████] 100%
+**Phase:** Phase 16 — Shopify shopify-api Platform Surface
+**Plan:** Plan 01 of 5 complete
+**Status:** Plan 16-01 complete — shopify-api-client.ts helper factory (setAbstractFetchFunc twin redirect) + 7 SHOP-12 webhook/flow/fulfillmentService validate tests; all passing.
+**Progress:** [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
@@ -41,6 +41,13 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 16-01 Execution:**
+- setAbstractFetchFunc imported from @shopify/shopify-api/runtime (not runtime/http subpath — not in exports map)
+- jose added as direct devDependency at workspace root: pnpm hoistPattern=* marks transitive deps private, unreachable from test files
+- BillingConfig type (not Record<string, unknown>) required for shopifyApi() billing option — incompatible index signature
+- Module-level shopify instance safe for pure in-process webhook tests — validate() is crypto-only, never calls abstractFetch
+- SHOPIFY_API_URL fallback prevents module-level crash when env var not set in isolated test runs
 
 **2026-03-09 - Plan 15-03 Execution:**
 - AdminApiClient.request/fetch/getHeaders/getApiUrl LIVE_SYMBOLS entries are no-ops — TypeAliasDeclaration has no emitted members in manifest; only AdminApiClient top-level and REST class members are trackable
@@ -303,9 +310,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 15 Plan 03 — AdminRestApiClient 8-test REST suite; coverage ledger updated to 10 live symbols; SHOP-08 and SHOP-09 complete
-**Stopped at:** Completed 15-03-PLAN.md
-**Timestamp:** 2026-03-09T19:36:11Z
+**Last completed:** Phase 16 Plan 01 — shopify-api-client.ts factory (setAbstractFetchFunc) + 7 SHOP-12 validate tests; jose added as devDep; SHOP-12 complete
+**Stopped at:** Completed 16-01-PLAN.md
+**Timestamp:** 2026-03-09T20:51:15Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*

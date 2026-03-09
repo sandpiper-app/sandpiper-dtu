@@ -82,7 +82,7 @@ Plans:
   2. Session and utility helpers create, decode, validate, and resolve twin-backed session data correctly
   3. Webhook, Flow, and fulfillment-service validation helpers accept valid twin-generated requests and reject invalid ones correctly
   4. Billing helpers can request, inspect, cancel, and mutate billing state against the Shopify twin _(lower priority — can be stubbed initially)_
-**Plans:** 4 plans
+**Plans:** 1/4 plans executed
 
 Plans:
 - [ ] 16-01-PLAN.md — shopify-api-client.ts helper factory (setAbstractFetchFunc + mintSessionToken + computeShopifyHmac) + shopify-api-webhooks.test.ts (SHOP-12, 7 tests)
@@ -152,7 +152,7 @@ Plans:
 | 13. Upstream SDK Mirrors & Surface Inventory | 3/3 | Complete    | 2026-03-09 |
 | 14. Verification Harness Foundation & Legacy Gap Merge | 5/5 | Complete    | 2026-03-09 |
 | 15. Shopify Admin Client Compatibility | 3/3 | Complete    | 2026-03-09 |
-| 16. Shopify `shopify-api` Platform Surface | 0/4 | Pending | — |
+| 16. Shopify `shopify-api` Platform Surface | 1/4 | In Progress|  |
 | 17. Shopify Client Surfaces & Strategic REST Stubs | 0/0 | Pending | — |
 | 18. Slack WebClient Full Surface | 0/0 | Pending | — |
 | 19. Slack OAuth & Bolt HTTP Surface | 0/0 | Pending | — |
