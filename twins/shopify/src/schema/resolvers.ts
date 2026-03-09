@@ -307,6 +307,8 @@ export const resolvers = {
         },
       };
     },
+
+    shop: () => ({ name: 'Sandpiper Dev Store' }),
   },
 
   // Mutation resolvers

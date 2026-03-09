@@ -401,6 +401,11 @@ input WebhookSubscriptionInput {
   callbackUrl: String!
 }
 
+# Shop info type — returned by the Storefront API shop query
+type ShopInfo {
+  name: String!
+}
+
 # Query root — all connections support Relay-spec cursor pagination args
 type QueryRoot {
   orders(first: Int = 10, after: String, last: Int, before: String): OrderConnection!
@@ -412,6 +417,7 @@ type QueryRoot {
   inventoryItems(first: Int = 10, after: String, last: Int, before: String): InventoryItemConnection!
   inventoryItem(id: ID!): InventoryItem
   currentAppInstallation: AppInstallation!
+  shop: ShopInfo
 }
 
 # Mutation root

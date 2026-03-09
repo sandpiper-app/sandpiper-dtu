@@ -90,6 +90,59 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
     // Auth enforcement happens in resolvers via requireAuth() helper
   });
 
+  // Register Storefront API route — /api/2024-01/graphql.json
+  // Uses same yoga instance (same schema) but different auth header.
+  // Auth: Shopify-Storefront-Private-Token (not X-Shopify-Access-Token)
+  fastify.route({
+    url: '/api/2024-01/graphql.json',
+    method: ['GET', 'POST', 'OPTIONS'],
+    handler: async (req, reply) => {
+      // Validate Shopify-Storefront-Private-Token
+      const token = req.headers['shopify-storefront-private-token'];
+      let authorized = false;
+      if (token && typeof token === 'string') {
+        const validation = await validateAccessToken(token, fastify.stateManager);
+        if (validation.valid) authorized = true;
+      }
+      if (!authorized) {
+        reply.status(401).header('content-type', 'application/json');
+        return reply.send(JSON.stringify({ errors: [{ message: 'Unauthorized' }] }));
+      }
+
+      // Reuse same yoga instance — rewrite URL to the admin endpoint path so yoga
+      // routes the query correctly (graphqlEndpoint is '/admin/api/2024-01/graphql.json').
+      const adminUrl = new URL(
+        req.url.replace('/api/2024-01/graphql.json', '/admin/api/2024-01/graphql.json'),
+        `http://${req.hostname}`
+      );
+
+      const headers: Record<string, string> = {};
+      for (const [key, value] of Object.entries(req.headers)) {
+        if (value) headers[key] = Array.isArray(value) ? value[0] : value;
+      }
+
+      const response = await yoga.fetch(
+        adminUrl.toString(),
+        {
+          method: req.method,
+          headers,
+          body: req.method !== 'GET' && req.method !== 'HEAD'
+            ? JSON.stringify(req.body)
+            : undefined,
+        },
+        { req, reply },
+      );
+
+      const responseText = await response.text();
+      reply.status(response.status);
+      response.headers.forEach((value: string, key: string) => {
+        reply.header(key, value);
+      });
+      reply.header('content-type', 'application/json');
+      return reply.send(responseText);
+    },
+  });
+
   // Register GraphQL route — use yoga.fetch() to avoid Node stream
   // compatibility issues between Yoga and Fastify's reply object
   fastify.route({
