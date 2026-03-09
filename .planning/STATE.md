@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Completed 14-02-PLAN.md
-last_updated: "2026-03-09T16:55:41.732Z"
+stopped_at: Completed 14-01-PLAN.md
+last_updated: "2026-03-09T16:56:40.588Z"
 progress:
   total_phases: 8
   completed_phases: 1
   total_plans: 8
-  completed_plans: 4
-  percent: 89
+  completed_plans: 5
+  percent: 92
 ---
 
 # Project State: Sandpiper DTU
@@ -29,7 +29,7 @@ progress:
 **Phase:** Phase 14 — Verification Harness Foundation & Legacy Gap Merge (IN PROGRESS)
 **Plan:** Plan 02 of 5 complete
 **Status:** Phase 14 in progress — 2 of 5 plans done
-**Progress:** [█████████░] 89%
+**Progress:** [█████████░] 92%
 
 ## Performance Metrics
 
@@ -41,6 +41,11 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 14-01 Execution:**
+- auth.test assigned tier 1 (20/min) in SlackRateLimiter DEFAULT_RATE_TIERS — Slack docs place auth endpoints in tier 1; unknown methods skip rate limiting silently
+- bot_id 'B_BOT_TWIN' hardcoded constant in auth.ts — twin seeds are deterministic, dynamic lookup unnecessary
+- authPlugin registered before chatPlugin in buildApp() — auth.test is the gateway endpoint, logical first-in-group
 
 **2026-03-09 - Plan 14-02 Execution:**
 - POST /admin/tokens added to Slack twin admin plugin: direct slackStateManager.createToken() produces deterministic token values; OAuth flow (/api/oauth.v2.access) returns dynamic tokens that would break auth.test lookups
@@ -269,7 +274,7 @@ None.
 ## Session Continuity
 
 **Last completed:** Phase 13 Plan 03 — Three SDK submodules with version-pinned SHAs and sdk-pins.json
-**Stopped at:** Completed 14-02-PLAN.md
+**Stopped at:** Completed 14-01-PLAN.md
 **Timestamp:** 2026-03-09T06:27:00Z
 
 ---
