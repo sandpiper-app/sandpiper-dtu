@@ -49,10 +49,14 @@ Plans:
   4. HMAC signature, async webhook timing, and UI structure checks run in the same verification command as the SDK suites
   5. Coverage reports show per-symbol ownership across generated and curated tests
   6. Basic drift detection validates that pinned submodule refs match installed package versions and generated manifests
-**Plans:** 0 plans
+**Plans:** 5 plans
 
 Plans:
-- [ ] TBD (run `$gsd-plan-phase 14` to break down)
+- [ ] 14-01-PLAN.md — Slack twin auth.test and api.test routes (authPlugin)
+- [ ] 14-02-PLAN.md — SDK verification workspace scaffold (vitest config, global setup, client helpers, test:sdk script)
+- [ ] 14-03-PLAN.md — SDK gateway tests: Slack auth.test via WebClient, Shopify client wire-up
+- [ ] 14-04-PLAN.md — Legacy conformance migration: HMAC signature, async webhook timing, UI structure tests
+- [ ] 14-05-PLAN.md — Coverage ledger (coverage-report.json) and basic drift detection script
 
 ### Phase 15: Shopify Admin Client Compatibility
 **Goal**: Make the Shopify twin satisfy the low-level Admin GraphQL and generic REST clients.
@@ -141,7 +145,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 13. Upstream SDK Mirrors & Surface Inventory | 3/3 | Complete    | 2026-03-09 |
-| 14. Verification Harness Foundation & Legacy Gap Merge | 0/0 | Pending | — |
+| 14. Verification Harness Foundation & Legacy Gap Merge | 0/5 | In Progress | — |
 | 15. Shopify Admin Client Compatibility | 0/0 | Pending | — |
 | 16. Shopify `shopify-api` Platform Surface | 0/0 | Pending | — |
 | 17. Shopify Client Surfaces & Strategic REST Stubs | 0/0 | Pending | — |
