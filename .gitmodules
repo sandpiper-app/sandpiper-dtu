@@ -1,0 +1,9 @@
+[submodule "third_party/upstream/shopify-app-js"]
+	path = third_party/upstream/shopify-app-js
+	url = https://github.com/sandpiper-app/shopify-app-js.git
+[submodule "third_party/upstream/node-slack-sdk"]
+	path = third_party/upstream/node-slack-sdk
+	url = https://github.com/sandpiper-app/node-slack-sdk.git
+[submodule "third_party/upstream/bolt-js"]
+	path = third_party/upstream/bolt-js
+	url = https://github.com/sandpiper-app/bolt-js.git

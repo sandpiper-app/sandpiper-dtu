@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Links installed npm package versions to upstream submodule commits. Both must be updated together whenever an SDK version is bumped.",
+  "packages": {
+    "@shopify/admin-api-client": {
+      "version": "1.1.1",
+      "submodule": "third_party/upstream/shopify-app-js",
+      "commit": "7399c4fcc3fc3946bbe6925c2a0710c6493986b9",
+      "packagePath": "packages/api-clients/admin-api-client"
+    },
+    "@shopify/shopify-api": {
+      "version": "12.3.0",
+      "submodule": "third_party/upstream/shopify-app-js",
+      "commit": "7399c4fcc3fc3946bbe6925c2a0710c6493986b9",
+      "packagePath": "packages/apps/shopify-api"
+    },
+    "@slack/web-api": {
+      "version": "7.14.1",
+      "submodule": "third_party/upstream/node-slack-sdk",
+      "commit": "59df2005b96457e5c4115f6daf0031a2b203850f",
+      "packagePath": "packages/web-api"
+    },
+    "@slack/oauth": {
+      "version": "3.0.4",
+      "submodule": "third_party/upstream/node-slack-sdk",
+      "commit": "59df2005b96457e5c4115f6daf0031a2b203850f",
+      "packagePath": "packages/oauth"
+    },
+    "@slack/bolt": {
+      "version": "4.6.0",
+      "submodule": "third_party/upstream/bolt-js",
+      "commit": "4cfd37634a8b09e83ba345c3b67a26c5eb6012fa",
+      "packagePath": "."
+    }
+  }
+}
