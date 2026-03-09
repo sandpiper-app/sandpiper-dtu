@@ -1,35 +1,35 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.1
-milestone_name: official-sdk-conformance
-status: planning
-stopped_at: Created roadmap for milestone v1.1
-last_updated: "2026-03-09T01:06:45Z"
+milestone_name: milestone
+status: executing
+stopped_at: Completed 13-01-PLAN.md
+last_updated: "2026-03-09T05:14:55.101Z"
 progress:
   total_phases: 8
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 3
+  completed_plans: 1
+  percent: 94
 ---
 
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-09
-**Status:** Ready to plan
+**Status:** Executing Phase 13
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 13 pending — upstream SDK mirrors, submodule layout, and source-derived surface inventory.
+**Current Focus:** Phase 13 executing — Plan 01 complete, Plans 02-03 pending.
 
 ## Current Position
 
 **Phase:** Phase 13 — Upstream SDK Mirrors & Surface Inventory
-**Plan:** -
-**Status:** Ready to plan Phase 13
-**Progress:** [░░░░░░░░░░] 0%
+**Plan:** 01 complete, 02 next
+**Status:** Executing Phase 13
+**Progress:** [█████████░] 94%
 
 ## Performance Metrics
 
@@ -41,6 +41,11 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 13-01 Execution:**
+- tests/* added to vitest.config.ts projects array before Phase 14 to avoid config-change commit interleaved with submodule setup
+- vitest bumped to ^3.0.0 in both twins to match workspace root version and prevent lockfile conflicts when sdk-verification suite is added
+- CI submodule verification uses git submodule status | grep ^- pattern: exits non-zero only on uninitialized entries, passes cleanly when no submodules present
 
 **2026-03-09 - Milestone v1.1 Roadmap Creation:**
 - 8 phases derived from cloned upstream SDK source and literal package scope
@@ -248,9 +253,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Milestone initialization for v1.1 Official SDK Conformance
-**Stopped at:** Created roadmap for milestone v1.1
-**Timestamp:** 2026-03-09T01:06:45Z
+**Last completed:** Phase 13 Plan 01 — Workspace & CI preparation for SDK mirrors
+**Stopped at:** Completed 13-01-PLAN.md
+**Timestamp:** 2026-03-09T05:16:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*

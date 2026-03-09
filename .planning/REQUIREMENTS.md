@@ -9,8 +9,8 @@ Requirements for milestone `v1.1 Official SDK Conformance`. Each maps to one roa
 
 ### Conformance Infrastructure
 
-- [ ] **INFRA-10**: Developer can check out repo-owned fork submodules of the targeted upstream SDK repos under `third_party/upstream/`, with each submodule pinned to a recorded commit and package version
-- [ ] **INFRA-11**: Developer can run a manifest generator that inventories every public export and method in the targeted packages and writes a checked-in coverage ledger
+- [x] **INFRA-10**: Developer can check out repo-owned fork submodules of the targeted upstream SDK repos under `third_party/upstream/`, with each submodule pinned to a recorded commit and package version
+- [x] **INFRA-11**: Developer can run a manifest generator that inventories every public export and method in the targeted packages and writes a checked-in coverage ledger
 - [ ] **INFRA-12**: Developer can see, for each inventoried symbol, whether it is verified by a live twin test or a local-only utility test, and CI fails if any `v1.1` symbol lacks declared coverage
 - [ ] **INFRA-13**: Developer can run one verification command that executes SDK conformance, HMAC signature, async webhook timing, and UI structure checks together
 - [ ] **INFRA-14**: CI can detect upstream drift by comparing pinned submodule refs, installed package versions, and generated manifests on milestone updates
@@ -69,8 +69,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-10 | Phase 13 | Pending |
-| INFRA-11 | Phase 13 | Pending |
+| INFRA-10 | Phase 13 | Complete |
+| INFRA-11 | Phase 13 | Complete |
 | INFRA-12 | Phase 14 | Pending |
 | INFRA-13 | Phase 14 | Pending |
 | INFRA-14 | Phase 14, 20 | Pending |
