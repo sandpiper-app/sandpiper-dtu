@@ -47,6 +47,31 @@ export async function seedShopifyAccessToken(): Promise<string> {
 }
 
 /**
+ * Seed a channel in the Slack twin and return its ID.
+ *
+ * Uses the Slack twin's POST /admin/fixtures/load endpoint to create a channel
+ * with the given name. Returns the channel ID for use in SDK calls.
+ */
+export async function seedSlackChannel(name: string): Promise<string> {
+  const slackUrl = process.env.SLACK_API_URL!;
+  const id = `C_${name.toUpperCase().replace(/[^A-Z0-9]/g, '_')}`;
+  const res = await fetch(slackUrl + '/admin/fixtures/load', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      channels: [{ id, name }],
+    }),
+  });
+  if (!res.ok) {
+    throw new Error(
+      `seedSlackChannel: POST /admin/fixtures/load failed with ${res.status}. ` +
+      `Ensure the Slack twin is running and exposes /admin/fixtures/load.`
+    );
+  }
+  return id;
+}
+
+/**
  * Seed a known bot token in the Slack twin for SDK tests.
  *
  * Uses the Slack twin's POST /admin/tokens endpoint to create a token record
