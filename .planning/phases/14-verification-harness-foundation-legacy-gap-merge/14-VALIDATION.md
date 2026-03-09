@@ -38,15 +38,16 @@ created: 2026-03-09
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 14-01-01 | 01 | 1 | INFRA-13 | setup | `pnpm test:sdk` (verifies workspace boots) | ❌ W0 | ⬜ pending |
-| 14-01-02 | 01 | 1 | INFRA-15 | setup | `pnpm test:sdk` (verifies helpers load) | ❌ W0 | ⬜ pending |
-| 14-02-01 | 02 | 1 | SLCK-06.5 | live | `pnpm test:sdk -- tests/sdk-verification/sdk/slack-auth-gateway.test.ts` | ❌ W0 | ⬜ pending |
-| 14-02-02 | 02 | 1 | INFRA-15 | live | `pnpm test:sdk -- tests/sdk-verification/sdk/shopify-client-wire.test.ts` | ❌ W0 | ⬜ pending |
-| 14-03-01 | 03 | 2 | INFRA-13 | unit | `pnpm test:sdk -- tests/sdk-verification/legacy/hmac-signature.test.ts` | ❌ W0 | ⬜ pending |
-| 14-03-02 | 03 | 2 | INFRA-13 | integration | `pnpm test:sdk -- tests/sdk-verification/legacy/webhook-timing.test.ts` | ❌ W0 | ⬜ pending |
-| 14-03-03 | 03 | 2 | INFRA-13 | smoke | `pnpm test:sdk -- tests/sdk-verification/legacy/ui-structure.test.ts` | ❌ W0 | ⬜ pending |
-| 14-04-01 | 04 | 2 | INFRA-12 | script | inspect `tests/sdk-verification/coverage/coverage-report.json` | ❌ W0 | ⬜ pending |
-| 14-04-02 | 04 | 2 | INFRA-14 | script | `npx tsx tests/sdk-verification/drift/check-drift.ts` | ❌ W0 | ⬜ pending |
+| 14-01-01 | 01 | 1 | SLCK-06.5 | live | `npx vitest run twins/slack --reporter=verbose` | ❌ W0 | ⬜ pending |
+| 14-01-02 | 01 | 1 | SLCK-06.5 | integration | `node -e "import('./twins/slack/src/index.js').then(...)"` (in-process smoke) | ❌ W0 | ⬜ pending |
+| 14-02-01 | 02 | 1 | INFRA-13, INFRA-15 | setup | `npx vitest list --project sdk-verification` | ❌ W0 | ⬜ pending |
+| 14-02-02 | 02 | 1 | INFRA-13, INFRA-15 | setup | `node -e "const p = JSON.parse(...); console.assert(p.scripts['test:sdk'])"` | ❌ W0 | ⬜ pending |
+| 14-03-01 | 03 | 2 | SLCK-06.5 | live | `pnpm test:sdk -- tests/sdk-verification/sdk/slack-auth-gateway.test.ts` | ❌ W0 | ⬜ pending |
+| 14-03-02 | 03 | 2 | INFRA-15 | live | `pnpm test:sdk -- tests/sdk-verification/sdk/shopify-client-wire.test.ts` | ❌ W0 | ⬜ pending |
+| 14-04-01 | 04 | 2 | INFRA-13 | unit | `pnpm test:sdk -- tests/sdk-verification/legacy/hmac-signature.test.ts tests/sdk-verification/legacy/webhook-timing.test.ts` | ❌ W0 | ⬜ pending |
+| 14-04-02 | 04 | 2 | INFRA-13 | smoke | `pnpm test:sdk -- tests/sdk-verification/legacy/ui-structure.test.ts` | ❌ W0 | ⬜ pending |
+| 14-05-01 | 05 | 3 | INFRA-12 | script | `npx tsx tests/sdk-verification/coverage/generate-report.ts && node -e "..."` (checks live tiers + no null tiers) | ❌ W0 | ⬜ pending |
+| 14-05-02 | 05 | 3 | INFRA-14 | script | `npx tsx tests/sdk-verification/drift/check-drift.ts; echo "Exit: $?"` | ❌ W0 | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
