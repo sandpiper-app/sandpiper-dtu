@@ -1,46 +1,52 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
+milestone: v1.1
+milestone_name: official-sdk-conformance
 status: planning
-stopped_at: Completed 11-01-PLAN.md
-last_updated: "2026-03-01T19:31:02.586Z"
+stopped_at: Started milestone v1.1 requirements
+last_updated: "2026-03-09T00:46:00Z"
 progress:
-  total_phases: 12
-  completed_phases: 11
-  total_plans: 29
-  completed_plans: 29
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State: Sandpiper DTU
 
-**Last Updated:** 2026-03-01
-**Status:** Ready to plan
+**Last Updated:** 2026-03-09
+**Status:** Defining requirements
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 11 complete — Shopify error inspection endpoints, TypeScript build graph clean, all 28 SUMMARY.md files normalized.
+**Current Focus:** Milestone v1.1 kickoff — official Shopify and Slack SDKs become the fidelity boundary for the twins.
 
 ## Current Position
 
-**Phase:** Phase 11 — Final Polish (1/1 plans complete)
-**Plan:** 11-01 — Shopify error endpoints, tsconfig fixes, SUMMARY.md requirements_completed backfill
-**Status:** All 10 phases complete
-**Progress:** [██████████] 100%
+**Phase:** Not started (roadmap will resume at Phase 13)
+**Plan:** -
+**Status:** Defining requirements for milestone v1.1
+**Progress:** [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
-**Velocity:** 2 plans in 7 min
-**Avg Plans per Phase:** 2 (Phase 1)
-**Avg Tasks per Plan:** 2.5
-**Success Rate:** 2/2 (100%)
+**Velocity:** Reset for new milestone
+**Avg Plans per Phase:** -
+**Avg Tasks per Plan:** -
+**Success Rate:** -
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Milestone v1.1 Start:**
+- Use cloned upstream SDK repos as source of truth for planning; vendor repo-owned fork submodules during implementation
+- Literal scope covers the full public surface of the targeted packages, not just the current twin subset
+- Old Phase 12 manual verification work folds into the new SDK verification harness
+- Phase numbering resumes at 13 to avoid colliding with existing Phase 12 planning artifacts
 
 **2026-03-01 - Plan 10-01 Execution:**
 - sku made nullable in InventoryItem GraphQL schema — matches real Shopify API where sku is optional
@@ -219,37 +225,15 @@ None.
 
 ### Notes
 
-**Research context available:** Comprehensive research completed covering stack decisions (Fastify, GraphQL Yoga, better-sqlite3, BullMQ, Vitest), architecture patterns (monorepo, behavioral clones, conformance testing), and critical pitfalls (fidelity traps, state management, twin-API drift).
+**Research context available:** Comprehensive v1.1 research completed from cloned upstream SDK source. Summary and phase implications are in `.planning/research/SUMMARY.md`.
 
-**Depth setting:** Comprehensive (8-12 phases). Final roadmap has 7 phases respecting natural delivery boundaries and dependency chain.
-
-**Phase ordering rationale:** Foundation → Shopify Core → Webhooks/Conformance → Shopify Advanced → Slack → UIs → Integration. This sequence ensures shared infrastructure is battle-tested before replication and validates patterns before extending them.
+**Milestone note:** v1.1 intentionally expands beyond the current Sandpiper-used subset and treats the official SDK package surface as the compatibility contract.
 
 ## Session Continuity
 
-**Last completed:** Phase 11 Plan 01 - Shopify error endpoints, tsconfig fixes, SUMMARY.md requirements_completed backfill
-**Stopped at:** Completed 11-01-PLAN.md
-**Timestamp:** 2026-03-01
-
-**All Phase 6 plans complete:**
-1. 06-01: @dtu/ui shared package with registerUI(), 6 Eta partials, Pico CSS
-2. 06-02: Shopify twin UI (orders, products, customers, admin with webhooks)
-3. 06-03: Slack twin UI (channels with message timeline, users, admin with event subscriptions)
-4. 06-04: API conformance audit (GET methods, form-urlencoded, token-in-body/query auth)
-5. 06-05: UI gap closure (webhook create form, product price field, order-product association, load fixtures buttons)
-6. 06-06: Slack conformance infrastructure (21 tests, 4 suites) + CONFORMANCE.md process documentation
-
-**Milestone v1.0 complete:**
-- 71 Slack twin tests pass (4 test files)
-- 236/237 monorepo tests pass — 1 pre-existing flaky DLQ timing test in Shopify integration
-- Shopify conformance: 12 tests (orders, products, webhooks suites)
-- Slack conformance: 21 tests (conversations, chat, users, oauth suites)
-- CONFORMANCE.md: new endpoint checklist + new twin checklist
-
-**Context required:**
-- .planning/phases/06-twin-uis/06-03-SUMMARY.md
-- twins/slack/src/plugins/ui.ts (Slack UI plugin)
-- twins/shopify/src/plugins/ui.ts (Shopify UI plugin)
+**Last completed:** Milestone v1.0 execution and follow-up polish
+**Stopped at:** Started milestone v1.1 requirements
+**Timestamp:** 2026-03-09T00:46:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
