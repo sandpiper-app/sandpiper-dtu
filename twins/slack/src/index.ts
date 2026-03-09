@@ -25,6 +25,7 @@ import authPlugin from './plugins/web-api/auth.js';
 import chatPlugin from './plugins/web-api/chat.js';
 import conversationsPlugin from './plugins/web-api/conversations.js';
 import usersPlugin from './plugins/web-api/users.js';
+import filesPlugin from './plugins/web-api/files.js';
 import eventsApiPlugin from './plugins/events-api.js';
 import interactionsPlugin from './plugins/interactions.js';
 import uiPlugin from './plugins/ui.js';
@@ -121,6 +122,7 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
   await fastify.register(chatPlugin);
   await fastify.register(conversationsPlugin);
   await fastify.register(usersPlugin);
+  await fastify.register(filesPlugin);
   await fastify.register(eventsApiPlugin);
   await fastify.register(interactionsPlugin);
   await fastify.register(uiPlugin);

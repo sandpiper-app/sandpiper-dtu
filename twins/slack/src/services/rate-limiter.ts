@@ -17,7 +17,7 @@ export interface MethodRateConfig {
   requestsPerMinute: number;
 }
 
-/** Built-in tier assignments for Phase 5 Web API methods */
+/** Built-in tier assignments for Phase 5-18 Web API methods */
 const DEFAULT_RATE_TIERS: Record<string, MethodRateConfig> = {
   'auth.test': { tier: 1, requestsPerMinute: 20 },
   'chat.postMessage': { tier: 'special', requestsPerMinute: 60 },
@@ -27,6 +27,61 @@ const DEFAULT_RATE_TIERS: Record<string, MethodRateConfig> = {
   'conversations.history': { tier: 3, requestsPerMinute: 50 },
   'users.list': { tier: 2, requestsPerMinute: 20 },
   'users.info': { tier: 4, requestsPerMinute: 100 },
+  // Phase 18: auth family
+  'auth.revoke': { tier: 1, requestsPerMinute: 20 },
+  'auth.teams.list': { tier: 2, requestsPerMinute: 20 },
+  // chat family additions
+  'chat.delete': { tier: 3, requestsPerMinute: 50 },
+  'chat.postEphemeral': { tier: 'special', requestsPerMinute: 100 },
+  'chat.getPermalink': { tier: 3, requestsPerMinute: 50 },
+  'chat.meMessage': { tier: 'special', requestsPerMinute: 100 },
+  'chat.scheduleMessage': { tier: 'special', requestsPerMinute: 1 },
+  'chat.scheduledMessages.list': { tier: 3, requestsPerMinute: 50 },
+  'chat.deleteScheduledMessage': { tier: 3, requestsPerMinute: 50 },
+  'chat.unfurl': { tier: 3, requestsPerMinute: 50 },
+  'chat.startStream': { tier: 3, requestsPerMinute: 50 },
+  'chat.appendStream': { tier: 3, requestsPerMinute: 50 },
+  'chat.stopStream': { tier: 3, requestsPerMinute: 50 },
+  // conversations family additions
+  'conversations.create': { tier: 2, requestsPerMinute: 20 },
+  'conversations.join': { tier: 2, requestsPerMinute: 20 },
+  'conversations.leave': { tier: 2, requestsPerMinute: 20 },
+  'conversations.archive': { tier: 2, requestsPerMinute: 20 },
+  'conversations.unarchive': { tier: 2, requestsPerMinute: 20 },
+  'conversations.rename': { tier: 2, requestsPerMinute: 20 },
+  'conversations.invite': { tier: 3, requestsPerMinute: 50 },
+  'conversations.kick': { tier: 3, requestsPerMinute: 50 },
+  'conversations.open': { tier: 3, requestsPerMinute: 50 },
+  'conversations.close': { tier: 3, requestsPerMinute: 50 },
+  'conversations.mark': { tier: 3, requestsPerMinute: 50 },
+  'conversations.setPurpose': { tier: 2, requestsPerMinute: 20 },
+  'conversations.setTopic': { tier: 2, requestsPerMinute: 20 },
+  'conversations.members': { tier: 4, requestsPerMinute: 100 },
+  'conversations.replies': { tier: 3, requestsPerMinute: 50 },
+  // users family additions
+  'users.conversations': { tier: 3, requestsPerMinute: 50 },
+  'users.getPresence': { tier: 3, requestsPerMinute: 50 },
+  'users.lookupByEmail': { tier: 3, requestsPerMinute: 50 },
+  'users.profile.get': { tier: 4, requestsPerMinute: 100 },
+  'users.profile.set': { tier: 2, requestsPerMinute: 20 },
+  'users.setPresence': { tier: 2, requestsPerMinute: 20 },
+  'users.deletePhoto': { tier: 2, requestsPerMinute: 20 },
+  'users.setPhoto': { tier: 2, requestsPerMinute: 20 },
+  'users.identity': { tier: 3, requestsPerMinute: 50 },
+  // reactions family
+  'reactions.add': { tier: 3, requestsPerMinute: 50 },
+  'reactions.get': { tier: 3, requestsPerMinute: 50 },
+  'reactions.list': { tier: 2, requestsPerMinute: 20 },
+  'reactions.remove': { tier: 3, requestsPerMinute: 50 },
+  // pins family
+  'pins.add': { tier: 2, requestsPerMinute: 20 },
+  'pins.list': { tier: 2, requestsPerMinute: 20 },
+  'pins.remove': { tier: 2, requestsPerMinute: 20 },
+  // views family
+  'views.open': { tier: 4, requestsPerMinute: 100 },
+  'views.publish': { tier: 4, requestsPerMinute: 100 },
+  'views.push': { tier: 4, requestsPerMinute: 100 },
+  'views.update': { tier: 4, requestsPerMinute: 100 },
 };
 
 interface WindowEntry {
