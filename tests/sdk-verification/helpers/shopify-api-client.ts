@@ -28,7 +28,7 @@ import * as jose from 'jose';
 import { createHmac } from 'node:crypto';
 
 // Billing config type
-import type { BillingConfig } from '@shopify/shopify-api';
+import type { BillingConfig, ShopifyRestResources } from '@shopify/shopify-api';
 
 /**
  * Create a @shopify/shopify-api instance wired to the local Shopify twin.
@@ -37,15 +37,18 @@ import type { BillingConfig } from '@shopify/shopify-api';
  *   - Rewrites any *.myshopify.com host to the twin's base URL
  *   - Normalizes the API version segment to 2024-01 (the version the twin serves)
  *
- * @param options Optional overrides for billing, isEmbeddedApp, and scopes.
+ * @param options Optional overrides for billing, isEmbeddedApp, scopes, and restResources.
  *   - billing: required by Plan 16-04 (billing.request reads plan definitions from config.billing)
  *   - isEmbeddedApp: default false (webhooks/flow/fulfillment tests don't need embedded mode)
  *   - scopes: optional scope list for OAuth tests
+ *   - restResources: optional REST resource classes from @shopify/shopify-api/rest/admin/{version}
+ *     When provided, populates shopify.rest.* with resource classes configured against the twin.
  */
-export function createShopifyApiClient(options?: {
+export function createShopifyApiClient<Resources extends ShopifyRestResources = ShopifyRestResources>(options?: {
   billing?: BillingConfig;
   isEmbeddedApp?: boolean;
   scopes?: string[];
+  restResources?: Resources;
 }) {
   const twinBaseUrl = process.env.SHOPIFY_API_URL ?? 'http://127.0.0.1:9999';
   const twinUrl = new URL(twinBaseUrl);
@@ -78,6 +81,7 @@ export function createShopifyApiClient(options?: {
     },
     ...(options?.billing && { billing: options.billing }),
     ...(options?.scopes && { scopes: options.scopes }),
+    ...(options?.restResources && { restResources: options.restResources }),
   });
 }
 
