@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Completed 14-05-PLAN.md
-last_updated: "2026-03-09T17:27:58.347Z"
+stopped_at: Completed 15-01-PLAN.md
+last_updated: "2026-03-09T19:28:00Z"
 progress:
   total_phases: 8
   completed_phases: 2
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-**Phase:** Phase 14 — Verification Harness Foundation & Legacy Gap Merge (COMPLETE)
-**Plan:** Plan 05 of 5 complete
-**Status:** Phase 14 complete — all 5 plans done. Ready for Phase 15.
-**Progress:** [██████████] 100%
+**Phase:** Phase 15 — Shopify Admin Client Compatibility
+**Plan:** Plan 01 of 3 complete
+**Status:** Plan 15-01 complete — SHOP-08 AdminApiClient method coverage. Ready for Plan 15-02.
+**Progress:** [███░░░░░░░] 33%
 
 ## Performance Metrics
 
@@ -41,6 +41,11 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 15-01 Execution:**
+- Tests 4-6 (getHeaders/getApiUrl) use hardcoded tokens — client-side assertions that never call the twin; avoids unnecessary async setup
+- SDK deprecation stderr for apiVersion '2025-01' is expected — customFetchApi normalizes to /admin/api/2024-01/ in-flight; tests pass cleanly
+- fetch() raw body typed as { data: { products: unknown } } to avoid TypeScript any while keeping assertion minimal
 
 **2026-03-09 - Plan 14-03 Execution:**
 - Plans 01 and 02 infrastructure was complete: both SDK gateway test files passed immediately on first run without any implementation changes needed
@@ -288,9 +293,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 14 Plan 05 — Coverage ledger (32679 symbols, 3 live) and drift detection CI gate; Phase 14 complete
-**Stopped at:** Completed 14-05-PLAN.md
-**Timestamp:** 2026-03-09T17:33:00Z
+**Last completed:** Phase 15 Plan 01 — SHOP-08 AdminApiClient method coverage (7 tests: request, fetch, getHeaders, getApiUrl)
+**Stopped at:** Completed 15-01-PLAN.md
+**Timestamp:** 2026-03-09T19:28:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
