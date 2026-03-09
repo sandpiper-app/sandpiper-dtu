@@ -49,7 +49,7 @@ Plans:
   4. HMAC signature, async webhook timing, and UI structure checks run in the same verification command as the SDK suites
   5. Coverage reports show per-symbol ownership across generated and curated tests
   6. Basic drift detection validates that pinned submodule refs match installed package versions and generated manifests
-**Plans:** 3/5 plans executed
+**Plans:** 4/5 plans executed
 
 Plans:
 - [ ] 14-01-PLAN.md — Slack twin auth.test and api.test routes (authPlugin)
@@ -145,7 +145,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 13. Upstream SDK Mirrors & Surface Inventory | 3/3 | Complete    | 2026-03-09 |
-| 14. Verification Harness Foundation & Legacy Gap Merge | 3/5 | In Progress|  |
+| 14. Verification Harness Foundation & Legacy Gap Merge | 4/5 | In Progress|  |
 | 15. Shopify Admin Client Compatibility | 0/0 | Pending | — |
 | 16. Shopify `shopify-api` Platform Surface | 0/0 | Pending | — |
 | 17. Shopify Client Surfaces & Strategic REST Stubs | 0/0 | Pending | — |

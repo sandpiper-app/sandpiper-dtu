@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Completed 14-01-PLAN.md
-last_updated: "2026-03-09T16:56:40.588Z"
+stopped_at: Completed 14-04-PLAN.md
+last_updated: "2026-03-09T17:16:08.180Z"
 progress:
   total_phases: 8
   completed_phases: 1
   total_plans: 8
-  completed_plans: 5
-  percent: 92
+  completed_plans: 7
+  percent: 97
 ---
 
 # Project State: Sandpiper DTU
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 **Phase:** Phase 14 — Verification Harness Foundation & Legacy Gap Merge (IN PROGRESS)
-**Plan:** Plan 03 of 5 complete
-**Status:** Phase 14 in progress — 3 of 5 plans done
-**Progress:** [█████████░] 92%
+**Plan:** Plan 04 of 5 complete
+**Status:** Phase 14 in progress — 4 of 5 plans done
+**Progress:** [██████████] 97%
 
 ## Performance Metrics
 
@@ -51,6 +51,11 @@ progress:
 - auth.test assigned tier 1 (20/min) in SlackRateLimiter DEFAULT_RATE_TIERS — Slack docs place auth endpoints in tier 1; unknown methods skip rate limiting silently
 - bot_id 'B_BOT_TWIN' hardcoded constant in auth.ts — twin seeds are deterministic, dynamic lookup unnecessary
 - authPlugin registered before chatPlugin in buildApp() — auth.test is the gateway endpoint, logical first-in-group
+
+**2026-03-09 - Plan 14-04 Execution:**
+- singleFork:true chosen over fileParallelism:false for sdk-verification vitest config — runs all files in ONE worker process, sharing module instances and process.env; eliminates token-invalidation race where worker A's resetShopify wipes tokens seeded by worker B
+- orderCreate mutation requires totalPrice and currencyCode — twin's resolver validates both fields and returns userErrors when absent; plan's example mutation omitted them, causing silent webhook enqueueing failure
+- lineItems in twin use title/price/quantity (NOT variantId) — twin's LineItemInput schema differs from real Shopify SDK; productCreate only requires title
 
 **2026-03-09 - Plan 14-02 Execution:**
 - POST /admin/tokens added to Slack twin admin plugin: direct slackStateManager.createToken() produces deterministic token values; OAuth flow (/api/oauth.v2.access) returns dynamic tokens that would break auth.test lookups
@@ -278,9 +283,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 14 Plan 03 — Slack auth gateway tests (SLCK-06.5) and Shopify SDK wire-up test (INFRA-15)
-**Stopped at:** Completed 14-03-PLAN.md
-**Timestamp:** 2026-03-09T17:03:00Z
+**Last completed:** Phase 14 Plan 04 — HMAC, webhook timing, and UI structure legacy tests unified into sdk-verification
+**Stopped at:** Completed 14-04-PLAN.md
+**Timestamp:** 2026-03-09T17:16:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
