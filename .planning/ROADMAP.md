@@ -14,7 +14,7 @@
 - [x] **Phase 14: Verification Harness Foundation & Legacy Gap Merge** - Build the shared SDK verification workspace and absorb old manual verification coverage (completed 2026-03-09)
 - [x] **Phase 15: Shopify Admin Client Compatibility** - Make the Shopify twin satisfy `@shopify/admin-api-client` (completed 2026-03-09)
 - [x] **Phase 16: Shopify `shopify-api` Platform Surface** - Make auth, session, utils, webhooks, billing, flow, and fulfillment-service helpers work against the twin (completed 2026-03-09)
-- [ ] **Phase 17: Shopify Client Surfaces & Strategic REST Stubs** - Cover Shopify client surfaces and strategically stub deprecated REST resource classes
+- [x] **Phase 17: Shopify Client Surfaces & Strategic REST Stubs** - Cover Shopify client surfaces and strategically stub deprecated REST resource classes (completed 2026-03-09)
 - [ ] **Phase 18: Slack WebClient Full Surface** - Make the Slack twin satisfy the full pinned `@slack/web-api` surface
 - [ ] **Phase 19: Slack OAuth & Bolt HTTP Surface** - Make `@slack/oauth` and Bolt's HTTP/Express application surface work against the twin
 - [ ] **Phase 20: Bolt Alternate Receivers & Drift Automation** - Close Socket Mode/AWS receiver gaps and enforce long-term SDK drift detection
@@ -98,7 +98,7 @@ Plans:
   1. `shopify.clients.Graphql`, `Rest`, `Storefront`, and `graphqlProxy` work against the Shopify twin with the pinned package configuration
   2. Strategic REST resource classes (those still commonly used) have twin coverage for the methods they expose; deprecated REST resources are tracked in manifest but stubbed rather than fully implemented
   3. The Shopify twin exposes the endpoints, shapes, and state transitions required by the client surfaces without hidden manual allowlists
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] 17-01-PLAN.md — GraphqlClient + graphqlProxy tests (6 tests, SHOP-14)
@@ -156,7 +156,7 @@ Plans:
 | 14. Verification Harness Foundation & Legacy Gap Merge | 5/5 | Complete    | 2026-03-09 |
 | 15. Shopify Admin Client Compatibility | 3/3 | Complete    | 2026-03-09 |
 | 16. Shopify `shopify-api` Platform Surface | 4/4 | Complete    | 2026-03-09 |
-| 17. Shopify Client Surfaces & Strategic REST Stubs | 3/4 | In Progress|  |
+| 17. Shopify Client Surfaces & Strategic REST Stubs | 4/4 | Complete   | 2026-03-09 |
 | 18. Slack WebClient Full Surface | 0/0 | Pending | — |
 | 19. Slack OAuth & Bolt HTTP Surface | 0/0 | Pending | — |
 | 20. Bolt Alternate Receivers & Drift Automation | 0/0 | Pending | — |

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Completed 17-03-PLAN.md
-last_updated: "2026-03-09T22:29:01.254Z"
+stopped_at: Completed 17-04-PLAN.md
+last_updated: "2026-03-09T22:34:00.654Z"
 progress:
   total_phases: 8
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 19
-  completed_plans: 18
-  percent: 98
+  completed_plans: 19
+  percent: 100
 ---
 
 # Project State: Sandpiper DTU
@@ -29,7 +29,7 @@ progress:
 **Phase:** Phase 17 — Shopify Client Surfaces & Strategic REST Stubs
 **Plan:** Plan 01 complete — Plan 02 next
 **Status:** In Progress
-**Progress:** [██████████] 98%
+**Progress:** [██████████] 100%
 
 ## Performance Metrics
 
@@ -41,6 +41,11 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 17-04 Execution:**
+- StorefrontClient and REST resource classes (Product, Customer, etc.) absent from @shopify/shopify-api root manifest — ts-morph only captures symbols exported from package root; REST resources are at rest/admin/2024-01/ sub-path; SHOP-15 attributed via RestClient.get/post/put/delete
+- Phase 16 LIVE_SYMBOLS backfilled into generate-report.ts — Phase 16-04 executor had hand-edited coverage-report.json without updating the generator; restored generator-report parity
+- Shopify.billing promoted from stub to live in LIVE_SYMBOLS — generator only supports live|deferred (INFRA-12); billing test file has 3 passing tests against twin, live is accurate attribution
 
 **2026-03-09 - Plan 17-03 Execution:**
 - Storefront route rewrites URL to /admin/api/2024-01/graphql.json before yoga.fetch() — graphqlEndpoint must match for Yoga to route correctly; Fastify handles Storefront URL externally, rewrite is yoga-internal only
@@ -343,9 +348,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 17 Plan 03 — Storefront API twin endpoint + StorefrontClient tests (SHOP-14), 4 tests passing
-**Stopped at:** Completed 17-03-PLAN.md
-**Timestamp:** 2026-03-09T22:27:26Z
+**Last completed:** Phase 17 Plan 04 — Coverage ledger update: LIVE_SYMBOLS with Phase 16 backfill + Phase 17 client surfaces, 35 live symbols, drift:check passes, all 80 tests green
+**Stopped at:** Completed 17-04-PLAN.md
+**Timestamp:** 2026-03-09T22:38:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
