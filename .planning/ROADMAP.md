@@ -13,7 +13,7 @@
 - [x] **Phase 13: Upstream SDK Mirrors & Surface Inventory** - Freeze upstream source truth and generate public-surface manifests (completed 2026-03-09)
 - [x] **Phase 14: Verification Harness Foundation & Legacy Gap Merge** - Build the shared SDK verification workspace and absorb old manual verification coverage (completed 2026-03-09)
 - [x] **Phase 15: Shopify Admin Client Compatibility** - Make the Shopify twin satisfy `@shopify/admin-api-client` (completed 2026-03-09)
-- [ ] **Phase 16: Shopify `shopify-api` Platform Surface** - Make auth, session, utils, webhooks, billing, flow, and fulfillment-service helpers work against the twin
+- [x] **Phase 16: Shopify `shopify-api` Platform Surface** - Make auth, session, utils, webhooks, billing, flow, and fulfillment-service helpers work against the twin (completed 2026-03-09)
 - [ ] **Phase 17: Shopify Client Surfaces & Strategic REST Stubs** - Cover Shopify client surfaces and strategically stub deprecated REST resource classes
 - [ ] **Phase 18: Slack WebClient Full Surface** - Make the Slack twin satisfy the full pinned `@slack/web-api` surface
 - [ ] **Phase 19: Slack OAuth & Bolt HTTP Surface** - Make `@slack/oauth` and Bolt's HTTP/Express application surface work against the twin
@@ -82,7 +82,7 @@ Plans:
   2. Session and utility helpers create, decode, validate, and resolve twin-backed session data correctly
   3. Webhook, Flow, and fulfillment-service validation helpers accept valid twin-generated requests and reject invalid ones correctly
   4. Billing helpers can request, inspect, cancel, and mutate billing state against the Shopify twin _(lower priority — can be stubbed initially)_
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] 16-01-PLAN.md — shopify-api-client.ts helper factory (setAbstractFetchFunc + mintSessionToken + computeShopifyHmac) + shopify-api-webhooks.test.ts (SHOP-12, 7 tests)
@@ -152,7 +152,7 @@ Plans:
 | 13. Upstream SDK Mirrors & Surface Inventory | 3/3 | Complete    | 2026-03-09 |
 | 14. Verification Harness Foundation & Legacy Gap Merge | 5/5 | Complete    | 2026-03-09 |
 | 15. Shopify Admin Client Compatibility | 3/3 | Complete    | 2026-03-09 |
-| 16. Shopify `shopify-api` Platform Surface | 3/4 | In Progress|  |
+| 16. Shopify `shopify-api` Platform Surface | 4/4 | Complete   | 2026-03-09 |
 | 17. Shopify Client Surfaces & Strategic REST Stubs | 0/0 | Pending | — |
 | 18. Slack WebClient Full Surface | 0/0 | Pending | — |
 | 19. Slack OAuth & Bolt HTTP Surface | 0/0 | Pending | — |

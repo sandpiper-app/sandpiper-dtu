@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Completed 16-02-PLAN.md
-last_updated: "2026-03-09T21:00:00Z"
+stopped_at: Completed 16-04-PLAN.md
+last_updated: "2026-03-09T21:10:58.265Z"
 progress:
   total_phases: 8
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 15
-  completed_plans: 14
-  percent: 98
+  completed_plans: 15
+  percent: 100
 ---
 
 # Project State: Sandpiper DTU
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 **Phase:** Phase 16 — Shopify shopify-api Platform Surface
-**Plan:** Plan 03 of 5 complete
-**Status:** Plan 16-03 complete — SHOP-10 auth helper tests (7 tests): tokenExchange, refreshToken, clientCredentials live twin calls; begin mock adapter redirect test; callback begin→callback OAuth round-trip; embedded URL helpers.
-**Progress:** [██████████] 98%
+**Plan:** Plan 04 of 5 complete (Phase 16 complete)
+**Status:** Plan 16-04 complete — SHOP-13 billing stubs: appSubscriptionCreate/cancel/currentAppInstallation twin resolvers; 3 billing tests (request/check/cancel); coverage ledger updated for all Phase 16 symbols.
+**Progress:** [██████████] 100%
 
 ## Performance Metrics
 
@@ -41,6 +41,13 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 16-04 Execution:**
+- AppPricingDetails interface uses 'interval: String' as shared field — __typename is invalid SDL (built-in meta-field cannot be declared as interface field); both AppRecurringPricing and AppUsagePricing implement via interval
+- Decimal scalar added to MoneyInput.amount: SDK sends amount as Number (10.0), not String; custom scalar parses both numeric and string input
+- Rate limiter max 1000→2000: billing.check HAS_PAYMENTS_QUERY uses oneTimePurchases(first:250) which costs ~1004 points under conservative twin model; real Shopify charges for actual items returned
+- billing.check returns boolean by default (returnObject not set); twin returns empty activeSubscriptions so hasActivePayment is false on clean state
+- billing.cancel returns AppSubscription directly (unwrapped from appSubscriptionCancel.appSubscription)
 
 **2026-03-09 - Plan 16-03 Execution:**
 - computeCallbackHmac uses hex format (not base64) — validateHmac() in SDK calls createSHA256HMAC with HashFormat.Hex for OAuth callback query params; computeShopifyHmac uses base64 (webhooks only)
@@ -322,9 +329,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 16 Plan 03 — SHOP-10 auth helper tests (7 tests): tokenExchange, refreshToken, clientCredentials live twin; begin mock adapter; callback begin→callback round-trip; embedded URL helpers
-**Stopped at:** Completed 16-03-PLAN.md
-**Timestamp:** 2026-03-09T20:59:00Z
+**Last completed:** Phase 16 Plan 04 — SHOP-13 billing stubs: twin billing resolvers (appSubscriptionCreate, appPurchaseOneTimeCreate, appSubscriptionCancel, currentAppInstallation); 3 billing tests; coverage ledger updated for all Phase 16 symbols (24 total tests green)
+**Stopped at:** Completed 16-04-PLAN.md
+**Timestamp:** 2026-03-09T21:12:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
