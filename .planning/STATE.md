@@ -3,33 +3,33 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: executing
-stopped_at: Completed 13-02-PLAN.md
-last_updated: "2026-03-09T05:23:33.790Z"
+stopped_at: Completed 13-03-PLAN.md
+last_updated: "2026-03-09T06:21:22.624Z"
 progress:
   total_phases: 8
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 2
-  percent: 97
+  completed_plans: 3
+  percent: 100
 ---
 
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-09
-**Status:** Executing Phase 13
+**Status:** Phase 13 Complete
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 13 executing — Plans 01-02 complete, Plan 03 pending.
+**Current Focus:** Phase 13 complete — all 3 plans executed. Ready for Phase 14 (SDK Verification Harness).
 
 ## Current Position
 
-**Phase:** Phase 13 — Upstream SDK Mirrors & Surface Inventory
-**Plan:** 01-02 complete, 03 next
-**Status:** Executing Phase 13
-**Progress:** [██████████] 97%
+**Phase:** Phase 13 — Upstream SDK Mirrors & Surface Inventory (COMPLETE)
+**Plan:** All 3 plans complete
+**Status:** Phase 13 complete, ready for Phase 14
+**Progress:** [██████████] 100%
 
 ## Performance Metrics
 
@@ -41,6 +41,11 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 13-03 Execution:**
+- bolt-js has no git tags for releases — SHA manually identified by user from commit message; no tag-based lookup possible for bolt-js version pinning
+- Monorepo submodule SHA sharing: @shopify/admin-api-client and @shopify/shopify-api both pin to the same shopify-app-js SHA; @slack/web-api and @slack/oauth both pin to the same node-slack-sdk SHA
+- Fork URLs used in .gitmodules (sandpiper-app org), upstream remotes configured inside each submodule for drift tracking; sdk-pins.json is the atomic version lock linking npm versions to submodule commits
 
 **2026-03-09 - Plan 13-02 Execution:**
 - getType().getBaseTypes() used instead of getBaseClasses() for ts-morph class traversal — ClassDeclaration nodes from re-exported symbols lack getBaseClasses(); Type API works universally
@@ -258,9 +263,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 13 Plan 02 — SDK inventory generator and five manifest files
-**Stopped at:** Completed 13-02-PLAN.md
-**Timestamp:** 2026-03-09T05:36:00Z
+**Last completed:** Phase 13 Plan 03 — Three SDK submodules with version-pinned SHAs and sdk-pins.json
+**Stopped at:** Completed 13-03-PLAN.md
+**Timestamp:** 2026-03-09T06:27:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*

@@ -10,7 +10,7 @@
 
 ## Phases
 
-- [ ] **Phase 13: Upstream SDK Mirrors & Surface Inventory** - Freeze upstream source truth and generate public-surface manifests
+- [x] **Phase 13: Upstream SDK Mirrors & Surface Inventory** - Freeze upstream source truth and generate public-surface manifests (completed 2026-03-09)
 - [ ] **Phase 14: Verification Harness Foundation & Legacy Gap Merge** - Build the shared SDK verification workspace and absorb old manual verification coverage
 - [ ] **Phase 15: Shopify Admin Client Compatibility** - Make the Shopify twin satisfy `@shopify/admin-api-client`
 - [ ] **Phase 16: Shopify `shopify-api` Platform Surface** - Make auth, session, utils, webhooks, billing, flow, and fulfillment-service helpers work against the twin
@@ -31,7 +31,7 @@
   3. Generated manifests record every public symbol and method from the pinned packages with stable IDs suitable for coverage tracking
   4. Manifest diffs clearly show added or removed surface when a ref or package version changes
   5. SDK packages are installed at workspace root, not per-twin; Vitest aligns to ^3.0.0 across workspace
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [ ] 13-01-PLAN.md — Workspace config and CI submodule checkout (vitest.config.ts, twin Vitest alignment, conformance.yml + e2e.yml)
@@ -140,7 +140,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 13. Upstream SDK Mirrors & Surface Inventory | 2/3 | In Progress|  |
+| 13. Upstream SDK Mirrors & Surface Inventory | 3/3 | Complete   | 2026-03-09 |
 | 14. Verification Harness Foundation & Legacy Gap Merge | 0/0 | Pending | — |
 | 15. Shopify Admin Client Compatibility | 0/0 | Pending | — |
 | 16. Shopify `shopify-api` Platform Surface | 0/0 | Pending | — |
