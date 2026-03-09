@@ -231,9 +231,20 @@ None.
 
 ### Notes
 
-**Research context available:** Comprehensive v1.1 research completed from cloned upstream SDK source. Summary and phase implications are in `.planning/research/SUMMARY.md`.
+**Research context available:** Comprehensive v1.1 research completed from cloned upstream SDK source. Summary and phase implications are in `.planning/research/SUMMARY.md`. Independent research review (2026-03-08) validated and refined requirements and roadmap.
 
 **Milestone note:** v1.1 intentionally expands beyond the current Sandpiper-used subset and treats the official SDK package surface as the compatibility contract.
+
+**2026-03-08 - Independent Research Review findings incorporated:**
+- Added SLCK-06.5 (`auth.test`/`api.test` gateway), INFRA-15 (live endpoint URL redirection), INFRA-16 (ts-morph for manifest generation)
+- SHOP-15 rescoped: strategic REST stubs instead of full resource coverage (Shopify April 2025 REST deprecation)
+- SHOP-13 (billing) noted as lower priority — auth+session+webhooks are the core of Phase 16
+- Phase 14 now includes `auth.test` gateway, `customFetchApi`/`slackApiUrl` URL redirection patterns, and basic drift detection
+- Phase 17 renamed to "Shopify Client Surfaces & Strategic REST Stubs"
+- Phase 18 adds method family tiering: Tier 1 (~60 methods full coverage), Tier 2 (stubbed), Tier 3 (deferred)
+- Phase 20 clarified: Socket Mode uses ws.Server broker, Lambda uses direct function invocation (zero AWS deps)
+- Tool choices validated: ts-morph@25.0.1 for export enumeration, SDK packages at workspace root, Vitest ^3.0.0 across workspace
+- v2 INFRA requirements renumbered (INFRA-15/16 became INFRA-17/18) to accommodate new v1.1 requirements
 
 ## Session Continuity
 
