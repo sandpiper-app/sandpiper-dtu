@@ -98,7 +98,7 @@ Plans:
   1. `shopify.clients.Graphql`, `Rest`, `Storefront`, and `graphqlProxy` work against the Shopify twin with the pinned package configuration
   2. Strategic REST resource classes (those still commonly used) have twin coverage for the methods they expose; deprecated REST resources are tracked in manifest but stubbed rather than fully implemented
   3. The Shopify twin exposes the endpoints, shapes, and state transitions required by the client surfaces without hidden manual allowlists
-**Plans:** 1/4 plans executed
+**Plans:** 2/4 plans executed
 
 Plans:
 - [ ] 17-01-PLAN.md — GraphqlClient + graphqlProxy tests (6 tests, SHOP-14)
@@ -156,7 +156,7 @@ Plans:
 | 14. Verification Harness Foundation & Legacy Gap Merge | 5/5 | Complete    | 2026-03-09 |
 | 15. Shopify Admin Client Compatibility | 3/3 | Complete    | 2026-03-09 |
 | 16. Shopify `shopify-api` Platform Surface | 4/4 | Complete    | 2026-03-09 |
-| 17. Shopify Client Surfaces & Strategic REST Stubs | 1/4 | In Progress|  |
+| 17. Shopify Client Surfaces & Strategic REST Stubs | 2/4 | In Progress|  |
 | 18. Slack WebClient Full Surface | 0/0 | Pending | — |
 | 19. Slack OAuth & Bolt HTTP Surface | 0/0 | Pending | — |
 | 20. Bolt Alternate Receivers & Drift Automation | 0/0 | Pending | — |

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Completed 17-01-PLAN.md
-last_updated: "2026-03-09T22:21:20.327Z"
+stopped_at: Completed 17-02-PLAN.md
+last_updated: "2026-03-09T18:22:55Z"
 progress:
   total_phases: 8
   completed_phases: 4
   total_plans: 19
-  completed_plans: 16
-  percent: 94
+  completed_plans: 18
+  percent: 97
 ---
 
 # Project State: Sandpiper DTU
@@ -29,7 +29,7 @@ progress:
 **Phase:** Phase 17 — Shopify Client Surfaces & Strategic REST Stubs
 **Plan:** Plan 01 complete — Plan 02 next
 **Status:** In Progress
-**Progress:** [█████████░] 94%
+**Progress:** [██████████] 96%
 
 ## Performance Metrics
 
@@ -41,6 +41,11 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 17-02 Execution:**
+- shopify.rest.* resource classes require restResources passed to shopifyApi() — createShopifyApiClient gains generic restResources option; callers import { restResources } from @shopify/shopify-api/rest/admin/2024-01
+- result.pageInfo always populated by SDK with query params even without Link header; nextPageUrl is the correct nil-safe assertion for RestClient pagination tests
+- listOrders() exists in StateManager — orders REST route is state-backed, not a stub
 
 **2026-03-09 - Plan 17-01 Execution:**
 - query() in SDK v12.x throws FeatureDeprecatedError (hard-removed via logger.deprecated() version compare >= 12.0.0); backward-compat test must assert throws, not body
@@ -333,9 +338,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 17 Plan 01 — 9-test GraphqlClient + graphqlProxy suite, SHOP-14 verified
-**Stopped at:** Completed 17-01-PLAN.md
-**Timestamp:** 2026-03-09T22:20:28Z
+**Last completed:** Phase 17 Plan 02 — 10-test RestClient + REST resource class suite (SHOP-14/15), twin REST plugin extended with 14 new routes
+**Stopped at:** Completed 17-02-PLAN.md
+**Timestamp:** 2026-03-09T18:22:55Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
