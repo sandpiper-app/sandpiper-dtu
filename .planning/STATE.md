@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: official-sdk-conformance
 status: planning
-stopped_at: Started milestone v1.1 requirements
-last_updated: "2026-03-09T00:46:00Z"
+stopped_at: Created roadmap for milestone v1.1
+last_updated: "2026-03-09T01:06:45Z"
 progress:
-  total_phases: 0
+  total_phases: 8
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -16,19 +16,19 @@ progress:
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-09
-**Status:** Defining requirements
+**Status:** Ready to plan
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.1 kickoff — official Shopify and Slack SDKs become the fidelity boundary for the twins.
+**Current Focus:** Phase 13 pending — upstream SDK mirrors, submodule layout, and source-derived surface inventory.
 
 ## Current Position
 
-**Phase:** Not started (roadmap will resume at Phase 13)
+**Phase:** Phase 13 — Upstream SDK Mirrors & Surface Inventory
 **Plan:** -
-**Status:** Defining requirements for milestone v1.1
+**Status:** Ready to plan Phase 13
 **Progress:** [░░░░░░░░░░] 0%
 
 ## Performance Metrics
@@ -41,6 +41,12 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Milestone v1.1 Roadmap Creation:**
+- 8 phases derived from cloned upstream SDK source and literal package scope
+- Phase 14 absorbs the old manual-verification work into the shared SDK harness
+- Shopify work is split into low-level client, platform helper, and REST resource waves
+- Slack work is split into WebClient, OAuth/Bolt HTTP, and alternate receiver/drift waves
 
 **2026-03-09 - Milestone v1.1 Start:**
 - Use cloned upstream SDK repos as source of truth for planning; vendor repo-owned fork submodules during implementation
@@ -231,9 +237,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Milestone v1.0 execution and follow-up polish
-**Stopped at:** Started milestone v1.1 requirements
-**Timestamp:** 2026-03-09T00:46:00Z
+**Last completed:** Milestone initialization for v1.1 Official SDK Conformance
+**Stopped at:** Created roadmap for milestone v1.1
+**Timestamp:** 2026-03-09T01:06:45Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
