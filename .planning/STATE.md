@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Completed 15-01-PLAN.md
-last_updated: "2026-03-09T19:25:52.378Z"
+stopped_at: Completed 15-03-PLAN.md
+last_updated: "2026-03-09T19:37:19.337Z"
 progress:
   total_phases: 8
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 11
-  completed_plans: 10
-  percent: 98
+  completed_plans: 11
+  percent: 100
 ---
 
 # Project State: Sandpiper DTU
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 **Phase:** Phase 15 — Shopify Admin Client Compatibility
-**Plan:** Plan 02 of 5 complete
-**Status:** Plan 15-02 complete — REST plugin (5 routes) and createRestClient() helper built. Ready for Plan 15-03.
-**Progress:** [██████████] 98%
+**Plan:** Plan 03 of 5 complete
+**Status:** Plan 15-03 complete — REST SDK tests (8 tests, all verbs), coverage ledger updated (10 live symbols). SHOP-08 and SHOP-09 satisfied.
+**Progress:** [██████████] 100%
 
 ## Performance Metrics
 
@@ -41,6 +41,11 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 15-03 Execution:**
+- AdminApiClient.request/fetch/getHeaders/getApiUrl LIVE_SYMBOLS entries are no-ops — TypeAliasDeclaration has no emitted members in manifest; only AdminApiClient top-level and REST class members are trackable
+- addContentTypeParser added to REST plugin scope: Fastify v5 returns 400 for DELETE with Content-Type:application/json and empty body; explicit parser with empty-body guard fixes this
+- Live symbol count is 10 not 14 (plan expected): 4 AdminApiClient method members absent from manifest as TypeAlias — all trackable symbols correctly attributed, drift:check passes
 
 **2026-03-09 - Plan 15-02 Execution:**
 - restPlugin NOT wrapped in fastify-plugin — stateManager already decorated on parent scope, no cross-plugin sharing needed
@@ -298,9 +303,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 15 Plan 02 — REST plugin (5 routes, token auth) and createRestClient() test helper
-**Stopped at:** Completed 15-02-PLAN.md
-**Timestamp:** 2026-03-09T19:25:08Z
+**Last completed:** Phase 15 Plan 03 — AdminRestApiClient 8-test REST suite; coverage ledger updated to 10 live symbols; SHOP-08 and SHOP-09 complete
+**Stopped at:** Completed 15-03-PLAN.md
+**Timestamp:** 2026-03-09T19:36:11Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*

@@ -12,7 +12,7 @@
 
 - [x] **Phase 13: Upstream SDK Mirrors & Surface Inventory** - Freeze upstream source truth and generate public-surface manifests (completed 2026-03-09)
 - [x] **Phase 14: Verification Harness Foundation & Legacy Gap Merge** - Build the shared SDK verification workspace and absorb old manual verification coverage (completed 2026-03-09)
-- [ ] **Phase 15: Shopify Admin Client Compatibility** - Make the Shopify twin satisfy `@shopify/admin-api-client`
+- [x] **Phase 15: Shopify Admin Client Compatibility** - Make the Shopify twin satisfy `@shopify/admin-api-client` (completed 2026-03-09)
 - [ ] **Phase 16: Shopify `shopify-api` Platform Surface** - Make auth, session, utils, webhooks, billing, flow, and fulfillment-service helpers work against the twin
 - [ ] **Phase 17: Shopify Client Surfaces & Strategic REST Stubs** - Cover Shopify client surfaces and strategically stub deprecated REST resource classes
 - [ ] **Phase 18: Slack WebClient Full Surface** - Make the Slack twin satisfy the full pinned `@slack/web-api` surface
@@ -66,7 +66,7 @@ Plans:
   1. `createAdminApiClient()` request, fetch, getHeaders, and getApiUrl behaviors pass against the Shopify twin for pinned and per-request API versions
   2. `createAdminRestApiClient()` get, post, put, and delete behaviors pass against the Shopify twin with correct headers, search params, payload encoding, and retry semantics
   3. Twin-side auth, versioning, and error semantics match what the low-level Shopify clients expect
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [ ] 15-01-PLAN.md — GraphQL client method tests (request, fetch, getHeaders, getApiUrl) for SHOP-08
@@ -148,7 +148,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 13. Upstream SDK Mirrors & Surface Inventory | 3/3 | Complete    | 2026-03-09 |
 | 14. Verification Harness Foundation & Legacy Gap Merge | 5/5 | Complete    | 2026-03-09 |
-| 15. Shopify Admin Client Compatibility | 2/3 | In Progress|  |
+| 15. Shopify Admin Client Compatibility | 3/3 | Complete   | 2026-03-09 |
 | 16. Shopify `shopify-api` Platform Surface | 0/0 | Pending | — |
 | 17. Shopify Client Surfaces & Strategic REST Stubs | 0/0 | Pending | — |
 | 18. Slack WebClient Full Surface | 0/0 | Pending | — |
