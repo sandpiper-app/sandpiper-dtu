@@ -39,7 +39,7 @@ created: 2026-03-09
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
 | 14-01-01 | 01 | 1 | SLCK-06.5 | live | `npx vitest run twins/slack --reporter=verbose` | ❌ W0 | ⬜ pending |
-| 14-01-02 | 01 | 1 | SLCK-06.5 | integration | `node -e "import('./twins/slack/src/index.js').then(...)"` (in-process smoke) | ❌ W0 | ⬜ pending |
+| 14-01-02 | 01 | 1 | SLCK-06.5 | integration | `npx tsx -e "..."` (in-process smoke) | ❌ W0 | ⬜ pending |
 | 14-02-01 | 02 | 1 | INFRA-13, INFRA-15 | setup | `npx vitest list --project sdk-verification` | ❌ W0 | ⬜ pending |
 | 14-02-02 | 02 | 1 | INFRA-13, INFRA-15 | setup | `node -e "const p = JSON.parse(...); console.assert(p.scripts['test:sdk'])"` | ❌ W0 | ⬜ pending |
 | 14-03-01 | 03 | 2 | SLCK-06.5 | live | `pnpm test:sdk -- tests/sdk-verification/sdk/slack-auth-gateway.test.ts` | ❌ W0 | ⬜ pending |
