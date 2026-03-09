@@ -20,7 +20,7 @@ const root = join(__dirname, '../../..');
 const manifestsDir = join(root, 'tools/sdk-surface/manifests');
 const outputPath = join(__dirname, 'coverage-report.json');
 
-// Phase 14 live symbol attributions.
+// Phase 14+ live symbol attributions.
 // Key format: "{packageName}@{version}/{symbolPath}"
 // Update this map as new SDK tests are added in Phases 15-20.
 const LIVE_SYMBOLS: Record<string, string> = {
@@ -31,6 +31,19 @@ const LIVE_SYMBOLS: Record<string, string> = {
   // NOTE: AdminApiClient is a TypeAlias in the manifest (no members).
   // The actual tested symbol is createAdminApiClient — the factory function called in tests.
   '@shopify/admin-api-client@1.1.1/createAdminApiClient': 'sdk/shopify-client-wire.test.ts',
+  // Phase 15: SHOP-08 GraphQL client methods — shopify-admin-graphql-client.test.ts
+  '@shopify/admin-api-client@1.1.1/AdminApiClient': 'sdk/shopify-admin-graphql-client.test.ts',
+  '@shopify/admin-api-client@1.1.1/AdminApiClient.request': 'sdk/shopify-admin-graphql-client.test.ts',
+  '@shopify/admin-api-client@1.1.1/AdminApiClient.fetch': 'sdk/shopify-admin-graphql-client.test.ts',
+  '@shopify/admin-api-client@1.1.1/AdminApiClient.getHeaders': 'sdk/shopify-admin-graphql-client.test.ts',
+  '@shopify/admin-api-client@1.1.1/AdminApiClient.getApiUrl': 'sdk/shopify-admin-graphql-client.test.ts',
+  // Phase 15: SHOP-09 REST client methods — shopify-admin-rest-client.test.ts
+  '@shopify/admin-api-client@1.1.1/createAdminRestApiClient': 'sdk/shopify-admin-rest-client.test.ts',
+  '@shopify/admin-api-client@1.1.1/AdminRestApiClient': 'sdk/shopify-admin-rest-client.test.ts',
+  '@shopify/admin-api-client@1.1.1/AdminRestApiClient.get': 'sdk/shopify-admin-rest-client.test.ts',
+  '@shopify/admin-api-client@1.1.1/AdminRestApiClient.post': 'sdk/shopify-admin-rest-client.test.ts',
+  '@shopify/admin-api-client@1.1.1/AdminRestApiClient.put': 'sdk/shopify-admin-rest-client.test.ts',
+  '@shopify/admin-api-client@1.1.1/AdminRestApiClient.delete': 'sdk/shopify-admin-rest-client.test.ts',
 };
 
 interface ManifestSymbol {
@@ -83,8 +96,8 @@ for (const file of manifestFiles) {
 const report = {
   $schema: 'https://sandpiper.dev/schemas/coverage-report.json',
   generatedAt: new Date().toISOString(),
-  phase: '14',
-  note: 'Phase 14: tracking established. All symbols declared live or deferred. CI gate: no null tiers allowed.',
+  phase: '15',
+  note: 'Phase 15: @shopify/admin-api-client GraphQL and REST client methods attributed. All symbols declared live or deferred.',
   packages,
   summary: { live: totalLive, stub: 0, deferred: totalDeferred },
 };
