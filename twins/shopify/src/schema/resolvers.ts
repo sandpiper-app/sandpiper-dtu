@@ -178,8 +178,27 @@ function paginate<T extends { id: number }>(
   return { edges, pageInfo };
 }
 
+// URL scalar — pass-through (accepts and returns URL strings as-is)
+const URLScalar = new GraphQLScalarType({
+  name: 'URL',
+  description: 'URL custom scalar type (string URL)',
+  serialize(value: unknown): string {
+    if (typeof value === 'string') return value;
+    throw new Error('URL must be a string');
+  },
+  parseValue(value: unknown): string {
+    if (typeof value === 'string') return value;
+    throw new Error('URL input must be a string');
+  },
+  parseLiteral(ast): string {
+    if (ast.kind === Kind.STRING) return ast.value;
+    throw new Error('URL literal must be a string');
+  },
+});
+
 export const resolvers = {
   DateTime: DateTimeScalar,
+  URL: URLScalar,
 
   // Query resolvers
   QueryRoot: {
@@ -252,6 +271,17 @@ export const resolvers = {
       const gid = createGID('InventoryItem', id);
       const item = context.stateManager.getInventoryItemByGid(gid);
       return item ?? null;
+    },
+
+    currentAppInstallation: (_: unknown, _args: unknown, context: Context) => {
+      requireAuth(context);
+      return {
+        activeSubscriptions: [],
+        oneTimePurchases: {
+          edges: [],
+          pageInfo: { hasNextPage: false, endCursor: null },
+        },
+      };
     },
   },
 
@@ -679,6 +709,59 @@ export const resolvers = {
       });
       const updated = context.stateManager.getInventoryItem(itemId);
       return { inventoryItem: updated, userErrors: [] };
+    },
+
+    appSubscriptionCreate: (_: unknown, _args: unknown, context: Context) => {
+      requireAuth(context);
+      return {
+        appSubscription: {
+          id: 'gid://shopify/AppSubscription/1',
+          name: 'Test Plan',
+          status: 'PENDING',
+          test: true,
+          returnUrl: 'https://test-app.example.com/billing/confirm',
+          currentPeriodEnd: null,
+          trialDays: 0,
+          lineItems: [],
+          createdAt: new Date().toISOString(),
+        },
+        confirmationUrl: 'https://dev.myshopify.com/admin/charges/1/confirm_recurring',
+        userErrors: [],
+      };
+    },
+
+    appPurchaseOneTimeCreate: (_: unknown, _args: unknown, context: Context) => {
+      requireAuth(context);
+      return {
+        appPurchaseOneTime: {
+          id: 'gid://shopify/AppPurchaseOneTime/1',
+          name: 'One Time Purchase',
+          status: 'PENDING',
+          test: true,
+          price: { amount: '10.00', currencyCode: 'USD' },
+          createdAt: new Date().toISOString(),
+        },
+        confirmationUrl: 'https://dev.myshopify.com/admin/charges/1/confirm',
+        userErrors: [],
+      };
+    },
+
+    appSubscriptionCancel: (_: unknown, args: { id: string }, context: Context) => {
+      requireAuth(context);
+      return {
+        appSubscription: {
+          id: args.id,
+          name: 'Test Plan',
+          status: 'CANCELLED',
+          test: true,
+          returnUrl: 'https://test-app.example.com/billing/confirm',
+          currentPeriodEnd: null,
+          trialDays: 0,
+          lineItems: [],
+          createdAt: new Date().toISOString(),
+        },
+        userErrors: [],
+      };
     },
 
     webhookSubscriptionCreate: async (

@@ -2,6 +2,11 @@
 # Matches Shopify's actual schema structure for implemented resources
 
 scalar DateTime
+scalar URL
+
+# Billing enums
+enum AppSubscriptionReplacementBehavior { APPLY_IMMEDIATELY APPLY_ON_NEXT_BILLING_CYCLE STANDARD }
+enum AppPurchaseOneTimeSortKeys { CREATED_AT ID RELEVANCE }
 
 # Money types matching Shopify's structure
 type MoneyV2 {
@@ -154,6 +159,131 @@ type UserError {
   message: String!
 }
 
+# Billing types — matches APP_SUBSCRIPTION_FRAGMENT inline fragment pattern
+interface AppPricingDetails {
+  __typename: String
+}
+
+type AppRecurringPricing implements AppPricingDetails {
+  __typename: String
+  price: MoneyV2!
+  interval: String!
+  discount: AppSubscriptionDiscount
+}
+
+type AppUsagePricing implements AppPricingDetails {
+  __typename: String
+  balanceUsed: MoneyV2!
+  cappedAmount: MoneyV2!
+  terms: String!
+}
+
+type AppSubscriptionDiscount {
+  durationLimitInIntervals: Int
+  remainingDurationInIntervals: Int
+  priceAfterDiscount: MoneyV2
+  value: AppSubscriptionDiscountValue
+}
+
+union AppSubscriptionDiscountValue = AppSubscriptionDiscountAmount | AppSubscriptionDiscountPercentage
+
+type AppSubscriptionDiscountAmount {
+  amount: MoneyV2!
+}
+
+type AppSubscriptionDiscountPercentage {
+  percentage: Float!
+}
+
+type AppSubscriptionLineItem {
+  id: ID!
+  plan: AppSubscriptionLinePlan!
+}
+
+type AppSubscriptionLinePlan {
+  pricingDetails: AppPricingDetails!
+}
+
+type AppSubscription {
+  id: ID!
+  name: String!
+  test: Boolean!
+  status: String!
+  trialDays: Int!
+  createdAt: String!
+  currentPeriodEnd: String
+  returnUrl: URL!
+  lineItems: [AppSubscriptionLineItem!]!
+}
+
+type AppSubscriptionCreatePayload {
+  appSubscription: AppSubscription
+  confirmationUrl: String
+  userErrors: [UserError!]!
+}
+
+type AppPurchaseOneTime {
+  id: ID!
+  name: String!
+  test: Boolean!
+  status: String!
+  price: MoneyV2!
+  createdAt: String!
+}
+
+type AppPurchaseOneTimeCreatePayload {
+  appPurchaseOneTime: AppPurchaseOneTime
+  confirmationUrl: String
+  userErrors: [UserError!]!
+}
+
+type AppSubscriptionCancelPayload {
+  appSubscription: AppSubscription
+  userErrors: [UserError!]!
+}
+
+type AppPurchaseOneTimeEdge {
+  node: AppPurchaseOneTime!
+}
+
+type AppPurchaseOneTimeConnection {
+  edges: [AppPurchaseOneTimeEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AppInstallation {
+  activeSubscriptions: [AppSubscription!]!
+  oneTimePurchases(first: Int, sortKey: AppPurchaseOneTimeSortKeys, after: String): AppPurchaseOneTimeConnection!
+}
+
+# Billing input types
+input AppSubscriptionLineItemInput { plan: AppSubscriptionLineItemPlanInput! }
+input AppSubscriptionLineItemPlanInput {
+  appRecurringPricingDetails: AppRecurringPricingInput
+  appUsagePricingDetails: AppUsagePricingInput
+}
+input AppRecurringPricingInput {
+  interval: String!
+  price: MoneyInput!
+  discount: AppSubscriptionDiscountInput
+}
+input AppUsagePricingInput {
+  terms: String!
+  cappedAmount: MoneyInput!
+}
+input AppSubscriptionDiscountInput {
+  durationLimitInIntervals: Int
+  value: AppSubscriptionDiscountValueInput
+}
+input AppSubscriptionDiscountValueInput {
+  amount: Float
+  percentage: Float
+}
+input MoneyInput {
+  amount: String!
+  currencyCode: String!
+}
+
 # Input types for mutations
 input LineItemInput {
   title: String!
@@ -281,6 +411,7 @@ type QueryRoot {
   customer(id: ID!): Customer
   inventoryItems(first: Int = 10, after: String, last: Int, before: String): InventoryItemConnection!
   inventoryItem(id: ID!): InventoryItem
+  currentAppInstallation: AppInstallation!
 }
 
 # Mutation root
@@ -294,6 +425,9 @@ type MutationType {
   customerCreate(input: CustomerInput!): CustomerCreatePayload!
   inventoryItemUpdate(input: InventoryItemUpdateInput!): InventoryItemUpdatePayload!
   webhookSubscriptionCreate(topic: String!, webhookSubscription: WebhookSubscriptionInput!): WebhookSubscriptionCreatePayload!
+  appSubscriptionCreate(name: String!, returnUrl: URL!, lineItems: [AppSubscriptionLineItemInput!]!, test: Boolean, trialDays: Int, replacementBehavior: AppSubscriptionReplacementBehavior): AppSubscriptionCreatePayload!
+  appPurchaseOneTimeCreate(name: String!, price: MoneyInput!, returnUrl: URL!, test: Boolean): AppPurchaseOneTimeCreatePayload!
+  appSubscriptionCancel(id: ID!, prorate: Boolean): AppSubscriptionCancelPayload!
 }
 
 # Schema declaration
