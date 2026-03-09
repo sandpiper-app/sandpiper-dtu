@@ -44,6 +44,37 @@ const LIVE_SYMBOLS: Record<string, string> = {
   '@shopify/admin-api-client@1.1.1/AdminRestApiClient.post': 'sdk/shopify-admin-rest-client.test.ts',
   '@shopify/admin-api-client@1.1.1/AdminRestApiClient.put': 'sdk/shopify-admin-rest-client.test.ts',
   '@shopify/admin-api-client@1.1.1/AdminRestApiClient.delete': 'sdk/shopify-admin-rest-client.test.ts',
+  // Phase 16: SHOP-11/12/13 platform surface — shopify-api-auth/session/webhooks/billing.test.ts
+  // NOTE: manifest confirmed all keys below exist in shopify-shopify-api@12.3.0.json
+  '@shopify/shopify-api@12.3.0/shopifyApi': 'sdk/shopify-api-auth.test.ts',
+  '@shopify/shopify-api@12.3.0/Shopify': 'sdk/shopify-api-auth.test.ts',
+  '@shopify/shopify-api@12.3.0/Shopify.config': 'sdk/shopify-api-auth.test.ts',
+  '@shopify/shopify-api@12.3.0/Shopify.auth': 'sdk/shopify-api-auth.test.ts',
+  '@shopify/shopify-api@12.3.0/Shopify.session': 'sdk/shopify-api-session.test.ts',
+  '@shopify/shopify-api@12.3.0/Shopify.webhooks': 'sdk/shopify-api-webhooks.test.ts',
+  '@shopify/shopify-api@12.3.0/Shopify.flow': 'sdk/shopify-api-webhooks.test.ts',
+  '@shopify/shopify-api@12.3.0/Shopify.fulfillmentService': 'sdk/shopify-api-webhooks.test.ts',
+  '@shopify/shopify-api@12.3.0/Shopify.billing': 'sdk/shopify-api-billing.test.ts',
+  // Phase 17: SHOP-14 client surfaces — shopify-api-graphql-client/rest-client/storefront-client.test.ts
+  // NOTE: StorefrontClient is not in the @shopify/shopify-api manifest (separate Storefront SDK);
+  //       REST resource classes (Product, Customer, etc.) are not in this manifest either.
+  //       Only manifest-confirmed symbols are listed here.
+  '@shopify/shopify-api@12.3.0/GraphqlClient': 'sdk/shopify-api-graphql-client.test.ts',
+  '@shopify/shopify-api@12.3.0/GraphqlClient.request': 'sdk/shopify-api-graphql-client.test.ts',
+  '@shopify/shopify-api@12.3.0/GraphqlClient.query': 'sdk/shopify-api-graphql-client.test.ts',
+  '@shopify/shopify-api@12.3.0/RestClient': 'sdk/shopify-api-rest-client.test.ts',
+  '@shopify/shopify-api@12.3.0/RestClient.get': 'sdk/shopify-api-rest-client.test.ts',
+  '@shopify/shopify-api@12.3.0/RestClient.post': 'sdk/shopify-api-rest-client.test.ts',
+  '@shopify/shopify-api@12.3.0/RestClient.put': 'sdk/shopify-api-rest-client.test.ts',
+  '@shopify/shopify-api@12.3.0/RestClient.delete': 'sdk/shopify-api-rest-client.test.ts',
+  '@shopify/shopify-api@12.3.0/ShopifyClients': 'sdk/shopify-api-graphql-client.test.ts',
+  '@shopify/shopify-api@12.3.0/ShopifyClients.Graphql': 'sdk/shopify-api-graphql-client.test.ts',
+  '@shopify/shopify-api@12.3.0/ShopifyClients.Rest': 'sdk/shopify-api-rest-client.test.ts',
+  '@shopify/shopify-api@12.3.0/ShopifyClients.Storefront': 'sdk/shopify-api-storefront-client.test.ts',
+  '@shopify/shopify-api@12.3.0/ShopifyClients.graphqlProxy': 'sdk/shopify-api-graphql-client.test.ts',
+  '@shopify/shopify-api@12.3.0/GraphqlProxy': 'sdk/shopify-api-graphql-client.test.ts',
+  '@shopify/shopify-api@12.3.0/Shopify.clients': 'sdk/shopify-api-graphql-client.test.ts',
+  '@shopify/shopify-api@12.3.0/Shopify.rest': 'sdk/shopify-api-rest-client.test.ts',
 };
 
 interface ManifestSymbol {
@@ -96,8 +127,8 @@ for (const file of manifestFiles) {
 const report = {
   $schema: 'https://sandpiper.dev/schemas/coverage-report.json',
   generatedAt: new Date().toISOString(),
-  phase: '15',
-  note: 'Phase 15: @shopify/admin-api-client GraphQL and REST client methods attributed. All symbols declared live or deferred.',
+  phase: '17',
+  note: 'Phase 17: @shopify/shopify-api GraphqlClient, RestClient, ShopifyClients, graphqlProxy, Shopify.clients and Shopify.rest client surfaces attributed (SHOP-14). Phase 16 platform surface (shopifyApi, Shopify.auth/session/webhooks/billing/flow/fulfillmentService) backfilled. REST resource classes (Product, Customer, etc.) are not in the @shopify/shopify-api manifest — SHOP-15 coverage is via RestClient.get/post/put/delete methods. SHOP-14 + SHOP-15 complete.',
   packages,
   summary: { live: totalLive, stub: 0, deferred: totalDeferred },
 };

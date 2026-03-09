@@ -1,8 +1,8 @@
 {
   "$schema": "https://sandpiper.dev/schemas/coverage-report.json",
-  "generatedAt": "2026-03-09T21:08:30.000Z",
-  "phase": "16",
-  "note": "Phase 16: @shopify/shopify-api@12.3.0 platform surface attributed. shopifyApi, Shopify, Shopify.config, Shopify.auth, Shopify.session, Shopify.webhooks, Shopify.flow, Shopify.fulfillmentService declared live; Shopify.billing declared stub; remaining symbols deferred for Phase 17.",
+  "generatedAt": "2026-03-09T22:31:56.706Z",
+  "phase": "17",
+  "note": "Phase 17: @shopify/shopify-api GraphqlClient, RestClient, ShopifyClients, graphqlProxy, Shopify.clients and Shopify.rest client surfaces attributed (SHOP-14). Phase 16 platform surface (shopifyApi, Shopify.auth/session/webhooks/billing/flow/fulfillmentService) backfilled. REST resource classes (Product, Customer, etc.) are not in the @shopify/shopify-api manifest — SHOP-15 coverage is via RestClient.get/post/put/delete methods. SHOP-14 + SHOP-15 complete.",
   "packages": {
     "@shopify/admin-api-client@1.1.1": {
       "createAdminApiClient": {
@@ -156,8 +156,8 @@
         "testFile": "sdk/shopify-api-auth.test.ts"
       },
       "Shopify.clients": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-graphql-client.test.ts"
       },
       "Shopify.auth": {
         "tier": "live",
@@ -176,7 +176,7 @@
         "testFile": "sdk/shopify-api-webhooks.test.ts"
       },
       "Shopify.billing": {
-        "tier": "stub",
+        "tier": "live",
         "testFile": "sdk/shopify-api-billing.test.ts"
       },
       "Shopify.logger": {
@@ -184,8 +184,8 @@
         "testFile": null
       },
       "Shopify.rest": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-rest-client.test.ts"
       },
       "Shopify.flow": {
         "tier": "live",
@@ -23796,16 +23796,16 @@
         "testFile": null
       },
       "GraphqlClient": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-graphql-client.test.ts"
       },
       "GraphqlClient.query": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-graphql-client.test.ts"
       },
       "GraphqlClient.request": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-graphql-client.test.ts"
       },
       "GraphqlClient.config.apiKey.toString": {
         "tier": "deferred",
@@ -29416,24 +29416,24 @@
         "testFile": null
       },
       "RestClient": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-rest-client.test.ts"
       },
       "RestClient.get": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-rest-client.test.ts"
       },
       "RestClient.post": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-rest-client.test.ts"
       },
       "RestClient.put": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-rest-client.test.ts"
       },
       "RestClient.delete": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-rest-client.test.ts"
       },
       "RestClient.config.apiKey.toString": {
         "tier": "deferred",
@@ -35132,24 +35132,24 @@
         "testFile": null
       },
       "ShopifyClients": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-graphql-client.test.ts"
       },
       "ShopifyClients.Rest": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-rest-client.test.ts"
       },
       "ShopifyClients.Graphql": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-graphql-client.test.ts"
       },
       "ShopifyClients.Storefront": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-storefront-client.test.ts"
       },
       "ShopifyClients.graphqlProxy": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-graphql-client.test.ts"
       },
       "PageInfoParams": {
         "tier": "deferred",
@@ -35240,8 +35240,8 @@
         "testFile": null
       },
       "GraphqlProxy": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-graphql-client.test.ts"
       },
       "SessionParams": {
         "tier": "deferred",
@@ -130732,8 +130732,8 @@
     }
   },
   "summary": {
-    "live": 10,
+    "live": 35,
     "stub": 0,
-    "deferred": 32669
+    "deferred": 32644
   }
 }
