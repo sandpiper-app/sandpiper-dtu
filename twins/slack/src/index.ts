@@ -21,6 +21,7 @@ import healthPlugin from './plugins/health.js';
 import oauthPlugin from './plugins/oauth.js';
 import adminPlugin from './plugins/admin.js';
 import { slackErrorsPlugin } from './plugins/errors.js';
+import authPlugin from './plugins/web-api/auth.js';
 import chatPlugin from './plugins/web-api/chat.js';
 import conversationsPlugin from './plugins/web-api/conversations.js';
 import usersPlugin from './plugins/web-api/users.js';
@@ -116,6 +117,7 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
   await fastify.register(oauthPlugin);
   await fastify.register(adminPlugin);
   await fastify.register(slackErrorsPlugin);
+  await fastify.register(authPlugin);
   await fastify.register(chatPlugin);
   await fastify.register(conversationsPlugin);
   await fastify.register(usersPlugin);
