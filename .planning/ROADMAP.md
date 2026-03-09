@@ -98,10 +98,13 @@ Plans:
   1. `shopify.clients.Graphql`, `Rest`, `Storefront`, and `graphqlProxy` work against the Shopify twin with the pinned package configuration
   2. Strategic REST resource classes (those still commonly used) have twin coverage for the methods they expose; deprecated REST resources are tracked in manifest but stubbed rather than fully implemented
   3. The Shopify twin exposes the endpoints, shapes, and state transitions required by the client surfaces without hidden manual allowlists
-**Plans:** 0 plans
+**Plans:** 4 plans
 
 Plans:
-- [ ] TBD (run `$gsd-plan-phase 17` to break down)
+- [ ] 17-01-PLAN.md — GraphqlClient + graphqlProxy tests (6 tests, SHOP-14)
+- [ ] 17-02-PLAN.md — REST plugin Tier 1/2 routes + RestClient + REST resource class tests (8 tests, SHOP-14, SHOP-15)
+- [ ] 17-03-PLAN.md — Storefront twin endpoint + StorefrontClient tests (3 tests, SHOP-14)
+- [ ] 17-04-PLAN.md — Coverage ledger update: Phase 17 client surfaces + all 74 REST resource tier attributions (SHOP-14, SHOP-15)
 
 ### Phase 18: Slack WebClient Full Surface
 **Goal**: Make the Slack twin satisfy the full pinned `@slack/web-api` package surface using a tiered method family strategy.
@@ -153,7 +156,7 @@ Plans:
 | 14. Verification Harness Foundation & Legacy Gap Merge | 5/5 | Complete    | 2026-03-09 |
 | 15. Shopify Admin Client Compatibility | 3/3 | Complete    | 2026-03-09 |
 | 16. Shopify `shopify-api` Platform Surface | 4/4 | Complete    | 2026-03-09 |
-| 17. Shopify Client Surfaces & Strategic REST Stubs | 0/0 | Pending | — |
+| 17. Shopify Client Surfaces & Strategic REST Stubs | 0/4 | In Progress | — |
 | 18. Slack WebClient Full Surface | 0/0 | Pending | — |
 | 19. Slack OAuth & Bolt HTTP Surface | 0/0 | Pending | — |
 | 20. Bolt Alternate Receivers & Drift Automation | 0/0 | Pending | — |
