@@ -1,7 +1,7 @@
 {
   "package": "@slack/oauth",
   "version": "3.0.4",
-  "generatedAt": "2026-03-09T05:21:34.498Z",
+  "generatedAt": "2026-03-09T05:22:05.220Z",
   "symbolCount": 34,
   "minimumExpectedSymbols": 10,
   "symbols": {

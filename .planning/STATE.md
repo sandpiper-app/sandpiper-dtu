@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: executing
-stopped_at: Completed 13-01-PLAN.md
-last_updated: "2026-03-09T05:14:55.101Z"
+stopped_at: Completed 13-02-PLAN.md
+last_updated: "2026-03-09T05:23:33.790Z"
 progress:
   total_phases: 8
   completed_phases: 0
   total_plans: 3
-  completed_plans: 1
-  percent: 94
+  completed_plans: 2
+  percent: 97
 ---
 
 # Project State: Sandpiper DTU
@@ -22,14 +22,14 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 13 executing — Plan 01 complete, Plans 02-03 pending.
+**Current Focus:** Phase 13 executing — Plans 01-02 complete, Plan 03 pending.
 
 ## Current Position
 
 **Phase:** Phase 13 — Upstream SDK Mirrors & Surface Inventory
-**Plan:** 01 complete, 02 next
+**Plan:** 01-02 complete, 03 next
 **Status:** Executing Phase 13
-**Progress:** [█████████░] 94%
+**Progress:** [██████████] 97%
 
 ## Performance Metrics
 
@@ -41,6 +41,11 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 13-02 Execution:**
+- getType().getBaseTypes() used instead of getBaseClasses() for ts-morph class traversal — ClassDeclaration nodes from re-exported symbols lack getBaseClasses(); Type API works universally
+- readFileSync on package.json instead of require.resolve('./package.json') for Shopify packages — exports field blocks subpath resolution; direct file read bypasses the guard cleanly
+- WebClient members captured as dot-notation paths (admin.analytics.getFile) via recursive collectMembersFromType() — yields 392 traceable method paths covering all 275 Slack API methods
 
 **2026-03-09 - Plan 13-01 Execution:**
 - tests/* added to vitest.config.ts projects array before Phase 14 to avoid config-change commit interleaved with submodule setup
@@ -253,9 +258,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 13 Plan 01 — Workspace & CI preparation for SDK mirrors
-**Stopped at:** Completed 13-01-PLAN.md
-**Timestamp:** 2026-03-09T05:16:00Z
+**Last completed:** Phase 13 Plan 02 — SDK inventory generator and five manifest files
+**Stopped at:** Completed 13-02-PLAN.md
+**Timestamp:** 2026-03-09T05:36:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*

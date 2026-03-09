@@ -15,7 +15,7 @@ Requirements for milestone `v1.1 Official SDK Conformance`. Each maps to one roa
 - [ ] **INFRA-13**: Developer can run one verification command that executes SDK conformance, HMAC signature, async webhook timing, and UI structure checks together
 - [ ] **INFRA-14**: CI can detect upstream drift by comparing pinned submodule refs, installed package versions, and generated manifests on milestone updates
 - [ ] **INFRA-15**: SDK verification tests hit live local HTTP/WebSocket endpoints using official SDK URL redirection mechanisms (`customFetchApi` for Shopify, `slackApiUrl` for Slack), not mocked transports
-- [ ] **INFRA-16**: Manifest generation uses `ts-morph` (v25.0.1+) for reliable export enumeration rather than raw TypeScript compiler API
+- [x] **INFRA-16**: Manifest generation uses `ts-morph` (v25.0.1+) for reliable export enumeration rather than raw TypeScript compiler API
 
 ### Shopify SDK Coverage
 
@@ -75,7 +75,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFRA-13 | Phase 14 | Pending |
 | INFRA-14 | Phase 14, 20 | Pending |
 | INFRA-15 | Phase 14 | Pending |
-| INFRA-16 | Phase 13 | Pending |
+| INFRA-16 | Phase 13 | Complete |
 | SHOP-08 | Phase 15 | Pending |
 | SHOP-09 | Phase 15 | Pending |
 | SHOP-10 | Phase 16 | Pending |
