@@ -20,7 +20,7 @@ Requirements for milestone `v1.1 Official SDK Conformance`. Each maps to one roa
 ### Shopify SDK Coverage
 
 - [x] **SHOP-08**: Developer can use `@shopify/admin-api-client` GraphQL client methods (`request`, `fetch`, `getHeaders`, `getApiUrl`) against the Shopify twin across pinned and per-request API versions
-- [ ] **SHOP-09**: Developer can use `@shopify/admin-api-client` generic REST client methods (`get`, `post`, `put`, `delete`) against the Shopify twin with supported headers, search params, payloads, and retry behavior
+- [x] **SHOP-09**: Developer can use `@shopify/admin-api-client` generic REST client methods (`get`, `post`, `put`, `delete`) against the Shopify twin with supported headers, search params, payloads, and retry behavior
 - [ ] **SHOP-10**: Developer can use `@shopify/shopify-api` auth helpers (`begin`, `callback`, `tokenExchange`, `refreshToken`, `clientCredentials`, and embedded URL helpers) against the Shopify twin
 - [ ] **SHOP-11**: Developer can use `@shopify/shopify-api` session and utility helpers to create, decode, validate, and resolve Shopify session data for twin-backed requests
 - [ ] **SHOP-12**: Developer can use `@shopify/shopify-api` webhook, Flow, and fulfillment-service validation helpers with twin-generated requests and signatures
@@ -77,7 +77,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFRA-15 | Phase 14 | Complete |
 | INFRA-16 | Phase 13 | Complete |
 | SHOP-08 | Phase 15 | Complete |
-| SHOP-09 | Phase 15 | Pending |
+| SHOP-09 | Phase 15 | Complete |
 | SHOP-10 | Phase 16 | Pending |
 | SHOP-11 | Phase 16 | Pending |
 | SHOP-12 | Phase 16 | Pending |
