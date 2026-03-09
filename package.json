@@ -10,9 +10,17 @@
     "clean": "pnpm -r run clean && rm -rf node_modules"
   },
   "devDependencies": {
+    "@shopify/admin-api-client": "1.1.1",
+    "@shopify/shopify-api": "12.3.0",
+    "@slack/bolt": "4.6.0",
+    "@slack/oauth": "3.0.4",
+    "@slack/web-api": "7.14.1",
+    "@types/node": "^22.13.0",
+    "@types/ws": "^8.18.1",
+    "ts-morph": "25.0.1",
     "typescript": "^5.7.3",
     "vitest": "^3.0.0",
-    "@types/node": "^22.13.0"
+    "ws": "^8.19.0"
   },
   "engines": {
     "node": ">=20.0.0",
