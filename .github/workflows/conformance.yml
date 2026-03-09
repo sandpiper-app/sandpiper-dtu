@@ -72,6 +72,42 @@ jobs:
       - name: Run Slack twin conformance suite
         run: pnpm --filter @dtu/twin-slack run conformance:twin
 
+  sdk-verification:
+    name: SDK Verification (INFRA-12, INFRA-14)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Verify submodule initialization
+        run: |
+          git submodule status | grep "^-" && \
+            echo "ERROR: Uninitialized submodules detected" && exit 1 || \
+            echo "All submodules initialized"
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Run SDK verification suite (pnpm test:sdk)
+        run: pnpm test:sdk
+
+      - name: Run SDK drift check (pnpm drift:check)
+        run: pnpm drift:check
+
   conformance-live:
     name: Shopify Live Conformance (scheduled only)
     if: github.event_name == 'schedule'
