@@ -61,8 +61,11 @@ export function createShopifyApiClient<Resources extends ShopifyRestResources = 
       /https?:\/\/[^/]+\.myshopify\.com/,
       `${twinUrl.protocol}//${twinUrl.host}`
     );
-    // Normalize API version segment to the one the twin serves
-    const normalized = hostRewritten.replace(/\/admin\/api\/[^/]+\//, '/admin/api/2024-01/');
+    // Normalize Admin API version segment to the one the twin serves
+    // Also normalize Storefront API version segment (/api/{version}/graphql.json)
+    const normalized = hostRewritten
+      .replace(/\/admin\/api\/[^/]+\//, '/admin/api/2024-01/')
+      .replace(/\/api\/[^/]+\/graphql\.json/, '/api/2024-01/graphql.json');
     return fetch(normalized, init);
   });
 
