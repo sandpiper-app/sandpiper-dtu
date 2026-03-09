@@ -13,6 +13,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Verify submodule initialization
+        run: |
+          git submodule status | grep "^-" && \
+            echo "ERROR: Uninitialized submodules detected" && exit 1 || \
+            echo "All submodules initialized"
 
       - name: Build and start twin stack
         run: docker compose -f docker-compose.twin.yml up -d --build --wait

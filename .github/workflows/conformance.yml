@@ -13,6 +13,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Verify submodule initialization
+        run: |
+          git submodule status | grep "^-" && \
+            echo "ERROR: Uninitialized submodules detected" && exit 1 || \
+            echo "All submodules initialized"
 
       - uses: pnpm/action-setup@v4
         with:
@@ -37,6 +46,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Verify submodule initialization
+        run: |
+          git submodule status | grep "^-" && \
+            echo "ERROR: Uninitialized submodules detected" && exit 1 || \
+            echo "All submodules initialized"
 
       - uses: pnpm/action-setup@v4
 
@@ -60,6 +78,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Verify submodule initialization
+        run: |
+          git submodule status | grep "^-" && \
+            echo "ERROR: Uninitialized submodules detected" && exit 1 || \
+            echo "All submodules initialized"
 
       - uses: pnpm/action-setup@v4
         with:
@@ -88,6 +115,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Verify submodule initialization
+        run: |
+          git submodule status | grep "^-" && \
+            echo "ERROR: Uninitialized submodules detected" && exit 1 || \
+            echo "All submodules initialized"
 
       - uses: pnpm/action-setup@v4
         with:
