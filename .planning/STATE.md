@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Completed 17-02-PLAN.md
-last_updated: "2026-03-09T18:22:55Z"
+stopped_at: Completed 17-03-PLAN.md
+last_updated: "2026-03-09T22:29:01.254Z"
 progress:
   total_phases: 8
   completed_phases: 4
   total_plans: 19
   completed_plans: 18
-  percent: 97
+  percent: 98
 ---
 
 # Project State: Sandpiper DTU
@@ -29,7 +29,7 @@ progress:
 **Phase:** Phase 17 — Shopify Client Surfaces & Strategic REST Stubs
 **Plan:** Plan 01 complete — Plan 02 next
 **Status:** In Progress
-**Progress:** [██████████] 96%
+**Progress:** [██████████] 98%
 
 ## Performance Metrics
 
@@ -41,6 +41,11 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 17-03 Execution:**
+- Storefront route rewrites URL to /admin/api/2024-01/graphql.json before yoga.fetch() — graphqlEndpoint must match for Yoga to route correctly; Fastify handles Storefront URL externally, rewrite is yoga-internal only
+- shop resolver does not call requireAuth() — Storefront auth enforced at Fastify route handler level (Shopify-Storefront-Private-Token check); Admin API uses per-resolver requireAuth() with x-shopify-access-token
+- Two-step URL normalization: admin path replace first, then storefront /api/{version}/graphql.json replace — ordering prevents double-processing of admin paths
 
 **2026-03-09 - Plan 17-02 Execution:**
 - shopify.rest.* resource classes require restResources passed to shopifyApi() — createShopifyApiClient gains generic restResources option; callers import { restResources } from @shopify/shopify-api/rest/admin/2024-01
@@ -338,9 +343,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 17 Plan 02 — 10-test RestClient + REST resource class suite (SHOP-14/15), twin REST plugin extended with 14 new routes
-**Stopped at:** Completed 17-02-PLAN.md
-**Timestamp:** 2026-03-09T18:22:55Z
+**Last completed:** Phase 17 Plan 03 — Storefront API twin endpoint + StorefrontClient tests (SHOP-14), 4 tests passing
+**Stopped at:** Completed 17-03-PLAN.md
+**Timestamp:** 2026-03-09T22:27:26Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
