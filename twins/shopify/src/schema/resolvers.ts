@@ -178,6 +178,29 @@ function paginate<T extends { id: number }>(
   return { edges, pageInfo };
 }
 
+// Decimal scalar — accepts both numeric and string values for money amounts.
+// The SDK sends amount as a number (e.g., 10.0) but MoneyInput.amount needs to
+// accept it. Serializes to string for consistent output (matching MoneyV2.amount).
+const DecimalScalar = new GraphQLScalarType({
+  name: 'Decimal',
+  description: 'Decimal scalar — accepts numeric or string money amount values',
+  serialize(value: unknown): string {
+    if (typeof value === 'number') return String(value);
+    if (typeof value === 'string') return value;
+    throw new Error('Decimal must be a number or string');
+  },
+  parseValue(value: unknown): string {
+    if (typeof value === 'number') return String(value);
+    if (typeof value === 'string') return value;
+    throw new Error('Decimal input must be a number or string');
+  },
+  parseLiteral(ast): string {
+    if (ast.kind === Kind.FLOAT || ast.kind === Kind.INT) return ast.value;
+    if (ast.kind === Kind.STRING) return ast.value;
+    throw new Error('Decimal literal must be a number or string');
+  },
+});
+
 // URL scalar — pass-through (accepts and returns URL strings as-is)
 const URLScalar = new GraphQLScalarType({
   name: 'URL',
@@ -199,6 +222,7 @@ const URLScalar = new GraphQLScalarType({
 export const resolvers = {
   DateTime: DateTimeScalar,
   URL: URLScalar,
+  Decimal: DecimalScalar,
 
   // Query resolvers
   QueryRoot: {
@@ -806,6 +830,22 @@ export const resolvers = {
         },
         userErrors: [],
       };
+    },
+  },
+
+  // Abstract type resolvers for billing (required by makeExecutableSchema)
+  AppPricingDetails: {
+    __resolveType(obj: Record<string, unknown>): string {
+      if ('price' in obj && 'interval' in obj) return 'AppRecurringPricing';
+      if ('balanceUsed' in obj || 'cappedAmount' in obj) return 'AppUsagePricing';
+      return 'AppRecurringPricing'; // default fallback
+    },
+  },
+
+  AppSubscriptionDiscountValue: {
+    __resolveType(obj: Record<string, unknown>): string {
+      if ('percentage' in obj) return 'AppSubscriptionDiscountPercentage';
+      return 'AppSubscriptionDiscountAmount';
     },
   },
 

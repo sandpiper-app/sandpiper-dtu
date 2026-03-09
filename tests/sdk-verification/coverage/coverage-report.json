@@ -1,8 +1,8 @@
 {
   "$schema": "https://sandpiper.dev/schemas/coverage-report.json",
-  "generatedAt": "2026-03-09T19:35:10.591Z",
-  "phase": "15",
-  "note": "Phase 15: @shopify/admin-api-client GraphQL and REST client methods attributed. All symbols declared live or deferred.",
+  "generatedAt": "2026-03-09T21:08:30.000Z",
+  "phase": "16",
+  "note": "Phase 16: @shopify/shopify-api@12.3.0 platform surface attributed. shopifyApi, Shopify, Shopify.config, Shopify.auth, Shopify.session, Shopify.webhooks, Shopify.flow, Shopify.fulfillmentService declared live; Shopify.billing declared stub; remaining symbols deferred for Phase 17.",
   "packages": {
     "@shopify/admin-api-client@1.1.1": {
       "createAdminApiClient": {
@@ -144,40 +144,40 @@
     },
     "@shopify/shopify-api@12.3.0": {
       "shopifyApi": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-auth.test.ts"
       },
       "Shopify": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-auth.test.ts"
       },
       "Shopify.config": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-auth.test.ts"
       },
       "Shopify.clients": {
         "tier": "deferred",
         "testFile": null
       },
       "Shopify.auth": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-auth.test.ts"
       },
       "Shopify.session": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-session.test.ts"
       },
       "Shopify.utils": {
         "tier": "deferred",
         "testFile": null
       },
       "Shopify.webhooks": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-webhooks.test.ts"
       },
       "Shopify.billing": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "stub",
+        "testFile": "sdk/shopify-api-billing.test.ts"
       },
       "Shopify.logger": {
         "tier": "deferred",
@@ -188,12 +188,12 @@
         "testFile": null
       },
       "Shopify.flow": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-webhooks.test.ts"
       },
       "Shopify.fulfillmentService": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/shopify-api-webhooks.test.ts"
       },
       "ShopifyError": {
         "tier": "deferred",
