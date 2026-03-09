@@ -11,7 +11,7 @@
 ## Phases
 
 - [x] **Phase 13: Upstream SDK Mirrors & Surface Inventory** - Freeze upstream source truth and generate public-surface manifests (completed 2026-03-09)
-- [ ] **Phase 14: Verification Harness Foundation & Legacy Gap Merge** - Build the shared SDK verification workspace and absorb old manual verification coverage
+- [x] **Phase 14: Verification Harness Foundation & Legacy Gap Merge** - Build the shared SDK verification workspace and absorb old manual verification coverage (completed 2026-03-09)
 - [ ] **Phase 15: Shopify Admin Client Compatibility** - Make the Shopify twin satisfy `@shopify/admin-api-client`
 - [ ] **Phase 16: Shopify `shopify-api` Platform Surface** - Make auth, session, utils, webhooks, billing, flow, and fulfillment-service helpers work against the twin
 - [ ] **Phase 17: Shopify Client Surfaces & Strategic REST Stubs** - Cover Shopify client surfaces and strategically stub deprecated REST resource classes
@@ -49,7 +49,7 @@ Plans:
   4. HMAC signature, async webhook timing, and UI structure checks run in the same verification command as the SDK suites
   5. Coverage reports show per-symbol ownership across generated and curated tests
   6. Basic drift detection validates that pinned submodule refs match installed package versions and generated manifests
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 - [ ] 14-01-PLAN.md — Slack twin auth.test and api.test routes (authPlugin)
@@ -145,7 +145,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 13. Upstream SDK Mirrors & Surface Inventory | 3/3 | Complete    | 2026-03-09 |
-| 14. Verification Harness Foundation & Legacy Gap Merge | 4/5 | In Progress|  |
+| 14. Verification Harness Foundation & Legacy Gap Merge | 5/5 | Complete   | 2026-03-09 |
 | 15. Shopify Admin Client Compatibility | 0/0 | Pending | — |
 | 16. Shopify `shopify-api` Platform Surface | 0/0 | Pending | — |
 | 17. Shopify Client Surfaces & Strategic REST Stubs | 0/0 | Pending | — |

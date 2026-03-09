@@ -11,9 +11,9 @@ Requirements for milestone `v1.1 Official SDK Conformance`. Each maps to one roa
 
 - [x] **INFRA-10**: Developer can check out repo-owned fork submodules of the targeted upstream SDK repos under `third_party/upstream/`, with each submodule pinned to a recorded commit and package version
 - [x] **INFRA-11**: Developer can run a manifest generator that inventories every public export and method in the targeted packages and writes a checked-in coverage ledger
-- [ ] **INFRA-12**: Developer can see, for each inventoried symbol, whether it is verified by a live twin test or a local-only utility test, and CI fails if any `v1.1` symbol lacks declared coverage
+- [x] **INFRA-12**: Developer can see, for each inventoried symbol, whether it is verified by a live twin test or a local-only utility test, and CI fails if any `v1.1` symbol lacks declared coverage
 - [x] **INFRA-13**: Developer can run one verification command that executes SDK conformance, HMAC signature, async webhook timing, and UI structure checks together
-- [ ] **INFRA-14**: CI can detect upstream drift by comparing pinned submodule refs, installed package versions, and generated manifests on milestone updates
+- [x] **INFRA-14**: CI can detect upstream drift by comparing pinned submodule refs, installed package versions, and generated manifests on milestone updates
 - [x] **INFRA-15**: SDK verification tests hit live local HTTP/WebSocket endpoints using official SDK URL redirection mechanisms (`customFetchApi` for Shopify, `slackApiUrl` for Slack), not mocked transports
 - [x] **INFRA-16**: Manifest generation uses `ts-morph` (v25.0.1+) for reliable export enumeration rather than raw TypeScript compiler API
 
@@ -71,9 +71,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | INFRA-10 | Phase 13 | Complete |
 | INFRA-11 | Phase 13 | Complete |
-| INFRA-12 | Phase 14 | Pending |
+| INFRA-12 | Phase 14 | Complete |
 | INFRA-13 | Phase 14 | Complete |
-| INFRA-14 | Phase 14, 20 | Pending |
+| INFRA-14 | Phase 14, 20 | Complete |
 | INFRA-15 | Phase 14 | Complete |
 | INFRA-16 | Phase 13 | Complete |
 | SHOP-08 | Phase 15 | Pending |

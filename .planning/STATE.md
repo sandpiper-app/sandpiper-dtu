@@ -2,21 +2,21 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
-status: planning
-stopped_at: Completed 14-04-PLAN.md
-last_updated: "2026-03-09T17:16:08.180Z"
+status: completed
+stopped_at: Completed 14-05-PLAN.md
+last_updated: "2026-03-09T17:24:04.727Z"
 progress:
   total_phases: 8
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 8
-  completed_plans: 7
-  percent: 97
+  completed_plans: 8
+  percent: 100
 ---
 
 # Project State: Sandpiper DTU
 
-**Last Updated:** 2026-03-09T17:03:00Z
-**Status:** Ready to plan
+**Last Updated:** 2026-03-09T17:33:00Z
+**Status:** Phase 14 complete — all 5 plans done. Ready for Phase 15.
 
 ## Project Reference
 
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-**Phase:** Phase 14 — Verification Harness Foundation & Legacy Gap Merge (IN PROGRESS)
-**Plan:** Plan 04 of 5 complete
-**Status:** Phase 14 in progress — 4 of 5 plans done
-**Progress:** [██████████] 97%
+**Phase:** Phase 14 — Verification Harness Foundation & Legacy Gap Merge (COMPLETE)
+**Plan:** Plan 05 of 5 complete
+**Status:** Phase 14 complete — all 5 plans done. Ready for Phase 15.
+**Progress:** [██████████] 100%
 
 ## Performance Metrics
 
@@ -51,6 +51,11 @@ progress:
 - auth.test assigned tier 1 (20/min) in SlackRateLimiter DEFAULT_RATE_TIERS — Slack docs place auth endpoints in tier 1; unknown methods skip rate limiting silently
 - bot_id 'B_BOT_TWIN' hardcoded constant in auth.ts — twin seeds are deterministic, dynamic lookup unnecessary
 - authPlugin registered before chatPlugin in buildApp() — auth.test is the gateway endpoint, logical first-in-group
+
+**2026-03-09 - Plan 14-05 Execution:**
+- coverage/ gitignored by root .gitignore — force-added generate-report.ts and coverage-report.json with git add -f; a future plan should add !tests/sdk-verification/coverage/ negation to .gitignore
+- LIVE_SYMBOLS map uses pkgName@version/symbolPath key format — versioned keys force explicit re-attribution when package versions change; prevents silent attribution drift
+- Submodule path in sdk-pins.json is full relative path (third_party/upstream/...) not just the submodule name — check-drift.ts uses join(root, pin.submodule) directly
 
 **2026-03-09 - Plan 14-04 Execution:**
 - singleFork:true chosen over fileParallelism:false for sdk-verification vitest config — runs all files in ONE worker process, sharing module instances and process.env; eliminates token-invalidation race where worker A's resetShopify wipes tokens seeded by worker B
@@ -283,9 +288,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 14 Plan 04 — HMAC, webhook timing, and UI structure legacy tests unified into sdk-verification
-**Stopped at:** Completed 14-04-PLAN.md
-**Timestamp:** 2026-03-09T17:16:00Z
+**Last completed:** Phase 14 Plan 05 — Coverage ledger (32679 symbols, 3 live) and drift detection CI gate; Phase 14 complete
+**Stopped at:** Completed 14-05-PLAN.md
+**Timestamp:** 2026-03-09T17:33:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
