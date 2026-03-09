@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
-status: completed
+status: planning
 stopped_at: Completed 14-05-PLAN.md
-last_updated: "2026-03-09T17:24:04.727Z"
+last_updated: "2026-03-09T17:27:58.347Z"
 progress:
   total_phases: 8
   completed_phases: 2
@@ -16,7 +16,7 @@ progress:
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-09T17:33:00Z
-**Status:** Phase 14 complete — all 5 plans done. Ready for Phase 15.
+**Status:** Ready to plan
 
 ## Project Reference
 

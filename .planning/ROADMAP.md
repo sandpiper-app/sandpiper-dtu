@@ -145,7 +145,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 13. Upstream SDK Mirrors & Surface Inventory | 3/3 | Complete    | 2026-03-09 |
-| 14. Verification Harness Foundation & Legacy Gap Merge | 5/5 | Complete   | 2026-03-09 |
+| 14. Verification Harness Foundation & Legacy Gap Merge | 5/5 | Complete    | 2026-03-09 |
 | 15. Shopify Admin Client Compatibility | 0/0 | Pending | — |
 | 16. Shopify `shopify-api` Platform Surface | 0/0 | Pending | — |
 | 17. Shopify Client Surfaces & Strategic REST Stubs | 0/0 | Pending | — |
