@@ -1,9 +1,13 @@
 import { defineConfig } from 'vitest/config';
+import { fileURLToPath } from 'node:url';
+import { resolve, dirname } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   test: {
     name: 'sdk-verification',
-    globalSetup: ['./setup/global-setup.ts'],
+    globalSetup: [resolve(__dirname, 'setup/global-setup.ts')],
     testTimeout: 30_000,
     hookTimeout: 30_000,
     environment: 'node',
