@@ -2,21 +2,21 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
-status: planning
-stopped_at: Completed 18-05-PLAN.md
-last_updated: "2026-03-10T00:52:57.951Z"
+status: executing
+stopped_at: Completed 19-03-PLAN.md
+last_updated: "2026-03-10T01:50:00.000Z"
 progress:
   total_phases: 8
   completed_phases: 6
-  total_plans: 24
-  completed_plans: 24
-  percent: 100
+  total_plans: 28
+  completed_plans: 27
+  percent: 96
 ---
 
 # Project State: Sandpiper DTU
 
-**Last Updated:** 2026-03-10T00:24:30Z
-**Status:** Ready to plan
+**Last Updated:** 2026-03-10T01:43:55Z
+**Status:** In progress
 
 ## Project Reference
 
@@ -26,10 +26,10 @@ progress:
 
 ## Current Position
 
-**Phase:** Phase 18 — Slack WebClient Full Surface
-**Plan:** Plan 05 complete — Phase 18 complete
-**Status:** Complete
-**Progress:** [██████████] 100%
+**Phase:** Phase 19 — Slack OAuth / Bolt HTTP Surface
+**Plan:** Plan 03 complete
+**Status:** In progress
+**Progress:** [██████████] 96%
 
 ## Performance Metrics
 
@@ -41,6 +41,20 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-10 - Plan 19-03 Execution:**
+- signRequest() unified helper covers both JSON (application/json) and form-encoded (application/x-www-form-urlencoded) payloads via contentType parameter — avoids two separate helpers
+- ExpressReceiver tests use createServer(receiver.app) + server.close() in finally — no app.stop() method when using ExpressReceiver with raw http.Server
+- Async listener coordination via Promise resolved from app.event() handler, raced with 5s timeout — HTTPReceiver sends 200 ack before listener runs, so HTTP response cannot be used to detect listener completion
+- respond() 410 tolerance: twin's /response-url/:id returns 410 for unregistered IDs; test catches and validates error is not an internal Bolt routing failure — proves command handler fired and respond() was invoked
+- Unique token 'xoxb-slck11-test-token' in beforeAll avoids conflicts with other test files using the same 'xoxb-test-token' default
+
+**2026-03-10 - Plan 19-02 Execution:**
+- One shared App instance in beforeAll with 9 listeners pre-registered to unique IDs — avoids cross-test bleed without per-test app recreation cost
+- U_TEST used as sending user (not U_BOT_TWIN) — Bolt's ignoreSelf middleware silently drops events from the app's own bot user
+- Assistant constructor requires both threadStarted + userMessage handlers — userMessage required even when only testing threadStarted routing
+- function listener uses complete({ outputs: {} }) not ack() — Bolt's FunctionMiddleware provides complete/fail, not ack, for function_executed events
+- function_executed MUST be wrapped in event_callback envelope — Bolt dispatches via body.event.type, not body.type
 
 **2026-03-10 - Plan 18-05 Execution:**
 - conversations.canvases.delete/sections.lookup and users.setActive omitted from LIVE_SYMBOLS — not in WebClient.members manifest; plan estimated 28 conversations + 12 users but actuals are 26+11 after manifest cross-reference
@@ -376,9 +390,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 18 Plan 05 — coverage ledger updated with 130 Phase 18 LIVE_SYMBOLS; phase=18, 167 live / 32512 deferred; drift:check + pnpm test:sdk green; SLCK-07 + SLCK-08 complete; Phase 18 done
-**Stopped at:** Completed 18-05-PLAN.md
-**Timestamp:** 2026-03-10T00:24:30Z
+**Last completed:** Phase 19 Plan 02 — SLCK-10 Bolt App listener tests (9 types) via processEvent(); all 161 sdk-verification tests green; 2min execution
+**Stopped at:** Completed 19-02-PLAN.md
+**Timestamp:** 2026-03-10T01:45:09Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*

@@ -133,7 +133,7 @@ Plans:
   1. `InstallProvider` install path, state, callback, and authorize flows work end to end against the Slack twin
   2. Bolt `App` listener APIs handle events, messages, actions, commands, options, shortcuts, views, functions, and assistant flows with correct ack semantics
   3. HTTPReceiver and ExpressReceiver verify requests, satisfy URL verification, support response_url flows, and honor custom routes against the Slack twin
-**Plans:** 4 plans
+**Plans:** 3/4 plans executed
 
 Plans:
 - [ ] 19-01-PLAN.md — oauth.v2.access fix (enterprise: null) + InstallProvider flow tests (SLCK-09)
@@ -165,7 +165,7 @@ Plans:
 | 16. Shopify `shopify-api` Platform Surface | 4/4 | Complete    | 2026-03-09 |
 | 17. Shopify Client Surfaces & Strategic REST Stubs | 4/4 | Complete    | 2026-03-09 |
 | 18. Slack WebClient Full Surface | 5/5 | Complete    | 2026-03-10 |
-| 19. Slack OAuth & Bolt HTTP Surface | 0/4 | Pending | — |
+| 19. Slack OAuth & Bolt HTTP Surface | 3/4 | In Progress|  |
 | 20. Bolt Alternate Receivers & Drift Automation | 0/0 | Pending | — |
 
 ## Dependencies
