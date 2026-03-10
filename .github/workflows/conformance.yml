@@ -7,6 +7,12 @@ on:
   schedule:
     - cron: '0 6 * * 1'  # Weekly Monday 6am UTC for live conformance
   workflow_dispatch:
+      inputs:
+          live:
+              description: "Whether to test against live APIs"
+              required: true
+              default: false
+              type: boolean
 
 jobs:
   conformance-twin:
@@ -107,7 +113,7 @@ jobs:
 
   conformance-live:
     name: Shopify Live Conformance (scheduled only)
-    if: ${{ (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch') }}
+    if: ${{ (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch' && inputs.live) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -147,7 +153,7 @@ jobs:
 
   conformance-live-slack:
     name: Slack Live Conformance (scheduled only)
-    if: ${{ (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch') }}
+    if: ${{ (github.event_name == 'schedule') || (github.event_name == 'workflow_dispatch' && inputs.live) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
