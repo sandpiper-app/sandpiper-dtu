@@ -4,7 +4,7 @@ milestone: v1.1
 milestone_name: milestone
 status: completed
 stopped_at: Completed quick-1-01-PLAN.md
-last_updated: "2026-03-10T04:33:22.720Z"
+last_updated: "2026-03-10T04:45:00.000Z"
 progress:
   total_phases: 8
   completed_phases: 8
@@ -401,6 +401,12 @@ None yet.
 ### Blockers
 
 None.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Status | Directory |
+|---|-------------|------|--------|--------|-----------|
+| 1 | Use long-lived client credentials for Shopify live conformance | 2026-03-10 | cc65ebb | Verified | [1-live-tests-currently-require-shopify-acc](./quick/1-live-tests-currently-require-shopify-acc/) |
 
 ### Notes
 
