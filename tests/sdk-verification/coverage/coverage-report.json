@@ -1,8 +1,8 @@
 {
   "$schema": "https://sandpiper.dev/schemas/coverage-report.json",
-  "generatedAt": "2026-03-09T22:31:56.706Z",
-  "phase": "17",
-  "note": "Phase 17: @shopify/shopify-api GraphqlClient, RestClient, ShopifyClients, graphqlProxy, Shopify.clients and Shopify.rest client surfaces attributed (SHOP-14). Phase 16 platform surface (shopifyApi, Shopify.auth/session/webhooks/billing/flow/fulfillmentService) backfilled. REST resource classes (Product, Customer, etc.) are not in the @shopify/shopify-api manifest — SHOP-15 coverage is via RestClient.get/post/put/delete methods. SHOP-14 + SHOP-15 complete.",
+  "generatedAt": "2026-03-10T00:23:03.240Z",
+  "phase": "18",
+  "note": "Phase 18: @slack/web-api WebClient full surface. Tier 1 (~60 methods): chat (13), conversations (26), users (11), reactions (4), pins (3), views (4), base behaviors (apiCall, paginate, filesUploadV2, chatStream). Tier 2 stubs: files, search, reminders, bots, emoji, dnd, bookmarks, usergroups, calls, team, misc. Tier 3 deferred: admin.* (95 methods), slackLists, workflows, canvases, oauth (Phase 19), rtm, openid, stars, entity. SLCK-07 + SLCK-08 complete.",
   "packages": {
     "@shopify/admin-api-client@1.1.1": {
       "createAdminApiClient": {
@@ -119362,16 +119362,16 @@
         "testFile": null
       },
       "ChatStreamer": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-webclient-base.test.ts"
       },
       "ChatStreamer.append": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-webclient-base.test.ts"
       },
       "ChatStreamer.stop": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-webclient-base.test.ts"
       },
       "ChatStreamerOptions": {
         "tier": "deferred",
@@ -119418,20 +119418,20 @@
         "testFile": null
       },
       "WebClient.apiCall": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-webclient-base.test.ts"
       },
       "WebClient.paginate": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-webclient-base.test.ts"
       },
       "WebClient.chatStream": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-webclient-base.test.ts"
       },
       "WebClient.filesUploadV2": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-webclient-base.test.ts"
       },
       "WebClient.slackApiUrl.toString": {
         "tier": "deferred",
@@ -120242,16 +120242,16 @@
         "testFile": "sdk/slack-auth-gateway.test.ts"
       },
       "WebClient.assistant.threads.setStatus": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.assistant.threads.setSuggestedPrompts": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.assistant.threads.setTitle": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.apps.connections.open": {
         "tier": "deferred",
@@ -120286,60 +120286,60 @@
         "testFile": null
       },
       "WebClient.auth.revoke": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.auth.teams.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.auth.test": {
         "tier": "live",
         "testFile": "sdk/slack-auth-gateway.test.ts"
       },
       "WebClient.bookmarks.add": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.bookmarks.edit": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.bookmarks.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.bookmarks.remove": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.bots.info": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.calls.add": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.calls.end": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.calls.info": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.calls.update": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.calls.participants.add": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.calls.participants.remove": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.canvases.access.delete": {
         "tier": "deferred",
@@ -120366,228 +120366,228 @@
         "testFile": null
       },
       "WebClient.chat.appendStream": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-chat.test.ts"
       },
       "WebClient.chat.delete": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-chat.test.ts"
       },
       "WebClient.chat.deleteScheduledMessage": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-chat.test.ts"
       },
       "WebClient.chat.getPermalink": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-chat.test.ts"
       },
       "WebClient.chat.meMessage": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-chat.test.ts"
       },
       "WebClient.chat.postEphemeral": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-chat.test.ts"
       },
       "WebClient.chat.postMessage": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-chat.test.ts"
       },
       "WebClient.chat.scheduleMessage": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-chat.test.ts"
       },
       "WebClient.chat.scheduledMessages.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-chat.test.ts"
       },
       "WebClient.chat.startStream": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-chat.test.ts"
       },
       "WebClient.chat.stopStream": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-chat.test.ts"
       },
       "WebClient.chat.unfurl": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-chat.test.ts"
       },
       "WebClient.chat.update": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-chat.test.ts"
       },
       "WebClient.conversations.acceptSharedInvite": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.approveSharedInvite": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.archive": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.canvases.create": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.close": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.create": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.declineSharedInvite": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.externalInvitePermissions.set": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.history": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.info": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.invite": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.inviteShared": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.join": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.kick": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.leave": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.listConnectInvites": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.mark": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.members": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.open": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.rename": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.replies": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.requestSharedInvite.approve": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.requestSharedInvite.deny": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.requestSharedInvite.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.setPurpose": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.setTopic": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.conversations.unarchive": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-conversations.test.ts"
       },
       "WebClient.dialog.open": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.dnd.endDnd": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.dnd.endSnooze": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.dnd.info": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.dnd.setSnooze": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.dnd.teamInfo": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.emoji.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.entity.presentDetails": {
         "tier": "deferred",
         "testFile": null
       },
       "WebClient.files.completeUploadExternal": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-webclient-base.test.ts"
       },
       "WebClient.files.delete": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.files.getUploadURLExternal": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-webclient-base.test.ts"
       },
       "WebClient.files.info": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.files.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.files.revokePublicURL": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.files.sharedPublicURL": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.files.upload": {
         "tier": "deferred",
@@ -120598,44 +120598,44 @@
         "testFile": null
       },
       "WebClient.files.comments.delete": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.files.remote.add": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.files.remote.info": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.files.remote.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.files.remote.remove": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.files.remote.share": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.files.remote.update": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.functions.completeError": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.functions.completeSuccess": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.migration.exchange": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.oauth.access": {
         "tier": "deferred",
@@ -120658,52 +120658,52 @@
         "testFile": null
       },
       "WebClient.pins.add": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-pins.test.ts"
       },
       "WebClient.pins.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-pins.test.ts"
       },
       "WebClient.pins.remove": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-pins.test.ts"
       },
       "WebClient.reactions.add": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-reactions.test.ts"
       },
       "WebClient.reactions.get": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-reactions.test.ts"
       },
       "WebClient.reactions.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-reactions.test.ts"
       },
       "WebClient.reactions.remove": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-reactions.test.ts"
       },
       "WebClient.reminders.add": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.reminders.complete": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.reminders.delete": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.reminders.info": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.reminders.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.rtm.connect": {
         "tier": "deferred",
@@ -120714,16 +120714,16 @@
         "testFile": null
       },
       "WebClient.search.all": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.search.files": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.search.messages": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.slackLists.access.delete": {
         "tier": "deferred",
@@ -120774,12 +120774,12 @@
         "testFile": null
       },
       "WebClient.team.accessLogs": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.team.billableInfo": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.team.billing.info": {
         "tier": "deferred",
@@ -120794,116 +120794,116 @@
         "testFile": null
       },
       "WebClient.team.info": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.team.integrationLogs": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.team.preferences.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.team.profile.get": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.tooling.tokens.rotate": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.usergroups.create": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.usergroups.disable": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.usergroups.enable": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.usergroups.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.usergroups.update": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.usergroups.users.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.usergroups.users.update": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.users.conversations": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-users.test.ts"
       },
       "WebClient.users.deletePhoto": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-users.test.ts"
       },
       "WebClient.users.discoverableContacts.lookup": {
         "tier": "deferred",
         "testFile": null
       },
       "WebClient.users.getPresence": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-users.test.ts"
       },
       "WebClient.users.identity": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-users.test.ts"
       },
       "WebClient.users.info": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-users.test.ts"
       },
       "WebClient.users.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-users.test.ts"
       },
       "WebClient.users.lookupByEmail": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-users.test.ts"
       },
       "WebClient.users.setPhoto": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-users.test.ts"
       },
       "WebClient.users.setPresence": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-users.test.ts"
       },
       "WebClient.users.profile.get": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-users.test.ts"
       },
       "WebClient.users.profile.set": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-users.test.ts"
       },
       "WebClient.views.open": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-views.test.ts"
       },
       "WebClient.views.publish": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-views.test.ts"
       },
       "WebClient.views.push": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-views.test.ts"
       },
       "WebClient.views.update": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-views.test.ts"
       },
       "WebClient.stars.add": {
         "tier": "deferred",
@@ -130732,8 +130732,8 @@
     }
   },
   "summary": {
-    "live": 35,
+    "live": 167,
     "stub": 0,
-    "deferred": 32644
+    "deferred": 32512
   }
 }
