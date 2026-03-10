@@ -150,10 +150,12 @@ Plans:
   2. AwsLambdaReceiver passes against direct function invocation harness with zero AWS dependencies
   3. CI fails when submodule refs, installed package versions, manifests, or symbol coverage drift (hardened beyond Phase 14 basic detection)
   4. Developer can update a pinned SDK ref, regenerate manifests, and see compatibility deltas before merging
-**Plans:** 0 plans
+**Plans:** 3 plans
 
 Plans:
-- [ ] TBD (run `$gsd-plan-phase 20` to break down)
+- [ ] 20-01-PLAN.md — SocketModeReceiver harness: SlackStateManager wss methods + apps.connections.open stub + admin/set-wss-url + test file (SLCK-12)
+- [ ] 20-02-PLAN.md — AwsLambdaReceiver harness: pure in-process test — url_verification, HMAC rejection, event delivery (SLCK-12)
+- [ ] 20-03-PLAN.md — Drift hardening: manifest staleness Gate 4 in check-drift.ts + Phase 20 LIVE_SYMBOLS + coverage ledger regeneration (INFRA-14)
 
 ## Progress
 
@@ -166,7 +168,7 @@ Plans:
 | 17. Shopify Client Surfaces & Strategic REST Stubs | 4/4 | Complete    | 2026-03-09 |
 | 18. Slack WebClient Full Surface | 5/5 | Complete    | 2026-03-10 |
 | 19. Slack OAuth & Bolt HTTP Surface | 4/4 | Complete    | 2026-03-10 |
-| 20. Bolt Alternate Receivers & Drift Automation | 0/0 | Pending | — |
+| 20. Bolt Alternate Receivers & Drift Automation | 0/3 | Pending | — |
 
 ## Dependencies
 
