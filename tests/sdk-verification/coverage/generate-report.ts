@@ -238,6 +238,48 @@ const LIVE_SYMBOLS: Record<string, string> = {
   // auth additional
   '@slack/web-api@7.14.1/WebClient.auth.revoke': 'sdk/slack-stubs-smoke.test.ts',
   '@slack/web-api@7.14.1/WebClient.auth.teams.list': 'sdk/slack-stubs-smoke.test.ts',
+
+  // Phase 19: SLCK-09 InstallProvider flows — slack-oauth-install-provider.test.ts
+  // NOTE: manifest-confirmed members: authorize, handleInstallPath, generateInstallUrl,
+  // handleCallback, stateStore.{generateStateParam,verifyStateParam},
+  // installationStore.{storeInstallation,fetchInstallation}.
+  // installationStore.deleteInstallation is in manifest but not directly tested — omitted.
+  '@slack/oauth@3.0.4/InstallProvider': 'sdk/slack-oauth-install-provider.test.ts',
+  '@slack/oauth@3.0.4/InstallProvider.authorize': 'sdk/slack-oauth-install-provider.test.ts',
+  '@slack/oauth@3.0.4/InstallProvider.handleInstallPath': 'sdk/slack-oauth-install-provider.test.ts',
+  '@slack/oauth@3.0.4/InstallProvider.generateInstallUrl': 'sdk/slack-oauth-install-provider.test.ts',
+  '@slack/oauth@3.0.4/InstallProvider.handleCallback': 'sdk/slack-oauth-install-provider.test.ts',
+  '@slack/oauth@3.0.4/InstallProvider.stateStore.generateStateParam': 'sdk/slack-oauth-install-provider.test.ts',
+  '@slack/oauth@3.0.4/InstallProvider.stateStore.verifyStateParam': 'sdk/slack-oauth-install-provider.test.ts',
+  '@slack/oauth@3.0.4/InstallProvider.installationStore.storeInstallation': 'sdk/slack-oauth-install-provider.test.ts',
+  '@slack/oauth@3.0.4/InstallProvider.installationStore.fetchInstallation': 'sdk/slack-oauth-install-provider.test.ts',
+  // MemoryInstallationStore is instantiated directly in tests
+  '@slack/oauth@3.0.4/MemoryInstallationStore': 'sdk/slack-oauth-install-provider.test.ts',
+
+  // Phase 19: SLCK-10 Bolt App listener APIs — slack-bolt-app-listeners.test.ts
+  // NOTE: App.use is NOT called in tests — omitted. App.step, App.error not tested — omitted.
+  // Manifest-confirmed: init, event, message, action, command, options, shortcut, view,
+  // function, assistant, processEvent. String noise (client.slackApiUrl.*, client.token.*)
+  // remains deferred per plan instructions.
+  '@slack/bolt@4.6.0/App': 'sdk/slack-bolt-app-listeners.test.ts',
+  '@slack/bolt@4.6.0/App.init': 'sdk/slack-bolt-app-listeners.test.ts',
+  '@slack/bolt@4.6.0/App.event': 'sdk/slack-bolt-app-listeners.test.ts',
+  '@slack/bolt@4.6.0/App.message': 'sdk/slack-bolt-app-listeners.test.ts',
+  '@slack/bolt@4.6.0/App.action': 'sdk/slack-bolt-app-listeners.test.ts',
+  '@slack/bolt@4.6.0/App.command': 'sdk/slack-bolt-app-listeners.test.ts',
+  '@slack/bolt@4.6.0/App.options': 'sdk/slack-bolt-app-listeners.test.ts',
+  '@slack/bolt@4.6.0/App.shortcut': 'sdk/slack-bolt-app-listeners.test.ts',
+  '@slack/bolt@4.6.0/App.view': 'sdk/slack-bolt-app-listeners.test.ts',
+  '@slack/bolt@4.6.0/App.function': 'sdk/slack-bolt-app-listeners.test.ts',
+  '@slack/bolt@4.6.0/App.assistant': 'sdk/slack-bolt-app-listeners.test.ts',
+  '@slack/bolt@4.6.0/App.processEvent': 'sdk/slack-bolt-app-listeners.test.ts',
+
+  // Phase 19: SLCK-11 HTTPReceiver + ExpressReceiver — slack-bolt-http-receivers.test.ts
+  // App.start and App.stop exercised in receiver lifecycle tests.
+  '@slack/bolt@4.6.0/HTTPReceiver': 'sdk/slack-bolt-http-receivers.test.ts',
+  '@slack/bolt@4.6.0/ExpressReceiver': 'sdk/slack-bolt-http-receivers.test.ts',
+  '@slack/bolt@4.6.0/App.start': 'sdk/slack-bolt-http-receivers.test.ts',
+  '@slack/bolt@4.6.0/App.stop': 'sdk/slack-bolt-http-receivers.test.ts',
 };
 
 interface ManifestSymbol {
@@ -290,8 +332,8 @@ for (const file of manifestFiles) {
 const report = {
   $schema: 'https://sandpiper.dev/schemas/coverage-report.json',
   generatedAt: new Date().toISOString(),
-  phase: '18',
-  note: 'Phase 18: @slack/web-api WebClient full surface. Tier 1 (~60 methods): chat (13), conversations (26), users (11), reactions (4), pins (3), views (4), base behaviors (apiCall, paginate, filesUploadV2, chatStream). Tier 2 stubs: files, search, reminders, bots, emoji, dnd, bookmarks, usergroups, calls, team, misc. Tier 3 deferred: admin.* (95 methods), slackLists, workflows, canvases, oauth (Phase 19), rtm, openid, stars, entity. SLCK-07 + SLCK-08 complete.',
+  phase: '19',
+  note: 'Phase 19: @slack/oauth InstallProvider (SLCK-09), @slack/bolt App listener APIs (SLCK-10), HTTPReceiver + ExpressReceiver (SLCK-11). Phase 18: @slack/web-api WebClient full surface — SLCK-07 + SLCK-08 complete.',
   packages,
   summary: { live: totalLive, stub: 0, deferred: totalDeferred },
 };

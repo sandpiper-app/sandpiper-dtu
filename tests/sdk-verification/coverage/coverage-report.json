@@ -1,8 +1,8 @@
 {
   "$schema": "https://sandpiper.dev/schemas/coverage-report.json",
-  "generatedAt": "2026-03-10T00:23:03.240Z",
-  "phase": "18",
-  "note": "Phase 18: @slack/web-api WebClient full surface. Tier 1 (~60 methods): chat (13), conversations (26), users (11), reactions (4), pins (3), views (4), base behaviors (apiCall, paginate, filesUploadV2, chatStream). Tier 2 stubs: files, search, reminders, bots, emoji, dnd, bookmarks, usergroups, calls, team, misc. Tier 3 deferred: admin.* (95 methods), slackLists, workflows, canvases, oauth (Phase 19), rtm, openid, stars, entity. SLCK-07 + SLCK-08 complete.",
+  "generatedAt": "2026-03-10T01:49:22.023Z",
+  "phase": "19",
+  "note": "Phase 19: @slack/oauth InstallProvider (SLCK-09), @slack/bolt App listener APIs (SLCK-10), HTTPReceiver + ExpressReceiver (SLCK-11). Phase 18: @slack/web-api WebClient full surface — SLCK-07 + SLCK-08 complete.",
   "packages": {
     "@shopify/admin-api-client@1.1.1": {
       "createAdminApiClient": {
@@ -35834,72 +35834,72 @@
         "testFile": null
       },
       "App": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-app-listeners.test.ts"
       },
       "App.init": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-app-listeners.test.ts"
       },
       "App.use": {
         "tier": "deferred",
         "testFile": null
       },
       "App.assistant": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-app-listeners.test.ts"
       },
       "App.step": {
         "tier": "deferred",
         "testFile": null
       },
       "App.function": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-app-listeners.test.ts"
       },
       "App.start": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-http-receivers.test.ts"
       },
       "App.stop": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-http-receivers.test.ts"
       },
       "App.event": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-app-listeners.test.ts"
       },
       "App.message": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-app-listeners.test.ts"
       },
       "App.shortcut": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-app-listeners.test.ts"
       },
       "App.action": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-app-listeners.test.ts"
       },
       "App.command": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-app-listeners.test.ts"
       },
       "App.options": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-app-listeners.test.ts"
       },
       "App.view": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-app-listeners.test.ts"
       },
       "App.error": {
         "tier": "deferred",
         "testFile": null
       },
       "App.processEvent": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-app-listeners.test.ts"
       },
       "App.client.slackApiUrl.toString": {
         "tier": "deferred",
@@ -39306,8 +39306,8 @@
         "testFile": null
       },
       "ExpressReceiver": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-http-receivers.test.ts"
       },
       "ExpressReceiver.requestHandler": {
         "tier": "deferred",
@@ -42526,8 +42526,8 @@
         "testFile": null
       },
       "HTTPReceiver": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-http-receivers.test.ts"
       },
       "HTTPReceiver.init": {
         "tier": "deferred",
@@ -112188,40 +112188,40 @@
         "testFile": null
       },
       "InstallProvider": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-oauth-install-provider.test.ts"
       },
       "InstallProvider.authorize": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-oauth-install-provider.test.ts"
       },
       "InstallProvider.handleInstallPath": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-oauth-install-provider.test.ts"
       },
       "InstallProvider.generateInstallUrl": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-oauth-install-provider.test.ts"
       },
       "InstallProvider.handleCallback": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-oauth-install-provider.test.ts"
       },
       "InstallProvider.stateStore.generateStateParam": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-oauth-install-provider.test.ts"
       },
       "InstallProvider.stateStore.verifyStateParam": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-oauth-install-provider.test.ts"
       },
       "InstallProvider.installationStore.storeInstallation": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-oauth-install-provider.test.ts"
       },
       "InstallProvider.installationStore.fetchInstallation": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-oauth-install-provider.test.ts"
       },
       "InstallProvider.installationStore.deleteInstallation": {
         "tier": "deferred",
@@ -112536,8 +112536,8 @@
         "testFile": null
       },
       "MemoryInstallationStore": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-oauth-install-provider.test.ts"
       },
       "MemoryInstallationStore.storeInstallation": {
         "tier": "deferred",
@@ -130732,8 +130732,8 @@
     }
   },
   "summary": {
-    "live": 167,
+    "live": 193,
     "stub": 0,
-    "deferred": 32512
+    "deferred": 32486
   }
 }
