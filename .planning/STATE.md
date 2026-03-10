@@ -3,33 +3,33 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Completed 18-04-PLAN.md
-last_updated: "2026-03-10T00:19:11.379Z"
+stopped_at: Completed 18-05-PLAN.md
+last_updated: "2026-03-10T00:24:28.920Z"
 progress:
   total_phases: 8
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 24
-  completed_plans: 23
-  percent: 98
+  completed_plans: 24
+  percent: 100
 ---
 
 # Project State: Sandpiper DTU
 
-**Last Updated:** 2026-03-09T17:33:00Z
-**Status:** Ready to plan
+**Last Updated:** 2026-03-10T00:24:30Z
+**Status:** Phase 18 complete — ready to plan Phase 19
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 18 — Slack WebClient Full Surface
+**Current Focus:** Phase 19 — Slack OAuth / Bolt HTTP Surface
 
 ## Current Position
 
 **Phase:** Phase 18 — Slack WebClient Full Surface
-**Plan:** Plan 04 complete — Phase 18 complete
-**Status:** In Progress
-**Progress:** [██████████] 98%
+**Plan:** Plan 05 complete — Phase 18 complete
+**Status:** Complete
+**Progress:** [██████████] 100%
 
 ## Performance Metrics
 
@@ -41,6 +41,11 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-10 - Plan 18-05 Execution:**
+- conversations.canvases.delete/sections.lookup and users.setActive omitted from LIVE_SYMBOLS — not in WebClient.members manifest; plan estimated 28 conversations + 12 users but actuals are 26+11 after manifest cross-reference
+- Phase 18 live count = 167 total (Phase 14-17 symbols + ~130 new Phase 18 Slack additions); drift:check passes with no null tiers
+- 152 tests / 22 files green — full pnpm test:sdk regression check confirms no regressions from ledger update
 
 **2026-03-10 - Plan 18-04 Execution:**
 - response_metadata:{next_cursor:''} in all stubs — SDK paginate() halts cleanly on empty cursor without extra routes
@@ -371,9 +376,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 18 Plan 04 — 80+ Tier 2 stubs across 13 families with 10-test smoke coverage completing SLCK-08 surface (152 tests / 22 files green)
-**Stopped at:** Completed 18-04-PLAN.md
-**Timestamp:** 2026-03-10T00:20:30Z
+**Last completed:** Phase 18 Plan 05 — coverage ledger updated with 130 Phase 18 LIVE_SYMBOLS; phase=18, 167 live / 32512 deferred; drift:check + pnpm test:sdk green; SLCK-07 + SLCK-08 complete; Phase 18 done
+**Stopped at:** Completed 18-05-PLAN.md
+**Timestamp:** 2026-03-10T00:24:30Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
