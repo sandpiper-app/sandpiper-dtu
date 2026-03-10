@@ -78,7 +78,7 @@ describe('compareResponses', () => {
     });
 
     const normalizer: FieldNormalizerConfig = {
-      stripFields: ['body.data.id', 'body.data.created_at'],
+      stripFields: ['data.id', 'data.created_at'],
       normalizeFields: {},
     };
 
@@ -101,7 +101,7 @@ describe('compareResponses', () => {
 
     const normalizer: FieldNormalizerConfig = {
       stripFields: [],
-      normalizeFields: { 'body.data.id': '<GID>' },
+      normalizeFields: { 'data.id': '<GID>' },
     };
 
     const result = compareResponses(
@@ -121,7 +121,7 @@ describe('compareResponses', () => {
     });
 
     const normalizer: FieldNormalizerConfig = {
-      stripFields: ['body.data.order.id', 'body.data.order.created_at'],
+      stripFields: ['data.order.id', 'data.order.created_at'],
       normalizeFields: {},
     };
 
@@ -156,7 +156,7 @@ describe('compareResponses', () => {
     });
 
     const normalizer: FieldNormalizerConfig = {
-      stripFields: ['body.data.edges.*.node.id'],
+      stripFields: ['data.edges.*.node.id'],
       normalizeFields: {},
     };
 
