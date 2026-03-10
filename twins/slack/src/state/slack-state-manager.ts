@@ -19,6 +19,9 @@ export class SlackStateManager {
   private inner: StateManager;
   private dbPath: string;
 
+  // Ephemeral in-memory state (not persisted to SQLite)
+  private wssUrl: string | null = null;
+
   // Prepared statements — nullified on reset/close
   private createTeamStmt: Database.Statement | null = null;
   private getTeamStmt: Database.Statement | null = null;
@@ -80,12 +83,27 @@ export class SlackStateManager {
     this.runSlackMigrations();
     this.prepareStatements();
     this.seedDefaults();
+    this.wssUrl = null;
   }
 
   /** Close database connection and release resources */
   close(): void {
     this.nullifyStatements();
     this.inner.close();
+  }
+
+  // ---------------------------------------------------------------------------
+  // WSS URL (ephemeral — per-test-run, not persisted to SQLite)
+  // ---------------------------------------------------------------------------
+
+  /** Store the WebSocket server URL seeded by tests for apps.connections.open */
+  setWssUrl(url: string): void {
+    this.wssUrl = url;
+  }
+
+  /** Retrieve the stored WebSocket server URL, or null if not yet seeded */
+  getWssUrl(): string | null {
+    return this.wssUrl;
   }
 
   // ---------------------------------------------------------------------------

@@ -132,6 +132,19 @@ const stubsPlugin: FastifyPluginAsync = async (fastify) => {
   fastify.post('/api/auth.revoke', stub({ revoked: true }));
   fastify.post('/api/auth.teams.list', stub({ teams: [] }));
   fastify.get('/api/auth.teams.list', stub({ teams: [] }));
+
+  // ── Socket Mode ───────────────────────────────────────────────────
+  // apps.connections.open returns a dynamic wss URL seeded via POST /admin/set-wss-url.
+  // Cannot use the generic stub() helper because the response body is dynamic.
+  fastify.post('/api/apps.connections.open', async (request, reply) => {
+    const token = extractToken(request);
+    if (!token) return reply.send({ ok: false, error: 'not_authed' });
+    const tokenRecord = fastify.slackStateManager.getToken(token);
+    if (!tokenRecord) return reply.send({ ok: false, error: 'invalid_auth' });
+    const wssUrl = fastify.slackStateManager.getWssUrl();
+    if (!wssUrl) return reply.send({ ok: false, error: 'no_wss_url_configured' });
+    return reply.send({ ok: true, url: wssUrl });
+  });
 };
 
 export default stubsPlugin;

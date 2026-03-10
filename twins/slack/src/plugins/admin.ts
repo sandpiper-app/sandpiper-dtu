@@ -150,6 +150,17 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
   });
 
   // ---------------------------------------------------------------------------
+  // WSS URL seeding endpoint — for SocketModeReceiver tests (SLCK-12)
+  // ---------------------------------------------------------------------------
+
+  // POST /admin/set-wss-url — seed the WebSocket broker URL for apps.connections.open
+  fastify.post<{ Body: { url: string } }>('/admin/set-wss-url', async (request, reply) => {
+    const { url } = request.body;
+    fastify.slackStateManager.setWssUrl(url);
+    return reply.send({ ok: true });
+  });
+
+  // ---------------------------------------------------------------------------
   // Dead Letter Queue (DLQ) inspection endpoints
   // ---------------------------------------------------------------------------
 
