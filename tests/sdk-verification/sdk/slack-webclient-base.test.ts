@@ -59,21 +59,25 @@ describe('Slack WebClient base behaviors (SLCK-07)', () => {
       body: JSON.stringify({ methodName: 'auth.test', statusCode: 429, errorBody: { ok: false, error: 'ratelimited' } }),
     });
 
-    // The raw call should get a 429 back from the twin
-    const result = await fetch(`${slackApiUrl}/api/auth.test`, {
+    // Use raw fetch to verify the error simulator returns 429 (avoids SDK retry machinery)
+    const withError = await fetch(`${slackApiUrl}/api/auth.test`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: '{}',
     });
-    expect(result.status).toBe(429);
+    expect(withError.status).toBe(429);
 
-    // Clear error config — admin endpoint is POST /admin/errors/clear
-    await fetch(`${slackApiUrl}/admin/errors/clear`, {
+    // Clear error config — admin endpoint is POST /admin/errors/clear (no body needed)
+    await fetch(`${slackApiUrl}/admin/errors/clear`, { method: 'POST' });
+
+    // Use raw fetch to verify normal behavior resumes (avoids SDK retry state)
+    const afterClear = await fetch(`${slackApiUrl}/api/auth.test`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: '{}',
     });
-    const client = createSlackClient(token);
-    const ok = await client.auth.test();
-    expect(ok.ok).toBe(true);
+    expect(afterClear.status).toBe(200);
+    const body = await afterClear.json() as any;
+    expect(body.ok).toBe(true);
   });
 });

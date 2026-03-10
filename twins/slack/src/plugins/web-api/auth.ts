@@ -62,7 +62,12 @@ const authPlugin: FastifyPluginAsync = async (fastify) => {
       const errorBody = errorConfig.error_body
         ? JSON.parse(errorConfig.error_body)
         : { ok: false, error: 'simulated_error' };
-      return reply.status(errorConfig.status_code ?? 200).send(errorBody);
+      const statusCode = errorConfig.status_code ?? 200;
+      // Add Retry-After when simulating 429 — SDK requires this header to handle rate limits
+      if (statusCode === 429) {
+        return reply.status(statusCode).header('Retry-After', '1').send(errorBody);
+      }
+      return reply.status(statusCode).send(errorBody);
     }
 
     // 5. Return Slack-shaped identity response

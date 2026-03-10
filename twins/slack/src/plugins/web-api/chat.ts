@@ -24,6 +24,35 @@ declare module 'fastify' {
   }
 }
 
+/** Shared auth/rate/error-sim preamble — returns error reply or null if all clear */
+async function checkAuthRateError(
+  fastify: any,
+  request: any,
+  reply: any,
+  method: string,
+): Promise<string | null> {
+  const token = extractToken(request);
+  if (!token) { await reply.status(200).send({ ok: false, error: 'not_authed' }); return null; }
+
+  const tokenRecord = fastify.slackStateManager.getToken(token);
+  if (!tokenRecord) { await reply.status(200).send({ ok: false, error: 'invalid_auth' }); return null; }
+
+  const limited = fastify.rateLimiter.check(method, token);
+  if (limited) {
+    await reply.status(429).header('Retry-After', String(limited.retryAfter)).send({ ok: false, error: 'ratelimited' });
+    return null;
+  }
+
+  const errorConfig = fastify.slackStateManager.getErrorConfig(method);
+  if (errorConfig) {
+    const errorBody = errorConfig.error_body ? JSON.parse(errorConfig.error_body) : { ok: false, error: 'simulated_error' };
+    await reply.status(errorConfig.status_code ?? 200).send(errorBody);
+    return null;
+  }
+
+  return token;
+}
+
 const chatPlugin: FastifyPluginAsync = async (fastify) => {
   // POST /api/chat.postMessage
   fastify.post<{
@@ -203,6 +232,183 @@ const chatPlugin: FastifyPluginAsync = async (fastify) => {
       ts,
       text: text ?? message.text,
     };
+  });
+
+  // POST /api/chat.delete
+  fastify.post<{
+    Body: { channel: string; ts: string };
+  }>('/api/chat.delete', async (request, reply) => {
+    const token = await checkAuthRateError(fastify, request, reply, 'chat.delete');
+    if (!token) return;
+
+    const { channel, ts } = request.body ?? {};
+    if (!channel || !ts) {
+      return reply.status(200).send({ ok: false, error: 'message_not_found' });
+    }
+
+    // Lenient delete — remove message if it exists, otherwise no-op
+    if (fastify.slackStateManager.getMessage(ts)) {
+      fastify.slackStateManager.database
+        .prepare('DELETE FROM slack_messages WHERE ts = ?')
+        .run(ts);
+    }
+
+    return { ok: true, channel, ts };
+  });
+
+  // POST /api/chat.postEphemeral
+  fastify.post<{
+    Body: { channel: string; user: string; text?: string };
+  }>('/api/chat.postEphemeral', async (request, reply) => {
+    const token = await checkAuthRateError(fastify, request, reply, 'chat.postEphemeral');
+    if (!token) return;
+
+    const { channel, user } = request.body ?? {};
+    if (!channel || !user) {
+      return reply.status(200).send({ ok: false, error: 'channel_not_found' });
+    }
+
+    return { ok: true, message_ts: generateMessageTs() };
+  });
+
+  // GET+POST /api/chat.getPermalink
+  const getPermalinkHandler = async (request: any, reply: any) => {
+    const token = await checkAuthRateError(fastify, request, reply, 'chat.getPermalink');
+    if (!token) return;
+
+    const params = (request.method === 'GET' ? request.query : request.body) as any;
+    const { channel, message_ts } = params ?? {};
+    if (!channel || !message_ts) {
+      return reply.status(200).send({ ok: false, error: 'message_not_found' });
+    }
+
+    const permalink = `https://twin-workspace.slack.com/archives/${channel}/p${String(message_ts).replace('.', '')}`;
+    return { ok: true, channel, permalink };
+  };
+  fastify.get('/api/chat.getPermalink', getPermalinkHandler);
+  fastify.post('/api/chat.getPermalink', getPermalinkHandler);
+
+  // POST /api/chat.meMessage
+  fastify.post<{
+    Body: { channel: string; text: string };
+  }>('/api/chat.meMessage', async (request, reply) => {
+    const token = await checkAuthRateError(fastify, request, reply, 'chat.meMessage');
+    if (!token) return;
+
+    const { channel, text } = request.body ?? {};
+    if (!channel) {
+      return reply.status(200).send({ ok: false, error: 'channel_not_found' });
+    }
+
+    const channelRecord = fastify.slackStateManager.getChannel(channel);
+    if (!channelRecord) {
+      return reply.status(200).send({ ok: false, error: 'channel_not_found' });
+    }
+
+    const ts = generateMessageTs();
+    const tokenRecord = fastify.slackStateManager.getToken(token);
+    const userId = tokenRecord?.user_id ?? 'U_BOT_TWIN';
+
+    fastify.slackStateManager.createMessage({
+      channel_id: channel,
+      user_id: userId,
+      text: text ?? '',
+      ts,
+      subtype: 'me_message',
+    });
+
+    return { ok: true, channel, ts };
+  });
+
+  // POST /api/chat.scheduleMessage
+  fastify.post<{
+    Body: { channel: string; text?: string; post_at: number | string };
+  }>('/api/chat.scheduleMessage', async (request, reply) => {
+    const token = await checkAuthRateError(fastify, request, reply, 'chat.scheduleMessage');
+    if (!token) return;
+
+    const { channel, post_at } = request.body ?? {};
+    if (!channel) {
+      return reply.status(200).send({ ok: false, error: 'channel_not_found' });
+    }
+
+    return {
+      ok: true,
+      channel,
+      scheduled_message_id: `SM${Date.now()}`,
+      post_at: Number(post_at),
+    };
+  });
+
+  // GET+POST /api/chat.scheduledMessages.list
+  const scheduledMessagesListHandler = async (request: any, reply: any) => {
+    const token = await checkAuthRateError(fastify, request, reply, 'chat.scheduledMessages.list');
+    if (!token) return;
+
+    return {
+      ok: true,
+      scheduled_messages: [],
+      response_metadata: { next_cursor: '' },
+    };
+  };
+  fastify.get('/api/chat.scheduledMessages.list', scheduledMessagesListHandler);
+  fastify.post('/api/chat.scheduledMessages.list', scheduledMessagesListHandler);
+
+  // POST /api/chat.deleteScheduledMessage
+  fastify.post<{
+    Body: { channel: string; scheduled_message_id: string };
+  }>('/api/chat.deleteScheduledMessage', async (request, reply) => {
+    const token = await checkAuthRateError(fastify, request, reply, 'chat.deleteScheduledMessage');
+    if (!token) return;
+
+    return { ok: true };
+  });
+
+  // POST /api/chat.unfurl
+  fastify.post<{
+    Body: { channel: string; ts: string; unfurls?: Record<string, any> };
+  }>('/api/chat.unfurl', async (request, reply) => {
+    const token = await checkAuthRateError(fastify, request, reply, 'chat.unfurl');
+    if (!token) return;
+
+    return { ok: true };
+  });
+
+  // POST /api/chat.startStream
+  // Returns a ts that ChatStreamer uses to track the stream session.
+  fastify.post<{
+    Body: { channel: string };
+  }>('/api/chat.startStream', async (request, reply) => {
+    const token = await checkAuthRateError(fastify, request, reply, 'chat.startStream');
+    if (!token) return;
+
+    const { channel } = request.body ?? {};
+    if (!channel) {
+      return reply.status(200).send({ ok: false, error: 'channel_not_found' });
+    }
+
+    const ts = generateMessageTs();
+    return { ok: true, ts };
+  });
+
+  // POST /api/chat.appendStream
+  fastify.post<{
+    Body: { ts: string; text?: string };
+  }>('/api/chat.appendStream', async (request, reply) => {
+    const token = await checkAuthRateError(fastify, request, reply, 'chat.appendStream');
+    if (!token) return;
+
+    return { ok: true };
+  });
+
+  // POST /api/chat.stopStream
+  fastify.post<{
+    Body: { ts: string; text?: string };
+  }>('/api/chat.stopStream', async (request, reply) => {
+    const token = await checkAuthRateError(fastify, request, reply, 'chat.stopStream');
+    if (!token) return;
+
+    return { ok: true };
   });
 };
 
