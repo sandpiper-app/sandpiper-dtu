@@ -142,6 +142,15 @@ None - no external service configuration required.
 - Pure in-process pattern established: webhook tests do not require twin to be running
 - Next: Plan 16-02 (SHOP-10/11 auth/session behaviors)
 
+## Self-Check: PASSED
+
+- `tests/sdk-verification/helpers/shopify-api-client.ts` — FOUND
+- `tests/sdk-verification/sdk/shopify-api-webhooks.test.ts` — FOUND
+- `.planning/phases/16-shopify-shopify-api-platform-surface/16-01-SUMMARY.md` — FOUND
+- Commit `83d3b64` (Task 1: helper factory) — FOUND
+- Commit `18eb308` (Task 2: webhook tests) — FOUND
+- All 7 SHOP-12 tests pass; full suite 40 tests pass
+
 ---
 *Phase: 16-shopify-shopify-api-platform-surface*
 *Completed: 2026-03-09*

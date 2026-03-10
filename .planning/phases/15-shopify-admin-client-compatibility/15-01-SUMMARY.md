@@ -74,7 +74,7 @@ completed: 2026-03-09
 
 1. **Task 1: Write GraphQL client method tests (SHOP-08)** - `b339759` (feat)
 
-**Plan metadata:** (docs commit follows)
+**Plan metadata:** `5ec7689` (docs)
 
 ## Files Created/Modified
 
@@ -102,6 +102,13 @@ None - no external service configuration required. Shopify twin starts automatic
 
 - SHOP-08 coverage complete; `shopify-admin-graphql-client.test.ts` can be referenced in coverage-report.json updates
 - Phase 15 Plan 02 can proceed (next Shopify client compatibility surface)
+
+## Self-Check: PASSED
+
+- tests/sdk-verification/sdk/shopify-admin-graphql-client.test.ts: FOUND
+- .planning/phases/15-shopify-admin-client-compatibility/15-01-SUMMARY.md: FOUND
+- Commit b339759: FOUND
+- 25 tests pass, 0 failures
 
 ---
 *Phase: 15-shopify-admin-client-compatibility*

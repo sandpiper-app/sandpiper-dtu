@@ -107,3 +107,10 @@ None - no external service configuration required.
 ---
 *Phase: 17-shopify-rest-resource-client-expansion*
 *Completed: 2026-03-09*
+
+## Self-Check: PASSED
+
+- tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts: FOUND
+- .planning/phases/17-shopify-rest-resource-client-expansion/17-01-SUMMARY.md: FOUND
+- Commit 4acc0a2 (feat): FOUND
+- Commit e9e07f8 (docs): FOUND

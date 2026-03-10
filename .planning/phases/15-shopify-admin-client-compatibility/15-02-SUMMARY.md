@@ -99,6 +99,14 @@ None - no external service configuration required.
 - test-retry.json endpoint ready for retry-on-429 test scenarios
 - All 25 existing SDK tests pass (no regressions)
 
+## Self-Check: PASSED
+
+- FOUND: twins/shopify/src/plugins/rest.ts
+- FOUND: tests/sdk-verification/helpers/shopify-rest-client.ts
+- FOUND: .planning/phases/15-shopify-admin-client-compatibility/15-02-SUMMARY.md
+- FOUND: commit 8b40fbe (Task 1)
+- FOUND: commit d1c0e66 (Task 2)
+
 ---
 *Phase: 15-shopify-admin-client-compatibility*
 *Completed: 2026-03-09*

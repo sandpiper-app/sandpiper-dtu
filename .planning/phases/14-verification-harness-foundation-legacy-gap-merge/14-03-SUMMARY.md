@@ -106,6 +106,13 @@ None - no external service configuration required. All twins boot in-process dur
 - No blockers — Plans 14-04 and 14-05 can proceed directly
 - The legacy/ test failures (webhook timing, HMAC) are a separate concern for a future plan
 
+## Self-Check: PASSED
+
+- slack-auth-gateway.test.ts: FOUND at `tests/sdk-verification/sdk/slack-auth-gateway.test.ts`
+- shopify-client-wire.test.ts: FOUND at `tests/sdk-verification/sdk/shopify-client-wire.test.ts`
+- 14-03-SUMMARY.md: FOUND at `.planning/phases/14-verification-harness-foundation-legacy-gap-merge/14-03-SUMMARY.md`
+- Commits: f5e6159 (Task 1), a3eb070 (Task 2), 6f864fd (docs) — all found
+
 ---
 *Phase: 14-verification-harness-foundation-legacy-gap-merge*
 *Completed: 2026-03-09*
