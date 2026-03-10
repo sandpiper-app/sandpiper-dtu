@@ -3,33 +3,33 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Completed 19-04-PLAN.md
-last_updated: "2026-03-10T01:56:23.907Z"
+stopped_at: Completed 20-02-PLAN.md
+last_updated: "2026-03-10T02:33:00Z"
 progress:
   total_phases: 8
   completed_phases: 7
-  total_plans: 28
-  completed_plans: 28
-  percent: 100
+  total_plans: 31
+  completed_plans: 29
+  percent: 97
 ---
 
 # Project State: Sandpiper DTU
 
-**Last Updated:** 2026-03-10T01:43:55Z
-**Status:** Ready to plan
+**Last Updated:** 2026-03-10T02:33:00Z
+**Status:** In progress
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 19 — Slack OAuth / Bolt HTTP Surface
+**Current Focus:** Phase 20 — Bolt Alternate Receivers & Drift Automation
 
 ## Current Position
 
-**Phase:** Phase 19 — Slack OAuth / Bolt HTTP Surface
-**Plan:** Plan 04 complete — Phase 19 complete
+**Phase:** Phase 20 — Bolt Alternate Receivers & Drift Automation
+**Plan:** Plan 02 complete
 **Status:** In progress
-**Progress:** [██████████] 100%
+**Progress:** [██████████] 97%
 
 ## Performance Metrics
 
@@ -41,6 +41,12 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-10 - Plan 20-02 Execution:**
+- listenerFired flag instead of Promise coordination for AwsLambdaReceiver — handler() awaits listener completion before returning, so boolean flag suffices (unlike HTTPReceiver which acks first)
+- unhandledRequestTimeoutMillis: 100 on all test receivers — avoids 3001ms default spurious console.error on ack timing edge cases
+- Unique token prefix xoxb-slck12-lambda- to avoid cross-test contamination with Plan 01 xoxb-slck12-sm- tokens in shared singleFork worker process
+- AwsLambdaReceiver handler return cast as any — avoids AwsResponse import; shape is plain object with statusCode + body fields
 
 **2026-03-09 - Plan 19-04 Execution:**
 - MemoryInstallationStore promoted to live — instantiated directly via destructuring in SLCK-09 tests (qualifies as live)
@@ -403,9 +409,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 19 Plan 04 — Coverage ledger update: @slack/oauth InstallProvider + @slack/bolt App listener + HTTPReceiver/ExpressReceiver promoted to live (193 total live); drift:check + 173/173 tests green; Phase 19 complete
-**Stopped at:** Completed 19-04-PLAN.md
-**Timestamp:** 2026-03-09T21:53:00Z
+**Last completed:** Phase 20 Plan 02 — AwsLambdaReceiver conformance test: pure in-process SLCK-12 harness (url_verification, invalid HMAC 401, event_callback delivery); 176/176 tests green; drift:check green (193 live symbols)
+**Stopped at:** Completed 20-02-PLAN.md
+**Timestamp:** 2026-03-10T02:33:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*

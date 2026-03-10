@@ -36,7 +36,7 @@ Requirements for milestone `v1.1 Official SDK Conformance`. Each maps to one roa
 - [x] **SLCK-09**: Developer can use `@slack/oauth` `InstallProvider` flows (`handleInstallPath`, `generateInstallUrl`, `handleCallback`, `authorize`) against the Slack twin with valid state, cookie, redirect, and installation-store behavior
 - [x] **SLCK-10**: Developer can use `@slack/bolt` `App` listener APIs (`event`, `message`, `action`, `command`, `options`, `shortcut`, `view`, `function`, and `assistant`) against twin-backed Slack requests with correct ack semantics
 - [x] **SLCK-11**: Developer can use `@slack/bolt` HTTP and Express receiver flows against the Slack twin, including request verification, URL verification, response_url behavior, and custom routes
-- [ ] **SLCK-12**: Developer can use `@slack/bolt` Socket Mode and AWS Lambda receiver flows against twin-backed harnesses with equivalent event delivery and acknowledgement semantics _(Socket Mode uses ws.Server broker; Lambda uses direct function invocation with zero AWS deps)_
+- [x] **SLCK-12**: Developer can use `@slack/bolt` Socket Mode and AWS Lambda receiver flows against twin-backed harnesses with equivalent event delivery and acknowledgement semantics _(Socket Mode uses ws.Server broker; Lambda uses direct function invocation with zero AWS deps)_
 
 ## v2 Requirements
 
@@ -90,7 +90,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SLCK-09 | Phase 19 | Complete |
 | SLCK-10 | Phase 19 | Complete |
 | SLCK-11 | Phase 19 | Complete |
-| SLCK-12 | Phase 20 | Pending |
+| SLCK-12 | Phase 20 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 22 total
