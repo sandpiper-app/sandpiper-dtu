@@ -8,7 +8,7 @@
 import type { ConformanceAdapter } from './adapter.js';
 import type { FixtureStore } from './fixture-store.js';
 import type { ConformanceReporter } from './reporter.js';
-import { compareResponses } from './comparator.js';
+import { compareResponses, compareResponsesStructurally } from './comparator.js';
 import type {
   ConformanceSuite,
   ConformanceReport,
@@ -61,6 +61,11 @@ export class ConformanceRunner {
 
     try {
       for (const test of suite.tests) {
+        // Skip tests marked as live-only incompatible
+        if (test.liveSkip && this.mode === 'live') {
+          continue;
+        }
+
         try {
           // Run setup operations
           if (test.setup) {
@@ -89,15 +94,17 @@ export class ConformanceRunner {
           }
 
           if (baselineResponse) {
-            const result = compareResponses(
-              test.id,
-              test.name,
-              test.category,
-              twinResponse,
-              baselineResponse,
-              suite.normalizer,
-              test.requirements ?? []
-            );
+            const result = this.mode === 'live'
+              ? compareResponsesStructurally(
+                  test.id, test.name, test.category,
+                  twinResponse, baselineResponse,
+                  test.requirements ?? []
+                )
+              : compareResponses(
+                  test.id, test.name, test.category,
+                  twinResponse, baselineResponse,
+                  suite.normalizer, test.requirements ?? []
+                );
             results.push(result);
           } else {
             // No baseline available

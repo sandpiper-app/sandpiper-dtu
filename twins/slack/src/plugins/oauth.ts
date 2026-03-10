@@ -35,8 +35,9 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.status(400).send({ ok: false, error: 'missing_redirect_uri' });
     }
 
-    // Generate a random authorization code
+    // Generate a random authorization code and store it
     const code = randomUUID();
+    issuedCodes.add(code);
 
     // Redirect to the app's redirect_uri with code and state
     const url = new URL(redirect_uri);
@@ -48,6 +49,9 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
     return reply.redirect(url.toString());
   });
 
+  // Track issued authorization codes (valid until exchanged)
+  const issuedCodes = new Set<string>();
+
   // POST /api/oauth.v2.access — token exchange
   fastify.post<{
     Body: {
@@ -58,9 +62,12 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
   }>('/api/oauth.v2.access', async (request) => {
     const { code } = request.body ?? {};
 
-    if (!code) {
+    if (!code || !issuedCodes.has(code)) {
       return { ok: false, error: 'invalid_code' };
     }
+
+    // Consume code (one-time use)
+    issuedCodes.delete(code);
 
     request.log.info({ code }, 'OAuth v2 token exchange');
 

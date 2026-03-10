@@ -1,23 +1,9 @@
-/**
- * Products conformance suite
- *
- * Tests Shopify Admin GraphQL API product operations:
- * - Create product via mutation
- * - Query single product by GID
- * - Query products list (connection/edges)
- * - Update product and verify changes
- *
- * Runs against the twin (in-process via inject()) or a live Shopify dev store.
- */
-
 import type { ConformanceSuite } from '@dtu/conformance';
 import { shopifyNormalizer } from '../normalizer.js';
 
-/** GraphQL query fragments */
 const PRODUCT_FIELDS = `
   id
   title
-  description
   vendor
   productType
   createdAt
@@ -37,7 +23,6 @@ const CREATE_PRODUCT_MUTATION = `
 
 const productInput = {
   title: 'Conformance Test Widget',
-  description: 'A product created by the conformance test suite',
   vendor: 'DTU Tests',
   productType: 'Widget',
 };
@@ -63,7 +48,6 @@ export const productsSuite: ConformanceSuite = {
         },
       },
     },
-
     {
       id: 'products-list',
       name: 'Query products list (connection/edges format)',
@@ -99,7 +83,6 @@ export const productsSuite: ConformanceSuite = {
         },
       },
     },
-
     {
       id: 'products-create-validation',
       name: 'Product creation returns userErrors for missing title',

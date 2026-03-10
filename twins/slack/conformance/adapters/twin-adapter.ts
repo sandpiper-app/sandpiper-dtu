@@ -20,12 +20,22 @@ export class SlackTwinAdapter implements ConformanceAdapter {
     this.app = await buildApp({ logger: false });
     await this.app.ready();
 
-    // Perform OAuth to get bot token (same flow as tests)
+    // Get an authorization code via the authorize endpoint
+    const authzResponse = await this.app.inject({
+      method: 'GET',
+      url: '/oauth/v2/authorize?client_id=test&scope=chat:write&redirect_uri=https://localhost/callback&state=test',
+    });
+    // Extract code from redirect Location header
+    const location = authzResponse.headers.location as string;
+    const code = new URL(location).searchParams.get('code');
+    if (!code) throw new Error('No code in authorize redirect');
+
+    // Exchange code for bot token
     const oauthResponse = await this.app.inject({
       method: 'POST',
       url: '/api/oauth.v2.access',
       headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      payload: 'code=conformance-test-code',
+      payload: `code=${code}`,
     });
 
     const body = JSON.parse(oauthResponse.body);

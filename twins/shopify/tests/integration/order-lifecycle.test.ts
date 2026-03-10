@@ -41,8 +41,8 @@ async function createOrder(
 ): Promise<string> {
   const financialStatusArg = financialStatus ? `, financialStatus: ${financialStatus}` : '';
   const body = await gql(app, token, `mutation {
-    orderCreate(input: {
-      lineItems: [{ title: "Test Item", quantity: 1, price: "10.00" }],
+    orderCreate(order: {
+      lineItems: [{ title: "Test Item", quantity: 1 }],
       totalPrice: "10.00",
       currencyCode: "USD"
       ${financialStatusArg}
@@ -124,8 +124,8 @@ describe('Order Lifecycle Integration', () => {
   it('happy path: create (UNFULFILLED/PENDING) -> fulfill (FULFILLED) -> close (closedAt set)', async () => {
     // Create order with PAID financial status (needed for close)
     const createBody = await gql(app, token, `mutation {
-      orderCreate(input: {
-        lineItems: [{ title: "Widget", quantity: 1, price: "99.00" }],
+      orderCreate(order: {
+        lineItems: [{ title: "Widget", quantity: 1 }],
         totalPrice: "99.00",
         currencyCode: "USD",
         financialStatus: PAID

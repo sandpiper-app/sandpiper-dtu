@@ -313,12 +313,12 @@ export const resolvers = {
 
   // Mutation resolvers
   MutationType: {
-    orderCreate: async (_parent: unknown, args: { input: any }, context: Context) => {
+    orderCreate: async (_parent: unknown, args: { order: any }, context: Context) => {
       requireAuth(context);
       // Check error simulation first
       await context.errorSimulator.throwIfConfigured('orderCreate');
 
-      const { input } = args;
+      const input = args.order;
       const errors: UserError[] = [];
 
       // Validate required fields
@@ -797,7 +797,16 @@ export const resolvers = {
     ) => {
       requireAuth(context);
 
-      const { topic, webhookSubscription } = args;
+      // Map GraphQL enum (ORDERS_CREATE) to topic string (orders/create)
+      const topicMap: Record<string, string> = {
+        ORDERS_CREATE: 'orders/create', ORDERS_UPDATED: 'orders/update', ORDERS_DELETE: 'orders/delete',
+        PRODUCTS_CREATE: 'products/create', PRODUCTS_UPDATE: 'products/update', PRODUCTS_DELETE: 'products/delete',
+        CUSTOMERS_CREATE: 'customers/create', CUSTOMERS_UPDATE: 'customers/update', CUSTOMERS_DELETE: 'customers/delete',
+        FULFILLMENTS_CREATE: 'fulfillments/create', FULFILLMENTS_UPDATE: 'fulfillments/update',
+      };
+      const rawTopic = args.topic;
+      const topic = topicMap[rawTopic] ?? rawTopic;
+      const { webhookSubscription } = args;
       const { callbackUrl } = webhookSubscription;
 
       if (!topic) {

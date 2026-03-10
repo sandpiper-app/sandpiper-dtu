@@ -49,6 +49,8 @@ export interface ConformanceTest {
   teardown?: ConformanceOperation[];
   /** Requirement IDs this test validates */
   requirements?: string[];
+  /** Skip this test in live mode (e.g., twin-specific debug endpoints) */
+  liveSkip?: boolean;
 }
 
 /** A collection of conformance tests with shared normalizer */

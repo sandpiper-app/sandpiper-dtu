@@ -19,11 +19,16 @@ describe('Slack Twin Integration — Phase 5 Success Criteria', () => {
     app = await buildApp({ logger: false });
     delete process.env.WEBHOOK_SYNC_MODE;
 
-    // Get a valid bot token via OAuth
+    // Get a valid bot token via OAuth (must first get a real code from /oauth/v2/authorize)
+    const authzRes = await app.inject({
+      method: 'GET',
+      url: '/oauth/v2/authorize?client_id=test&scope=chat:write&redirect_uri=https://localhost/callback&state=test',
+    });
+    const code = new URL(authzRes.headers.location as string).searchParams.get('code');
     const oauthRes = await app.inject({
       method: 'POST',
       url: '/api/oauth.v2.access',
-      payload: { code: 'test-code' },
+      payload: { code },
     });
     botToken = JSON.parse(oauthRes.body).access_token;
   });
@@ -45,10 +50,16 @@ describe('Slack Twin Integration — Phase 5 Success Criteria', () => {
   // Success Criterion 1: OAuth installation flow
   // =========================================================================
   it('SC1: completes OAuth workspace installation and receives bot token', async () => {
+    // Obtain a fresh authorization code from the authorize endpoint
+    const authzRes = await app.inject({
+      method: 'GET',
+      url: '/oauth/v2/authorize?client_id=test&scope=chat:write&redirect_uri=https://localhost/callback&state=test',
+    });
+    const sc1Code = new URL(authzRes.headers.location as string).searchParams.get('code');
     const res = await app.inject({
       method: 'POST',
       url: '/api/oauth.v2.access',
-      payload: { code: 'auth-code-123' },
+      payload: { code: sc1Code },
     });
     expect(res.statusCode).toBe(200);
     const body = JSON.parse(res.body);

@@ -1,19 +1,6 @@
-/**
- * Orders conformance suite
- *
- * Tests Shopify Admin GraphQL API order operations:
- * - Create order via mutation
- * - Query single order by GID
- * - Query orders list (connection/edges)
- * - Update order and verify changes
- *
- * Runs against the twin (in-process via inject()) or a live Shopify dev store.
- */
-
 import type { ConformanceSuite } from '@dtu/conformance';
 import { shopifyNormalizer } from '../normalizer.js';
 
-/** GraphQL query fragments */
 const ORDER_FIELDS = `
   id
   name
@@ -31,15 +18,14 @@ const ORDER_FIELDS = `
         id
         title
         quantity
-        price
       }
     }
   }
 `;
 
 const CREATE_ORDER_MUTATION = `
-  mutation CreateOrder($input: OrderInput!) {
-    orderCreate(input: $input) {
+  mutation CreateOrder($order: OrderInput!) {
+    orderCreate(order: $order) {
       order {
         ${ORDER_FIELDS}
       }
@@ -49,7 +35,7 @@ const CREATE_ORDER_MUTATION = `
 `;
 
 const orderInput = {
-  lineItems: [{ title: 'Conformance Widget', quantity: 2, price: '25.00' }],
+  lineItems: [{ title: 'Conformance Widget', quantity: 2 }],
   totalPrice: '50.00',
   currencyCode: 'USD',
 };
@@ -71,11 +57,10 @@ export const ordersSuite: ConformanceSuite = {
         path: '/admin/api/2024-01/graphql.json',
         graphql: {
           query: CREATE_ORDER_MUTATION,
-          variables: { input: orderInput },
+          variables: { order: orderInput },
         },
       },
     },
-
     {
       id: 'orders-list',
       name: 'Query orders list (connection/edges format)',
@@ -89,7 +74,7 @@ export const ordersSuite: ConformanceSuite = {
           path: '/admin/api/2024-01/graphql.json',
           graphql: {
             query: CREATE_ORDER_MUTATION,
-            variables: { input: orderInput },
+            variables: { order: orderInput },
           },
         },
       ],
@@ -111,7 +96,6 @@ export const ordersSuite: ConformanceSuite = {
         },
       },
     },
-
     {
       id: 'orders-create-validation',
       name: 'Order creation returns userErrors for missing required fields',
@@ -124,7 +108,7 @@ export const ordersSuite: ConformanceSuite = {
         path: '/admin/api/2024-01/graphql.json',
         graphql: {
           query: `mutation {
-            orderCreate(input: {
+            orderCreate(order: {
               lineItems: [],
               totalPrice: "10.00",
               currencyCode: "USD"

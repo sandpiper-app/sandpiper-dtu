@@ -70,7 +70,6 @@ type LineItem {
   id: ID!
   title: String!
   quantity: Int!
-  price: String!
 }
 
 type OrderConnection {
@@ -288,7 +287,6 @@ input MoneyInput {
 input LineItemInput {
   title: String!
   quantity: Int!
-  price: String!
 }
 
 input OrderInput {
@@ -312,7 +310,6 @@ input OrderUpdateInput {
 
 input ProductInput {
   title: String!
-  description: String
   vendor: String
   productType: String
 }
@@ -397,6 +394,20 @@ type WebhookSubscriptionCreatePayload {
   userErrors: [UserError!]!
 }
 
+enum WebhookSubscriptionTopic {
+  ORDERS_CREATE
+  ORDERS_UPDATED
+  ORDERS_DELETE
+  PRODUCTS_CREATE
+  PRODUCTS_UPDATE
+  PRODUCTS_DELETE
+  CUSTOMERS_CREATE
+  CUSTOMERS_UPDATE
+  CUSTOMERS_DELETE
+  FULFILLMENTS_CREATE
+  FULFILLMENTS_UPDATE
+}
+
 input WebhookSubscriptionInput {
   callbackUrl: String!
 }
@@ -422,7 +433,7 @@ type QueryRoot {
 
 # Mutation root
 type MutationType {
-  orderCreate(input: OrderInput!): OrderCreatePayload!
+  orderCreate(order: OrderInput!): OrderCreatePayload!
   orderUpdate(input: OrderUpdateInput!): OrderUpdatePayload!
   orderClose(input: OrderCloseInput!): OrderClosePayload!
   productCreate(input: ProductInput!): ProductCreatePayload!
@@ -430,7 +441,7 @@ type MutationType {
   fulfillmentCreate(input: FulfillmentInput!): FulfillmentCreatePayload!
   customerCreate(input: CustomerInput!): CustomerCreatePayload!
   inventoryItemUpdate(input: InventoryItemUpdateInput!): InventoryItemUpdatePayload!
-  webhookSubscriptionCreate(topic: String!, webhookSubscription: WebhookSubscriptionInput!): WebhookSubscriptionCreatePayload!
+  webhookSubscriptionCreate(topic: WebhookSubscriptionTopic!, webhookSubscription: WebhookSubscriptionInput!): WebhookSubscriptionCreatePayload!
   appSubscriptionCreate(name: String!, returnUrl: URL!, lineItems: [AppSubscriptionLineItemInput!]!, test: Boolean, trialDays: Int, replacementBehavior: AppSubscriptionReplacementBehavior): AppSubscriptionCreatePayload!
   appPurchaseOneTimeCreate(name: String!, price: MoneyInput!, returnUrl: URL!, test: Boolean): AppPurchaseOneTimeCreatePayload!
   appSubscriptionCancel(id: ID!, prorate: Boolean): AppSubscriptionCancelPayload!

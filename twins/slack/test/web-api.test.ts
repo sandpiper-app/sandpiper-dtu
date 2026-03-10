@@ -14,11 +14,16 @@ describe('Slack Web API', () => {
   beforeEach(async () => {
     app = await buildApp({ logger: false });
 
-    // Get a valid bot token via OAuth
+    // Get a valid bot token via OAuth (must first get a real code from /oauth/v2/authorize)
+    const authzRes = await app.inject({
+      method: 'GET',
+      url: '/oauth/v2/authorize?client_id=test&scope=chat:write&redirect_uri=https://localhost/callback&state=test',
+    });
+    const code = new URL(authzRes.headers.location as string).searchParams.get('code');
     const oauthRes = await app.inject({
       method: 'POST',
       url: '/api/oauth.v2.access',
-      payload: { code: 'test-code' },
+      payload: { code },
     });
     botToken = JSON.parse(oauthRes.body).access_token;
   });
@@ -397,11 +402,18 @@ describe('Slack Web API', () => {
     });
 
     it('POST /api/oauth.v2.access with form-urlencoded body works', async () => {
+      // Obtain a fresh authorization code via the authorize endpoint
+      const authzRes = await app.inject({
+        method: 'GET',
+        url: '/oauth/v2/authorize?client_id=test&scope=chat:write&redirect_uri=https://localhost/callback&state=test',
+      });
+      const formCode = new URL(authzRes.headers.location as string).searchParams.get('code') as string;
+
       const res = await app.inject({
         method: 'POST',
         url: '/api/oauth.v2.access',
         headers: { 'content-type': 'application/x-www-form-urlencoded' },
-        payload: 'code=test-form-code',
+        payload: `code=${formCode}`,
       });
       expect(res.statusCode).toBe(200);
       const body = JSON.parse(res.body);

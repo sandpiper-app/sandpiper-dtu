@@ -97,11 +97,20 @@ describe('Slack Twin Smoke Tests', () => {
   });
 
   describe('POST /api/oauth.v2.access', () => {
+    // Helper: obtain a valid one-time authorization code from the authorize endpoint
+    async function getAuthCode() {
+      const authzRes = await app.inject({
+        method: 'GET',
+        url: '/oauth/v2/authorize?client_id=test&scope=chat:write&redirect_uri=https://localhost/callback&state=test',
+      });
+      return new URL(authzRes.headers.location as string).searchParams.get('code') as string;
+    }
+
     it('exchanges code for bot and user tokens', async () => {
       const res = await app.inject({
         method: 'POST',
         url: '/api/oauth.v2.access',
-        payload: { code: 'test-code' },
+        payload: { code: await getAuthCode() },
       });
       expect(res.statusCode).toBe(200);
       const body = JSON.parse(res.body);
@@ -119,7 +128,7 @@ describe('Slack Twin Smoke Tests', () => {
       await app.inject({
         method: 'POST',
         url: '/api/oauth.v2.access',
-        payload: { code: 'test-code' },
+        payload: { code: await getAuthCode() },
       });
       const state = await app.inject({ method: 'GET', url: '/admin/state' });
       const body = JSON.parse(state.body);

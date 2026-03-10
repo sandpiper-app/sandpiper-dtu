@@ -17,11 +17,16 @@ describe('Slack Auth Web API', () => {
   beforeEach(async () => {
     app = await buildApp({ logger: false });
 
-    // Get a valid bot token via OAuth
+    // Get a valid bot token via OAuth (must first get a real code from /oauth/v2/authorize)
+    const authzRes = await app.inject({
+      method: 'GET',
+      url: '/oauth/v2/authorize?client_id=test&scope=chat:write&redirect_uri=https://localhost/callback&state=test',
+    });
+    const code = new URL(authzRes.headers.location as string).searchParams.get('code');
     const oauthRes = await app.inject({
       method: 'POST',
       url: '/api/oauth.v2.access',
-      payload: { code: 'test-code' },
+      payload: { code },
     });
     botToken = JSON.parse(oauthRes.body).access_token;
   });

@@ -226,8 +226,8 @@ describe('Shopify Twin Integration', () => {
         headers: { 'X-Shopify-Access-Token': token },
         payload: {
           query: `mutation {
-            orderCreate(input: {
-              lineItems: [{title: "Test Product", quantity: 1, price: "10.00"}],
+            orderCreate(order: {
+              lineItems: [{title: "Test Product", quantity: 1}],
               totalPrice: "10.00",
               currencyCode: "USD"
             }) {
@@ -251,7 +251,7 @@ describe('Shopify Twin Integration', () => {
         headers: { 'X-Shopify-Access-Token': token },
         payload: {
           query: `mutation {
-            orderCreate(input: {
+            orderCreate(order: {
               lineItems: [],
               totalPrice: "10.00",
               currencyCode: "USD"
@@ -278,8 +278,8 @@ describe('Shopify Twin Integration', () => {
         headers: { 'X-Shopify-Access-Token': token },
         payload: {
           query: `mutation {
-            orderCreate(input: {
-              lineItems: [{title: "Test", quantity: 1, price: "10.00"}],
+            orderCreate(order: {
+              lineItems: [{title: "Test", quantity: 1}],
               totalPrice: "10.00",
               currencyCode: "USD"
             }) {
@@ -457,8 +457,8 @@ describe('Shopify Twin Integration', () => {
         headers: { 'X-Shopify-Access-Token': token },
         payload: {
           query: `mutation {
-            orderCreate(input: {
-              lineItems: [{title: "Test", quantity: 1, price: "10.00"}],
+            orderCreate(order: {
+              lineItems: [{title: "Test", quantity: 1}],
               totalPrice: "10.00",
               currencyCode: "USD"
             }) {
@@ -557,7 +557,7 @@ describe('Shopify Twin Integration', () => {
         payload: {
           query: `mutation {
             webhookSubscriptionCreate(
-              topic: "orders/create",
+              topic: ORDERS_CREATE,
               webhookSubscription: { callbackUrl: "https://example.com/webhooks" }
             ) {
               webhookSubscription { id topic callbackUrl }
@@ -588,7 +588,7 @@ describe('Shopify Twin Integration', () => {
         payload: {
           query: `mutation {
             webhookSubscriptionCreate(
-              topic: "products/create",
+              topic: PRODUCTS_CREATE,
               webhookSubscription: { callbackUrl: "https://example.com/webhooks" }
             ) {
               webhookSubscription { id }
@@ -645,8 +645,8 @@ describe('Shopify Twin Integration', () => {
         headers: { 'X-Shopify-Access-Token': token },
         payload: {
           query: `mutation {
-            orderCreate(input: {
-              lineItems: [{title: "Test", quantity: 1, price: "10.00"}],
+            orderCreate(order: {
+              lineItems: [{title: "Test", quantity: 1}],
               totalPrice: "10.00",
               currencyCode: "USD"
             }) {
@@ -681,8 +681,8 @@ describe('Shopify Twin Integration', () => {
         headers: { 'X-Shopify-Access-Token': token },
         payload: {
           query: `mutation {
-            orderCreate(input: {
-              lineItems: [{title: "Test", quantity: 1, price: "10.00"}],
+            orderCreate(order: {
+              lineItems: [{title: "Test", quantity: 1}],
               totalPrice: "10.00",
               currencyCode: "USD"
             }) {
@@ -722,8 +722,8 @@ describe('Shopify Twin Integration', () => {
         headers: { 'X-Shopify-Access-Token': token },
         payload: {
           query: `mutation {
-            orderCreate(input: {
-              lineItems: [{title: "T", quantity: 1, price: "1.00"}],
+            orderCreate(order: {
+              lineItems: [{title: "T", quantity: 1}],
               totalPrice: "1.00",
               currencyCode: "USD"
             }) {
@@ -746,8 +746,8 @@ describe('Shopify Twin Integration', () => {
         headers: { 'X-Shopify-Access-Token': token },
         payload: {
           query: `mutation {
-            orderCreate(input: {
-              lineItems: [{title: "T", quantity: 1, price: "1.00"}],
+            orderCreate(order: {
+              lineItems: [{title: "T", quantity: 1}],
               totalPrice: "1.00",
               currencyCode: "USD"
             }) {
@@ -794,8 +794,8 @@ describe('Shopify Twin Integration', () => {
         headers: { 'X-Shopify-Access-Token': token },
         payload: {
           query: `mutation {
-            orderCreate(input: {
-              lineItems: [{title: "Test", quantity: 1, price: "10.00"}],
+            orderCreate(order: {
+              lineItems: [{title: "Test", quantity: 1}],
               totalPrice: "10.00",
               currencyCode: "USD"
             }) {
@@ -820,8 +820,8 @@ describe('Shopify Twin Integration', () => {
         headers: { 'X-Shopify-Access-Token': token },
         payload: {
           query: `mutation {
-            orderCreate(input: {
-              lineItems: [{title: "Test", quantity: 1, price: "10.00"}],
+            orderCreate(order: {
+              lineItems: [{title: "Test", quantity: 1}],
               totalPrice: "10.00",
               currencyCode: "USD"
             }) {
@@ -900,8 +900,8 @@ describe('Shopify Twin Integration', () => {
         headers: { 'X-Shopify-Access-Token': token },
         payload: {
           query: `mutation {
-            orderCreate(input: {
-              lineItems: [{title: "Test", quantity: 1, price: "10.00"}],
+            orderCreate(order: {
+              lineItems: [{title: "Test", quantity: 1}],
               totalPrice: "10.00",
               currencyCode: "USD"
             }) {
@@ -957,8 +957,8 @@ describe('Shopify Twin Integration', () => {
         headers: { 'X-Shopify-Access-Token': token },
         payload: {
           query: `mutation {
-            orderCreate(input: {
-              lineItems: [{title: "Test", quantity: 1, price: "10.00"}],
+            orderCreate(order: {
+              lineItems: [{title: "Test", quantity: 1}],
               totalPrice: "10.00",
               currencyCode: "USD"
             }) {
@@ -1020,8 +1020,8 @@ describe('Shopify Twin Integration', () => {
         headers: { 'X-Shopify-Access-Token': token },
         payload: {
           query: `mutation {
-            orderCreate(input: {
-              lineItems: [{title: "T", quantity: 1, price: "1.00"}],
+            orderCreate(order: {
+              lineItems: [{title: "T", quantity: 1}],
               totalPrice: "1.00",
               currencyCode: "USD"
             }) {
