@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
       inputs:
           live:
-              description: "Whether to test against live APIs"
+              description: "Test against live APIs"
               required: true
               default: false
               type: boolean
