@@ -133,10 +133,10 @@ jobs:
       - name: Build packages
         run: pnpm build
 
-      # Uses Custom App client credentials (long-lived, no expiry) instead of an
+      # Uses Custom App client credentials (long-lived) instead of a short-lived
       # OAuth access token (expires 24h). Set SHOPIFY_CLIENT_ID and
-      # SHOPIFY_CLIENT_SECRET in repo secrets from the Shopify Partner Dashboard
-      # or Store Admin > Apps > Develop apps > [your app] > API credentials.
+      # SHOPIFY_CLIENT_SECRET in repo secrets from the Custom App's API credentials
+      # page (Store Admin > Apps > Develop apps > [your app] > API credentials).
       - name: Run live conformance suite against Shopify dev store
         run: pnpm --filter @dtu/twin-shopify run conformance:live
         env:

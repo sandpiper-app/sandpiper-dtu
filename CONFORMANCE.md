@@ -35,7 +35,8 @@ pnpm run conformance:record    # Record real API responses as fixtures
 
 Required env vars for live mode:
 - `SHOPIFY_STORE_URL` — e.g. `https://my-dev-store.myshopify.com`
-- `SHOPIFY_ACCESS_TOKEN` — Admin API access token
+- `SHOPIFY_CLIENT_ID` + `SHOPIFY_CLIENT_SECRET` — Custom App client credentials (recommended, long-lived)
+- Or `SHOPIFY_ACCESS_TOKEN` — Admin API access token (legacy fallback, expires in 24h)
 
 ### Slack Twin
 

@@ -4,9 +4,9 @@
  * Connects to a real Shopify dev store using one of two credential modes:
  *
  * Mode 1 (recommended): SHOPIFY_CLIENT_ID + SHOPIFY_CLIENT_SECRET
- *   Custom App client credentials. Exchanged for an offline (non-expiring) access token
- *   at init() time via POST /admin/oauth/access_token with grant_type=client_credentials.
- *   Tokens issued this way never expire, making scheduled CI runs reliable without rotation.
+ *   Custom App client credentials (long-lived, do not expire). Exchanged for an access
+ *   token at init() time via POST /admin/oauth/access_token with grant_type=client_credentials.
+ *   The credentials themselves never expire, so a fresh token can always be minted at startup.
  *
  * Mode 2 (legacy): SHOPIFY_ACCESS_TOKEN
  *   A short-lived access token issued by an OAuth flow (online access mode).
@@ -62,12 +62,12 @@ export class ShopifyLiveAdapter implements ConformanceAdapter {
 
   async init(): Promise<void> {
     if (this.useClientCredentials) {
-      // Exchange client credentials for an offline access token
+      // Exchange client credentials for an access token
       const tokenUrl = `${this.baseUrl}/admin/oauth/access_token`;
       const tokenResponse = await fetch(tokenUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
           client_id: this.clientId,
           client_secret: this.clientSecret,
           grant_type: 'client_credentials',
@@ -101,12 +101,14 @@ export class ShopifyLiveAdapter implements ConformanceAdapter {
       },
     });
 
-    if (response.status === 401 || response.status === 403) {
+    if (!response.ok) {
       const credHint = this.useClientCredentials
         ? 'Check SHOPIFY_CLIENT_ID and SHOPIFY_CLIENT_SECRET.'
         : 'Check SHOPIFY_ACCESS_TOKEN.';
+      const bodySnippet = await response.text().then(t => t.slice(0, 200)).catch(() => '');
       throw new Error(
-        `Shopify live adapter authentication failed (${response.status}). Check SHOPIFY_STORE_URL and ${credHint}`
+        `Shopify live adapter health check failed (${response.status}). Check SHOPIFY_STORE_URL and ${credHint}` +
+          (bodySnippet ? ` Response: ${bodySnippet}` : '')
       );
     }
   }
