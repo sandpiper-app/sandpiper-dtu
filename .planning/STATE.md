@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Completed 17-04-PLAN.md
-last_updated: "2026-03-09T22:47:31.690Z"
+stopped_at: Completed 18-01-PLAN.md
+last_updated: "2026-03-10T00:09:34.436Z"
 progress:
   total_phases: 8
   completed_phases: 5
-  total_plans: 19
-  completed_plans: 19
-  percent: 100
+  total_plans: 24
+  completed_plans: 21
+  percent: 94
 ---
 
 # Project State: Sandpiper DTU
@@ -29,7 +29,7 @@ progress:
 **Phase:** Phase 17 — Shopify Client Surfaces & Strategic REST Stubs
 **Plan:** Plan 01 complete — Plan 02 next
 **Status:** In Progress
-**Progress:** [██████████] 100%
+**Progress:** [█████████░] 94%
 
 ## Performance Metrics
 
@@ -41,6 +41,11 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 18-02 Execution:**
+- conversations.requestSharedInvite is a nested SDK namespace ({approve,deny,list} sub-methods), not a flat callable — routes registered as conversations.requestSharedInvite.{approve,deny,list} to match SDK dispatch paths
+- U_BOT_TWIN seeded without email field in seedDefaults() — lookupByEmail test covers error path via try/catch (Slack SDK throws on ok:false responses); no hardcoded email
+- checkAuth() helper extracted as local async function inside each plugin — keeps plugins self-contained without new shared module dependency
 
 **2026-03-09 - Plan 17-04 Execution:**
 - StorefrontClient and REST resource classes (Product, Customer, etc.) absent from @shopify/shopify-api root manifest — ts-morph only captures symbols exported from package root; REST resources are at rest/admin/2024-01/ sub-path; SHOP-15 attributed via RestClient.get/post/put/delete
@@ -348,9 +353,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 17 Plan 04 — Coverage ledger update: LIVE_SYMBOLS with Phase 16 backfill + Phase 17 client surfaces, 35 live symbols, drift:check passes, all 80 tests green
-**Stopped at:** Completed 17-04-PLAN.md
-**Timestamp:** 2026-03-09T22:38:00Z
+**Last completed:** Phase 18 Plan 02 — conversations.ts 28 methods + users.ts 12 methods; 34 new tests; all 131 SDK tests green
+**Stopped at:** Completed 18-01-PLAN.md
+**Timestamp:** 2026-03-09T23:08:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*

@@ -32,7 +32,7 @@ Requirements for milestone `v1.1 Official SDK Conformance`. Each maps to one roa
 
 - [x] **SLCK-06.5**: Developer can call `auth.test` and `api.test` via WebClient and receive valid auth verification responses — this is the gateway for all Slack SDK work (WebClient calls `auth.test` during initialization)
 - [ ] **SLCK-07**: Developer can use `@slack/web-api` `WebClient` base behaviors (`apiCall`, `paginate`, `filesUploadV2`, `ChatStreamer`, retries, and rate-limit handling) against the Slack twin
-- [ ] **SLCK-08**: Developer can call every bound method exposed by the pinned `@slack/web-api` package against the Slack twin, including admin, files, views, workflows, assistant, canvases, and other advanced method families
+- [x] **SLCK-08**: Developer can call every bound method exposed by the pinned `@slack/web-api` package against the Slack twin, including admin, files, views, workflows, assistant, canvases, and other advanced method families
 - [ ] **SLCK-09**: Developer can use `@slack/oauth` `InstallProvider` flows (`handleInstallPath`, `generateInstallUrl`, `handleCallback`, `authorize`) against the Slack twin with valid state, cookie, redirect, and installation-store behavior
 - [ ] **SLCK-10**: Developer can use `@slack/bolt` `App` listener APIs (`event`, `message`, `action`, `command`, `options`, `shortcut`, `view`, `function`, and `assistant`) against twin-backed Slack requests with correct ack semantics
 - [ ] **SLCK-11**: Developer can use `@slack/bolt` HTTP and Express receiver flows against the Slack twin, including request verification, URL verification, response_url behavior, and custom routes
@@ -86,7 +86,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SHOP-15 | Phase 17 | Complete |
 | SLCK-06.5 | Phase 14 | Complete |
 | SLCK-07 | Phase 18 | Pending |
-| SLCK-08 | Phase 18 | Pending |
+| SLCK-08 | Phase 18 | Complete |
 | SLCK-09 | Phase 19 | Pending |
 | SLCK-10 | Phase 19 | Pending |
 | SLCK-11 | Phase 19 | Pending |
