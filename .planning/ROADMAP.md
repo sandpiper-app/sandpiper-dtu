@@ -133,10 +133,13 @@ Plans:
   1. `InstallProvider` install path, state, callback, and authorize flows work end to end against the Slack twin
   2. Bolt `App` listener APIs handle events, messages, actions, commands, options, shortcuts, views, functions, and assistant flows with correct ack semantics
   3. HTTPReceiver and ExpressReceiver verify requests, satisfy URL verification, support response_url flows, and honor custom routes against the Slack twin
-**Plans:** 0 plans
+**Plans:** 4 plans
 
 Plans:
-- [ ] TBD (run `$gsd-plan-phase 19` to break down)
+- [ ] 19-01-PLAN.md — oauth.v2.access fix (enterprise: null) + InstallProvider flow tests (SLCK-09)
+- [ ] 19-02-PLAN.md — Bolt App listener API tests via processEvent() — 9 listener types (SLCK-10)
+- [ ] 19-03-PLAN.md — HTTPReceiver + ExpressReceiver tests — url_verification, HMAC, event delivery, custom routes (SLCK-11)
+- [ ] 19-04-PLAN.md — Coverage ledger update: @slack/oauth + @slack/bolt LIVE_SYMBOLS + pnpm coverage:generate (SLCK-09, SLCK-10, SLCK-11)
 
 ### Phase 20: Bolt Alternate Receivers & Drift Automation
 **Goal**: Close the remaining Bolt receiver surface and harden long-term SDK drift detection (basic drift detection established in Phase 14).
@@ -162,7 +165,7 @@ Plans:
 | 16. Shopify `shopify-api` Platform Surface | 4/4 | Complete    | 2026-03-09 |
 | 17. Shopify Client Surfaces & Strategic REST Stubs | 4/4 | Complete    | 2026-03-09 |
 | 18. Slack WebClient Full Surface | 5/5 | Complete    | 2026-03-10 |
-| 19. Slack OAuth & Bolt HTTP Surface | 0/0 | Pending | — |
+| 19. Slack OAuth & Bolt HTTP Surface | 0/4 | Pending | — |
 | 20. Bolt Alternate Receivers & Drift Automation | 0/0 | Pending | — |
 
 ## Dependencies
