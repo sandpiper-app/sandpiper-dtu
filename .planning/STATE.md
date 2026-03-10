@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Completed 18-03-PLAN.md
-last_updated: "2026-03-10T00:15:15.897Z"
+stopped_at: Completed 18-04-PLAN.md
+last_updated: "2026-03-10T00:19:11.379Z"
 progress:
   total_phases: 8
   completed_phases: 5
   total_plans: 24
-  completed_plans: 22
-  percent: 96
+  completed_plans: 23
+  percent: 98
 ---
 
 # Project State: Sandpiper DTU
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 **Phase:** Phase 18 — Slack WebClient Full Surface
-**Plan:** Plan 03 complete — Plan 04 next
+**Plan:** Plan 04 complete — Phase 18 complete
 **Status:** In Progress
-**Progress:** [██████████] 96%
+**Progress:** [██████████] 98%
 
 ## Performance Metrics
 
@@ -41,6 +41,12 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-10 - Plan 18-04 Execution:**
+- response_metadata:{next_cursor:''} in all stubs — SDK paginate() halts cleanly on empty cursor without extra routes
+- GET+POST registered for list/info stubs — WebClient uses POST but some SDK helpers may use GET for pagination
+- auth.revoke and auth.teams.list registered as stubs — no state change needed for SDK conformance
+- stub(extra) factory pattern used across 80+ routes — single auth-gated function reduces repetition without losing per-family shape control
 
 **2026-03-10 - Plan 18-03 Execution:**
 - reactions.remove is a silent no-op (ok:true) — SlackStateManager has no removeReaction method; conformance only requires ok:true
@@ -365,9 +371,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 18 Plan 03 — reactions (4), pins (3), views (4) plugins with 11 tests green completing Tier 1 SLCK-08 method families
-**Stopped at:** Completed 18-03-PLAN.md
-**Timestamp:** 2026-03-10T00:09:00Z
+**Last completed:** Phase 18 Plan 04 — 80+ Tier 2 stubs across 13 families with 10-test smoke coverage completing SLCK-08 surface (152 tests / 22 files green)
+**Stopped at:** Completed 18-04-PLAN.md
+**Timestamp:** 2026-03-10T00:20:30Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
