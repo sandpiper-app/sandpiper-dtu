@@ -29,6 +29,7 @@ import filesPlugin from './plugins/web-api/files.js';
 import reactionsPlugin from './plugins/web-api/reactions.js';
 import pinsPlugin from './plugins/web-api/pins.js';
 import viewsPlugin from './plugins/web-api/views.js';
+import stubsPlugin from './plugins/web-api/stubs.js';
 import eventsApiPlugin from './plugins/events-api.js';
 import interactionsPlugin from './plugins/interactions.js';
 import uiPlugin from './plugins/ui.js';
@@ -129,6 +130,7 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
   await fastify.register(reactionsPlugin);
   await fastify.register(pinsPlugin);
   await fastify.register(viewsPlugin);
+  await fastify.register(stubsPlugin);
   await fastify.register(eventsApiPlugin);
   await fastify.register(interactionsPlugin);
   await fastify.register(uiPlugin);
