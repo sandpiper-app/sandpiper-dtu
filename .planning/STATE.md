@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: executing
-stopped_at: Completed 19-01-PLAN.md (19-01 executes before 19-02/19-03 in sequence)
-last_updated: "2026-03-10T01:46:39.735Z"
+stopped_at: Completed 19-04-PLAN.md
+last_updated: "2026-03-10T01:51:08.333Z"
 progress:
   total_phases: 8
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 28
-  completed_plans: 27
-  percent: 98
+  completed_plans: 28
+  percent: 100
 ---
 
 # Project State: Sandpiper DTU
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 **Phase:** Phase 19 — Slack OAuth / Bolt HTTP Surface
-**Plan:** Plan 03 complete
+**Plan:** Plan 04 complete — Phase 19 complete
 **Status:** In progress
-**Progress:** [██████████] 98%
+**Progress:** [██████████] 100%
 
 ## Performance Metrics
 
@@ -41,6 +41,13 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-09 - Plan 19-04 Execution:**
+- MemoryInstallationStore promoted to live — instantiated directly via destructuring in SLCK-09 tests (qualifies as live)
+- App.use omitted from LIVE_SYMBOLS — not called in any Phase 19 test file; only listener registration methods exercised
+- App.start and App.stop attributed to slack-bolt-http-receivers.test.ts — only exercised in receiver lifecycle tests, not in app-listeners.test.ts (which uses processEvent only)
+- InstallProvider.installationStore.deleteInstallation omitted — present in manifest but not directly invoked by tests; left as deferred to avoid false attribution
+- 193 live symbols after Phase 19 promotion (up from 167); drift:check and 173/173 tests pass
 
 **2026-03-10 - Plan 19-03 Execution:**
 - signRequest() unified helper covers both JSON (application/json) and form-encoded (application/x-www-form-urlencoded) payloads via contentType parameter — avoids two separate helpers
@@ -396,9 +403,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 19 Plan 02 — SLCK-10 Bolt App listener tests (9 types) via processEvent(); all 161 sdk-verification tests green; 2min execution
-**Stopped at:** Completed 19-01-PLAN.md (19-01 executes before 19-02/19-03 in sequence)
-**Timestamp:** 2026-03-10T01:45:09Z
+**Last completed:** Phase 19 Plan 04 — Coverage ledger update: @slack/oauth InstallProvider + @slack/bolt App listener + HTTPReceiver/ExpressReceiver promoted to live (193 total live); drift:check + 173/173 tests green; Phase 19 complete
+**Stopped at:** Completed 19-04-PLAN.md
+**Timestamp:** 2026-03-09T21:53:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*

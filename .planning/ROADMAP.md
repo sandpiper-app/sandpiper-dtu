@@ -16,7 +16,7 @@
 - [x] **Phase 16: Shopify `shopify-api` Platform Surface** - Make auth, session, utils, webhooks, billing, flow, and fulfillment-service helpers work against the twin (completed 2026-03-09)
 - [x] **Phase 17: Shopify Client Surfaces & Strategic REST Stubs** - Cover Shopify client surfaces and strategically stub deprecated REST resource classes (completed 2026-03-09)
 - [x] **Phase 18: Slack WebClient Full Surface** - Make the Slack twin satisfy the full pinned `@slack/web-api` surface (completed 2026-03-10)
-- [ ] **Phase 19: Slack OAuth & Bolt HTTP Surface** - Make `@slack/oauth` and Bolt's HTTP/Express application surface work against the twin
+- [x] **Phase 19: Slack OAuth & Bolt HTTP Surface** - Make `@slack/oauth` and Bolt's HTTP/Express application surface work against the twin (completed 2026-03-10)
 - [ ] **Phase 20: Bolt Alternate Receivers & Drift Automation** - Close Socket Mode/AWS receiver gaps and enforce long-term SDK drift detection
 
 ## Phase Details
@@ -133,7 +133,7 @@ Plans:
   1. `InstallProvider` install path, state, callback, and authorize flows work end to end against the Slack twin
   2. Bolt `App` listener APIs handle events, messages, actions, commands, options, shortcuts, views, functions, and assistant flows with correct ack semantics
   3. HTTPReceiver and ExpressReceiver verify requests, satisfy URL verification, support response_url flows, and honor custom routes against the Slack twin
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] 19-01-PLAN.md — oauth.v2.access fix (enterprise: null) + InstallProvider flow tests (SLCK-09)
@@ -165,7 +165,7 @@ Plans:
 | 16. Shopify `shopify-api` Platform Surface | 4/4 | Complete    | 2026-03-09 |
 | 17. Shopify Client Surfaces & Strategic REST Stubs | 4/4 | Complete    | 2026-03-09 |
 | 18. Slack WebClient Full Surface | 5/5 | Complete    | 2026-03-10 |
-| 19. Slack OAuth & Bolt HTTP Surface | 3/4 | In Progress|  |
+| 19. Slack OAuth & Bolt HTTP Surface | 4/4 | Complete   | 2026-03-10 |
 | 20. Bolt Alternate Receivers & Drift Automation | 0/0 | Pending | — |
 
 ## Dependencies
