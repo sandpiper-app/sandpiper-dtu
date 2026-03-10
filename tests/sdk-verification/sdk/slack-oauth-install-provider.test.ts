@@ -119,10 +119,13 @@ describe('InstallProvider (SLCK-09)', () => {
     const store = new MemoryInstallationStore();
     const installer = makeInstaller(store, false);
 
-    // The twin's /oauth/v2/authorize would redirect to redirect_uri?code=<uuid>&state=...
-    // For stateVerification: false, we bypass state checking and just provide a code.
-    // The twin's oauth.v2.access accepts any code.
-    const req = makeReq('/slack/oauth_redirect?code=test-code-slck09');
+    // First, get a valid authorization code from the twin's authorize endpoint
+    const authzRes = await fetch(
+      process.env.SLACK_API_URL! + '/oauth/v2/authorize?client_id=test-client-id-19&scope=chat:write&redirect_uri=http://localhost/slack/oauth_redirect&state=test',
+      { redirect: 'manual' },
+    );
+    const validCode = new URL(authzRes.headers.get('location')!).searchParams.get('code')!;
+    const req = makeReq(`/slack/oauth_redirect?code=${validCode}`);
     const { res } = makeRes();
 
     let callbackError: Error | undefined;
@@ -146,7 +149,13 @@ describe('InstallProvider (SLCK-09)', () => {
     const store = new MemoryInstallationStore();
     const installer = makeInstaller(store, false);
 
-    const req = makeReq('/slack/oauth_redirect?code=test-code-authorize-check');
+    // Get a valid authorization code from the twin
+    const authzRes = await fetch(
+      process.env.SLACK_API_URL! + '/oauth/v2/authorize?client_id=test-client-id-19&scope=chat:write&redirect_uri=http://localhost/slack/oauth_redirect&state=test',
+      { redirect: 'manual' },
+    );
+    const validCode = new URL(authzRes.headers.get('location')!).searchParams.get('code')!;
+    const req = makeReq(`/slack/oauth_redirect?code=${validCode}`);
     const { res } = makeRes();
 
     await installer.handleCallback(req, res, {
@@ -202,7 +211,13 @@ describe('InstallProvider (SLCK-09)', () => {
     // Step 2: handleCallback — provide the state both in query string and cookie
     // The twin's /oauth/v2/authorize would redirect to:
     // /slack/oauth_redirect?code=<code>&state=<state>
-    const callbackUrl = `/slack/oauth_redirect?code=test-code-roundtrip&state=${encodeURIComponent(stateValue)}`;
+    // Get a valid authorization code from the twin
+    const authzRes = await fetch(
+      process.env.SLACK_API_URL! + '/oauth/v2/authorize?client_id=test-client-id-19&scope=chat:write&redirect_uri=http://localhost/slack/oauth_redirect&state=test',
+      { redirect: 'manual' },
+    );
+    const validCode = new URL(authzRes.headers.get('location')!).searchParams.get('code')!;
+    const callbackUrl = `/slack/oauth_redirect?code=${validCode}&state=${encodeURIComponent(stateValue)}`;
     const callbackReq = makeReq(callbackUrl, {
       cookie: `slack-app-oauth-state=${stateValue}`,
       host: 'localhost',

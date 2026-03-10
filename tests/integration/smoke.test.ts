@@ -120,10 +120,16 @@ describe('Slack Twin Smoke Tests', () => {
   });
 
   it('POST /api/oauth.v2.access responds to OAuth token exchange', async () => {
+    // First get a valid code from authorize endpoint
+    const authzRes = await fetch(
+      `${slackBaseUrl}/oauth/v2/authorize?client_id=test&scope=chat:write&redirect_uri=https://localhost/callback&state=test`,
+      { redirect: 'manual' },
+    );
+    const code = new URL(authzRes.headers.get('location')!).searchParams.get('code')!;
     const res = await fetch(`${slackBaseUrl}/api/oauth.v2.access`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: 'code=test-code&client_id=test&client_secret=test',
+      body: `code=${code}&client_id=test&client_secret=test`,
     });
     expect(res.status).toBe(200);
     const body = await res.json();
@@ -132,11 +138,16 @@ describe('Slack Twin Smoke Tests', () => {
   });
 
   it('POST /api/chat.postMessage responds with valid token', async () => {
-    // Get a token first via OAuth
+    // Get a valid code then exchange for token
+    const authzRes = await fetch(
+      `${slackBaseUrl}/oauth/v2/authorize?client_id=test&scope=chat:write&redirect_uri=https://localhost/callback&state=test`,
+      { redirect: 'manual' },
+    );
+    const code = new URL(authzRes.headers.get('location')!).searchParams.get('code')!;
     const tokenRes = await fetch(`${slackBaseUrl}/api/oauth.v2.access`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: 'code=chat-test-code&client_id=test&client_secret=test',
+      body: `code=${code}&client_id=test&client_secret=test`,
     });
     const tokenBody = await tokenRes.json();
     const token = tokenBody.access_token || tokenBody.authed_user?.access_token || 'xoxb-test';

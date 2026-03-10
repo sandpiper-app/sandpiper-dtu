@@ -25,7 +25,7 @@ describe('Async Webhook Delivery Timing (INFRA-13)', () => {
   it('webhook subscription appears in admin state after registration', async () => {
     const callbackUrl = 'http://127.0.0.1:9999/fake'; // non-listening — just for registration
     await shopifyGraphQL(accessToken, `mutation {
-      webhookSubscriptionCreate(topic: "products/create",
+      webhookSubscriptionCreate(topic: PRODUCTS_CREATE,
         webhookSubscription: { callbackUrl: "${callbackUrl}" }
       ) { webhookSubscription { id topic } userErrors { message } }
     }`);
@@ -66,7 +66,7 @@ describe('Async Webhook Delivery Timing (INFRA-13)', () => {
     try {
       // Register subscription for products/create via authenticated mutation
       await shopifyGraphQL(accessToken, `mutation {
-        webhookSubscriptionCreate(topic: "products/create",
+        webhookSubscriptionCreate(topic: PRODUCTS_CREATE,
           webhookSubscription: { callbackUrl: "${callbackUrl}" }
         ) { webhookSubscription { id } userErrors { message } }
       }`);

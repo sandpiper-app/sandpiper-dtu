@@ -73,7 +73,7 @@ describe('HMAC Signature Verification (INFRA-13)', () => {
       try {
         // Register webhook subscription via authenticated GraphQL mutation
         const subBody = await shopifyGraphQL(accessToken, `mutation {
-          webhookSubscriptionCreate(topic: "orders/create",
+          webhookSubscriptionCreate(topic: ORDERS_CREATE,
             webhookSubscription: { callbackUrl: "${callbackUrl}" }
           ) { webhookSubscription { id } userErrors { message } }
         }`);
@@ -84,8 +84,8 @@ describe('HMAC Signature Verification (INFRA-13)', () => {
         // Real GraphQL mutations (orderCreate) trigger the webhook queue.
         // totalPrice and currencyCode are required by the twin's orderCreate resolver.
         await shopifyGraphQL(accessToken, `mutation {
-          orderCreate(input: {
-            lineItems: [{ title: "Test Item", quantity: 1, price: "10.00" }]
+          orderCreate(order: {
+            lineItems: [{ title: "Test Item", quantity: 1 }]
             totalPrice: "10.00"
             currencyCode: "USD"
           }) { order { id name } userErrors { field message } }
