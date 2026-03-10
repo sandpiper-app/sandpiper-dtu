@@ -155,7 +155,7 @@ Plans:
 Plans:
 - [ ] 20-01-PLAN.md — SocketModeReceiver harness: SlackStateManager wss methods + apps.connections.open stub + admin/set-wss-url + test file (SLCK-12)
 - [ ] 20-02-PLAN.md — AwsLambdaReceiver harness: pure in-process test — url_verification, HMAC rejection, event delivery (SLCK-12)
-- [ ] 20-03-PLAN.md — Drift hardening: manifest staleness Gate 4 in check-drift.ts + Phase 20 LIVE_SYMBOLS + coverage ledger regeneration (INFRA-14)
+- [x] 20-03-PLAN.md — Drift hardening: manifest staleness Gate 4 in check-drift.ts + Phase 20 LIVE_SYMBOLS + coverage ledger regeneration (INFRA-14) (completed 2026-03-10)
 
 ## Progress
 
@@ -168,7 +168,7 @@ Plans:
 | 17. Shopify Client Surfaces & Strategic REST Stubs | 4/4 | Complete    | 2026-03-09 |
 | 18. Slack WebClient Full Surface | 5/5 | Complete    | 2026-03-10 |
 | 19. Slack OAuth & Bolt HTTP Surface | 4/4 | Complete    | 2026-03-10 |
-| 20. Bolt Alternate Receivers & Drift Automation | 3/3 | Complete   | 2026-03-10 |
+| 20. Bolt Alternate Receivers & Drift Automation | 3/3 | Complete    | 2026-03-10 |
 
 ## Dependencies
 
