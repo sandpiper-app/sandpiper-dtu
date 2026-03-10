@@ -92,6 +92,8 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
       scope: botScopes,
       bot_user_id: 'U_BOT_TWIN',
       app_id: appId,
+      enterprise: null,              // required by InstallProvider.handleCallback() to determine Installation shape
+      is_enterprise_install: false,  // required by InstallProvider.handleCallback() — SDK reads this field
       team: { name: 'Twin Workspace', id: teamId },
       authed_user: {
         id: 'U_AUTHED',
