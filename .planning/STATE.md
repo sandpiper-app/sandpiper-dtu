@@ -3,33 +3,33 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: executing
-stopped_at: Completed 20-01-PLAN.md
-last_updated: "2026-03-10T02:32:35.024Z"
+stopped_at: Completed 20-03-PLAN.md
+last_updated: "2026-03-10T02:37:20.252Z"
 progress:
   total_phases: 8
-  completed_phases: 7
+  completed_phases: 8
   total_plans: 31
-  completed_plans: 30
-  percent: 98
+  completed_plans: 31
+  percent: 100
 ---
 
 # Project State: Sandpiper DTU
 
-**Last Updated:** 2026-03-10T02:33:00Z
-**Status:** In progress
+**Last Updated:** 2026-03-10T02:43:00Z
+**Status:** Complete
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 20 — Bolt Alternate Receivers & Drift Automation
+**Current Focus:** Phase 20 complete — Milestone v1.1 complete
 
 ## Current Position
 
 **Phase:** Phase 20 — Bolt Alternate Receivers & Drift Automation
-**Plan:** Plan 02 complete
-**Status:** In progress
-**Progress:** [██████████] 98%
+**Plan:** Plan 03 complete (all plans complete)
+**Status:** Complete
+**Progress:** [██████████] 100%
 
 ## Performance Metrics
 
@@ -41,6 +41,12 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-10 - Plan 20-03 Execution:**
+- Git `%ct` Unix timestamp (not `%cI`) for submodule last commit — avoids timezone parsing ambiguity; `new Date(manifest.generatedAt).getTime() / 1000` converts manifest to same unit
+- manifest ENOENT = hard fail (manifest must exist once generated); git unavailable or "not a git repository" = SKIP (same graceful pattern as Gate 3)
+- client.* SocketModeClient internals left deferred — ts-morph recursion surfaces SocketModeClient members as SocketModeReceiver members; only 3 top-level receiver methods (init/start/stop) promoted to live
+- Force-added coverage files with `git add -f` — coverage/ gitignored per Phase 14-05 established pattern; maintained consistently
 
 **2026-03-10 - Plan 20-01 Execution:**
 - wssUrl stored as ephemeral in-memory field on SlackStateManager (not SQLite) — per-test-run value; reset() nulls it out; no DB table needed
@@ -415,9 +421,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 20 Plan 02 — AwsLambdaReceiver conformance test: pure in-process SLCK-12 harness (url_verification, invalid HMAC 401, event_callback delivery); 176/176 tests green; drift:check green (193 live symbols)
-**Stopped at:** Completed 20-02-PLAN.md
-**Timestamp:** 2026-03-10T02:33:00Z
+**Last completed:** Phase 20 Plan 03 — manifest staleness Gate 4 in check-drift.ts; 9 Phase 20 LIVE_SYMBOLS (SocketModeReceiver + AwsLambdaReceiver); coverage-report.json regenerated (193 -> 202 live); all 4 drift gates green; 177/177 tests pass; INFRA-14 complete; Milestone v1.1 complete
+**Stopped at:** Completed 20-03-PLAN.md
+**Timestamp:** 2026-03-10T02:43:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
