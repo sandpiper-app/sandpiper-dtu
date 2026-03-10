@@ -165,7 +165,7 @@ Plans:
 | 16. Shopify `shopify-api` Platform Surface | 4/4 | Complete    | 2026-03-09 |
 | 17. Shopify Client Surfaces & Strategic REST Stubs | 4/4 | Complete    | 2026-03-09 |
 | 18. Slack WebClient Full Surface | 5/5 | Complete    | 2026-03-10 |
-| 19. Slack OAuth & Bolt HTTP Surface | 4/4 | Complete   | 2026-03-10 |
+| 19. Slack OAuth & Bolt HTTP Surface | 4/4 | Complete    | 2026-03-10 |
 | 20. Bolt Alternate Receivers & Drift Automation | 0/0 | Pending | — |
 
 ## Dependencies
