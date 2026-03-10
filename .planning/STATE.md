@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
-status: planning
-stopped_at: Completed 20-02-PLAN.md
-last_updated: "2026-03-10T02:33:00Z"
+status: executing
+stopped_at: Completed 20-01-PLAN.md
+last_updated: "2026-03-10T02:32:35.024Z"
 progress:
   total_phases: 8
   completed_phases: 7
   total_plans: 31
-  completed_plans: 29
-  percent: 97
+  completed_plans: 30
+  percent: 98
 ---
 
 # Project State: Sandpiper DTU
@@ -29,7 +29,7 @@ progress:
 **Phase:** Phase 20 — Bolt Alternate Receivers & Drift Automation
 **Plan:** Plan 02 complete
 **Status:** In progress
-**Progress:** [██████████] 97%
+**Progress:** [██████████] 98%
 
 ## Performance Metrics
 
@@ -41,6 +41,12 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-10 - Plan 20-01 Execution:**
+- wssUrl stored as ephemeral in-memory field on SlackStateManager (not SQLite) — per-test-run value; reset() nulls it out; no DB table needed
+- apps.connections.open uses custom handler (not stub() factory) — response is dynamic (reads wssUrl from state at request time); generic stub() only serves static extras
+- Both ackReceived and listenerPromise awaited via Promise.all — SocketModeClient auto-acks before middleware dispatch; awaiting both removes false-positive race condition
+- xapp- app-level token seeded via seedSlackBotToken() — twin token validator checks record existence only (not prefix); same helper works for both xoxb- and xapp- tokens
 
 **2026-03-10 - Plan 20-02 Execution:**
 - listenerFired flag instead of Promise coordination for AwsLambdaReceiver — handler() awaits listener completion before returning, so boolean flag suffices (unlike HTTPReceiver which acks first)
