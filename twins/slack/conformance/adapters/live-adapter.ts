@@ -61,6 +61,24 @@ export class SlackLiveAdapter implements ConformanceAdapter {
     if (!this.channelId) {
       throw new Error('Could not discover any channels in the Slack workspace');
     }
+
+    // If the bot is not already a member of the selected channel, attempt to join it
+    // so that conversations.history is accessible during conformance testing.
+    const memberChannel = chBody.channels?.find(c => c.id === this.channelId && c.is_member);
+    if (!memberChannel) {
+      const joinRes = await fetch(`${this.baseUrl}/api/conversations.join`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.botToken}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams([['channel', this.channelId]]).toString(),
+      });
+      const joinBody = (await joinRes.json()) as { ok: boolean; error?: string };
+      if (!joinBody.ok) {
+        console.warn(`[live-adapter] Could not join channel ${this.channelId}: ${joinBody.error}. History tests may fail.`);
+      }
+    }
   }
 
   async execute(op: ConformanceOperation): Promise<ConformanceResponse> {
@@ -71,24 +89,35 @@ export class SlackLiveAdapter implements ConformanceAdapter {
 
     const url = `${this.baseUrl}${path}`;
 
-    const headers: Record<string, string> = {
-      Authorization: `Bearer ${this.botToken}`,
-      'Content-Type': 'application/json',
-      ...op.headers,
-    };
-
     let body: string | undefined;
+    let contentType = 'application/json';
     if (op.body) {
       if (typeof op.body === 'string') {
-        // Form-encoded: replace IDs in string
+        // Already form-encoded string
         body = op.body.replace(/C_GENERAL/g, this.channelId).replace(/U_BOT_TWIN/g, this.botUserId);
+        contentType = op.headers?.['content-type'] ?? 'application/x-www-form-urlencoded';
       } else {
-        // JSON body: replace IDs in serialized form
-        body = JSON.stringify(op.body)
-          .replace(/C_GENERAL/g, this.channelId)
-          .replace(/U_BOT_TWIN/g, this.botUserId);
+        // Convert object body to form-urlencoded (Slack API reliably accepts this for all methods)
+        const replaced: Record<string, unknown> = JSON.parse(
+          JSON.stringify(op.body)
+            .replace(/C_GENERAL/g, this.channelId)
+            .replace(/U_BOT_TWIN/g, this.botUserId)
+        );
+        const entries: [string, string][] = [];
+        for (const [key, val] of Object.entries(replaced)) {
+          if (val === null || val === undefined) continue;
+          entries.push([key, typeof val === 'object' ? JSON.stringify(val) : String(val)]);
+        }
+        body = new URLSearchParams(entries).toString();
+        contentType = 'application/x-www-form-urlencoded';
       }
     }
+
+    const headers: Record<string, string> = {
+      Authorization: `Bearer ${this.botToken}`,
+      'Content-Type': contentType,
+      ...op.headers,
+    };
 
     const response = await fetch(url, { method: op.method, headers, body });
 

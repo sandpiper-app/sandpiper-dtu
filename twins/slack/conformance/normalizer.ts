@@ -9,10 +9,12 @@ import type { FieldNormalizerConfig } from '@dtu/conformance';
 
 export const slackNormalizer: FieldNormalizerConfig = {
   stripFields: [
-    'created',       // Channel creation timestamp
-    'updated',       // User/channel update timestamp
-    'ts',            // Message timestamp (unique per message)
-    'event_ts',      // Event timestamp
+    'created',           // Channel creation timestamp
+    'updated',           // User/channel update timestamp
+    'ts',                // Message timestamp (unique per message)
+    'event_ts',          // Event timestamp
+    'channel.num_members',   // Not returned by default in real Slack API
+    'channels.*.num_members', // Not returned by default in real Slack API
   ],
   normalizeFields: {
     'channels.*.id': '<CHANNEL_ID>',

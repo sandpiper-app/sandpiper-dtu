@@ -51,6 +51,8 @@ export interface ConformanceTest {
   requirements?: string[];
   /** Skip this test in live mode (e.g., twin-specific debug endpoints) */
   liveSkip?: boolean;
+  /** Override operation to use in live mode (e.g., when real API schema differs from twin schema) */
+  liveOperation?: ConformanceOperation;
 }
 
 /** A collection of conformance tests with shared normalizer */

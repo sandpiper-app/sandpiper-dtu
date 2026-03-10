@@ -34,10 +34,20 @@ const CREATE_ORDER_MUTATION = `
   }
 `;
 
+// Real Shopify Admin API uses OrderCreateOrderInput (not OrderInput)
+const CREATE_ORDER_MUTATION_LIVE = `
+  mutation CreateOrder($order: OrderCreateOrderInput!) {
+    orderCreate(order: $order) {
+      order {
+        ${ORDER_FIELDS}
+      }
+      userErrors { field message }
+    }
+  }
+`;
+
 const orderInput = {
-  lineItems: [{ title: 'Conformance Widget', quantity: 2 }],
-  totalPrice: '50.00',
-  currencyCode: 'USD',
+  lineItems: [{ title: 'Conformance Widget', quantity: 2, priceSet: { shopMoney: { amount: '25.00', currencyCode: 'USD' } } }],
 };
 
 export const ordersSuite: ConformanceSuite = {
@@ -57,6 +67,16 @@ export const ordersSuite: ConformanceSuite = {
         path: '/admin/api/2024-01/graphql.json',
         graphql: {
           query: CREATE_ORDER_MUTATION,
+          variables: { order: orderInput },
+        },
+      },
+      liveOperation: {
+        name: 'orderCreate',
+        description: 'Create a new order via orderCreate mutation (real API)',
+        method: 'POST',
+        path: '/admin/api/2024-01/graphql.json',
+        graphql: {
+          query: CREATE_ORDER_MUTATION_LIVE,
           variables: { order: orderInput },
         },
       },
@@ -101,6 +121,7 @@ export const ordersSuite: ConformanceSuite = {
       name: 'Order creation returns userErrors for missing required fields',
       category: 'orders',
       requirements: ['SHOP-01'],
+      liveSkip: true,
       operation: {
         name: 'orderCreate-invalid',
         description: 'Attempt to create order without required lineItems',

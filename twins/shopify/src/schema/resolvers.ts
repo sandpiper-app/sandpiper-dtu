@@ -329,22 +329,32 @@ export const resolvers = {
         });
       }
 
-      if (!input.totalPrice) {
-        errors.push({
-          field: ['totalPrice'],
-          message: 'Total price is required',
-        });
-      }
-
-      if (!input.currencyCode) {
-        errors.push({
-          field: ['currencyCode'],
-          message: 'Currency code is required',
-        });
-      }
-
       if (errors.length > 0) {
         return { order: null, userErrors: errors };
+      }
+
+      // Derive totalPrice from line items if not explicitly provided
+      let totalPrice = input.totalPrice;
+      if (!totalPrice) {
+        let sum = 0;
+        for (const item of input.lineItems) {
+          if (item.priceSet?.shopMoney?.amount) {
+            sum += parseFloat(item.priceSet.shopMoney.amount) * (item.quantity ?? 1);
+          }
+        }
+        totalPrice = sum > 0 ? sum.toFixed(2) : '0.00';
+      }
+
+      // Derive currencyCode from line items or default
+      let currencyCode = input.currencyCode;
+      if (!currencyCode) {
+        for (const item of input.lineItems) {
+          if (item.priceSet?.shopMoney?.currencyCode) {
+            currencyCode = item.priceSet.shopMoney.currencyCode;
+            break;
+          }
+        }
+        currencyCode = currencyCode ?? 'USD';
       }
 
       // Create order with pre-generated GID (DB uses numeric ID; GID returned via type resolver)
@@ -352,8 +362,8 @@ export const resolvers = {
       const orderId = context.stateManager.createOrder({
         gid: createGID('Order', tempId),
         name: `#${Math.floor(1000 + Math.random() * 9000)}`, // Generate order name
-        total_price: input.totalPrice,
-        currency_code: input.currencyCode,
+        total_price: totalPrice,
+        currency_code: currencyCode,
         customer_gid: input.customerId ?? null,
         line_items: input.lineItems,
         financial_status: input.financialStatus ?? 'PENDING',

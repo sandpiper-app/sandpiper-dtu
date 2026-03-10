@@ -75,6 +75,9 @@ export function compareResponses(
  * - Extra keys in the baseline are acceptable (twin can be a simplified subset)
  * - Array lengths can differ; only the first element's structure is compared
  * - Primitive values can differ as long as types match
+ *
+ * @param normalizer - Optional normalizer; only stripFields is applied (to both sides)
+ *   so known-divergent fields (e.g. num_members) are excluded before comparison.
  */
 export function compareResponsesStructurally(
   testId: string,
@@ -82,9 +85,22 @@ export function compareResponsesStructurally(
   category: string,
   twin: ConformanceResponse,
   baseline: ConformanceResponse,
-  requirements: string[] = []
+  requirements: string[] = [],
+  normalizer?: FieldNormalizerConfig
 ): ComparisonResult {
   const differences: Difference[] = [];
+
+  // Apply strip fields from the normalizer to both sides before structural comparison
+  let twinBody = twin.body;
+  let baselineBody = baseline.body;
+  if (normalizer && normalizer.stripFields.length > 0) {
+    twinBody = deepClone(twin.body);
+    baselineBody = deepClone(baseline.body);
+    for (const fieldPath of normalizer.stripFields) {
+      stripField(twinBody as Record<string, unknown>, fieldPath);
+      stripField(baselineBody as Record<string, unknown>, fieldPath);
+    }
+  }
 
   // Status codes must match exactly
   if (twin.status !== baseline.status) {
@@ -97,7 +113,7 @@ export function compareResponsesStructurally(
   }
 
   // Compare body structure recursively
-  compareStructure(twin.body, baseline.body, 'body', differences);
+  compareStructure(twinBody, baselineBody, 'body', differences);
 
   return { testId, testName, category, passed: differences.length === 0, differences, requirements };
 }

@@ -283,17 +283,22 @@ input MoneyInput {
   currencyCode: String!
 }
 
+input MoneyBagInput {
+  shopMoney: MoneyInput!
+}
+
 # Input types for mutations
 input LineItemInput {
-  title: String!
+  title: String
   quantity: Int!
+  priceSet: MoneyBagInput
 }
 
 input OrderInput {
   lineItems: [LineItemInput!]!
   customerId: ID
-  totalPrice: String!
-  currencyCode: String!
+  totalPrice: String
+  currencyCode: String
   financialStatus: OrderDisplayFinancialStatus
 }
 

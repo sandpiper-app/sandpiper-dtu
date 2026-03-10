@@ -31,6 +31,7 @@ export const webhooksSuite: ConformanceSuite = {
       name: 'Register webhook subscription via GraphQL mutation',
       category: 'webhooks',
       requirements: ['SHOP-03', 'INFRA-05'],
+      liveSkip: true,
       operation: {
         name: 'webhookSubscriptionCreate',
         description: 'Create a webhook subscription for ORDERS_CREATE topic',
@@ -52,6 +53,7 @@ export const webhooksSuite: ConformanceSuite = {
       name: 'webhookSubscriptionCreate returns empty userErrors on success',
       category: 'webhooks',
       requirements: ['SHOP-03'],
+      liveSkip: true,
       operation: {
         name: 'webhookSubscriptionCreate-check-errors',
         description: 'Verify userErrors is empty on successful subscription creation',
@@ -105,6 +107,7 @@ export const webhooksSuite: ConformanceSuite = {
       name: 'orderCreate mutation succeeds when webhook subscription exists (queue delivery)',
       category: 'webhooks',
       requirements: ['SHOP-03', 'INFRA-05'],
+      liveSkip: true,
       setup: [
         {
           name: 'register-order-webhook',

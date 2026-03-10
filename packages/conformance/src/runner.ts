@@ -84,7 +84,8 @@ export class ConformanceRunner {
           let baselineResponse: ConformanceResponse | null = null;
 
           if (this.mode === 'live' && this.baseline) {
-            baselineResponse = await this.baseline.execute(test.operation);
+            const liveOp = test.liveOperation ?? test.operation;
+            baselineResponse = await this.baseline.execute(liveOp);
           } else if (this.mode === 'offline' && this.fixtureStore) {
             baselineResponse = this.fixtureStore.load(test.id);
           } else if (this.mode === 'twin') {
@@ -98,7 +99,8 @@ export class ConformanceRunner {
               ? compareResponsesStructurally(
                   test.id, test.name, test.category,
                   twinResponse, baselineResponse,
-                  test.requirements ?? []
+                  test.requirements ?? [],
+                  suite.normalizer
                 )
               : compareResponses(
                   test.id, test.name, test.category,
