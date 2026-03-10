@@ -116,7 +116,7 @@ Plans:
   3. Tier 2 method families (files, search, reminders) are stubbed with valid response shapes
   4. Tier 3 method families (admin.*) are deferred — tracked in manifest but not implemented in this phase
   5. Every bound method in the pinned `@slack/web-api` package maps to a declared coverage entry (live test, stub, or deferred)
-**Plans:** 2/5 plans executed
+**Plans:** 3/5 plans executed
 
 Plans:
 - [ ] 18-01-PLAN.md — rate-limiter expansion + files.ts plugin (filesUploadV2 chain) + chat.ts expansion (13 methods) + slack-webclient-base.test.ts + slack-chat.test.ts (SLCK-07, SLCK-08)
@@ -161,7 +161,7 @@ Plans:
 | 15. Shopify Admin Client Compatibility | 3/3 | Complete    | 2026-03-09 |
 | 16. Shopify `shopify-api` Platform Surface | 4/4 | Complete    | 2026-03-09 |
 | 17. Shopify Client Surfaces & Strategic REST Stubs | 4/4 | Complete    | 2026-03-09 |
-| 18. Slack WebClient Full Surface | 2/5 | In Progress|  |
+| 18. Slack WebClient Full Surface | 3/5 | In Progress|  |
 | 19. Slack OAuth & Bolt HTTP Surface | 0/0 | Pending | — |
 | 20. Bolt Alternate Receivers & Drift Automation | 0/0 | Pending | — |
 

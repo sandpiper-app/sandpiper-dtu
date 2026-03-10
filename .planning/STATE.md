@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: planning
-stopped_at: Completed 18-01-PLAN.md
-last_updated: "2026-03-10T00:09:34.436Z"
+stopped_at: Completed 18-03-PLAN.md
+last_updated: "2026-03-10T00:15:15.897Z"
 progress:
   total_phases: 8
   completed_phases: 5
   total_plans: 24
-  completed_plans: 21
-  percent: 94
+  completed_plans: 22
+  percent: 96
 ---
 
 # Project State: Sandpiper DTU
@@ -27,9 +27,9 @@ progress:
 ## Current Position
 
 **Phase:** Phase 18 — Slack WebClient Full Surface
-**Plan:** Plan 01 complete — Plan 02 next
+**Plan:** Plan 03 complete — Plan 04 next
 **Status:** In Progress
-**Progress:** [█████████░] 94%
+**Progress:** [██████████] 96%
 
 ## Performance Metrics
 
@@ -41,6 +41,11 @@ progress:
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-10 - Plan 18-03 Execution:**
+- reactions.remove is a silent no-op (ok:true) — SlackStateManager has no removeReaction method; conformance only requires ok:true
+- pins.add/list/remove are stateless conformance stubs — no persistent pin table needed for SLCK-08 Tier 1 coverage
+- views.* do not persist modal state — synthetic view IDs generated per-call; SDK only needs ok:true + view object to proceed
 
 **2026-03-09 - Plan 18-02 Execution:**
 - conversations.requestSharedInvite is a nested SDK namespace ({approve,deny,list} sub-methods), not a flat callable — routes registered as conversations.requestSharedInvite.{approve,deny,list} to match SDK dispatch paths
@@ -360,8 +365,8 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 18 Plan 01 — filesUploadV2 3-endpoint chain, 11 new chat methods (ChatStreamer support), 48 rate tier entries, 17 tests green (SLCK-07 + SLCK-08)
-**Stopped at:** Completed 18-01-PLAN.md
+**Last completed:** Phase 18 Plan 03 — reactions (4), pins (3), views (4) plugins with 11 tests green completing Tier 1 SLCK-08 method families
+**Stopped at:** Completed 18-03-PLAN.md
 **Timestamp:** 2026-03-10T00:09:00Z
 
 ---
