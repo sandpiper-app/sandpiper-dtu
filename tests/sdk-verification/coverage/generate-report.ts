@@ -280,6 +280,22 @@ const LIVE_SYMBOLS: Record<string, string> = {
   '@slack/bolt@4.6.0/ExpressReceiver': 'sdk/slack-bolt-http-receivers.test.ts',
   '@slack/bolt@4.6.0/App.start': 'sdk/slack-bolt-http-receivers.test.ts',
   '@slack/bolt@4.6.0/App.stop': 'sdk/slack-bolt-http-receivers.test.ts',
+
+  // Phase 20: SLCK-12 SocketModeReceiver — slack-bolt-socket-mode-receiver.test.ts
+  // NOTE: client.* members (client.autoReconnectEnabled, client.websocket.*, etc.)
+  // are SocketModeClient internals exposed via ts-morph recursion — left deferred
+  // per Phase 20 plan. Only the 3 top-level receiver methods are promoted to live.
+  '@slack/bolt@4.6.0/SocketModeReceiver': 'sdk/slack-bolt-socket-mode-receiver.test.ts',
+  '@slack/bolt@4.6.0/SocketModeReceiver.init': 'sdk/slack-bolt-socket-mode-receiver.test.ts',
+  '@slack/bolt@4.6.0/SocketModeReceiver.start': 'sdk/slack-bolt-socket-mode-receiver.test.ts',
+  '@slack/bolt@4.6.0/SocketModeReceiver.stop': 'sdk/slack-bolt-socket-mode-receiver.test.ts',
+
+  // Phase 20: SLCK-12 AwsLambdaReceiver — slack-bolt-aws-lambda-receiver.test.ts
+  '@slack/bolt@4.6.0/AwsLambdaReceiver': 'sdk/slack-bolt-aws-lambda-receiver.test.ts',
+  '@slack/bolt@4.6.0/AwsLambdaReceiver.init': 'sdk/slack-bolt-aws-lambda-receiver.test.ts',
+  '@slack/bolt@4.6.0/AwsLambdaReceiver.start': 'sdk/slack-bolt-aws-lambda-receiver.test.ts',
+  '@slack/bolt@4.6.0/AwsLambdaReceiver.stop': 'sdk/slack-bolt-aws-lambda-receiver.test.ts',
+  '@slack/bolt@4.6.0/AwsLambdaReceiver.toHandler': 'sdk/slack-bolt-aws-lambda-receiver.test.ts',
 };
 
 interface ManifestSymbol {
@@ -332,8 +348,8 @@ for (const file of manifestFiles) {
 const report = {
   $schema: 'https://sandpiper.dev/schemas/coverage-report.json',
   generatedAt: new Date().toISOString(),
-  phase: '19',
-  note: 'Phase 19: @slack/oauth InstallProvider (SLCK-09), @slack/bolt App listener APIs (SLCK-10), HTTPReceiver + ExpressReceiver (SLCK-11). Phase 18: @slack/web-api WebClient full surface — SLCK-07 + SLCK-08 complete.',
+  phase: '20',
+  note: 'Phase 20: @slack/bolt SocketModeReceiver + AwsLambdaReceiver (SLCK-12). Phase 19: @slack/oauth InstallProvider (SLCK-09), @slack/bolt App listener APIs (SLCK-10), HTTPReceiver + ExpressReceiver (SLCK-11). Phase 18: @slack/web-api WebClient full surface — SLCK-07 + SLCK-08 complete.',
   packages,
   summary: { live: totalLive, stub: 0, deferred: totalDeferred },
 };

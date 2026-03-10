@@ -1,8 +1,8 @@
 {
   "$schema": "https://sandpiper.dev/schemas/coverage-report.json",
-  "generatedAt": "2026-03-10T01:49:22.023Z",
-  "phase": "19",
-  "note": "Phase 19: @slack/oauth InstallProvider (SLCK-09), @slack/bolt App listener APIs (SLCK-10), HTTPReceiver + ExpressReceiver (SLCK-11). Phase 18: @slack/web-api WebClient full surface — SLCK-07 + SLCK-08 complete.",
+  "generatedAt": "2026-03-10T02:35:54.620Z",
+  "phase": "20",
+  "note": "Phase 20: @slack/bolt SocketModeReceiver + AwsLambdaReceiver (SLCK-12). Phase 19: @slack/oauth InstallProvider (SLCK-09), @slack/bolt App listener APIs (SLCK-10), HTTPReceiver + ExpressReceiver (SLCK-11). Phase 18: @slack/web-api WebClient full surface — SLCK-07 + SLCK-08 complete.",
   "packages": {
     "@shopify/admin-api-client@1.1.1": {
       "createAdminApiClient": {
@@ -42162,20 +42162,20 @@
         "testFile": null
       },
       "SocketModeReceiver": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-socket-mode-receiver.test.ts"
       },
       "SocketModeReceiver.init": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-socket-mode-receiver.test.ts"
       },
       "SocketModeReceiver.start": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-socket-mode-receiver.test.ts"
       },
       "SocketModeReceiver.stop": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-socket-mode-receiver.test.ts"
       },
       "SocketModeReceiver.client.autoReconnectEnabled": {
         "tier": "deferred",
@@ -42738,24 +42738,24 @@
         "testFile": null
       },
       "AwsLambdaReceiver": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-aws-lambda-receiver.test.ts"
       },
       "AwsLambdaReceiver.init": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-aws-lambda-receiver.test.ts"
       },
       "AwsLambdaReceiver.start": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-aws-lambda-receiver.test.ts"
       },
       "AwsLambdaReceiver.stop": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-aws-lambda-receiver.test.ts"
       },
       "AwsLambdaReceiver.toHandler": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-bolt-aws-lambda-receiver.test.ts"
       },
       "AwsLambdaReceiverOptions": {
         "tier": "deferred",
@@ -130732,8 +130732,8 @@
     }
   },
   "summary": {
-    "live": 193,
+    "live": 202,
     "stub": 0,
-    "deferred": 32486
+    "deferred": 32477
   }
 }
