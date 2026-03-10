@@ -22,11 +22,11 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 17 — Shopify Client Surfaces & Strategic REST Stubs
+**Current Focus:** Phase 18 — Slack WebClient Full Surface
 
 ## Current Position
 
-**Phase:** Phase 17 — Shopify Client Surfaces & Strategic REST Stubs
+**Phase:** Phase 18 — Slack WebClient Full Surface
 **Plan:** Plan 01 complete — Plan 02 next
 **Status:** In Progress
 **Progress:** [█████████░] 94%
@@ -46,6 +46,13 @@ progress:
 - conversations.requestSharedInvite is a nested SDK namespace ({approve,deny,list} sub-methods), not a flat callable — routes registered as conversations.requestSharedInvite.{approve,deny,list} to match SDK dispatch paths
 - U_BOT_TWIN seeded without email field in seedDefaults() — lookupByEmail test covers error path via try/catch (Slack SDK throws on ok:false responses); no hardcoded email
 - checkAuth() helper extracted as local async function inside each plugin — keeps plugins self-contained without new shared module dependency
+
+**2026-03-09 - Plan 18-01 Execution:**
+- checkAuthRateError() helper extracts auth/rate/error-sim preamble into shared function inside chatPlugin — reduces duplication across 11 new handlers while keeping pattern consistent with postMessage/update
+- upload_url in getUploadURLExternal reads SLACK_API_URL per-request — set by globalSetup AFTER twin boots, so module-level read would capture undefined
+- admin/errors/clear called without Content-Type header — Fastify rejects application/json with empty body (400); no-header POST avoids the rejection
+- Retry-After: 1 header added when error simulation returns 429 — SDK WebClient throws 'Retry header did not contain a valid timeout' when 429 has no Retry-After header
+- Rate-limit test uses raw fetch throughout — avoids SDK retry state contamination; clear request must omit Content-Type header
 
 **2026-03-09 - Plan 17-04 Execution:**
 - StorefrontClient and REST resource classes (Product, Customer, etc.) absent from @shopify/shopify-api root manifest — ts-morph only captures symbols exported from package root; REST resources are at rest/admin/2024-01/ sub-path; SHOP-15 attributed via RestClient.get/post/put/delete
@@ -353,9 +360,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 18 Plan 02 — conversations.ts 28 methods + users.ts 12 methods; 34 new tests; all 131 SDK tests green
+**Last completed:** Phase 18 Plan 01 — filesUploadV2 3-endpoint chain, 11 new chat methods (ChatStreamer support), 48 rate tier entries, 17 tests green (SLCK-07 + SLCK-08)
 **Stopped at:** Completed 18-01-PLAN.md
-**Timestamp:** 2026-03-09T23:08:00Z
+**Timestamp:** 2026-03-10T00:09:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
