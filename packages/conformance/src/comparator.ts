@@ -106,10 +106,14 @@ function normalizeResponse(
   response: ConformanceResponse,
   normalizer: FieldNormalizerConfig
 ): ConformanceResponse {
-  // Deep clone to avoid mutating original
+  // Deep clone to avoid mutating original.
+  // Only keep semantically meaningful headers (content-type).
+  // Transport headers (server, cache-control, CORS, etc.) differ between
+  // twin servers and live APIs and are not relevant to API conformance.
+  const { 'content-type': contentType } = response.headers;
   const normalized: ConformanceResponse = {
     status: response.status,
-    headers: { ...response.headers },
+    headers: contentType ? { 'content-type': contentType } : {},
     body: deepClone(response.body),
   };
 
