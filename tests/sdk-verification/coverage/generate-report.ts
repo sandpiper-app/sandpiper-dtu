@@ -75,6 +75,169 @@ const LIVE_SYMBOLS: Record<string, string> = {
   '@shopify/shopify-api@12.3.0/GraphqlProxy': 'sdk/shopify-api-graphql-client.test.ts',
   '@shopify/shopify-api@12.3.0/Shopify.clients': 'sdk/shopify-api-graphql-client.test.ts',
   '@shopify/shopify-api@12.3.0/Shopify.rest': 'sdk/shopify-api-rest-client.test.ts',
+
+  // Phase 18: SLCK-07 WebClient base behaviors — slack-webclient-base.test.ts
+  '@slack/web-api@7.14.1/WebClient.apiCall': 'sdk/slack-webclient-base.test.ts',
+  '@slack/web-api@7.14.1/WebClient.paginate': 'sdk/slack-webclient-base.test.ts',
+  '@slack/web-api@7.14.1/WebClient.filesUploadV2': 'sdk/slack-webclient-base.test.ts',
+  '@slack/web-api@7.14.1/WebClient.chatStream': 'sdk/slack-webclient-base.test.ts',
+  // ChatStreamer class (separate manifest symbol)
+  '@slack/web-api@7.14.1/ChatStreamer': 'sdk/slack-webclient-base.test.ts',
+  '@slack/web-api@7.14.1/ChatStreamer.append': 'sdk/slack-webclient-base.test.ts',
+  '@slack/web-api@7.14.1/ChatStreamer.stop': 'sdk/slack-webclient-base.test.ts',
+
+  // Phase 18: SLCK-08 chat family (13 methods) — slack-chat.test.ts
+  '@slack/web-api@7.14.1/WebClient.chat.postMessage': 'sdk/slack-chat.test.ts',
+  '@slack/web-api@7.14.1/WebClient.chat.update': 'sdk/slack-chat.test.ts',
+  '@slack/web-api@7.14.1/WebClient.chat.delete': 'sdk/slack-chat.test.ts',
+  '@slack/web-api@7.14.1/WebClient.chat.postEphemeral': 'sdk/slack-chat.test.ts',
+  '@slack/web-api@7.14.1/WebClient.chat.getPermalink': 'sdk/slack-chat.test.ts',
+  '@slack/web-api@7.14.1/WebClient.chat.meMessage': 'sdk/slack-chat.test.ts',
+  '@slack/web-api@7.14.1/WebClient.chat.scheduleMessage': 'sdk/slack-chat.test.ts',
+  '@slack/web-api@7.14.1/WebClient.chat.scheduledMessages.list': 'sdk/slack-chat.test.ts',
+  '@slack/web-api@7.14.1/WebClient.chat.deleteScheduledMessage': 'sdk/slack-chat.test.ts',
+  '@slack/web-api@7.14.1/WebClient.chat.unfurl': 'sdk/slack-chat.test.ts',
+  '@slack/web-api@7.14.1/WebClient.chat.startStream': 'sdk/slack-chat.test.ts',
+  '@slack/web-api@7.14.1/WebClient.chat.appendStream': 'sdk/slack-chat.test.ts',
+  '@slack/web-api@7.14.1/WebClient.chat.stopStream': 'sdk/slack-chat.test.ts',
+
+  // Phase 18: SLCK-08 conversations family (26 methods) — slack-conversations.test.ts
+  '@slack/web-api@7.14.1/WebClient.conversations.list': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.info': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.history': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.create': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.join': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.leave': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.archive': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.unarchive': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.rename': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.invite': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.kick': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.open': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.close': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.mark': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.setPurpose': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.setTopic': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.members': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.replies': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.acceptSharedInvite': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.approveSharedInvite': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.declineSharedInvite': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.inviteShared': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.listConnectInvites': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.requestSharedInvite.approve': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.requestSharedInvite.deny': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.requestSharedInvite.list': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.externalInvitePermissions.set': 'sdk/slack-conversations.test.ts',
+  '@slack/web-api@7.14.1/WebClient.conversations.canvases.create': 'sdk/slack-conversations.test.ts',
+  // NOTE: conversations.canvases.delete and conversations.canvases.sections.lookup are NOT in the
+  // WebClient.members manifest (only canvases.* top-level methods exist for delete/sections.lookup).
+
+  // Phase 18: SLCK-08 users family (11 methods) — slack-users.test.ts
+  // NOTE: users.setActive is NOT in the manifest; omitted to avoid silent ignored keys.
+  '@slack/web-api@7.14.1/WebClient.users.list': 'sdk/slack-users.test.ts',
+  '@slack/web-api@7.14.1/WebClient.users.info': 'sdk/slack-users.test.ts',
+  '@slack/web-api@7.14.1/WebClient.users.conversations': 'sdk/slack-users.test.ts',
+  '@slack/web-api@7.14.1/WebClient.users.getPresence': 'sdk/slack-users.test.ts',
+  '@slack/web-api@7.14.1/WebClient.users.lookupByEmail': 'sdk/slack-users.test.ts',
+  '@slack/web-api@7.14.1/WebClient.users.profile.get': 'sdk/slack-users.test.ts',
+  '@slack/web-api@7.14.1/WebClient.users.profile.set': 'sdk/slack-users.test.ts',
+  '@slack/web-api@7.14.1/WebClient.users.setPresence': 'sdk/slack-users.test.ts',
+  '@slack/web-api@7.14.1/WebClient.users.identity': 'sdk/slack-users.test.ts',
+  '@slack/web-api@7.14.1/WebClient.users.deletePhoto': 'sdk/slack-users.test.ts',
+  '@slack/web-api@7.14.1/WebClient.users.setPhoto': 'sdk/slack-users.test.ts',
+
+  // Phase 18: SLCK-08 reactions family (4 methods) — slack-reactions.test.ts
+  '@slack/web-api@7.14.1/WebClient.reactions.add': 'sdk/slack-reactions.test.ts',
+  '@slack/web-api@7.14.1/WebClient.reactions.get': 'sdk/slack-reactions.test.ts',
+  '@slack/web-api@7.14.1/WebClient.reactions.list': 'sdk/slack-reactions.test.ts',
+  '@slack/web-api@7.14.1/WebClient.reactions.remove': 'sdk/slack-reactions.test.ts',
+
+  // Phase 18: SLCK-08 pins family (3 methods) — slack-pins.test.ts
+  '@slack/web-api@7.14.1/WebClient.pins.add': 'sdk/slack-pins.test.ts',
+  '@slack/web-api@7.14.1/WebClient.pins.list': 'sdk/slack-pins.test.ts',
+  '@slack/web-api@7.14.1/WebClient.pins.remove': 'sdk/slack-pins.test.ts',
+
+  // Phase 18: SLCK-08 views family (4 methods) — slack-views.test.ts
+  '@slack/web-api@7.14.1/WebClient.views.open': 'sdk/slack-views.test.ts',
+  '@slack/web-api@7.14.1/WebClient.views.publish': 'sdk/slack-views.test.ts',
+  '@slack/web-api@7.14.1/WebClient.views.push': 'sdk/slack-views.test.ts',
+  '@slack/web-api@7.14.1/WebClient.views.update': 'sdk/slack-views.test.ts',
+
+  // Phase 18: SLCK-08 stubs (Tier 2) — slack-stubs-smoke.test.ts
+  // files family
+  '@slack/web-api@7.14.1/WebClient.files.delete': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.files.info': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.files.list': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.files.revokePublicURL': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.files.sharedPublicURL': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.files.getUploadURLExternal': 'sdk/slack-webclient-base.test.ts',
+  '@slack/web-api@7.14.1/WebClient.files.completeUploadExternal': 'sdk/slack-webclient-base.test.ts',
+  '@slack/web-api@7.14.1/WebClient.files.comments.delete': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.files.remote.add': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.files.remote.info': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.files.remote.list': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.files.remote.remove': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.files.remote.share': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.files.remote.update': 'sdk/slack-stubs-smoke.test.ts',
+  // search family
+  '@slack/web-api@7.14.1/WebClient.search.all': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.search.files': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.search.messages': 'sdk/slack-stubs-smoke.test.ts',
+  // reminders family
+  '@slack/web-api@7.14.1/WebClient.reminders.add': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.reminders.complete': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.reminders.delete': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.reminders.info': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.reminders.list': 'sdk/slack-stubs-smoke.test.ts',
+  // misc stubs
+  '@slack/web-api@7.14.1/WebClient.bots.info': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.emoji.list': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.migration.exchange': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.tooling.tokens.rotate': 'sdk/slack-stubs-smoke.test.ts',
+  // dnd family
+  '@slack/web-api@7.14.1/WebClient.dnd.endDnd': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.dnd.endSnooze': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.dnd.info': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.dnd.setSnooze': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.dnd.teamInfo': 'sdk/slack-stubs-smoke.test.ts',
+  // bookmarks family
+  '@slack/web-api@7.14.1/WebClient.bookmarks.add': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.bookmarks.edit': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.bookmarks.list': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.bookmarks.remove': 'sdk/slack-stubs-smoke.test.ts',
+  // usergroups family
+  '@slack/web-api@7.14.1/WebClient.usergroups.create': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.usergroups.disable': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.usergroups.enable': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.usergroups.list': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.usergroups.update': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.usergroups.users.list': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.usergroups.users.update': 'sdk/slack-stubs-smoke.test.ts',
+  // calls family
+  '@slack/web-api@7.14.1/WebClient.calls.add': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.calls.end': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.calls.info': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.calls.update': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.calls.participants.add': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.calls.participants.remove': 'sdk/slack-stubs-smoke.test.ts',
+  // team family
+  '@slack/web-api@7.14.1/WebClient.team.info': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.team.accessLogs': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.team.billableInfo': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.team.integrationLogs': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.team.preferences.list': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.team.profile.get': 'sdk/slack-stubs-smoke.test.ts',
+  // dialog / functions / assistant
+  '@slack/web-api@7.14.1/WebClient.dialog.open': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.functions.completeSuccess': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.functions.completeError': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.assistant.threads.setStatus': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.assistant.threads.setSuggestedPrompts': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.assistant.threads.setTitle': 'sdk/slack-stubs-smoke.test.ts',
+  // auth additional
+  '@slack/web-api@7.14.1/WebClient.auth.revoke': 'sdk/slack-stubs-smoke.test.ts',
+  '@slack/web-api@7.14.1/WebClient.auth.teams.list': 'sdk/slack-stubs-smoke.test.ts',
 };
 
 interface ManifestSymbol {
@@ -127,8 +290,8 @@ for (const file of manifestFiles) {
 const report = {
   $schema: 'https://sandpiper.dev/schemas/coverage-report.json',
   generatedAt: new Date().toISOString(),
-  phase: '17',
-  note: 'Phase 17: @shopify/shopify-api GraphqlClient, RestClient, ShopifyClients, graphqlProxy, Shopify.clients and Shopify.rest client surfaces attributed (SHOP-14). Phase 16 platform surface (shopifyApi, Shopify.auth/session/webhooks/billing/flow/fulfillmentService) backfilled. REST resource classes (Product, Customer, etc.) are not in the @shopify/shopify-api manifest — SHOP-15 coverage is via RestClient.get/post/put/delete methods. SHOP-14 + SHOP-15 complete.',
+  phase: '18',
+  note: 'Phase 18: @slack/web-api WebClient full surface. Tier 1 (~60 methods): chat (13), conversations (26), users (11), reactions (4), pins (3), views (4), base behaviors (apiCall, paginate, filesUploadV2, chatStream). Tier 2 stubs: files, search, reminders, bots, emoji, dnd, bookmarks, usergroups, calls, team, misc. Tier 3 deferred: admin.* (95 methods), slackLists, workflows, canvases, oauth (Phase 19), rtm, openid, stars, entity. SLCK-07 + SLCK-08 complete.',
   packages,
   summary: { live: totalLive, stub: 0, deferred: totalDeferred },
 };
