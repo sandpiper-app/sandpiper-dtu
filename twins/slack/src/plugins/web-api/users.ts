@@ -6,6 +6,8 @@
  * GET  /api/users.info — get user details (query params)
  * POST /api/users.info — get user details (JSON or form-urlencoded body)
  *
+ * Plus 10 new methods to reach full Tier 1 coverage (12 total).
+ *
  * Real Slack Web API accepts GET with query params for read methods in addition to POST.
  */
 
@@ -49,6 +51,45 @@ function getParams(request: FastifyRequest): Record<string, any> {
     return (request.query as Record<string, any>) ?? {};
   }
   return (request.body as Record<string, any>) ?? {};
+}
+
+/** Auth + rate-limit + error-sim preamble. Returns tokenRecord or sends error and returns null. */
+async function checkAuth(
+  fastify: any,
+  request: FastifyRequest,
+  reply: any,
+  methodName: string,
+): Promise<any | null> {
+  const token = extractToken(request);
+  if (!token) {
+    reply.status(200).send({ ok: false, error: 'not_authed' });
+    return null;
+  }
+  const tokenRecord = fastify.slackStateManager.getToken(token);
+  if (!tokenRecord) {
+    reply.status(200).send({ ok: false, error: 'invalid_auth' });
+    return null;
+  }
+
+  const limited = fastify.rateLimiter.check(methodName, token);
+  if (limited) {
+    reply
+      .status(429)
+      .header('Retry-After', String(limited.retryAfter))
+      .send({ ok: false, error: 'ratelimited' });
+    return null;
+  }
+
+  const errorConfig = fastify.slackStateManager.getErrorConfig(methodName);
+  if (errorConfig) {
+    const errorBody = errorConfig.error_body
+      ? JSON.parse(errorConfig.error_body)
+      : { ok: false, error: 'simulated_error' };
+    reply.status(errorConfig.status_code ?? 200).send(errorBody);
+    return null;
+  }
+
+  return tokenRecord;
 }
 
 const usersPlugin: FastifyPluginAsync = async (fastify) => {
@@ -161,6 +202,157 @@ const usersPlugin: FastifyPluginAsync = async (fastify) => {
   fastify.get('/api/users.info', handleUsersInfo);
   // POST /api/users.info — JSON or form-urlencoded body
   fastify.post('/api/users.info', handleUsersInfo);
+
+  // ---------------------------------------------------------------------------
+  // GET+POST /api/users.conversations — list channels for a user
+  // ---------------------------------------------------------------------------
+  async function handleUsersConversations(request: FastifyRequest, reply: any) {
+    const tokenRecord = await checkAuth(fastify, request, reply, 'users.conversations');
+    if (!tokenRecord) return;
+
+    const channels = fastify.slackStateManager.listChannels();
+    return {
+      ok: true,
+      channels: channels.map((ch: any) => ({ id: ch.id, name: ch.name })),
+      response_metadata: { next_cursor: '' },
+    };
+  }
+
+  fastify.get('/api/users.conversations', handleUsersConversations);
+  fastify.post('/api/users.conversations', handleUsersConversations);
+
+  // ---------------------------------------------------------------------------
+  // GET+POST /api/users.getPresence — get user presence
+  // ---------------------------------------------------------------------------
+  async function handleUsersGetPresence(request: FastifyRequest, reply: any) {
+    const tokenRecord = await checkAuth(fastify, request, reply, 'users.getPresence');
+    if (!tokenRecord) return;
+
+    return { ok: true, presence: 'active', online: true };
+  }
+
+  fastify.get('/api/users.getPresence', handleUsersGetPresence);
+  fastify.post('/api/users.getPresence', handleUsersGetPresence);
+
+  // ---------------------------------------------------------------------------
+  // GET+POST /api/users.lookupByEmail — find user by email
+  // ---------------------------------------------------------------------------
+  async function handleUsersLookupByEmail(request: FastifyRequest, reply: any) {
+    const tokenRecord = await checkAuth(fastify, request, reply, 'users.lookupByEmail');
+    if (!tokenRecord) return;
+
+    const params = getParams(request);
+    const { email } = params;
+    if (!email) {
+      return reply.status(200).send({ ok: false, error: 'invalid_arguments' });
+    }
+
+    const allUsers = fastify.slackStateManager.listUsers();
+    const user = allUsers.find((u: any) => u.email === email);
+    if (!user) {
+      return reply.status(200).send({ ok: false, error: 'users_not_found' });
+    }
+
+    return { ok: true, user: formatMember(user) };
+  }
+
+  fastify.get('/api/users.lookupByEmail', handleUsersLookupByEmail);
+  fastify.post('/api/users.lookupByEmail', handleUsersLookupByEmail);
+
+  // ---------------------------------------------------------------------------
+  // GET+POST /api/users.profile.get — get user profile
+  // ---------------------------------------------------------------------------
+  async function handleUsersProfileGet(request: FastifyRequest, reply: any) {
+    const tokenRecord = await checkAuth(fastify, request, reply, 'users.profile.get');
+    if (!tokenRecord) return;
+
+    const params = getParams(request);
+    const userId = params.user ?? tokenRecord.user_id ?? 'U_BOT_TWIN';
+
+    const user = fastify.slackStateManager.getUser(userId);
+    if (!user) {
+      return reply.status(200).send({ ok: false, error: 'user_not_found' });
+    }
+
+    return {
+      ok: true,
+      profile: {
+        display_name: user.display_name ?? user.name ?? '',
+        email: user.email ?? '',
+        real_name: user.real_name ?? '',
+      },
+    };
+  }
+
+  fastify.get('/api/users.profile.get', handleUsersProfileGet);
+  fastify.post('/api/users.profile.get', handleUsersProfileGet);
+
+  // ---------------------------------------------------------------------------
+  // GET+POST /api/users.identity — get caller identity
+  // ---------------------------------------------------------------------------
+  async function handleUsersIdentity(request: FastifyRequest, reply: any) {
+    const tokenRecord = await checkAuth(fastify, request, reply, 'users.identity');
+    if (!tokenRecord) return;
+
+    return {
+      ok: true,
+      user: { id: tokenRecord.user_id ?? 'U_BOT_TWIN', name: 'bot' },
+      team: { id: 'T_TWIN' },
+    };
+  }
+
+  fastify.get('/api/users.identity', handleUsersIdentity);
+  fastify.post('/api/users.identity', handleUsersIdentity);
+
+  // ---------------------------------------------------------------------------
+  // POST /api/users.profile.set — update user profile
+  // ---------------------------------------------------------------------------
+  fastify.post('/api/users.profile.set', async (request: FastifyRequest, reply: any) => {
+    const tokenRecord = await checkAuth(fastify, request, reply, 'users.profile.set');
+    if (!tokenRecord) return;
+
+    return { ok: true };
+  });
+
+  // ---------------------------------------------------------------------------
+  // POST /api/users.setPresence — set user presence
+  // ---------------------------------------------------------------------------
+  fastify.post('/api/users.setPresence', async (request: FastifyRequest, reply: any) => {
+    const tokenRecord = await checkAuth(fastify, request, reply, 'users.setPresence');
+    if (!tokenRecord) return;
+
+    return { ok: true };
+  });
+
+  // ---------------------------------------------------------------------------
+  // POST /api/users.deletePhoto — delete user photo
+  // ---------------------------------------------------------------------------
+  fastify.post('/api/users.deletePhoto', async (request: FastifyRequest, reply: any) => {
+    const tokenRecord = await checkAuth(fastify, request, reply, 'users.deletePhoto');
+    if (!tokenRecord) return;
+
+    return { ok: true };
+  });
+
+  // ---------------------------------------------------------------------------
+  // POST /api/users.setPhoto — set user photo
+  // ---------------------------------------------------------------------------
+  fastify.post('/api/users.setPhoto', async (request: FastifyRequest, reply: any) => {
+    const tokenRecord = await checkAuth(fastify, request, reply, 'users.setPhoto');
+    if (!tokenRecord) return;
+
+    return { ok: true };
+  });
+
+  // ---------------------------------------------------------------------------
+  // POST /api/users.setActive — mark user as active (bonus)
+  // ---------------------------------------------------------------------------
+  fastify.post('/api/users.setActive', async (request: FastifyRequest, reply: any) => {
+    const tokenRecord = await checkAuth(fastify, request, reply, 'users.setActive');
+    if (!tokenRecord) return;
+
+    return { ok: true };
+  });
 };
 
 export default usersPlugin;
