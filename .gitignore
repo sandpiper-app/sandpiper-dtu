@@ -17,6 +17,7 @@ pnpm-debug.log*
 
 # Coverage
 coverage/
+!tests/sdk-verification/coverage/
 
 # OS
 .DS_Store
