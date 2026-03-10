@@ -300,7 +300,7 @@ const uiPlugin: FastifyPluginAsync = async (fastify) => {
       name: data.name,
       real_name: data.real_name || '',
       display_name: data.display_name || '',
-      email: data.email || null,
+      email: data.email || undefined,
     });
     return reply.redirect(`/ui/users/${id}`);
   });
