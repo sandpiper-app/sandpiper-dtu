@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: milestone
 status: executing
-stopped_at: Completed 19-02-PLAN.md
-last_updated: "2026-03-10T01:45:59.426Z"
+stopped_at: Completed 19-01-PLAN.md (19-01 executes before 19-02/19-03 in sequence)
+last_updated: "2026-03-10T01:46:39.735Z"
 progress:
   total_phases: 8
   completed_phases: 6
@@ -48,6 +48,12 @@ progress:
 - Async listener coordination via Promise resolved from app.event() handler, raced with 5s timeout — HTTPReceiver sends 200 ack before listener runs, so HTTP response cannot be used to detect listener completion
 - respond() 410 tolerance: twin's /response-url/:id returns 410 for unregistered IDs; test catches and validates error is not an internal Bolt routing failure — proves command handler fired and respond() was invoked
 - Unique token 'xoxb-slck11-test-token' in beforeAll avoids conflicts with other test files using the same 'xoxb-test-token' default
+
+**2026-03-10 - Plan 19-01 Execution:**
+- @slack/oauth is CJS — named ESM imports fail with SyntaxError in Node 24; must use `import pkg from '@slack/oauth'` + destructuring
+- enterprise: null (not undefined) in oauth.v2.access — SDK checks v2Resp.enterprise == null for Installation shape; field was previously missing causing malformed Installation objects
+- handleInstallPath without directInstall: true renders HTML (200) not 302 — Set-Cookie header is the key assertion for state cookie tests
+- authorize() source userId must not be U_BOT_TWIN (the installed bot) — use U_TEST or undefined; MemoryInstallationStore keys by teamId T_TWIN
 
 **2026-03-10 - Plan 19-02 Execution:**
 - One shared App instance in beforeAll with 9 listeners pre-registered to unique IDs — avoids cross-test bleed without per-test app recreation cost
@@ -391,7 +397,7 @@ None.
 ## Session Continuity
 
 **Last completed:** Phase 19 Plan 02 — SLCK-10 Bolt App listener tests (9 types) via processEvent(); all 161 sdk-verification tests green; 2min execution
-**Stopped at:** Completed 19-02-PLAN.md
+**Stopped at:** Completed 19-01-PLAN.md (19-01 executes before 19-02/19-03 in sequence)
 **Timestamp:** 2026-03-10T01:45:09Z
 
 ---
