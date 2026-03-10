@@ -983,8 +983,9 @@ describe('Shopify Twin Integration', () => {
       const dlq = JSON.parse(dlqRes.body);
       expect(Array.isArray(dlq)).toBe(true);
       expect(dlq.length).toBeGreaterThan(0);
-      expect(dlq[0].topic).toBe('orders/create');
-      expect(dlq[0].callbackUrl).toBe('http://127.0.0.1:1/webhook');
+      const dlqEntry = dlq.find((e: any) => e.callbackUrl === 'http://127.0.0.1:1/webhook');
+      expect(dlqEntry).toBeDefined();
+      expect(dlqEntry.topic).toBe('orders/create');
     });
   });
 

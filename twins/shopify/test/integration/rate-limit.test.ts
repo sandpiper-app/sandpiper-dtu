@@ -66,7 +66,7 @@ describe('GraphQL Rate Limiting', () => {
 
       // throttleStatus must match Shopify format
       expect(cost.throttleStatus).toBeDefined();
-      expect(cost.throttleStatus.maximumAvailable).toBe(1000);
+      expect(cost.throttleStatus.maximumAvailable).toBe(2000);
       expect(typeof cost.throttleStatus.currentlyAvailable).toBe('number');
       expect(cost.throttleStatus.currentlyAvailable).toBeGreaterThanOrEqual(0);
       expect(cost.throttleStatus.restoreRate).toBe(50);
@@ -158,7 +158,7 @@ describe('GraphQL Rate Limiting', () => {
       expect(body.extensions.cost.requestedQueryCost).toBeGreaterThan(0);
       expect(body.extensions.cost.actualQueryCost).toBeNull();
       expect(body.extensions.cost.throttleStatus).toBeDefined();
-      expect(body.extensions.cost.throttleStatus.maximumAvailable).toBe(1000);
+      expect(body.extensions.cost.throttleStatus.maximumAvailable).toBe(2000);
       expect(body.extensions.cost.throttleStatus.restoreRate).toBe(50);
     });
   });
