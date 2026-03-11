@@ -59,6 +59,11 @@ export class StateManager {
   private listInventoryItemsStmt: Database.Statement | null = null;
   private updateInventoryItemStmt: Database.Statement | null = null;
 
+  // ProductVariant prepared statements
+  private createVariantStmt: Database.Statement | null = null;
+  private listVariantsByProductGidStmt: Database.Statement | null = null;
+  private deleteVariantsByProductGidStmt: Database.Statement | null = null;
+
   constructor(options: StateManagerOptions = {}) {
     this.dbPath = options.dbPath ?? ':memory:';
   }
@@ -120,6 +125,10 @@ export class StateManager {
       this.getInventoryItemByGidStmt = null;
       this.listInventoryItemsStmt = null;
       this.updateInventoryItemStmt = null;
+      // Reset ProductVariant statements
+      this.createVariantStmt = null;
+      this.listVariantsByProductGidStmt = null;
+      this.deleteVariantsByProductGidStmt = null;
     }
     this.init();
   }
@@ -167,6 +176,10 @@ export class StateManager {
       this.getInventoryItemByGidStmt = null;
       this.listInventoryItemsStmt = null;
       this.updateInventoryItemStmt = null;
+      // Clear ProductVariant statements
+      this.createVariantStmt = null;
+      this.listVariantsByProductGidStmt = null;
+      this.deleteVariantsByProductGidStmt = null;
     }
   }
 
@@ -293,6 +306,19 @@ export class StateManager {
         updated_at INTEGER NOT NULL
       );
 
+      CREATE TABLE IF NOT EXISTS product_variants (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        gid TEXT UNIQUE NOT NULL,
+        product_gid TEXT NOT NULL,
+        title TEXT NOT NULL DEFAULT 'Default Title',
+        sku TEXT,
+        price TEXT NOT NULL DEFAULT '0.00',
+        inventory_quantity INTEGER DEFAULT 0,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS idx_product_variants_product_gid ON product_variants(product_gid);
+
       CREATE TABLE IF NOT EXISTS fulfillments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         gid TEXT UNIQUE NOT NULL,
@@ -406,6 +432,17 @@ export class StateManager {
     this.listInventoryItemsStmt = db.prepare('SELECT * FROM inventory_items ORDER BY id ASC');
     this.updateInventoryItemStmt = db.prepare(
       'UPDATE inventory_items SET sku = ?, tracked = ?, available = ?, updated_at = ? WHERE id = ?'
+    );
+
+    // ProductVariant prepared statements
+    this.createVariantStmt = db.prepare(
+      'INSERT INTO product_variants (gid, product_gid, title, sku, price, inventory_quantity, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+    );
+    this.listVariantsByProductGidStmt = db.prepare(
+      'SELECT * FROM product_variants WHERE product_gid = ? ORDER BY id ASC'
+    );
+    this.deleteVariantsByProductGidStmt = db.prepare(
+      'DELETE FROM product_variants WHERE product_gid = ?'
     );
   }
 
@@ -769,5 +806,34 @@ export class StateManager {
       now,
       id
     );
+  }
+
+  /** Create a product variant and return its ID */
+  createVariant(data: { gid: string; product_gid: string; title?: string; sku?: string; price?: string; inventory_quantity?: number }): number {
+    if (!this.createVariantStmt) throw new Error('StateManager not initialized. Call init() first.');
+    const now = Math.floor(Date.now() / 1000);
+    const result = this.createVariantStmt.run(
+      data.gid,
+      data.product_gid,
+      data.title ?? 'Default Title',
+      data.sku ?? null,
+      data.price ?? '0.00',
+      data.inventory_quantity ?? 0,
+      now,
+      now
+    );
+    return result.lastInsertRowid as number;
+  }
+
+  /** List all variants for a product by its GID */
+  listVariantsByProductGid(productGid: string): any[] {
+    if (!this.listVariantsByProductGidStmt) throw new Error('StateManager not initialized. Call init() first.');
+    return this.listVariantsByProductGidStmt.all(productGid);
+  }
+
+  /** Delete all variants for a product (used when re-seeding) */
+  deleteVariantsByProductGid(productGid: string): void {
+    if (!this.deleteVariantsByProductGidStmt) throw new Error('StateManager not initialized. Call init() first.');
+    this.deleteVariantsByProductGidStmt.run(productGid);
   }
 }
