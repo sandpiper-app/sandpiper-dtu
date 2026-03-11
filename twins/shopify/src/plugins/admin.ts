@@ -13,7 +13,7 @@ import { randomUUID } from 'node:crypto';
 
 interface FixturesLoadBody {
   orders?: any[];
-  products?: any[];
+  products?: Array<{ variants?: Array<{ title?: string; sku?: string; price?: string; inventory_quantity?: number }>; [key: string]: any }>;
   customers?: any[];
   inventoryItems?: any[];
 }
@@ -87,9 +87,19 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
 
     // Load products — generate GIDs before insertion
     for (const product of products) {
-      const productId = Date.now() + Math.floor(Math.random() * 100000);
-      const productGid = createGID('Product', productId);
-      fastify.stateManager.createProduct({ ...product, gid: productGid });
+      const productTempId = Date.now() + Math.floor(Math.random() * 100000);
+      const productGid = createGID('Product', productTempId);
+      const { variants: variantInputs, ...productData } = product;
+      fastify.stateManager.createProduct({ ...productData, gid: productGid });
+
+      // Seed variants if provided
+      if (variantInputs && variantInputs.length > 0) {
+        for (const v of variantInputs) {
+          const variantTempId = Date.now() + Math.floor(Math.random() * 100000);
+          const variantGid = createGID('ProductVariant', variantTempId);
+          fastify.stateManager.createVariant({ ...v, gid: variantGid, product_gid: productGid });
+        }
+      }
     }
 
     // Load customers — generate GIDs before insertion
