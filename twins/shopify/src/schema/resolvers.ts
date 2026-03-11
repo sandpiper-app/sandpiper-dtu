@@ -957,16 +957,17 @@ export const resolvers = {
     updatedAt: (parent: any) => parent.updated_at,
     productType: (parent: any) => parent.product_type,
     status: (parent: any) => parent.status ?? 'ACTIVE',
-    variants: (parent: any, _args: unknown, context: Context) => {
+    variants: (parent: any, args: { first?: number }, context: Context) => {
       const rows = context.stateManager.listVariantsByProductGid(parent.gid);
-      const nodes = rows.map((v: any) => ({
-        id: createGID('ProductVariant', v.id),
+      let nodes = rows.map((v: any) => ({
+        id: v.gid,
         title: v.title,
         sku: v.sku ?? null,
         price: v.price,
         inventoryQuantity: v.inventory_quantity ?? 0,
         inventoryItem: null,
       }));
+      if (args.first != null) nodes = nodes.slice(0, args.first);
       return { nodes };
     },
   },
