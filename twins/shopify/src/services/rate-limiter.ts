@@ -22,12 +22,14 @@ export interface TryConsumeResult {
 export class LeakyBucketRateLimiter {
   readonly maxAvailable: number;
   readonly restoreRate: number; // points per second
+  readonly enabled: boolean;
 
   private buckets: Map<string, BucketState>;
 
-  constructor(maxAvailable = 1000, restoreRate = 50) {
+  constructor(maxAvailable = 1000, restoreRate = 50, enabled = true) {
     this.maxAvailable = maxAvailable;
     this.restoreRate = restoreRate;
+    this.enabled = enabled;
     this.buckets = new Map();
   }
 
@@ -38,6 +40,10 @@ export class LeakyBucketRateLimiter {
    * long to wait before the bucket will have sufficient capacity.
    */
   tryConsume(key: string, cost: number): TryConsumeResult {
+    if (!this.enabled) {
+      return { allowed: true, currentlyAvailable: this.maxAvailable, retryAfterMs: 0 };
+    }
+
     const now = Date.now();
 
     // Get or create bucket

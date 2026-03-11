@@ -92,9 +92,11 @@ interface WindowEntry {
 export class SlackRateLimiter {
   private windows: Map<string, WindowEntry> = new Map();
   private tiers: Record<string, MethodRateConfig>;
+  readonly enabled: boolean;
 
-  constructor(tierOverrides?: Record<string, MethodRateConfig>) {
+  constructor(tierOverrides?: Record<string, MethodRateConfig>, enabled = true) {
     this.tiers = { ...DEFAULT_RATE_TIERS, ...tierOverrides };
+    this.enabled = enabled;
   }
 
   /**
@@ -102,6 +104,8 @@ export class SlackRateLimiter {
    * @returns null if allowed, { retryAfter: seconds } if limited
    */
   check(method: string, token: string): { retryAfter: number } | null {
+    if (!this.enabled) return null;
+
     const config = this.tiers[method];
     if (!config) return null; // Unknown methods are not rate-limited
 

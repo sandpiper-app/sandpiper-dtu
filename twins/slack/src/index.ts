@@ -52,7 +52,7 @@ declare module 'fastify' {
  * Build the Fastify application instance.
  * Exported for testing via app.inject() without starting the server.
  */
-export async function buildApp(options: { logger?: boolean | object } = {}) {
+export async function buildApp(options: { logger?: boolean | object; rateLimit?: boolean } = {}) {
   const fastify = Fastify({
     logger: options.logger ?? {
       transport: {
@@ -88,7 +88,7 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
   });
 
   // Initialize rate limiter
-  const rateLimiter = new SlackRateLimiter();
+  const rateLimiter = new SlackRateLimiter(undefined, options.rateLimit !== false);
 
   // Initialize event dispatcher
   const eventDispatcher = new EventDispatcher({

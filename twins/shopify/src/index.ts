@@ -28,7 +28,7 @@ import { LeakyBucketRateLimiter } from './services/rate-limiter.js';
  * Build the Fastify application instance.
  * Exported for testing via app.inject() without starting the server.
  */
-export async function buildApp(options: { logger?: boolean | object } = {}) {
+export async function buildApp(options: { logger?: boolean | object; rateLimit?: boolean } = {}) {
   const fastify = Fastify({
     logger: options.logger ?? {
       transport: {
@@ -85,7 +85,7 @@ export async function buildApp(options: { logger?: boolean | object } = {}) {
   // Initialize rate limiter (increased to 2000 pts max to accommodate billing.check
   // which uses oneTimePurchases(first: 250) — that query costs ~1004 pts under the
   // twin's conservative cost model; real Shopify charges for actual items returned).
-  const rateLimiter = new LeakyBucketRateLimiter(2000, 50);
+  const rateLimiter = new LeakyBucketRateLimiter(2000, 50, options.rateLimit !== false);
 
   // Decorate Fastify with stateManager, errorSimulator, webhookSecret, queue, and rateLimiter
   fastify.decorate('stateManager', stateManager);
