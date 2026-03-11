@@ -240,7 +240,8 @@ export const resolvers = {
     order: async (_parent: unknown, args: { id: string }, context: Context) => {
       requireAuth(context);
       const { id } = parseGID(args.id);
-      const order = context.stateManager.getOrder(parseInt(id, 10));
+      const gid = createGID('Order', id);
+      const order = context.stateManager.getOrderByGid(gid);
       return order ?? null;
     },
 
@@ -394,7 +395,7 @@ export const resolvers = {
       if (order) {
         await enqueueWebhooks(context, 'orders/create', {
           id: order.id,
-          admin_graphql_api_id: createGID('Order', order.id),
+          admin_graphql_api_id: order.gid,
           created_at: new Date(order.created_at * 1000).toISOString(),
           name: order.name,
           total_price: order.total_price,
@@ -413,11 +414,11 @@ export const resolvers = {
       const { input } = args;
       const errors: UserError[] = [];
 
-      // Parse GID to get internal ID
-      let orderId: number;
+      // Parse GID to get order by stored GID
+      let orderGid: string;
       try {
         const { id } = parseGID(input.id);
-        orderId = parseInt(id, 10);
+        orderGid = createGID('Order', id);
       } catch (err) {
         errors.push({
           field: ['id'],
@@ -427,7 +428,7 @@ export const resolvers = {
       }
 
       // Check if order exists
-      const existingOrder = context.stateManager.getOrder(orderId);
+      const existingOrder = context.stateManager.getOrderByGid(orderGid);
       if (!existingOrder) {
         errors.push({
           field: ['id'],
@@ -445,14 +446,14 @@ export const resolvers = {
         line_items: input.lineItems ? JSON.stringify(input.lineItems) : existingOrder.line_items,
       };
 
-      context.stateManager.updateOrder(orderId, updateData);
-      const updatedOrder = context.stateManager.getOrder(orderId);
+      context.stateManager.updateOrder(existingOrder.id, updateData);
+      const updatedOrder = context.stateManager.getOrder(existingOrder.id);
 
       // Enqueue webhooks via async queue
       if (updatedOrder) {
         await enqueueWebhooks(context, 'orders/update', {
           id: updatedOrder.id,
-          admin_graphql_api_id: createGID('Order', updatedOrder.id),
+          admin_graphql_api_id: updatedOrder.gid,
           created_at: new Date(updatedOrder.created_at * 1000).toISOString(),
           updated_at: new Date(updatedOrder.updated_at * 1000).toISOString(),
           name: updatedOrder.name,
@@ -471,18 +472,18 @@ export const resolvers = {
       const { input } = args;
       const errors: UserError[] = [];
 
-      // Parse GID to get numeric order ID
-      let orderId: number;
+      // Parse GID to look up order by stored GID
+      let orderGid: string;
       try {
         const { id } = parseGID(input.id);
-        orderId = parseInt(id, 10);
+        orderGid = createGID('Order', id);
       } catch (err) {
         errors.push({ field: ['id'], message: 'Invalid order ID format' });
         return { order: null, userErrors: errors };
       }
 
       // Look up order
-      const existingOrder = context.stateManager.getOrder(orderId);
+      const existingOrder = context.stateManager.getOrderByGid(orderGid);
       if (!existingOrder) {
         errors.push({ field: ['id'], message: 'Order not found' });
         return { order: null, userErrors: errors };
@@ -499,16 +500,16 @@ export const resolvers = {
       }
 
       // Close the order
-      context.stateManager.closeOrder(orderId);
+      context.stateManager.closeOrder(existingOrder.id);
 
       // Fetch updated order
-      const closedOrder = context.stateManager.getOrder(orderId);
+      const closedOrder = context.stateManager.getOrder(existingOrder.id);
 
       // Enqueue orders/update webhook
       if (closedOrder) {
         await enqueueWebhooks(context, 'orders/update', {
           id: closedOrder.id,
-          admin_graphql_api_id: createGID('Order', closedOrder.id),
+          admin_graphql_api_id: closedOrder.gid,
           updated_at: new Date(closedOrder.updated_at * 1000).toISOString(),
           closed_at: new Date(closedOrder.closed_at * 1000).toISOString(),
           name: closedOrder.name,
@@ -552,7 +553,7 @@ export const resolvers = {
       if (product) {
         await enqueueWebhooks(context, 'products/create', {
           id: product.id,
-          admin_graphql_api_id: createGID('Product', product.id),
+          admin_graphql_api_id: product.gid,
           created_at: new Date(product.created_at * 1000).toISOString(),
           title: product.title,
         });
@@ -568,18 +569,18 @@ export const resolvers = {
       const { input } = args;
       const errors: UserError[] = [];
 
-      // Parse GID to get internal ID
-      let productId: number;
+      // Parse GID to look up product by stored GID
+      let productGid: string;
       try {
         const { id } = parseGID(input.id);
-        productId = parseInt(id, 10);
+        productGid = createGID('Product', id);
       } catch (err) {
         errors.push({ field: ['id'], message: 'Invalid product ID format' });
         return { product: null, userErrors: errors };
       }
 
       // Check if product exists
-      const existingProduct = context.stateManager.getProduct(productId);
+      const existingProduct = context.stateManager.getProductByGid(productGid);
       if (!existingProduct) {
         errors.push({ field: ['id'], message: 'Product not found' });
         return { product: null, userErrors: errors };
@@ -593,14 +594,14 @@ export const resolvers = {
         product_type: input.productType ?? existingProduct.product_type,
       };
 
-      context.stateManager.updateProduct(productId, updateData);
-      const updatedProduct = context.stateManager.getProduct(productId);
+      context.stateManager.updateProduct(existingProduct.id, updateData);
+      const updatedProduct = context.stateManager.getProduct(existingProduct.id);
 
       // Enqueue webhooks via async queue
       if (updatedProduct) {
         await enqueueWebhooks(context, 'products/update', {
           id: updatedProduct.id,
-          admin_graphql_api_id: createGID('Product', updatedProduct.id),
+          admin_graphql_api_id: updatedProduct.gid,
           created_at: new Date(updatedProduct.created_at * 1000).toISOString(),
           updated_at: new Date(updatedProduct.updated_at * 1000).toISOString(),
           title: updatedProduct.title,
@@ -623,18 +624,18 @@ export const resolvers = {
         return { fulfillment: null, userErrors: errors };
       }
 
-      // Parse order GID to verify format and get numeric ID
-      let orderNumericId: number;
+      // Parse order GID to look up by stored GID
+      let orderGid: string;
       try {
         const { id } = parseGID(input.orderId);
-        orderNumericId = parseInt(id, 10);
+        orderGid = createGID('Order', id);
       } catch (err) {
         errors.push({ field: ['orderId'], message: 'Invalid order ID format' });
         return { fulfillment: null, userErrors: errors };
       }
 
       // Look up the parent order
-      const parentOrder = context.stateManager.getOrder(orderNumericId);
+      const parentOrder = context.stateManager.getOrderByGid(orderGid);
       if (!parentOrder) {
         errors.push({ field: ['orderId'], message: 'Order not found' });
         return { fulfillment: null, userErrors: errors };
@@ -660,16 +661,16 @@ export const resolvers = {
       const fulfillment = context.stateManager.getFulfillment(fulfillmentId);
 
       // Update parent order's fulfillment status to FULFILLED
-      context.stateManager.updateOrderFulfillmentStatus(orderNumericId, 'FULFILLED');
+      context.stateManager.updateOrderFulfillmentStatus(parentOrder.id, 'FULFILLED');
 
       // Fetch the updated order for webhook payload
-      const updatedOrder = context.stateManager.getOrder(orderNumericId);
+      const updatedOrder = context.stateManager.getOrder(parentOrder.id);
 
       // Enqueue fulfillments/create webhook
       if (fulfillment) {
         await enqueueWebhooks(context, 'fulfillments/create', {
           id: fulfillment.id,
-          admin_graphql_api_id: createGID('Fulfillment', fulfillment.id),
+          admin_graphql_api_id: fulfillment.gid,
           created_at: new Date(fulfillment.created_at * 1000).toISOString(),
           order_id: fulfillment.order_gid,
           status: fulfillment.status,
@@ -681,7 +682,7 @@ export const resolvers = {
       if (updatedOrder) {
         await enqueueWebhooks(context, 'orders/update', {
           id: updatedOrder.id,
-          admin_graphql_api_id: createGID('Order', updatedOrder.id),
+          admin_graphql_api_id: updatedOrder.gid,
           updated_at: new Date(updatedOrder.updated_at * 1000).toISOString(),
           name: updatedOrder.name,
           display_fulfillment_status: updatedOrder.display_fulfillment_status,
@@ -724,7 +725,7 @@ export const resolvers = {
       if (customer) {
         await enqueueWebhooks(context, 'customers/create', {
           id: customer.id,
-          admin_graphql_api_id: createGID('Customer', customer.id),
+          admin_graphql_api_id: customer.gid,
           created_at: new Date(customer.created_at * 1000).toISOString(),
           email: customer.email,
           first_name: customer.first_name,
@@ -742,27 +743,27 @@ export const resolvers = {
       const { input } = args;
       const errors: UserError[] = [];
 
-      let itemId: number;
+      let itemGid: string;
       try {
         const { id } = parseGID(input.id);
-        itemId = parseInt(id, 10);
+        itemGid = createGID('InventoryItem', id);
       } catch (err) {
         errors.push({ field: ['id'], message: 'Invalid inventory item ID format' });
         return { inventoryItem: null, userErrors: errors };
       }
 
-      const existing = context.stateManager.getInventoryItem(itemId);
+      const existing = context.stateManager.getInventoryItemByGid(itemGid);
       if (!existing) {
         errors.push({ field: ['id'], message: 'Inventory item not found' });
         return { inventoryItem: null, userErrors: errors };
       }
 
-      context.stateManager.updateInventoryItem(itemId, {
+      context.stateManager.updateInventoryItem(existing.id, {
         sku: input.sku ?? existing.sku,
         tracked: input.tracked ?? (existing.tracked === 1 ? true : false),
         available: input.available ?? existing.available,
       });
-      const updated = context.stateManager.getInventoryItem(itemId);
+      const updated = context.stateManager.getInventoryItem(existing.id);
       return { inventoryItem: updated, userErrors: [] };
     },
 
@@ -891,7 +892,7 @@ export const resolvers = {
 
   // Type resolvers
   Order: {
-    id: (parent: any) => createGID('Order', parent.id),
+    id: (parent: any) => parent.gid,
     // name may be null from seed data — ShopifyClient maps null to "" safely
     name: (parent: any) => parent.name ?? `#${parent.id}`,
     createdAt: (parent: any) => parent.created_at,
@@ -952,7 +953,7 @@ export const resolvers = {
   },
 
   Product: {
-    id: (parent: any) => createGID('Product', parent.id),
+    id: (parent: any) => parent.gid,
     createdAt: (parent: any) => parent.created_at,
     updatedAt: (parent: any) => parent.updated_at,
     productType: (parent: any) => parent.product_type,
@@ -973,7 +974,7 @@ export const resolvers = {
   },
 
   Customer: {
-    id: (parent: any) => createGID('Customer', parent.id),
+    id: (parent: any) => parent.gid,
     createdAt: (parent: any) => parent.created_at,
     updatedAt: (parent: any) => parent.updated_at,
     firstName: (parent: any) => parent.first_name,
@@ -992,7 +993,7 @@ export const resolvers = {
   },
 
   InventoryItem: {
-    id: (parent: any) => createGID('InventoryItem', parent.id),
+    id: (parent: any) => parent.gid,
     createdAt: (parent: any) => parent.created_at,
     updatedAt: (parent: any) => parent.updated_at,
     // inventoryLevels returns an empty list — the twin does not simulate inventory levels.
@@ -1001,7 +1002,7 @@ export const resolvers = {
   },
 
   Fulfillment: {
-    id: (parent: any) => createGID('Fulfillment', parent.id),
+    id: (parent: any) => parent.gid,
     createdAt: (parent: any) => parent.created_at,
     updatedAt: (parent: any) => parent.updated_at,
     trackingNumber: (parent: any) => parent.tracking_number,
