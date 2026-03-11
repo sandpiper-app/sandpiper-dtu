@@ -108,6 +108,7 @@ function paginate<T extends { id: number }>(
   resourceType: string
 ): {
   edges: Array<{ node: T; cursor: string }>;
+  nodes: T[];
   pageInfo: {
     hasNextPage: boolean;
     hasPreviousPage: boolean;
@@ -175,7 +176,7 @@ function paginate<T extends { id: number }>(
     endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : null,
   };
 
-  return { edges, pageInfo };
+  return { edges, nodes: edges.map(e => e.node), pageInfo };
 }
 
 // Decimal scalar — accepts both numeric and string values for money amounts.
@@ -297,6 +298,16 @@ export const resolvers = {
       return item ?? null;
     },
 
+    // nodes(ids: [ID!]!) — used by ShopifyClient.getInventoryLevels() for bulk lookup
+    // Returns InventoryItem objects for any inventory item IDs; ignores unknown IDs.
+    nodes: async (_parent: unknown, args: { ids: string[] }, context: Context) => {
+      requireAuth(context);
+      return args.ids.map((id: string) => {
+        const item = context.stateManager.getInventoryItemByGid(id);
+        return item ?? null;
+      }).filter((item: unknown) => item !== null);
+    },
+
     currentAppInstallation: (_: unknown, _args: unknown, context: Context) => {
       requireAuth(context);
       return {
@@ -309,6 +320,14 @@ export const resolvers = {
     },
 
     shop: () => ({ name: 'Sandpiper Dev Store' }),
+  },
+
+  // Node interface type resolver — determines the concrete type for nodes(ids: [ID!]!)
+  Node: {
+    __resolveType(obj: unknown) {
+      // All nodes returned by the twin's nodes() resolver are InventoryItem
+      return 'InventoryItem';
+    },
   },
 
   // Mutation resolvers
@@ -873,23 +892,44 @@ export const resolvers = {
   // Type resolvers
   Order: {
     id: (parent: any) => createGID('Order', parent.id),
+    // name may be null from seed data — ShopifyClient maps null to "" safely
+    name: (parent: any) => parent.name ?? `#${parent.id}`,
     createdAt: (parent: any) => parent.created_at,
     updatedAt: (parent: any) => parent.updated_at,
     closedAt: (parent: any) => parent.closed_at ?? null,
     displayFulfillmentStatus: (parent: any) => parent.display_fulfillment_status ?? 'UNFULFILLED',
     displayFinancialStatus: (parent: any) => parent.display_financial_status ?? 'PENDING',
+    // Extra fields expected by ShopifyClient.listOrders()
+    email: (parent: any) => parent.email ?? null,
+    status: (parent: any) => parent.status ?? null,
+    tags: (parent: any) => {
+      const tags = parent.tags;
+      if (!tags) return [];
+      if (Array.isArray(tags)) return tags;
+      try { return JSON.parse(tags); } catch { return []; }
+    },
+    shippingAddress: (parent: any) => {
+      const addr = parent.shipping_address;
+      if (!addr) return null;
+      try { return JSON.parse(addr); } catch { return null; }
+    },
     lineItems: (parent: any) => {
       const items = JSON.parse(parent.line_items || '[]');
-      const edges = items.map((item: any, index: number) => ({
-        node: {
-          id: createGID('LineItem', `${parent.id}-${index}`),
-          ...item,
-        },
+      const nodeList = items.map((item: any, index: number) => ({
+        id: createGID('LineItem', `${parent.id}-${index}`),
+        ...item,
+        // Provide required fields for ShopifyClient
+        originalUnitPriceSet: item.price ? { shopMoney: { amount: String(item.price), currencyCode: 'USD' } } : null,
+        sku: item.sku ?? null,
+      }));
+      const edges = nodeList.map((node: any, index: number) => ({
+        node,
         // LineItem cursors use a synthetic composite key since they're JSON-stored
         cursor: encodeCursor('LineItem', parent.id * 10000 + index),
       }));
       return {
         edges,
+        nodes: nodeList,
         pageInfo: {
           hasNextPage: false,
           hasPreviousPage: false,
@@ -900,8 +940,8 @@ export const resolvers = {
     },
     totalPriceSet: (parent: any) => ({
       shopMoney: {
-        amount: parent.total_price,
-        currencyCode: parent.currency_code,
+        amount: parent.total_price ?? '0',
+        currencyCode: parent.currency_code ?? 'USD',
       },
     }),
     customer: async (parent: any, _args: unknown, context: Context) => {
@@ -916,6 +956,9 @@ export const resolvers = {
     createdAt: (parent: any) => parent.created_at,
     updatedAt: (parent: any) => parent.updated_at,
     productType: (parent: any) => parent.product_type,
+    status: (parent: any) => parent.status ?? 'ACTIVE',
+    // variants — twin doesn't store variants, return empty connection
+    variants: () => ({ nodes: [] }),
   },
 
   Customer: {
@@ -924,12 +967,26 @@ export const resolvers = {
     updatedAt: (parent: any) => parent.updated_at,
     firstName: (parent: any) => parent.first_name,
     lastName: (parent: any) => parent.last_name,
+    phone: (parent: any) => parent.phone ?? null,
+    numberOfOrders: (parent: any) => parent.number_of_orders ?? 0,
+    amountSpent: (parent: any) => parent.amount_spent != null
+      ? { amount: String(parent.amount_spent) }
+      : { amount: '0' },
+    tags: (parent: any) => {
+      const tags = parent.tags;
+      if (!tags) return [];
+      if (Array.isArray(tags)) return tags;
+      try { return JSON.parse(tags); } catch { return []; }
+    },
   },
 
   InventoryItem: {
     id: (parent: any) => createGID('InventoryItem', parent.id),
     createdAt: (parent: any) => parent.created_at,
     updatedAt: (parent: any) => parent.updated_at,
+    // inventoryLevels returns an empty list — the twin does not simulate inventory levels.
+    // ShopifyClient.getInventoryLevels() returns [] when nodes have no inventoryLevels.
+    inventoryLevels: () => ({ nodes: [] }),
   },
 
   Fulfillment: {

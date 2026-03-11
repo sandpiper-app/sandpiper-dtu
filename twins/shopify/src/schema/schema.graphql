@@ -9,6 +9,12 @@ scalar Decimal
 enum AppSubscriptionReplacementBehavior { APPLY_IMMEDIATELY APPLY_ON_NEXT_BILLING_CYCLE STANDARD }
 enum AppPurchaseOneTimeSortKeys { CREATED_AT ID RELEVANCE }
 
+# Sort key enums — accepted by list queries but ignored by the twin resolver.
+# Allows ShopifyClient production queries to work against the simplified twin schema.
+enum ProductSortKeys { CREATED_AT ID INVENTORY_TOTAL PRODUCT_TYPE PUBLISHED_AT RELEVANCE TITLE UPDATED_AT VENDOR }
+enum OrderSortKeys { CREATED_AT CUSTOMER_NAME FINANCIAL_STATUS FULFILLMENT_STATUS ID ORDER_NUMBER PROCESSED_AT RELEVANCE TOTAL_PRICE UPDATED_AT }
+enum CustomerSortKeys { CREATED_AT ID LAST_ORDER_DATE LOCATION NAME ORDER_COUNT RELEVANCE TOTAL_SPENT UPDATED_AT }
+
 # Money types matching Shopify's structure
 type MoneyV2 {
   amount: String!
@@ -42,22 +48,38 @@ enum OrderDisplayFinancialStatus {
   REFUNDED
 }
 
+# Shipping address — used in listOrders query
+type MailingAddress {
+  address1: String
+  address2: String
+  city: String
+  province: String
+  country: String
+  zip: String
+}
+
 # Order types
+# All fields expected by ShopifyClient.listOrders() are present; extra fields default to null.
 type Order {
   id: ID!
-  name: String!
+  name: String
+  email: String
+  status: String
   createdAt: DateTime!
   updatedAt: DateTime!
   closedAt: DateTime
-  displayFulfillmentStatus: OrderDisplayFulfillmentStatus!
+  displayFulfillmentStatus: OrderDisplayFulfillmentStatus
   displayFinancialStatus: OrderDisplayFinancialStatus!
   totalPriceSet: MoneySet!
+  tags: [String!]!
   customer: Customer
   lineItems(first: Int = 10): LineItemConnection!
+  shippingAddress: MailingAddress
 }
 
 type LineItemConnection {
   edges: [LineItemEdge!]!
+  nodes: [LineItem!]!
   pageInfo: PageInfo!
 }
 
@@ -70,16 +92,37 @@ type LineItem {
   id: ID!
   title: String!
   quantity: Int!
+  originalUnitPriceSet: MoneySet
+  sku: String
 }
 
 type OrderConnection {
   edges: [OrderEdge!]!
+  nodes: [Order!]!
   pageInfo: PageInfo!
 }
 
 type OrderEdge {
   node: Order!
   cursor: String!
+}
+
+# Product variant types
+type ProductVariantConnection {
+  nodes: [ProductVariant!]!
+}
+
+type ProductVariant {
+  id: ID!
+  title: String!
+  sku: String
+  price: String!
+  inventoryQuantity: Int
+  inventoryItem: InventoryItemRef
+}
+
+type InventoryItemRef {
+  id: ID!
 }
 
 # Product types
@@ -89,12 +132,15 @@ type Product {
   description: String
   vendor: String
   productType: String
+  status: String
   createdAt: DateTime!
   updatedAt: DateTime!
+  variants(first: Int): ProductVariantConnection!
 }
 
 type ProductConnection {
   edges: [ProductEdge!]!
+  nodes: [Product!]!
   pageInfo: PageInfo!
 }
 
@@ -104,17 +150,26 @@ type ProductEdge {
 }
 
 # Customer types
+type AmountV2 {
+  amount: String!
+}
+
 type Customer {
   id: ID!
-  email: String!
+  email: String
   firstName: String
   lastName: String
+  phone: String
+  numberOfOrders: Int!
+  amountSpent: AmountV2
+  tags: [String!]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
 
 type CustomerConnection {
   edges: [CustomerEdge!]!
+  nodes: [Customer!]!
   pageInfo: PageInfo!
 }
 
@@ -124,13 +179,33 @@ type CustomerEdge {
 }
 
 # Inventory types
-type InventoryItem {
+type InventoryLevel {
+  location: Location!
+  quantities(names: [String!]!): [InventoryQuantity!]!
+}
+
+type InventoryLevelConnection {
+  nodes: [InventoryLevel!]!
+}
+
+type InventoryQuantity {
+  name: String!
+  quantity: Int!
+}
+
+type Location {
+  id: ID!
+}
+
+# InventoryItem implements Node so it can be returned by nodes(ids: [ID!]!)
+type InventoryItem implements Node {
   id: ID!
   sku: String
   tracked: Boolean!
   available: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
+  inventoryLevels(first: Int): InventoryLevelConnection!
 }
 
 type InventoryItemConnection {
@@ -422,16 +497,25 @@ type ShopInfo {
   name: String!
 }
 
+# Node interface — allows nodes(ids: [ID!]!) bulk lookup used by Shopify Admin API
+interface Node {
+  id: ID!
+}
+
 # Query root — all connections support Relay-spec cursor pagination args
+# Additional args (sortKey, reverse, query) are accepted but ignored by the twin.
+# This allows Sandpiper's ShopifyClient to send production-style queries without modification.
 type QueryRoot {
-  orders(first: Int = 10, after: String, last: Int, before: String): OrderConnection!
+  orders(first: Int = 10, after: String, last: Int, before: String, sortKey: OrderSortKeys, reverse: Boolean, query: String): OrderConnection!
   order(id: ID!): Order
-  products(first: Int = 10, after: String, last: Int, before: String): ProductConnection!
+  products(first: Int = 10, after: String, last: Int, before: String, sortKey: ProductSortKeys, reverse: Boolean): ProductConnection!
   product(id: ID!): Product
-  customers(first: Int = 10, after: String, last: Int, before: String): CustomerConnection!
+  customers(first: Int = 10, after: String, last: Int, before: String, sortKey: CustomerSortKeys, reverse: Boolean): CustomerConnection!
   customer(id: ID!): Customer
   inventoryItems(first: Int = 10, after: String, last: Int, before: String): InventoryItemConnection!
   inventoryItem(id: ID!): InventoryItem
+  # nodes(ids: [ID!]!) is used by ShopifyClient.getInventoryLevels() for bulk lookup
+  nodes(ids: [ID!]!): [Node]!
   currentAppInstallation: AppInstallation!
   shop: ShopInfo
 }
