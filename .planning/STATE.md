@@ -407,6 +407,7 @@ None.
 | # | Description | Date | Commit | Status | Directory |
 |---|-------------|------|--------|--------|-----------|
 | 1 | Use long-lived client credentials for Shopify live conformance | 2026-03-10 | cc65ebb | Verified | [1-live-tests-currently-require-shopify-acc](./quick/1-live-tests-currently-require-shopify-acc/) |
+| 2 | Fix Shopify twin empty variants resolver | 2026-03-11 | a6ba9ec | Verified | [2-fix-shopify-twin-empty-variants-resolver](./quick/2-fix-shopify-twin-empty-variants-resolver/) |
 
 ### Notes
 
@@ -428,8 +429,8 @@ None.
 ## Session Continuity
 
 **Last completed:** Phase 20 Plan 03 — manifest staleness Gate 4 in check-drift.ts; 9 Phase 20 LIVE_SYMBOLS (SocketModeReceiver + AwsLambdaReceiver); coverage-report.json regenerated (193 -> 202 live); all 4 drift gates green; 177/177 tests pass; INFRA-14 complete; Milestone v1.1 complete
-**Stopped at:** Completed quick-1-01-PLAN.md
-**Timestamp:** 2026-03-10T02:43:00Z
+**Stopped at:** Completed quick-2-01-PLAN.md
+**Timestamp:** 2026-03-11T17:57:00Z
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
