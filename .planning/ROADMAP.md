@@ -226,7 +226,11 @@ Plans:
   2. `POST /admin/oauth/access_token` validates `client_id`, `client_secret`, and `code`; requests with an empty body or invalid credentials return an error response
   3. Storefront GraphQL endpoint `POST /api/:version/graphql.json` accepts `X-Shopify-Storefront-Access-Token` for auth and rejects requests using an admin access token
   4. `products(first: N)` query against the Storefront endpoint returns valid product data; admin-only mutations are not present in the Storefront schema
-**Plans:** TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 23-01-PLAN.md — OAuth foundation: StateManager oauth_codes + token_type, GET /admin/oauth/authorize, tightened POST /admin/oauth/access_token
+- [ ] 23-02-PLAN.md — Storefront schema separation: storefront.graphql SDL, second Yoga instance, admin token rejection
 
 ### Phase 24: Shopify REST Persistence, Billing State Machine & Rate Limiting
 **Goal**: Shopify REST resources persist state with real-Shopify-compatible shapes, billing implements a full PENDING → ACTIVE → CANCELLED state machine, and rate limiting uses correct bucket parameters.
@@ -289,7 +293,7 @@ Plans:
 | 20. Bolt Alternate Receivers & Drift Automation | v1.1 | 3/3 | Complete | 2026-03-10 |
 | 21. Test Runner & Seeders | 2/2 | Complete    | 2026-03-12 | - |
 | 22. Shopify Version Routing & Response Headers | 3/3 | Complete    | 2026-03-12 | - |
-| 23. Shopify OAuth & Storefront | v1.2 | 0/TBD | Not started | - |
+| 23. Shopify OAuth & Storefront | v1.2 | 0/2 | Not started | - |
 | 24. Shopify REST Persistence, Billing State Machine & Rate Limiting | v1.2 | 0/TBD | Not started | - |
 | 25. Slack Method Coverage, Event Signing & State Tables | v1.2 | 0/TBD | Not started | - |
 | 26. Slack Chat Scoping & Scope Enforcement | v1.2 | 0/TBD | Not started | - |
