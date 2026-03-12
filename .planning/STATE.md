@@ -2,37 +2,37 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
-status: planning
-stopped_at: Completed 22-02-PLAN.md
-last_updated: "2026-03-12T16:31:04.580Z"
-last_activity: 2026-03-12 — Phase 22 plan 03 complete; shared conformance version helper, adapters honor op.path, dual-version smoke/integration tests with x-shopify-api-version assertions
+status: executing
+stopped_at: Completed 23-01-PLAN.md
+last_updated: "2026-03-12T17:54:10Z"
+last_activity: 2026-03-12 — Phase 23 plan 01 complete; real Shopify authorize redirect, one-time OAuth code validation, token_type plumbing, and 12/12 targeted auth tests passing
 progress:
   total_phases: 15
   completed_phases: 10
-  total_plans: 36
-  completed_plans: 36
+  total_plans: 38
+  completed_plans: 37
   percent: 98
 ---
 
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-12
-**Status:** Ready to plan
+**Status:** Executing Phase 23
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 22 (Shopify Version Routing) in progress
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 23 Plan 02 (Storefront schema separation)
 
 ## Current Position
 
-Phase: 22 of 27 (Shopify Version Routing & Response Headers)
-Plan: 3 of 3 complete in current phase
-Status: Phase 22 Complete — Next: Phase 23 (Shopify OAuth / Storefront)
-Last activity: 2026-03-12 — Phase 22 plan 03 complete; shared conformance version helper, adapters honor op.path, dual-version smoke/integration tests with x-shopify-api-version assertions
+Phase: 23 of 27 (Shopify OAuth & Storefront)
+Plan: 1 of 2 complete in current phase
+Status: Phase 23 In Progress — Next: Plan 02 (Storefront schema separation)
+Last activity: 2026-03-12 — Phase 23 plan 01 complete; twin OAuth now uses real authorize redirects, one-time code validation, token_type support, and targeted SDK auth verification passed 12/12 tests
 
-Progress: [██████████] 98% (v1.2: 35/36 total plans complete)
+Progress: [█████████░] 97% (overall: 37/38 total plans complete)
 
 ## Performance Metrics
 
@@ -48,6 +48,7 @@ Progress: [██████████] 98% (v1.2: 35/36 total plans complete
 | 22-01 | 01 | 4min | 2 | 3 |
 | 22-02 | 02 | 8min | 2 | 8 |
 | 22-03 | 03 | 3.5min | 2 | 8 |
+| 23-01 | 01 | 13min | 2 | 5 |
 
 ## Accumulated Context
 
@@ -111,8 +112,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 22 plan 03 — Shared conformance version helper (SHOPIFY_ADMIN_API_VERSION=2025-01); adapters honor op.path; dual-version smoke and integration tests asserting x-shopify-api-version and version-aware Link headers
-**Stopped at:** Completed 22-02-PLAN.md
+**Last completed:** Phase 23 plan 01 — Real Shopify authorize redirect, one-time OAuth codes, token_type-aware tokens, and SDK auth validation coverage
+**Work in progress:** Phase 23 plan 02 — Separate Storefront schema and reject admin tokens on the Storefront endpoint
+**Stopped at:** Completed 23-01-PLAN.md
 **Timestamp:** 2026-03-12
 
 ---
