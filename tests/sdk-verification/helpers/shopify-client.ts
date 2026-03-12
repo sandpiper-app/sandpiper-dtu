@@ -6,12 +6,9 @@ import { createAdminApiClient } from '@shopify/admin-api-client';
  * CRITICAL: The SDK forces https:// on the storeDomain via validateDomainAndGetStoreUrl.
  * customFetchApi receives an https:// URL and must rewrite:
  *   1. Protocol + host + port → local HTTP twin (e.g. https://dev.myshopify.com → http://127.0.0.1:PORT)
- *   2. API version segment → /admin/api/2024-01/ (the twin only serves this version)
  *
- * Version normalization is the surgical fix: the SDK constructs the URL with whatever
- * apiVersion is passed (e.g. '2025-07'), but the twin only routes /admin/api/2024-01/.
- * The customFetchApi has full URL control and normalizes the version in-flight.
- * No twin route changes are needed.
+ * The twin accepts any valid Shopify API version via /admin/api/:version/graphql.json
+ * (version-parameterized routes added in Phase 22). No version normalization is needed.
  *
  * CRITICAL: accessToken is REQUIRED. Do NOT hardcode tokens — the Shopify twin
  * validates tokens via token-validator.ts against StateManager. Use
@@ -23,14 +20,13 @@ export function createShopifyClient(options: { accessToken: string; apiVersion?:
 
   const customFetchApi: typeof fetch = async (input, init) => {
     const rawUrl = typeof input === 'string' ? input : input.toString();
-    // Step 1: rewrite host (swap https://dev.myshopify.com → http://127.0.0.1:PORT)
+    // Rewrite host only (swap https://dev.myshopify.com → http://127.0.0.1:PORT).
+    // The twin routes /admin/api/:version/graphql.json natively — no version rewrite needed.
     const hostRewritten = rawUrl.replace(
       'https://dev.myshopify.com',
       `${twinUrl.protocol}//${twinUrl.host}`
     );
-    // Step 2: normalize version segment to the one the twin serves
-    const normalized = hostRewritten.replace(/\/admin\/api\/[^/]+\//, '/admin/api/2024-01/');
-    return fetch(normalized, init);
+    return fetch(hostRewritten, init);
   };
 
   return createAdminApiClient({

@@ -35,7 +35,9 @@ import type { BillingConfig, ShopifyRestResources } from '@shopify/shopify-api';
  *
  * Overrides abstractFetch (set by the node adapter) with a wrapper that:
  *   - Rewrites any *.myshopify.com host to the twin's base URL
- *   - Normalizes the API version segment to 2024-01 (the version the twin serves)
+ *
+ * The twin accepts any valid Shopify API version for both Admin and Storefront paths
+ * (version-parameterized routes added in Phase 22). No version normalization is needed.
  *
  * @param options Optional overrides for billing, isEmbeddedApp, scopes, and restResources.
  *   - billing: required by Plan 16-04 (billing.request reads plan definitions from config.billing)
@@ -53,7 +55,9 @@ export function createShopifyApiClient<Resources extends ShopifyRestResources = 
   const twinBaseUrl = process.env.SHOPIFY_API_URL ?? 'http://127.0.0.1:9999';
   const twinUrl = new URL(twinBaseUrl);
 
-  // Override abstractFetch to redirect SDK HTTP calls to the twin
+  // Override abstractFetch to redirect SDK HTTP calls to the twin.
+  // Rewrites host only — the twin routes /admin/api/:version/ and /api/:version/graphql.json
+  // natively, so no version normalization is required.
   setAbstractFetchFunc(async (input, init) => {
     const rawUrl = typeof input === 'string' ? input : input.toString();
     // Rewrite any *.myshopify.com host → twin URL (handles any shop domain)
@@ -61,12 +65,7 @@ export function createShopifyApiClient<Resources extends ShopifyRestResources = 
       /https?:\/\/[^/]+\.myshopify\.com/,
       `${twinUrl.protocol}//${twinUrl.host}`
     );
-    // Normalize Admin API version segment to the one the twin serves
-    // Also normalize Storefront API version segment (/api/{version}/graphql.json)
-    const normalized = hostRewritten
-      .replace(/\/admin\/api\/[^/]+\//, '/admin/api/2024-01/')
-      .replace(/\/api\/[^/]+\/graphql\.json/, '/api/2024-01/graphql.json');
-    return fetch(normalized, init);
+    return fetch(hostRewritten, init);
   });
 
   return shopifyApi({

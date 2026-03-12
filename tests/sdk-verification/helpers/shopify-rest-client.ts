@@ -9,8 +9,11 @@ import { createAdminRestApiClient } from '@shopify/admin-api-client';
  * Without customFetchApi, scheme:'http' still sends to http://dev.myshopify.com (wrong host).
  *
  * URL construction with formatPaths:true (default):
- *   'products' → /admin/api/2024-01/products.json
- *   'products/123' → /admin/api/2024-01/products/123.json
+ *   'products' → /admin/api/{apiVersion}/products.json
+ *   'products/123' → /admin/api/{apiVersion}/products/123.json
+ *
+ * The twin accepts any valid Shopify API version via /admin/api/:version/ routes
+ * (version-parameterized routes added in Phase 22). No version normalization is needed.
  *
  * CRITICAL: Use seedShopifyAccessToken() to get a valid token.
  */
@@ -20,14 +23,13 @@ export function createRestClient(options: { accessToken: string; apiVersion?: st
 
   const customFetchApi: typeof fetch = async (input, init) => {
     const rawUrl = typeof input === 'string' ? input : input.toString();
-    // Rewrite host (handles both http:// and https:// prefix from scheme option)
+    // Rewrite host only (handles both http:// and https:// prefix from scheme option).
+    // The twin routes /admin/api/:version/ natively — no version rewrite needed.
     const hostRewritten = rawUrl.replace(
       /https?:\/\/dev\.myshopify\.com/,
       `${twinUrl.protocol}//${twinUrl.host}`
     );
-    // Normalize version segment to the one the twin serves
-    const normalized = hostRewritten.replace(/\/admin\/api\/[^/]+\//, '/admin/api/2024-01/');
-    return fetch(normalized, init);
+    return fetch(hostRewritten, init);
   };
 
   return createAdminRestApiClient({
