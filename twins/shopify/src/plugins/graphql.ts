@@ -2,12 +2,19 @@
  * GraphQL plugin for Shopify Admin API
  *
  * Integrates GraphQL Yoga with Fastify, handles token validation,
- * and provides GraphQL endpoint at /admin/api/2024-01/graphql.json
+ * and provides GraphQL endpoint at /admin/api/:version/graphql.json
  *
  * Also integrates rate limiting using Shopify's leaky bucket algorithm:
  * - Pre-checks query cost before executing
  * - Returns HTTP 429 with Retry-After header when bucket is depleted
  * - Injects extensions.cost into successful responses
+ *
+ * Version routing:
+ * - Yoga's canonical endpoint stays fixed at /admin/api/2024-01/graphql.json
+ * - Fastify wrapper routes accept any valid Shopify API version via :version param
+ * - Each wrapper rewrites the request URL to the canonical path before yoga.fetch()
+ * - X-Shopify-API-Version is set at the top of every handler (before auth/throttle)
+ *   so all response paths (200, 401, 429) carry the version header
  */
 
 import { createYoga } from 'graphql-yoga';
@@ -20,10 +27,14 @@ import { parse as gqlParse } from 'graphql';
 import { resolvers } from '../schema/resolvers.js';
 import { validateAccessToken } from '../services/token-validator.js';
 import { calculateQueryCost } from '../services/query-cost.js';
+import { parseShopifyApiVersion, setApiVersionHeader } from '../services/api-version.js';
 import type { LeakyBucketRateLimiter } from '../services/rate-limiter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+// Yoga's canonical admin GraphQL endpoint — never changes.
+const CANONICAL_ADMIN_GRAPHQL = '/admin/api/2024-01/graphql.json';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -47,13 +58,15 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
     resolvers,
   });
 
-  // Create GraphQL Yoga instance
+  // Create GraphQL Yoga instance with a fixed canonical endpoint.
+  // Do NOT change graphqlEndpoint to a param route — wrapper routes below
+  // rewrite incoming versioned URLs to this canonical path before yoga.fetch().
   const yoga = createYoga<{
     req: FastifyRequest;
     reply: FastifyReply;
   }>({
     schema,
-    graphqlEndpoint: '/admin/api/2024-01/graphql.json',
+    graphqlEndpoint: CANONICAL_ADMIN_GRAPHQL,
     // Disable error masking so GraphQLError codes from resolvers pass through
     maskedErrors: false,
     logging: {
@@ -90,13 +103,28 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
     // Auth enforcement happens in resolvers via requireAuth() helper
   });
 
-  // Register Storefront API route — /api/2024-01/graphql.json
+  // ---------------------------------------------------------------------------
+  // Storefront API route — /api/:version/graphql.json
+  // ---------------------------------------------------------------------------
   // Uses same yoga instance (same schema) but different auth header.
   // Auth: Shopify-Storefront-Private-Token (not X-Shopify-Access-Token)
+  // Rewrites incoming URL to the canonical admin endpoint so Yoga routes
+  // the query correctly.
   fastify.route({
-    url: '/api/2024-01/graphql.json',
+    url: '/api/:version/graphql.json',
     method: ['GET', 'POST', 'OPTIONS'],
-    handler: async (req, reply) => {
+    handler: async (req: FastifyRequest<{ Params: { version: string } }>, reply) => {
+      // Parse and validate the version param, echo it as a response header
+      // before auth branches so even 401 responses carry X-Shopify-API-Version.
+      let version: string;
+      try {
+        version = parseShopifyApiVersion(req.params.version);
+      } catch {
+        reply.status(400).header('content-type', 'application/json');
+        return reply.send(JSON.stringify({ errors: [{ message: 'Invalid API version' }] }));
+      }
+      setApiVersionHeader(reply, version);
+
       // Validate Shopify-Storefront-Private-Token
       const token = req.headers['shopify-storefront-private-token'];
       let authorized = false;
@@ -109,10 +137,10 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
         return reply.send(JSON.stringify({ errors: [{ message: 'Unauthorized' }] }));
       }
 
-      // Reuse same yoga instance — rewrite URL to the admin endpoint path so yoga
-      // routes the query correctly (graphqlEndpoint is '/admin/api/2024-01/graphql.json').
+      // Rewrite URL to the canonical admin endpoint so yoga routes correctly.
+      const storefrontPattern = `/api/${version}/graphql.json`;
       const adminUrl = new URL(
-        req.url.replace('/api/2024-01/graphql.json', '/admin/api/2024-01/graphql.json'),
+        req.url.replace(storefrontPattern, CANONICAL_ADMIN_GRAPHQL),
         `http://${req.hostname}`
       );
 
@@ -138,19 +166,42 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
       response.headers.forEach((value: string, key: string) => {
         reply.header(key, value);
       });
+      // Ensure version header survives yoga.fetch() response forwarding
+      setApiVersionHeader(reply, version);
       reply.header('content-type', 'application/json');
       return reply.send(responseText);
     },
   });
 
-  // Register GraphQL route — use yoga.fetch() to avoid Node stream
-  // compatibility issues between Yoga and Fastify's reply object
+  // ---------------------------------------------------------------------------
+  // Admin GraphQL route — /admin/api/:version/graphql.json
+  // ---------------------------------------------------------------------------
+  // Version-parameterized wrapper around the single Yoga instance.
+  // Preserves all existing auth and rate-limiter behavior.
   fastify.route({
-    url: '/admin/api/2024-01/graphql.json',
+    url: '/admin/api/:version/graphql.json',
     method: ['GET', 'POST', 'OPTIONS'],
-    handler: async (req, reply) => {
+    handler: async (req: FastifyRequest<{ Params: { version: string } }>, reply) => {
+      // Parse and validate the version param, echo it as a response header
+      // before all other branches so every response path (200, 401, 429, etc.)
+      // carries X-Shopify-API-Version.
+      let version: string;
       try {
-        const url = new URL(req.url, `http://${req.hostname}`);
+        version = parseShopifyApiVersion(req.params.version);
+      } catch {
+        reply.status(400).header('content-type', 'application/json');
+        return reply.send(JSON.stringify({ errors: [{ message: 'Invalid API version' }] }));
+      }
+      setApiVersionHeader(reply, version);
+
+      try {
+        // Rewrite the incoming versioned URL to the canonical endpoint so Yoga
+        // routes the query correctly regardless of which version was requested.
+        const versionedPath = `/admin/api/${version}/graphql.json`;
+        const canonicalUrl = new URL(
+          req.url.replace(versionedPath, CANONICAL_ADMIN_GRAPHQL),
+          `http://${req.hostname}`
+        );
 
         const headers: Record<string, string> = {};
         for (const [key, value] of Object.entries(req.headers)) {
@@ -187,7 +238,8 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
         const throttleResult = fastify.rateLimiter.tryConsume(rateLimitKey, queryCost);
 
         if (!throttleResult.allowed) {
-          // Return HTTP 429 with Retry-After and Shopify-format error body
+          // Return HTTP 429 with Retry-After and Shopify-format error body.
+          // X-Shopify-API-Version is already set above this try block.
           const retryAfterSeconds = Math.ceil(throttleResult.retryAfterMs / 1000);
 
           reply
@@ -218,7 +270,7 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
         // -------------------------------------------------------------------
 
         const response = await yoga.fetch(
-          url.toString(),
+          canonicalUrl.toString(),
           {
             method: req.method,
             headers,
@@ -240,6 +292,8 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
           response.headers.forEach((value: string, key: string) => {
             reply.header(key, value);
           });
+          // Ensure version header survives non-JSON path
+          setApiVersionHeader(reply, version);
           reply.send(responseText);
           return reply;
         }
@@ -264,13 +318,16 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
         response.headers.forEach((value: string, key: string) => {
           reply.header(key, value);
         });
+        // Ensure version header is present after yoga.fetch() response forwarding
+        setApiVersionHeader(reply, version);
         // Override content-type to ensure JSON
         reply.header('content-type', 'application/json');
         reply.send(JSON.stringify(responseBody));
         return reply;
       } catch (err: any) {
         // If Yoga fails to handle the error internally (e.g. plugin throws),
-        // return a proper GraphQL error response
+        // return a proper GraphQL error response.
+        // X-Shopify-API-Version is already set at the top of the handler.
         const code = err?.extensions?.code || 'INTERNAL_SERVER_ERROR';
         const message = err?.message || 'Internal server error';
         reply.status(200).header('content-type', 'application/json').send(
