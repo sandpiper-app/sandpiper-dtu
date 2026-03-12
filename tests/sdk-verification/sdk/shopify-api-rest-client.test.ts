@@ -17,6 +17,7 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import type { Session } from '@shopify/shopify-api';
+import { ApiVersion } from '@shopify/shopify-api';
 import { restResources } from '@shopify/shopify-api/rest/admin/2024-01';
 import { createShopifyApiClient } from '../helpers/shopify-api-client.js';
 import { resetShopify } from '../setup/seeders.js';
@@ -57,6 +58,41 @@ describe('shopify.clients.Rest — SHOP-14 (live twin)', () => {
     // Twin returns Link header for ?page_info=test → SDK parses it into result.pageInfo
     expect(result.pageInfo).toBeDefined();
     expect(result.pageInfo?.nextPageUrl).toBeDefined();
+  });
+
+  // ── Version echo and version-aware Link assertions (Phase 22-02) ─────────
+
+  it('get() returns x-shopify-api-version header matching the default factory version', async () => {
+    const RestClient = shopify.clients.Rest;
+    const client = new RestClient({ session });
+    const result = await client.get<{ products: unknown[] }>({ path: 'products' });
+    // shopify-api canonicalizes header names to Title-Case and stores values as string[].
+    // shopify factory is configured with ApiVersion.January24 (2024-01)
+    const versionHeader = result.headers['X-Shopify-Api-Version'];
+    const version = Array.isArray(versionHeader) ? versionHeader[0] : versionHeader;
+    expect(version).toBe('2024-01');
+  });
+
+  it('get() with apiVersion 2025-01 returns x-shopify-api-version: 2025-01', async () => {
+    const RestClient = shopify.clients.Rest;
+    const client = new RestClient({ session, apiVersion: ApiVersion.January25 });
+    const result = await client.get<{ products: unknown[] }>({ path: 'products' });
+    const versionHeader = result.headers['X-Shopify-Api-Version'];
+    const version = Array.isArray(versionHeader) ? versionHeader[0] : versionHeader;
+    expect(version).toBe('2025-01');
+  });
+
+  it('get() with page_info=test and apiVersion 2025-01 returns version-aware Link header', async () => {
+    const RestClient = shopify.clients.Rest;
+    const client = new RestClient({ session, apiVersion: ApiVersion.January25 });
+    const result = await client.get<{ products: unknown[] }>({
+      path: 'products',
+      query: { page_info: 'test' },
+    });
+    // pageInfo is populated from the Link header — the URL must contain 2025-01
+    expect(result.pageInfo).toBeDefined();
+    expect(result.pageInfo?.nextPageUrl).toBeDefined();
+    expect(result.pageInfo?.nextPageUrl).toContain('/admin/api/2025-01/');
   });
 
   it('post() returns body.product with id', async () => {

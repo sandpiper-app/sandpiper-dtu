@@ -71,4 +71,30 @@ describe('AdminRestApiClient methods (SHOP-09)', () => {
     expect(response.ok).toBe(false);
     expect(response.status).toBe(401);
   });
+
+  // ── Dual-version and response-header assertions (Phase 22-02) ────────────
+
+  it('get() with apiVersion 2024-01 returns x-shopify-api-version: 2024-01', async () => {
+    const client = createRestClient({ accessToken, apiVersion: '2024-01' });
+    const response = await client.get('products');
+    expect(response.ok).toBe(true);
+    expect(response.headers.get('x-shopify-api-version')).toBe('2024-01');
+  });
+
+  it('get() with apiVersion 2025-01 returns x-shopify-api-version: 2025-01', async () => {
+    const client = createRestClient({ accessToken, apiVersion: '2025-01' });
+    const response = await client.get('products');
+    expect(response.ok).toBe(true);
+    expect(response.headers.get('x-shopify-api-version')).toBe('2025-01');
+  });
+
+  it('get() with page_info=test and apiVersion 2025-01 returns version-aware Link header', async () => {
+    const client = createRestClient({ accessToken, apiVersion: '2025-01' });
+    const response = await client.get('products', { searchParams: { page_info: 'test' } });
+    expect(response.ok).toBe(true);
+    const linkHeader = response.headers.get('link');
+    expect(linkHeader).toBeDefined();
+    // The Link header URL must contain /admin/api/2025-01/ (not a hardcoded 2024-01)
+    expect(linkHeader).toContain('/admin/api/2025-01/');
+  });
 });

@@ -119,11 +119,29 @@ describe('shopify.clients.Graphql — SHOP-14 (live twin)', () => {
 
   it('GraphqlClient with API version override (ApiVersion.January24) — request succeeds', async () => {
     const GraphqlClient = shopify.clients.Graphql;
-    // apiVersion override is accepted by the SDK; setAbstractFetchFunc normalizes to 2024-01
+    // apiVersion override is accepted by the SDK; the twin routes it via :version param
     const client = new GraphqlClient({ session, apiVersion: ApiVersion.January24 });
     const response = await client.request<{
       products: { edges: Array<{ node: { id: string } }> };
     }>('{ products(first: 1) { edges { node { id } } } }');
     expect(Array.isArray(response.data?.products?.edges)).toBe(true);
+  });
+
+  // ── Version echo and non-default version routing (Phase 22-02) ───────────
+
+  it('GraphqlClient with non-default version — twin echoes x-shopify-api-version', async () => {
+    const GraphqlClient = shopify.clients.Graphql;
+    // January25 is a non-default version; the twin must route and echo it correctly
+    const client = new GraphqlClient({ session, apiVersion: ApiVersion.January25 });
+    const response = await client.request<{
+      products: { edges: Array<{ node: { id: string } }> };
+    }>('{ products(first: 1) { edges { node { id } } } }');
+    expect(Array.isArray(response.data?.products?.edges)).toBe(true);
+    // shopify-api canonicalizes header names to Title-Case and stores values as string[].
+    // X-Shopify-Api-Version is the canonicalized form of x-shopify-api-version.
+    expect(response.headers).toBeDefined();
+    const versionHeader = response.headers?.['X-Shopify-Api-Version'];
+    const version = Array.isArray(versionHeader) ? versionHeader[0] : versionHeader;
+    expect(version).toBe('2025-01');
   });
 });

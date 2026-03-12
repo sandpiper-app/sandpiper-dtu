@@ -1,15 +1,16 @@
 /**
  * SHOP-14: shopify.clients.Storefront — live twin tests.
  *
- * 4 tests total:
+ * 6 tests total:
  *   - StorefrontClient.request returns shop name from twin (1)
  *   - StorefrontClient.request returns data object with shop key (1)
  *   - StorefrontClient rejects session with empty accessToken at construction (1)
  *   - Twin rejects invalid Storefront token (1)
+ *   - StorefrontClient with non-default version succeeds and twin echoes version header (2)
  *
  * Validates the full Storefront pipeline:
- *   StorefrontClient → storefront-api-client → setAbstractFetchFunc Storefront
- *   normalization → twin /api/2024-01/graphql.json → shop resolver
+ *   StorefrontClient → storefront-api-client → setAbstractFetchFunc host rewrite
+ *   → twin /api/:version/graphql.json → shop resolver
  *
  * URL path: {storeDomain}/api/{apiVersion}/graphql.json (NOT /admin/)
  * Auth header: Shopify-Storefront-Private-Token
@@ -17,6 +18,7 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import type { Session } from '@shopify/shopify-api';
+import { ApiVersion } from '@shopify/shopify-api';
 import { createShopifyApiClient } from '../helpers/shopify-api-client.js';
 import { resetShopify } from '../setup/seeders.js';
 
@@ -63,5 +65,25 @@ describe('shopify.clients.Storefront — SHOP-14 (live twin)', () => {
     const client = new StorefrontClient({ session: badSession });
     // Token is syntactically valid so constructor succeeds, but twin rejects it with 401
     await expect(client.request('{ shop { name } }')).rejects.toThrow();
+  });
+
+  // ── Non-default version and response-header assertions (Phase 22-02) ─────
+
+  it('request with non-default version (2025-01) succeeds — twin routes /api/:version/', async () => {
+    // apiVersion January25 → /api/2025-01/graphql.json — no longer normalized to 2024-01
+    const client = new StorefrontClient({ session, apiVersion: ApiVersion.January25 });
+    const response = await client.request('{ shop { name } }');
+    expect(response.data).toBeDefined();
+  });
+
+  it('request with non-default version echoes x-shopify-api-version: 2025-01', async () => {
+    const client = new StorefrontClient({ session, apiVersion: ApiVersion.January25 });
+    const response = await client.request('{ shop { name } }');
+    // The storefront-api-client passes response.headers (Fetch API Headers object) through directly.
+    // Use get() via cast since the type signature says Record<string, string | string[]>.
+    expect(response.headers).toBeDefined();
+    const headers = response.headers as unknown as Headers;
+    const version = headers.get('x-shopify-api-version');
+    expect(version).toBe('2025-01');
   });
 });

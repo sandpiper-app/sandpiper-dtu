@@ -73,4 +73,20 @@ describe('AdminApiClient GraphQL methods (SHOP-08)', () => {
     expect(result.data.products).toBeDefined();
     expect(result.errors).toBeUndefined();
   });
+
+  // ── Dual-version and response-header assertions (Phase 22-02) ────────────
+
+  it('fetch() with version 2024-01 returns x-shopify-api-version: 2024-01', async () => {
+    const client = createShopifyClient({ accessToken, apiVersion: '2024-01' });
+    const response = await client.fetch('{ products(first: 1) { edges { node { id } } } }');
+    expect(response.status).toBe(200);
+    expect(response.headers.get('x-shopify-api-version')).toBe('2024-01');
+  });
+
+  it('fetch() with version 2025-01 returns x-shopify-api-version: 2025-01', async () => {
+    const client = createShopifyClient({ accessToken, apiVersion: '2025-01' });
+    const response = await client.fetch('{ products(first: 1) { edges { node { id } } } }');
+    expect(response.status).toBe(200);
+    expect(response.headers.get('x-shopify-api-version')).toBe('2025-01');
+  });
 });
