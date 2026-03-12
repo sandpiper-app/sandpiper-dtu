@@ -38,12 +38,10 @@ created: 2026-03-12
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 23-01-01 | 01 | 0 | SHOP-18 | integration | `pnpm test:sdk --run tests/sdk-verification/sdk/shopify-api-auth.test.ts` | ❌ W0 | ⬜ pending |
-| 23-01-02 | 01 | 0 | SHOP-19 | integration | `pnpm test:sdk --run tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts` | ❌ W0 | ⬜ pending |
-| 23-02-01 | 02 | 1 | SHOP-18 | integration | `pnpm test:sdk --run tests/sdk-verification/sdk/shopify-api-auth.test.ts` | ✅ | ⬜ pending |
-| 23-02-02 | 02 | 1 | SHOP-18 | integration | `pnpm test:sdk --run tests/sdk-verification/sdk/shopify-api-auth.test.ts` | ✅ | ⬜ pending |
-| 23-03-01 | 03 | 1 | SHOP-19 | integration | `pnpm test:sdk --run tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts` | ✅ | ⬜ pending |
-| 23-03-02 | 03 | 1 | SHOP-19 | integration | `pnpm test:sdk --run tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts` | ❌ W0 | ⬜ pending |
+| 23-01-01 | 01 | 1 | SHOP-18 | integration | `pnpm test:sdk --run tests/sdk-verification/sdk/shopify-api-auth.test.ts` | ✅ | ⬜ pending |
+| 23-01-02 | 01 | 1 | SHOP-18 | integration | `pnpm test:sdk --run tests/sdk-verification/sdk/shopify-api-auth.test.ts` | ✅ | ⬜ pending |
+| 23-02-01 | 02 | 2 | SHOP-19 | integration | `pnpm test:sdk --run tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts` | ✅ | ⬜ pending |
+| 23-02-02 | 02 | 2 | SHOP-19 | integration | `pnpm test:sdk --run tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts` | ❌ W0 | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
