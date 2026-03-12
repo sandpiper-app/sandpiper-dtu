@@ -1,10 +1,12 @@
 /**
  * SHOP-10: shopify.auth helpers — live twin + mock adapter tests.
  *
- * 7 tests total:
+ * 12 tests total:
  *   - token flows (live twin): tokenExchange, refreshToken, clientCredentials (3)
  *   - begin redirect (mock adapter): redirect to /admin/oauth/authorize (1)
- *   - callback OAuth exchange (begin→callback flow, live twin): (1)
+ *   - callback OAuth exchange (begin→authorize→callback flow, live twin): (1)
+ *   - access_token validation and grant branching (live twin): empty body, missing fields,
+ *     unknown code, replayed code, client_credentials preservation (5)
  *   - embedded URL helpers (pure): getEmbeddedAppUrl, buildEmbeddedAppUrl (2)
  *
  * Live twin calls use resetShopify() in beforeEach to clear token state.
@@ -12,7 +14,6 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createHmac } from 'node:crypto';
 import { RequestedTokenType } from '@shopify/shopify-api';
 import {
   createShopifyApiClient,
@@ -24,27 +25,47 @@ import { resetShopify } from '../setup/seeders.js';
 // All live twin calls in this suite use the same redirected abstractFetch.
 const shopify = createShopifyApiClient();
 
-// ---------------------------------------------------------------------------
-// Helper: compute OAuth callback HMAC (Hex format, URLSearchParams-sorted)
-//
-// The SDK's validateHmac uses:
-//   1. Exclude `hmac` (and `signature`) from query params
-//   2. Sort keys with localeCompare
-//   3. Encode via URLSearchParams (key=value&key=value)
-//   4. createSHA256HMAC with HashFormat.Hex
-//
-// Note: computeShopifyHmac (in the helper) uses base64 format (for webhooks).
-// This helper uses hex format for OAuth callback query params.
-// ---------------------------------------------------------------------------
-function computeCallbackHmac(secret: string, params: Record<string, string>): string {
-  // Exclude hmac/signature from the computation
-  const { hmac: _h, signature: _s, ...rest } = params;
-  // Sort keys alphabetically (localeCompare matches the SDK's sort)
-  const sortedKeys = Object.keys(rest).sort((a, b) => a.localeCompare(b));
-  // Build URLSearchParams-encoded query string
-  const qs = new URLSearchParams(sortedKeys.map(k => [k, rest[k]])).toString();
-  // SHA256 HMAC in hex format
-  return createHmac('sha256', secret).update(qs).digest('hex');
+function shopifyTwinUrl(): string {
+  return process.env.SHOPIFY_API_URL!;
+}
+
+function rewriteToTwin(url: string): string {
+  const originalUrl = new URL(url);
+  const twinUrl = new URL(shopifyTwinUrl());
+  originalUrl.protocol = twinUrl.protocol;
+  originalUrl.host = twinUrl.host;
+  return originalUrl.toString();
+}
+
+async function fetchRedirectLocation(url: string): Promise<URL> {
+  const response = await fetch(url, { redirect: 'manual' });
+  expect(response.status).toBe(302);
+  const location = response.headers.get('location');
+  expect(location).toBeTruthy();
+  return new URL(location!);
+}
+
+async function getAuthorizeRedirectFromTwin(options?: {
+  redirectUri?: string;
+  state?: string;
+  clientId?: string;
+}): Promise<URL> {
+  const authorizeUrl = new URL('/admin/oauth/authorize', shopifyTwinUrl());
+  authorizeUrl.searchParams.set(
+    'redirect_uri',
+    options?.redirectUri ?? 'https://test-app.example.com/auth/callback',
+  );
+  authorizeUrl.searchParams.set('state', options?.state ?? 'test-state');
+  authorizeUrl.searchParams.set('client_id', options?.clientId ?? 'test-api-key');
+  return fetchRedirectLocation(authorizeUrl.toString());
+}
+
+async function postAccessToken(body?: Record<string, string>): Promise<Response> {
+  return fetch(`${shopifyTwinUrl()}/admin/oauth/access_token`, {
+    method: 'POST',
+    headers: body ? { 'Content-Type': 'application/json' } : undefined,
+    body: body ? JSON.stringify(body) : undefined,
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -229,24 +250,16 @@ describe('shopify.auth — callback — SHOP-10 (begin+callback flow via live tw
     const cookieHeader = stateCookies.join('; ');
 
     // -----------------------------------------------------------------------
-    // Step 2: Build callback request with valid HMAC, state, shop, code
+    // Step 2: Hit the twin authorize URL and use its real redirect params
     // -----------------------------------------------------------------------
-    const callbackParams: Record<string, string> = {
-      code: 'test-code-123',
-      host: Buffer.from('dev.myshopify.com/admin').toString('base64'),
-      shop: 'dev.myshopify.com',
-      state,
-      timestamp: String(Math.floor(Date.now() / 1000)),
-    };
+    const callbackRedirectUrl = await fetchRedirectLocation(rewriteToTwin(location));
+    expect(callbackRedirectUrl.searchParams.get('code')).toBeTruthy();
+    expect(callbackRedirectUrl.searchParams.get('hmac')).toBeTruthy();
+    expect(callbackRedirectUrl.searchParams.get('state')).toBe(state);
 
-    // Compute HMAC: hex format, URLSearchParams-sorted, excludes hmac
-    const hmac = computeCallbackHmac(shopify.config.apiSecretKey, callbackParams);
-    callbackParams.hmac = hmac;
-
-    const queryString = new URLSearchParams(callbackParams).toString();
     const mockCallbackReq = {
       method: 'GET',
-      url: `https://test-app.example.com/auth/callback?${queryString}`,
+      url: callbackRedirectUrl.toString(),
       headers: {
         host: 'test-app.example.com',
         cookie: cookieHeader,
@@ -274,6 +287,84 @@ describe('shopify.auth — callback — SHOP-10 (begin+callback flow via live tw
     expect(session.shop).toBe('dev.myshopify.com');
     expect(session.accessToken).toBeDefined();
     expect(typeof session.accessToken).toBe('string');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// POST /admin/oauth/access_token validation — SHOP-18 (live twin)
+// ---------------------------------------------------------------------------
+
+describe('POST /admin/oauth/access_token — SHOP-18 validation', () => {
+  beforeEach(async () => {
+    await resetShopify();
+  });
+
+  it('returns 400 for an empty body', async () => {
+    const response = await postAccessToken();
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({ error: 'invalid_request' });
+  });
+
+  it('returns 400 when client_secret is missing', async () => {
+    const response = await postAccessToken({
+      client_id: 'test-api-key',
+      code: 'missing-secret',
+    });
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({ error: 'invalid_request' });
+  });
+
+  it('returns 400 for an unknown authorization code', async () => {
+    const response = await postAccessToken({
+      client_id: 'test-api-key',
+      client_secret: 'test-api-secret',
+      code: 'unknown-code',
+    });
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({ error: 'invalid_grant' });
+  });
+
+  it('returns 400 when an authorization code is replayed', async () => {
+    const callbackRedirectUrl = await getAuthorizeRedirectFromTwin({
+      state: 'replayed-state',
+    });
+    const code = callbackRedirectUrl.searchParams.get('code');
+    expect(code).toBeTruthy();
+
+    const firstResponse = await postAccessToken({
+      client_id: 'test-api-key',
+      client_secret: 'test-api-secret',
+      code: code!,
+    });
+    expect(firstResponse.status).toBe(200);
+    expect(await firstResponse.json()).toMatchObject({
+      access_token: expect.any(String),
+      scope: expect.any(String),
+    });
+
+    const replayResponse = await postAccessToken({
+      client_id: 'test-api-key',
+      client_secret: 'test-api-secret',
+      code: code!,
+    });
+    expect(replayResponse.status).toBe(400);
+    expect(await replayResponse.json()).toMatchObject({ error: 'invalid_grant' });
+  });
+
+  it('preserves the client_credentials grant flow', async () => {
+    const response = await postAccessToken({
+      grant_type: 'client_credentials',
+      client_id: 'test-api-key',
+      client_secret: 'test-api-secret',
+    });
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({
+      access_token: expect.any(String),
+      scope: expect.any(String),
+    });
   });
 });
 
