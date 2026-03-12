@@ -6,6 +6,8 @@
  * reset + rate limiter reset on each twin.
  */
 
+import { allScopesString } from '../../../twins/slack/src/services/method-scopes.js';
+
 /** Reset Shopify twin state to default seed data. Call in beforeEach. */
 export async function resetShopify(): Promise<void> {
   await fetch(process.env.SHOPIFY_API_URL! + '/admin/reset', { method: 'POST' });
@@ -17,33 +19,28 @@ export async function resetSlack(): Promise<void> {
 }
 
 /**
- * Obtain a valid access token from the Shopify twin via the OAuth endpoint.
+ * Seed a valid Shopify access token directly via the twin's admin endpoint.
  *
- * The Shopify twin validates tokens via token-validator.ts which checks
- * StateManager. Hardcoded tokens like 'test-access-token' will fail auth
- * unless seeded. This function obtains a real token through the twin's
- * OAuth endpoint, ensuring it's stored in state and accepted by all
- * authenticated endpoints.
+ * Uses POST /admin/tokens (not the OAuth endpoint) so this seeder survives
+ * Phase 23 OAuth tightening. The token is stored in StateManager and accepted
+ * by all authenticated Shopify twin endpoints.
  */
 export async function seedShopifyAccessToken(): Promise<string> {
   const shopifyUrl = process.env.SHOPIFY_API_URL!;
-  const res = await fetch(shopifyUrl + '/admin/oauth/access_token', {
+  const token = `shpat_test_${Date.now()}`;
+  const res = await fetch(shopifyUrl + '/admin/tokens', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      client_id: 'test-client-id',
-      client_secret: 'test-client-secret',
-      code: 'test-auth-code',
-    }),
+    body: JSON.stringify({ token }),
   });
   if (!res.ok) {
     throw new Error(
-      `seedShopifyAccessToken: POST /admin/oauth/access_token failed with ${res.status}. ` +
-      `Ensure the Shopify twin is running and exposes the OAuth endpoint.`
+      `seedShopifyAccessToken: POST /admin/tokens failed with ${res.status}. ` +
+      `Ensure the Shopify twin exposes POST /admin/tokens (added in Phase 21).`
     );
   }
-  const body = await res.json() as { access_token: string };
-  return body.access_token;
+  const body = await res.json() as { token: string };
+  return body.token;
 }
 
 /**
@@ -94,7 +91,7 @@ export async function seedSlackBotToken(token = 'xoxb-test-token'): Promise<stri
       tokenType: 'bot',
       teamId: 'T_TWIN',
       userId: 'U_BOT_TWIN',
-      scope: 'chat:write',
+      scope: allScopesString(),
       appId: 'A_TWIN',
     }),
   });
