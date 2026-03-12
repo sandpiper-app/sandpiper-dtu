@@ -5,7 +5,7 @@
 
 ## v1.1 Requirements
 
-Requirements for milestone `v1.1 Official SDK Conformance`. Each maps to one roadmap phase.
+Requirements for milestone `v1.1 Official SDK Conformance`. All complete.
 
 ### Conformance Infrastructure
 
@@ -24,23 +24,57 @@ Requirements for milestone `v1.1 Official SDK Conformance`. Each maps to one roa
 - [x] **SHOP-10**: Developer can use `@shopify/shopify-api` auth helpers (`begin`, `callback`, `tokenExchange`, `refreshToken`, `clientCredentials`, and embedded URL helpers) against the Shopify twin
 - [x] **SHOP-11**: Developer can use `@shopify/shopify-api` session and utility helpers to create, decode, validate, and resolve Shopify session data for twin-backed requests
 - [x] **SHOP-12**: Developer can use `@shopify/shopify-api` webhook, Flow, and fulfillment-service validation helpers with twin-generated requests and signatures
-- [x] **SHOP-13**: Developer can use `@shopify/shopify-api` billing helpers to request, inspect, cancel, and mutate billing state against the Shopify twin _(lower priority — can be stubbed initially; auth+session+webhooks are the core)_
+- [x] **SHOP-13**: Developer can use `@shopify/shopify-api` billing helpers to request, inspect, cancel, and mutate billing state against the Shopify twin
 - [x] **SHOP-14**: Developer can use `@shopify/shopify-api` client surfaces (`Graphql`, `Rest`, `Storefront`, `graphqlProxy`) against the Shopify twin with the pinned package configuration
-- [x] **SHOP-15**: Developer can use Shopify client surfaces (`Graphql`, `Rest`, `Storefront`, `graphqlProxy`) and strategically stubbed REST resource classes, with deprecated REST resources tracked in manifest but not fully implemented (reflects Shopify's April 2025 REST deprecation mandate)
+- [x] **SHOP-15**: Developer can use Shopify client surfaces (`Graphql`, `Rest`, `Storefront`, `graphqlProxy`) and strategically stubbed REST resource classes, with deprecated REST resources tracked in manifest but not fully implemented
 
 ### Slack SDK Coverage
 
-- [x] **SLCK-06.5**: Developer can call `auth.test` and `api.test` via WebClient and receive valid auth verification responses — this is the gateway for all Slack SDK work (WebClient calls `auth.test` during initialization)
+- [x] **SLCK-06.5**: Developer can call `auth.test` and `api.test` via WebClient and receive valid auth verification responses
 - [x] **SLCK-07**: Developer can use `@slack/web-api` `WebClient` base behaviors (`apiCall`, `paginate`, `filesUploadV2`, `ChatStreamer`, retries, and rate-limit handling) against the Slack twin
 - [x] **SLCK-08**: Developer can call every bound method exposed by the pinned `@slack/web-api` package against the Slack twin, including admin, files, views, workflows, assistant, canvases, and other advanced method families
 - [x] **SLCK-09**: Developer can use `@slack/oauth` `InstallProvider` flows (`handleInstallPath`, `generateInstallUrl`, `handleCallback`, `authorize`) against the Slack twin with valid state, cookie, redirect, and installation-store behavior
 - [x] **SLCK-10**: Developer can use `@slack/bolt` `App` listener APIs (`event`, `message`, `action`, `command`, `options`, `shortcut`, `view`, `function`, and `assistant`) against twin-backed Slack requests with correct ack semantics
 - [x] **SLCK-11**: Developer can use `@slack/bolt` HTTP and Express receiver flows against the Slack twin, including request verification, URL verification, response_url behavior, and custom routes
-- [x] **SLCK-12**: Developer can use `@slack/bolt` Socket Mode and AWS Lambda receiver flows against twin-backed harnesses with equivalent event delivery and acknowledgement semantics _(Socket Mode uses ws.Server broker; Lambda uses direct function invocation with zero AWS deps)_
+- [x] **SLCK-12**: Developer can use `@slack/bolt` Socket Mode and AWS Lambda receiver flows against twin-backed harnesses with equivalent event delivery and acknowledgement semantics
+
+## v1.2 Requirements
+
+Requirements for milestone `v1.2 Behavioral Fidelity`. Fixes 13 adversarial review findings plus differentiator features.
+
+### Test Infrastructure
+
+- [ ] **INFRA-19**: Developer can run `pnpm test:sdk` and have it discover and execute all SDK verification tests with no ABI mismatch or "no test files found" errors
+- [ ] **INFRA-20**: Test seeders (`seedShopifyAccessToken`, `seedSlackBotToken`) support behavioral tightening: Shopify twin exposes `POST /admin/tokens` for direct token seeding bypassing OAuth; Slack seeder uses comprehensive default scope set covering all exercised methods
+
+### Conformance Infrastructure
+
+- [ ] **INFRA-21**: Conformance harness performs bidirectional structural comparison in live mode — twin response must contain all baseline fields AND baseline response must contain all twin fields — with full array traversal (not just first element) and primitive value comparison
+- [ ] **INFRA-22**: Coverage status for each tracked symbol is derived from test execution evidence (Vitest JSON reporter or equivalent instrumentation), not hand-authored `LIVE_SYMBOLS` map; CI gate validates coverage without manual symbol attribution
+
+### Shopify Fidelity
+
+- [ ] **SHOP-17**: Shopify twin serves GraphQL and REST routes with parameterized API version (`:version` in URL path) accepting any valid Shopify API version string, not hardcoded to `2024-01`; test helpers no longer rewrite request URLs to a single version
+- [ ] **SHOP-18**: Shopify twin implements full OAuth authorize flow: `GET /admin/oauth/authorize` returns redirect with HMAC-signed callback URL and state nonce cookie; `POST /admin/oauth/access_token` validates `client_id`, `client_secret`, and authorization code; empty-body requests return error
+- [ ] **SHOP-19**: Shopify twin serves Storefront API on separate GraphQL schema at `/api/:version/graphql.json` using `X-Shopify-Storefront-Access-Token` header for auth; admin-only mutations are not exposed on the Storefront endpoint; `products(first:N)` returns data with valid Storefront token
+- [ ] **SHOP-20**: Shopify REST resources use persistent CRUD backed by StateManager: `POST /products.json` creates a product retrievable by subsequent `GET /products.json`; response shapes use numeric integer IDs with `admin_graphql_api_id` field (e.g., `"gid://shopify/Product/12345"`); `GET /orders/:id.json` returns the requested order
+- [ ] **SHOP-21**: Shopify billing implements state machine: `appSubscriptionCreate` returns subscription in PENDING state with `confirmationUrl`; confirming transitions to ACTIVE; `currentAppInstallation` returns actual subscription data; `appSubscriptionCancel` validates subscription ownership and transitions to CANCELLED
+- [ ] **SHOP-22**: Shopify twin returns `X-Shopify-API-Version` response header on all API responses, echoing the version from the request URL path
+- [ ] **SHOP-23**: Shopify REST list endpoints return `Link` header with `rel="next"` and `page_info` cursor parameter for paginated responses, matching real Shopify pagination format
+- [ ] **SHOP-24**: Shopify rate limiting uses correct bucket size (maxAvailable=1000, restoreRate=50) and computes `actualQueryCost` based on real query field traversal rather than forcing it equal to `requestedQueryCost`
+
+### Slack Fidelity
+
+- [ ] **SLCK-14**: All bound WebClient methods from the pinned `@slack/web-api` package are registered and callable against the Slack twin, closing the 126-method gap including all `admin.*` (~95 methods), `workflows.*`, `canvases.*`, `openid.connect.*`, `stars.*`, `files.upload`, `oauth.access`, and other missing families
+- [ ] **SLCK-15**: Slack `chat.update` enforces channel scoping (message must exist in the specified channel) and author ownership (bot tokens can only update messages they posted), returning `{ok: false, error: "cant_update_message"}` on violations; `chat.delete` enforces equivalent rules with `cant_delete_message`; conformance tests exercise the actual `chat.update` and `chat.delete` methods (not substituting `chat.postMessage`)
+- [ ] **SLCK-16**: Slack event delivery uses `X-Slack-Signature` (`v0=` + HMAC-SHA256 hex using signing secret) and `X-Slack-Request-Timestamp` headers instead of Shopify webhook signature headers; interactions route through a dedicated interactivity request URL (not through event subscriptions); `response_url` is an absolute URL (not relative path)
+- [ ] **SLCK-17**: Slack `conversations.invite`/`kick` manage actual channel membership; `conversations.members` returns real member list; `conversations.open` returns a real DM channel (not canned `D_TWIN`); `views.open`/`update`/`push` maintain persistent view lifecycle with stable view IDs; `pins.add`/`remove`/`list` are stateful with deduplication (`already_pinned` error); `reactions.add`/`remove`/`list`/`get` are stateful with deduplication (`already_reacted` error)
+- [ ] **SLCK-18**: Slack auth enforces OAuth scope requirements per method, returning `{ok: false, error: "missing_scope", needed: "<scope>", provided: "<scopes>"}` when token lacks the required scope; OAuth token exchange validates `client_id`, `scope`, and `redirect_uri` parameters
+- [ ] **SLCK-19**: Slack API responses include `X-OAuth-Scopes` (token's granted scopes) and `X-Accepted-OAuth-Scopes` (method's required scopes) headers on successful calls
 
 ## v2 Requirements
 
-Deferred after the literal `v1.1` package-surface baseline exists.
+Deferred after the `v1.2` behavioral fidelity baseline exists.
 
 ### Additional SDK Targets
 
@@ -52,20 +86,30 @@ Deferred after the literal `v1.1` package-surface baseline exists.
 - **INFRA-17**: Developer can open an automated update PR that bumps pinned SDK refs, regenerates manifests, and summarizes compatibility diffs
 - **INFRA-18**: Developer can run a multi-version package matrix across more than one pinned Shopify or Slack package release
 
+### Extended Fidelity
+
+- **SHOP-25**: Shopify twin supports multiple API version schemas (not just parameterized routes with one schema)
+- **SLCK-20**: Slack `admin.*` methods implement full Enterprise Grid simulation beyond basic stubs
+- **SHOP-26**: Shopify Storefront cart/checkout mutations implemented for e-commerce testing workflows
+
 ## Out of Scope
 
-Explicitly excluded from `v1.1` to keep the milestone aligned with the targeted package set.
+Explicitly excluded from v1.2.
 
 | Feature | Reason |
 |---------|--------|
-| APIs not reachable through the targeted package surfaces | Would expand beyond the literal SDK contract approved for this milestone |
-| Multi-version package support in the initial v1.1 build | One pinned version per package is already a large scope increase |
-| New service twins (Nylas, Shippo, Triple Whale) | Deferred until the SDK-grounded validation pattern is proven on Shopify and Slack |
-| Production deployment work | Sandpiper DTU remains development and test infrastructure |
+| Full Storefront cart/checkout mutations | No Sandpiper integration currently; basic product queries sufficient |
+| Shopify edit window enforcement (`edit_window_closed`) | Time-based logic with no current test value |
+| Multiple Shopify API version schemas | One schema served at parameterized routes is sufficient for v1.2 |
+| Slack admin.* with real Enterprise Grid behavior | Stubs with correct auth gating sufficient; full Enterprise Grid not needed |
+| New service twins (Nylas, Shippo, Triple Whale) | Deferred until behavioral fidelity proven on Shopify and Slack |
+| Production deployment work | Sandpiper DTU remains dev/test infrastructure |
 
 ## Traceability
 
 Which phases cover which requirements. Updated during roadmap creation.
+
+### v1.1 (Complete)
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
@@ -92,11 +136,35 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SLCK-11 | Phase 19 | Complete |
 | SLCK-12 | Phase 20 | Complete |
 
+### v1.2 (Pending)
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| INFRA-19 | — | Pending |
+| INFRA-20 | — | Pending |
+| INFRA-21 | — | Pending |
+| INFRA-22 | — | Pending |
+| SHOP-17 | — | Pending |
+| SHOP-18 | — | Pending |
+| SHOP-19 | — | Pending |
+| SHOP-20 | — | Pending |
+| SHOP-21 | — | Pending |
+| SHOP-22 | — | Pending |
+| SHOP-23 | — | Pending |
+| SHOP-24 | — | Pending |
+| SLCK-14 | — | Pending |
+| SLCK-15 | — | Pending |
+| SLCK-16 | — | Pending |
+| SLCK-17 | — | Pending |
+| SLCK-18 | — | Pending |
+| SLCK-19 | — | Pending |
+
 **Coverage:**
-- v1.1 requirements: 22 total
-- Mapped to phases: 22
-- Unmapped: 0
+- v1.1 requirements: 22 total (all complete)
+- v1.2 requirements: 18 total
+- Mapped to phases: 0
+- Unmapped: 18
 
 ---
 *Requirements defined: 2026-03-09*
-*Last updated: 2026-03-08 after independent research review*
+*Last updated: 2026-03-11 after v1.2 milestone requirements definition*
