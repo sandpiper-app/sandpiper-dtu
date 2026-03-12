@@ -287,7 +287,7 @@ Plans:
 | 18. Slack WebClient Full Surface | v1.1 | 5/5 | Complete | 2026-03-10 |
 | 19. Slack OAuth & Bolt HTTP Surface | v1.1 | 4/4 | Complete | 2026-03-10 |
 | 20. Bolt Alternate Receivers & Drift Automation | v1.1 | 3/3 | Complete | 2026-03-10 |
-| 21. Test Runner & Seeders | 2/2 | Complete   | 2026-03-12 | - |
+| 21. Test Runner & Seeders | 2/2 | Complete    | 2026-03-12 | - |
 | 22. Shopify Version Routing & Response Headers | v1.2 | 0/TBD | Not started | - |
 | 23. Shopify OAuth & Storefront | v1.2 | 0/TBD | Not started | - |
 | 24. Shopify REST Persistence, Billing State Machine & Rate Limiting | v1.2 | 0/TBD | Not started | - |
