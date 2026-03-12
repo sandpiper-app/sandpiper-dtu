@@ -3,8 +3,8 @@
 # Build: docker build --build-arg TWIN_NAME=slack -t dtu/slack-twin .
 
 # ─── Stage 1: base ────────────────────────────────────────────────────
-# Use node:20-slim (glibc) — better-sqlite3 native module requires glibc, not musl (Alpine).
-FROM node:20-slim AS base
+# Use node:22-slim (glibc, LTS) — better-sqlite3 native module requires glibc, not musl (Alpine).
+FROM node:22-slim AS base
 RUN corepack enable && corepack prepare pnpm@9.9.0 --activate
 
 # ─── Stage 2: build ───────────────────────────────────────────────────
@@ -37,7 +37,7 @@ RUN pnpm --filter="@dtu/twin-${TWIN_NAME}" run build
 RUN pnpm deploy --filter="@dtu/twin-${TWIN_NAME}" --prod /prod/${TWIN_NAME}
 
 # ─── Stage 3: runtime ─────────────────────────────────────────────────
-FROM node:20-slim AS runtime
+FROM node:22-slim AS runtime
 
 ARG TWIN_NAME
 ARG TWIN_PORT=3000
