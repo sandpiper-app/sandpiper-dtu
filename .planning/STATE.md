@@ -2,37 +2,37 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
-status: planning
-stopped_at: Completed 21-01-PLAN.md
-last_updated: "2026-03-12T02:59:47.395Z"
-last_activity: 2026-03-11 — v1.2 roadmap created; 7 phases mapped across 18 requirements
+status: completed
+stopped_at: Completed 21-02-PLAN.md
+last_updated: "2026-03-12T03:07:22.276Z"
+last_activity: 2026-03-12 — Phase 21 plan 01 complete; Node 22 LTS aligned across CI, Docker, and local dev
 progress:
   total_phases: 15
-  completed_phases: 8
+  completed_phases: 9
   total_plans: 33
-  completed_plans: 32
-  percent: 0
+  completed_plans: 33
+  percent: 98
 ---
 
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-12
-**Status:** Active — Phase 21 plan 01 complete
+**Status:** Active — Phase 21 complete (both plans done)
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 21 (Test Runner & Seeders)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 21 (Test Runner & Seeders) complete
 
 ## Current Position
 
 Phase: 21 of 27 (Test Runner & Seeders)
-Plan: 1 of 2 complete in current phase
-Status: In Progress
-Last activity: 2026-03-12 — Phase 21 plan 01 complete; Node 22 LTS aligned across CI, Docker, and local dev
+Plan: 2 of 2 complete in current phase
+Status: Phase 21 Complete — Next: Phase 22 (Shopify GraphQL Version Routing)
+Last activity: 2026-03-11 — Phase 21 plan 02 complete; seeder forward-protection and Slack method-scopes catalog added
 
-Progress: [██████████] 98% (v1.2: 1/7 plans complete in phase 21)
+Progress: [██████████] 100% (v1.2: 2/2 plans complete in phase 21)
 
 ## Performance Metrics
 
@@ -44,6 +44,7 @@ Progress: [██████████] 98% (v1.2: 1/7 plans complete in phas
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
 | 21-01 | 01 | 2min | 2 | 4 |
+| 21-02 | 02 | 8min | 2 | 3 |
 
 ## Accumulated Context
 
@@ -67,9 +68,15 @@ Progress: [██████████] 98% (v1.2: 1/7 plans complete in phas
 **2026-03-11 - Completed quick task 2:**
 - Fix Shopify twin empty variants resolver and audit related hardcoded resolvers (commit 83640c6)
 
+**2026-03-11 - Phase 21 Plan 02 (Seeder forward-protection):**
+- Use POST /admin/tokens on Shopify twin so seedShopifyAccessToken() survives Phase 23 OAuth tightening
+- Store Slack method-to-scope map in twins/slack/src/services/method-scopes.ts as single source of truth for seeders and Phase 26 enforcement
+- allScopesString() grants union of all catalog scopes — seeded tokens work for all 177 tests plus future additions
+- chat.startStream added to METHOD_SCOPES (was missing from plan, found via grep of test files)
+
 **Critical pitfalls to remember (from research):**
-- OAuth tightening (Phase 23) breaks `seedShopifyAccessToken()` unless `POST /admin/tokens` is added first (Phase 21)
-- Scope enforcement (Phase 26) breaks existing tests unless `seedSlackBotToken()` gets broad default scope first (Phase 21)
+- OAuth tightening (Phase 23) breaks `seedShopifyAccessToken()` unless `POST /admin/tokens` is added first — DONE in Phase 21-02
+- Scope enforcement (Phase 26) breaks existing tests unless `seedSlackBotToken()` gets broad default scope first — DONE in Phase 21-02
 - Shopify GraphQL version routing: graphql-yoga's `graphqlEndpoint` is static — Fastify handler must rewrite URL before `yoga.fetch()` (Phase 22)
 - Slack state tables: every new SQLite table must be in a `SLACK_TABLES` constant iterated by `reset()` (Phase 25)
 - Enable bidirectional conformance AFTER twin fixes are complete, not before (Phase 27 depends on Phases 24, 26)
@@ -84,8 +91,8 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 21 plan 01 — Node 22 LTS alignment, better-sqlite3 ABI fix, 177 tests passing
-**Stopped at:** Completed 21-01-PLAN.md
+**Last completed:** Phase 21 plan 02 — Seeder forward-protection; POST /admin/tokens on Shopify twin; METHOD_SCOPES catalog; 177 tests passing
+**Stopped at:** Completed 21-02-PLAN.md
 **Timestamp:** 2026-03-12
 
 ---

@@ -45,7 +45,7 @@ Requirements for milestone `v1.2 Behavioral Fidelity`. Fixes 13 adversarial revi
 ### Test Infrastructure
 
 - [x] **INFRA-19**: Developer can run `pnpm test:sdk` and have it discover and execute all SDK verification tests with no ABI mismatch or "no test files found" errors; CI pipeline and Docker images use matching Node version with correctly rebuilt native dependencies
-- [ ] **INFRA-20**: Test seeders (`seedShopifyAccessToken`, `seedSlackBotToken`) support behavioral tightening: Shopify twin exposes `POST /admin/tokens` (gated behind test-only admin routes) for direct token seeding bypassing OAuth; Slack seeder uses a checked-in method-to-scope catalog shared by both seeding and enforcement to prevent drift
+- [x] **INFRA-20**: Test seeders (`seedShopifyAccessToken`, `seedSlackBotToken`) support behavioral tightening: Shopify twin exposes `POST /admin/tokens` (gated behind test-only admin routes) for direct token seeding bypassing OAuth; Slack seeder uses a checked-in method-to-scope catalog shared by both seeding and enforcement to prevent drift
 
 ### Conformance Infrastructure
 
@@ -145,7 +145,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | INFRA-19 | Phase 21 | Complete |
-| INFRA-20 | Phase 21 | Pending |
+| INFRA-20 | Phase 21 | Complete |
 | SHOP-17 | Phase 22 | Pending |
 | SHOP-22 | Phase 22 | Pending |
 | SHOP-23 | Phase 22 | Pending |

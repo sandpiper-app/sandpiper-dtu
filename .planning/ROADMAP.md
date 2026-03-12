@@ -45,7 +45,7 @@
 
 **Milestone Goal:** Fix 13 adversarial review findings so the twins genuinely behave like the real services — structural comparison is bidirectional, coverage is evidence-based, OAuth flows are real, REST state persists, Slack covers all 275+ methods, and scope enforcement matches real Slack.
 
-- [ ] **Phase 21: Test Runner & Seeders** - Fix `pnpm test:sdk` ABI mismatch and update seeders before behavioral changes land
+- [x] **Phase 21: Test Runner & Seeders** - Fix `pnpm test:sdk` ABI mismatch and update seeders before behavioral changes land (completed 2026-03-12)
 - [ ] **Phase 22: Shopify Version Routing & Response Headers** - Parameterize API version routes and add conformance response headers
 - [ ] **Phase 23: Shopify OAuth & Storefront** - Implement real OAuth authorize/callback flow and split Storefront schema
 - [ ] **Phase 24: Shopify REST Persistence, Billing State Machine & Rate Limiting** - Persistent CRUD with real shapes, billing state machine, and accurate rate limiting
@@ -200,7 +200,7 @@ Plans:
   2. All 177 existing SDK verification tests pass after the fix with no regressions
   3. Shopify twin exposes `POST /admin/tokens` endpoint so seeders can inject access tokens without going through OAuth, protecting tests from OAuth tightening in Phase 23
   4. `seedSlackBotToken()` uses a comprehensive default scope set covering all methods exercised across the SDK test suite, protecting tests from scope enforcement added in Phase 26
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 21-01-PLAN.md — .nvmrc + CI node-version alignment to Node 22 + better-sqlite3 rebuild step + Dockerfile node:22-slim (INFRA-19)
@@ -287,7 +287,7 @@ Plans:
 | 18. Slack WebClient Full Surface | v1.1 | 5/5 | Complete | 2026-03-10 |
 | 19. Slack OAuth & Bolt HTTP Surface | v1.1 | 4/4 | Complete | 2026-03-10 |
 | 20. Bolt Alternate Receivers & Drift Automation | v1.1 | 3/3 | Complete | 2026-03-10 |
-| 21. Test Runner & Seeders | 1/2 | In Progress|  | - |
+| 21. Test Runner & Seeders | 2/2 | Complete   | 2026-03-12 | - |
 | 22. Shopify Version Routing & Response Headers | v1.2 | 0/TBD | Not started | - |
 | 23. Shopify OAuth & Storefront | v1.2 | 0/TBD | Not started | - |
 | 24. Shopify REST Persistence, Billing State Machine & Rate Limiting | v1.2 | 0/TBD | Not started | - |
