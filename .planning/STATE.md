@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 22-01-PLAN.md
-last_updated: "2026-03-12T16:16:03.862Z"
-last_activity: 2026-03-11 — Phase 21 plan 02 complete; seeder forward-protection and Slack method-scopes catalog added
+stopped_at: Completed 22-03-PLAN.md
+last_updated: "2026-03-12T16:23:13.785Z"
+last_activity: 2026-03-12 — Phase 22 plan 01 complete; versioned GraphQL and REST routes with X-Shopify-API-Version headers
 progress:
   total_phases: 15
   completed_phases: 9
   total_plans: 36
-  completed_plans: 34
-  percent: 100
+  completed_plans: 35
+  percent: 97
 ---
 
 # Project State: Sandpiper DTU
@@ -28,11 +28,11 @@ progress:
 ## Current Position
 
 Phase: 22 of 27 (Shopify Version Routing & Response Headers)
-Plan: 1 of 3 complete in current phase
-Status: Phase 22 Plan 01 Complete — Next: Phase 22 Plan 02 (SDK helper cleanup and verification)
-Last activity: 2026-03-12 — Phase 22 plan 01 complete; versioned GraphQL and REST routes with X-Shopify-API-Version headers
+Plan: 3 of 3 complete in current phase
+Status: Phase 22 Complete — Next: Phase 23 (Shopify OAuth / Storefront)
+Last activity: 2026-03-12 — Phase 22 plan 03 complete; shared conformance version helper, adapters honor op.path, dual-version smoke/integration tests with x-shopify-api-version assertions
 
-Progress: [██████████] 97% (v1.2: 34/36 total plans complete)
+Progress: [██████████] 98% (v1.2: 35/36 total plans complete)
 
 ## Performance Metrics
 
@@ -46,6 +46,7 @@ Progress: [██████████] 97% (v1.2: 34/36 total plans complete
 | 21-01 | 01 | 2min | 2 | 4 |
 | 21-02 | 02 | 8min | 2 | 3 |
 | 22-01 | 01 | 4min | 2 | 3 |
+| 22-03 | 03 | 3.5min | 2 | 8 |
 
 ## Accumulated Context
 
@@ -75,6 +76,11 @@ Progress: [██████████] 97% (v1.2: 34/36 total plans complete
 - Build pagination Link header URL from req.params.version via buildAdminApiPath() — no hardcoded 2024-01 in Link header
 - api-version.ts is the single shared utility for both GraphQL and REST plugins (parseShopifyApiVersion, setApiVersionHeader, buildAdminApiPath)
 
+**2026-03-12 - Phase 22 Plan 03 (Shopify conformance harness version cleanup):**
+- SHOPIFY_ADMIN_API_VERSION set to 2025-01 in conformance version helper; suites now declare current default, not legacy 2024-01
+- op.path honored when present in both live and twin adapters; shopifyAdminGraphqlPath() used only as fallback
+- gql() helper in pagination.test.ts parameterized with optional version argument defaulting to 2024-01 for backward compat
+
 **2026-03-11 - Phase 21 Plan 02 (Seeder forward-protection):**
 - Use POST /admin/tokens on Shopify twin so seedShopifyAccessToken() survives Phase 23 OAuth tightening
 - Store Slack method-to-scope map in twins/slack/src/services/method-scopes.ts as single source of truth for seeders and Phase 26 enforcement
@@ -98,8 +104,8 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 22 plan 01 — Versioned GraphQL and REST routes; X-Shopify-API-Version on all responses including 401/429; version-aware pagination Link headers; api-version.ts shared utility
-**Stopped at:** Completed 22-01-PLAN.md
+**Last completed:** Phase 22 plan 03 — Shared conformance version helper (SHOPIFY_ADMIN_API_VERSION=2025-01); adapters honor op.path; dual-version smoke and integration tests asserting x-shopify-api-version and version-aware Link headers
+**Stopped at:** Completed 22-03-PLAN.md
 **Timestamp:** 2026-03-12
 
 ---
