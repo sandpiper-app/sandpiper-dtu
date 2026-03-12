@@ -37,6 +37,23 @@ const __dirname = dirname(__filename);
 const CANONICAL_ADMIN_GRAPHQL = '/admin/api/2024-01/graphql.json';
 const CANONICAL_STOREFRONT_GRAPHQL = '/api/2024-01/graphql.json';
 
+function headerValue(value: string | string[] | undefined): string | undefined {
+  if (typeof value === 'string' && value.length > 0) {
+    return value;
+  }
+
+  if (Array.isArray(value) && typeof value[0] === 'string' && value[0].length > 0) {
+    return value[0];
+  }
+
+  return undefined;
+}
+
+function resolveStorefrontToken(headers: Record<string, string | string[] | undefined>): string | undefined {
+  return headerValue(headers['shopify-storefront-private-token'])
+    ?? headerValue(headers['x-shopify-storefront-access-token']);
+}
+
 declare module 'fastify' {
   interface FastifyInstance {
     rateLimiter: LeakyBucketRateLimiter;
@@ -149,11 +166,11 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
       error: (...args) => args.forEach((arg) => fastify.log.error(arg)),
     },
     context: async ({ req }) => {
-      const token = req.headers['shopify-storefront-private-token'];
+      const token = resolveStorefrontToken(req.headers);
       let authorized = false;
       let shopDomain = '';
 
-      if (token && typeof token === 'string') {
+      if (token) {
         const validation = await validateAccessToken(token, fastify.stateManager);
         if (validation.valid && validation.tokenType !== 'admin') {
           authorized = true;
@@ -176,7 +193,8 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
   // Storefront API route — /api/:version/graphql.json
   // ---------------------------------------------------------------------------
   // Uses a separate Storefront Yoga instance and schema.
-  // Auth: Shopify-Storefront-Private-Token (not X-Shopify-Access-Token)
+  // Auth: Shopify-Storefront-Private-Token or X-Shopify-Storefront-Access-Token
+  // Private-token header remains canonical when both are present.
   // Rewrites incoming URL to the canonical Storefront endpoint so Yoga routes
   // the query correctly.
   fastify.route({
@@ -194,9 +212,10 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
       }
       setApiVersionHeader(reply, version);
 
-      // Validate Shopify-Storefront-Private-Token
-      const token = req.headers['shopify-storefront-private-token'];
-      if (!token || typeof token !== 'string') {
+      // Validate the accepted Storefront auth headers. Private-token header
+      // wins when both are present so the pinned SDK path stays canonical.
+      const token = resolveStorefrontToken(req.headers);
+      if (!token) {
         reply.status(401).header('content-type', 'application/json');
         return reply.send(JSON.stringify({ errors: [{ message: 'Unauthorized' }] }));
       }

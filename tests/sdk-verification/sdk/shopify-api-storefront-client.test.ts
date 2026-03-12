@@ -41,6 +41,25 @@ function createSession(accessToken: string): Session {
   } as Session;
 }
 
+async function rawStorefrontRequest(options: {
+  query: string;
+  version?: string;
+  headers?: Record<string, string>;
+}): Promise<{ response: Response; payload: any }> {
+  const { query, version = '2025-01', headers = {} } = options;
+  const response = await fetch(`${shopifyTwinUrl()}/api/${version}/graphql.json`, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      ...headers,
+    },
+    body: JSON.stringify({ query }),
+  });
+
+  const payload = await response.json();
+  return { response, payload };
+}
+
 async function seedStorefrontToken(token: string, tokenType: 'storefront' | 'admin' = 'storefront'): Promise<void> {
   const response = await fetch(shopifyTwinUrl() + '/admin/tokens', {
     method: 'POST',
@@ -131,6 +150,53 @@ describe('shopify.clients.Storefront — SHOP-14 (live twin)', () => {
     await seedStorefrontToken(adminToken, 'admin');
     const client = new StorefrontClient({ session: createSession(adminToken) });
     await expect(client.request('{ shop { name } }')).rejects.toThrow();
+  });
+
+  it('raw Storefront request accepts X-Shopify-Storefront-Access-Token', async () => {
+    const storefrontToken = `storefront-public-${randomUUID()}`;
+    await seedStorefrontToken(storefrontToken, 'storefront');
+
+    const { response, payload } = await rawStorefrontRequest({
+      query: '{ shop { name } }',
+      headers: {
+        'X-Shopify-Storefront-Access-Token': storefrontToken,
+      },
+    });
+
+    expect(response.status).toBe(200);
+    expect(payload.data?.shop?.name).toBe('Sandpiper Dev Store');
+    expect(response.headers.get('x-shopify-api-version')).toBe('2025-01');
+  });
+
+  it('raw Storefront request rejects admin tokens on X-Shopify-Storefront-Access-Token', async () => {
+    const adminToken = `admin-public-${randomUUID()}`;
+    await seedStorefrontToken(adminToken, 'admin');
+
+    const { response, payload } = await rawStorefrontRequest({
+      query: '{ shop { name } }',
+      headers: {
+        'X-Shopify-Storefront-Access-Token': adminToken,
+      },
+    });
+
+    expect(response.status).toBe(401);
+    expect(payload.errors?.[0]?.message).toContain('Unauthorized');
+  });
+
+  it('prefers Shopify-Storefront-Private-Token when both Storefront headers are present', async () => {
+    const privateToken = `storefront-private-${randomUUID()}`;
+    await seedStorefrontToken(privateToken, 'storefront');
+
+    const { response, payload } = await rawStorefrontRequest({
+      query: '{ shop { name } }',
+      headers: {
+        'Shopify-Storefront-Private-Token': privateToken,
+        'X-Shopify-Storefront-Access-Token': 'invalid-public-token',
+      },
+    });
+
+    expect(response.status).toBe(200);
+    expect(payload.data?.shop?.name).toBe('Sandpiper Dev Store');
   });
 
   it('products(first: 2) query returns valid ProductConnection with real data', async () => {
