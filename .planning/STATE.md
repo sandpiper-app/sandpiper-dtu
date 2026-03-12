@@ -4,7 +4,7 @@ milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
 stopped_at: Completed 22-02-PLAN.md
-last_updated: "2026-03-12T16:26:14.857Z"
+last_updated: "2026-03-12T16:31:04.580Z"
 last_activity: 2026-03-12 — Phase 22 plan 03 complete; shared conformance version helper, adapters honor op.path, dual-version smoke/integration tests with x-shopify-api-version assertions
 progress:
   total_phases: 15
