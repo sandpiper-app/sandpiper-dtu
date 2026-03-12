@@ -1,35 +1,35 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: milestone
-status: completed
-stopped_at: Completed quick-1-01-PLAN.md
-last_updated: "2026-03-10T04:45:00.000Z"
+milestone: v1.2
+milestone_name: Behavioral Fidelity
+status: active
+stopped_at: null
+last_updated: "2026-03-11T00:00:00.000Z"
 progress:
-  total_phases: 8
-  completed_phases: 8
-  total_plans: 31
-  completed_plans: 31
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State: Sandpiper DTU
 
-**Last Updated:** 2026-03-10T02:43:00Z
-**Status:** Milestone complete
+**Last Updated:** 2026-03-11T00:00:00Z
+**Status:** Defining requirements
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Phase 20 complete — Milestone v1.1 complete
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — defining requirements
 
 ## Current Position
 
-**Phase:** Phase 20 — Bolt Alternate Receivers & Drift Automation
-**Plan:** Plan 03 complete (all plans complete)
-**Status:** Complete
-**Progress:** [██████████] 100%
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-11 — Milestone v1.2 started
 
 ## Performance Metrics
 

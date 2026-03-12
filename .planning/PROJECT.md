@@ -10,16 +10,24 @@ Inspired by StrongDM's "software factory" approach, where coding agents built be
 
 Sandpiper's integration tests can run against twins that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-## Current Milestone: v1.1 Official SDK Conformance
+## Current Milestone: v1.2 Behavioral Fidelity
 
-**Goal:** Turn the official Shopify and Slack Node SDKs into the fidelity boundary for Sandpiper DTU, then expand the twins until those packages work end to end against local twin backends.
+**Goal:** Fix the behavioral fidelity gaps and conformance infrastructure weaknesses identified by external adversarial review, so that the twins genuinely behave like the real services — not just pass their own tests.
 
 **Target features:**
-- Fork-backed upstream SDK submodules live inside the repo under a pinned, reviewable layout
-- Machine-generated public-surface manifests track every targeted package export and method
-- Shopify twin passes official `@shopify/admin-api-client` and `@shopify/shopify-api` suites across their literal public surface
-- Slack twin passes official `@slack/web-api`, `@slack/oauth`, and `@slack/bolt` suites across their literal public surface
-- SDK conformance, HMAC/timing/UI verification, and drift detection run together in the same CI pipeline
+- Conformance harness performs real twin-vs-live structural comparison (not twin-vs-self)
+- Coverage tracking derived from execution evidence, not hand-authored metadata
+- Shopify OAuth implements real authorize route, callback flow, and validated token exchange
+- Shopify Storefront uses separate schema without admin-only mutations and correct auth model
+- Shopify twin accepts multiple API versions without test-harness rewriting
+- Shopify REST resources persist state with correct shapes (numeric IDs, admin_graphql_api_id)
+- Shopify billing mutates install state; rate limiting uses realistic bucket size and actual query costs
+- Slack twin covers all bound WebClient methods including admin.*, workflows.*, canvases.*, and 31 other missing families
+- Slack chat.update/delete enforce channel and author scoping rules matching real Slack
+- Slack events use signing-secret headers, dedicated interactivity URL, and absolute response_url
+- Slack conversations/views/pins/reactions are stateful (membership, lifecycle, persistence)
+- Slack auth enforces OAuth scope requirements per method, not just token existence
+- SDK verification entrypoint (pnpm test:sdk) works reliably end-to-end
 
 ## Requirements
 
@@ -43,12 +51,25 @@ Sandpiper's integration tests can run against twins that behave identically to r
 - ✓ Machine-generated public-surface manifests cover every targeted package symbol and method — Phase 13
 - ✓ Shopify twin passes `@shopify/admin-api-client` GraphQL and REST client tests — Phases 14-15
 - ✓ Shopify twin passes `@shopify/shopify-api` auth, session, webhook, and billing helpers — Phase 16
+- ✓ Shopify twin passes `@shopify/shopify-api` client surfaces and strategic REST stubs — Phases 17
+- ✓ Slack twin passes official `@slack/web-api`, `@slack/oauth`, and `@slack/bolt` suites across their literal public surface — Phases 18-20
+- ✓ SDK conformance, HMAC/timing/UI verification, and drift detection run together in CI — Phase 14, 20
 
 ### Active
 
-- [ ] Shopify twin passes `@shopify/shopify-api` client surfaces (Graphql, Rest, Storefront, graphqlProxy) and strategic REST stubs
-- [ ] Slack twin passes official `@slack/web-api`, `@slack/oauth`, and `@slack/bolt` suites across their literal public surface
-- [ ] SDK conformance, HMAC/timing/UI verification, and drift detection run together in CI
+- [ ] Conformance harness validates twin behavior via real twin-vs-live comparison with full structural checking
+- [ ] Coverage status derived from test execution evidence, not hand-authored symbol maps
+- [ ] Shopify twin implements real OAuth authorize/callback flow with validated token exchange
+- [ ] Shopify twin serves separate Storefront schema with correct auth model
+- [ ] Shopify twin routes multiple API versions natively (not test-harness rewritten)
+- [ ] Shopify REST resources persist state with real-Shopify-compatible response shapes
+- [ ] Shopify billing mutates install state; rate limiting uses correct bucket size and actual query costs
+- [ ] Slack twin covers all 275+ bound WebClient methods (closes 126-method gap)
+- [ ] Slack message mutations enforce channel/author scoping and conformance tests exercise real operations
+- [ ] Slack events use signing-secret headers, dedicated interactivity URL, absolute response_url
+- [ ] Slack conversations/views/pins/reactions are stateful (membership, lifecycle, persistence)
+- [ ] Slack auth enforces OAuth scope requirements per method
+- [ ] SDK verification entrypoint (pnpm test:sdk) works reliably end-to-end
 
 ### Out of Scope
 
@@ -103,5 +124,7 @@ Sandpiper's integration tests can run against twins that behave identically to r
 | Composition over inheritance for state | SlackStateManager wraps StateManager, keeps base clean | Validated — better separation |
 | HTTP 200 for Slack API errors | Matching real Slack convention (`{ok: false}` on 200, not 4xx) | Validated — SDK-compatible |
 
+| v1.2 fixes behavioral fidelity gaps before expanding scope | External adversarial review found 13 issues (2 Critical, 8 High); must fix before v2 | — Pending |
+
 ---
-*Last updated: 2026-03-09 after Phase 16*
+*Last updated: 2026-03-11 after v1.2 milestone start*
