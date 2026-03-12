@@ -46,7 +46,7 @@
 **Milestone Goal:** Fix 13 adversarial review findings so the twins genuinely behave like the real services — structural comparison is bidirectional, coverage is evidence-based, OAuth flows are real, REST state persists, Slack covers all 275+ methods, and scope enforcement matches real Slack.
 
 - [x] **Phase 21: Test Runner & Seeders** - Fix `pnpm test:sdk` ABI mismatch and update seeders before behavioral changes land (completed 2026-03-12)
-- [ ] **Phase 22: Shopify Version Routing & Response Headers** - Parameterize API version routes and add conformance response headers
+- [x] **Phase 22: Shopify Version Routing & Response Headers** - Parameterize API version routes and add conformance response headers (completed 2026-03-12)
 - [ ] **Phase 23: Shopify OAuth & Storefront** - Implement real OAuth authorize/callback flow and split Storefront schema
 - [ ] **Phase 24: Shopify REST Persistence, Billing State Machine & Rate Limiting** - Persistent CRUD with real shapes, billing state machine, and accurate rate limiting
 - [ ] **Phase 25: Slack Method Coverage, Event Signing & State Tables** - Close 126-method gap, fix event headers, and add membership/view/pin state
@@ -215,7 +215,7 @@ Plans:
   2. REST routes accept any `:version` segment; `GET /admin/api/2025-01/products.json` returns the same product list as `GET /admin/api/2024-01/products.json`
   3. Every API response includes an `X-Shopify-API-Version` header that echoes the version string from the request URL path
   4. Paginated REST list responses include a `Link` header with `rel="next"` and a `page_info` cursor parameter, matching real Shopify pagination format
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 ### Phase 23: Shopify OAuth & Storefront
 **Goal**: Shopify twin implements a real OAuth authorize/callback flow and serves a separate Storefront API schema, matching what the official SDKs expect rather than bypassing both.
@@ -288,7 +288,7 @@ Plans:
 | 19. Slack OAuth & Bolt HTTP Surface | v1.1 | 4/4 | Complete | 2026-03-10 |
 | 20. Bolt Alternate Receivers & Drift Automation | v1.1 | 3/3 | Complete | 2026-03-10 |
 | 21. Test Runner & Seeders | 2/2 | Complete    | 2026-03-12 | - |
-| 22. Shopify Version Routing & Response Headers | 2/3 | In Progress|  | - |
+| 22. Shopify Version Routing & Response Headers | 3/3 | Complete   | 2026-03-12 | - |
 | 23. Shopify OAuth & Storefront | v1.2 | 0/TBD | Not started | - |
 | 24. Shopify REST Persistence, Billing State Machine & Rate Limiting | v1.2 | 0/TBD | Not started | - |
 | 25. Slack Method Coverage, Event Signing & State Tables | v1.2 | 0/TBD | Not started | - |

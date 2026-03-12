@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 22-03-PLAN.md
-last_updated: "2026-03-12T16:23:13.785Z"
-last_activity: 2026-03-12 — Phase 22 plan 01 complete; versioned GraphQL and REST routes with X-Shopify-API-Version headers
+stopped_at: Completed 22-02-PLAN.md
+last_updated: "2026-03-12T16:26:14.857Z"
+last_activity: 2026-03-12 — Phase 22 plan 03 complete; shared conformance version helper, adapters honor op.path, dual-version smoke/integration tests with x-shopify-api-version assertions
 progress:
   total_phases: 15
-  completed_phases: 9
+  completed_phases: 10
   total_plans: 36
-  completed_plans: 35
-  percent: 97
+  completed_plans: 36
+  percent: 98
 ---
 
 # Project State: Sandpiper DTU
@@ -46,6 +46,7 @@ Progress: [██████████] 98% (v1.2: 35/36 total plans complete
 | 21-01 | 01 | 2min | 2 | 4 |
 | 21-02 | 02 | 8min | 2 | 3 |
 | 22-01 | 01 | 4min | 2 | 3 |
+| 22-02 | 02 | 8min | 2 | 8 |
 | 22-03 | 03 | 3.5min | 2 | 8 |
 
 ## Accumulated Context
@@ -76,6 +77,12 @@ Progress: [██████████] 98% (v1.2: 35/36 total plans complete
 - Build pagination Link header URL from req.params.version via buildAdminApiPath() — no hardcoded 2024-01 in Link header
 - api-version.ts is the single shared utility for both GraphQL and REST plugins (parseShopifyApiVersion, setApiVersionHeader, buildAdminApiPath)
 
+**2026-03-12 - Phase 22 Plan 02 (SDK helper cleanup and verification expansion):**
+- Remove /admin/api/{version}/ → 2024-01 shims from all three SDK helpers; keep host rewriting only — twin routes :version natively (Phase 22-01)
+- shopify-api canonicalizes response headers to Title-Case arrays: access X-Shopify-Api-Version (not x-shopify-api-version) with [0] index
+- storefront-api-client response.headers is native Fetch Headers object — use .get('x-shopify-api-version') via cast, not bracket notation
+- Dual-version SDK verification (2024-01 and 2025-01) now covers admin GraphQL, admin REST, and Storefront surfaces end-to-end
+
 **2026-03-12 - Phase 22 Plan 03 (Shopify conformance harness version cleanup):**
 - SHOPIFY_ADMIN_API_VERSION set to 2025-01 in conformance version helper; suites now declare current default, not legacy 2024-01
 - op.path honored when present in both live and twin adapters; shopifyAdminGraphqlPath() used only as fallback
@@ -105,7 +112,7 @@ None.
 ## Session Continuity
 
 **Last completed:** Phase 22 plan 03 — Shared conformance version helper (SHOPIFY_ADMIN_API_VERSION=2025-01); adapters honor op.path; dual-version smoke and integration tests asserting x-shopify-api-version and version-aware Link headers
-**Stopped at:** Completed 22-03-PLAN.md
+**Stopped at:** Completed 22-02-PLAN.md
 **Timestamp:** 2026-03-12
 
 ---
