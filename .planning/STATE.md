@@ -2,37 +2,37 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
-status: verifying
-stopped_at: Completed 23-02-PLAN.md
-last_updated: "2026-03-12T18:18:20Z"
-last_activity: 2026-03-12 — Phase 23 plan 02 complete; Storefront now has a dedicated schema/Yoga instance, admin tokens are rejected on the Storefront route, and full sdk-verification passed 197/197
+status: planning
+stopped_at: Phase 23 complete — ready for Phase 24 planning
+last_updated: "2026-03-12T23:52:10Z"
+last_activity: 2026-03-12 — Phase 23 verified passed after gap-closure plans 03-04; backfill commits 6b0ca43 and 52b5a21 landed, and the project is ready for Phase 24 planning
 progress:
   total_phases: 15
-  completed_phases: 10
-  total_plans: 38
-  completed_plans: 38
+  completed_phases: 11
+  total_plans: 40
+  completed_plans: 40
   percent: 100
 ---
 
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-12
-**Status:** Verifying Phase 23
+**Status:** Ready to plan
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 23 verification and close-out
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 23 is verified complete; next step is Phase 24 planning
 
 ## Current Position
 
-Phase: 23 of 27 (Shopify OAuth & Storefront)
-Plan: 2 of 2 complete in current phase
-Status: All plans complete — awaiting phase verification
-Last activity: 2026-03-12 — Phase 23 plan 02 complete; Storefront schema separation landed, admin tokens are rejected on `/api/:version/graphql.json`, and full sdk-verification passed 197/197
+Phase: 24 of 27 (Shopify REST Persistence, Billing State Machine & Rate Limiting)
+Plan: Planning not started for current phase
+Status: Phase 23 closed and verified — ready to plan Phase 24
+Last activity: 2026-03-12 — Phase 23 verification passed, the OAuth and Storefront gap-closure commits were backfilled, and the project advanced to Phase 24 planning
 
-Progress: [██████████] 100% (overall: 38/38 currently planned plans complete)
+Progress: [██████████] 100% (overall: 40/40 currently planned plans complete)
 
 ## Performance Metrics
 
@@ -50,6 +50,8 @@ Progress: [██████████] 100% (overall: 38/38 currently planne
 | 22-03 | 03 | 3.5min | 2 | 8 |
 | 23-01 | 01 | 13min | 2 | 5 |
 | 23-02 | 02 | 13min | 2 | 3 |
+| 23-03 | 03 | 35min | 1 | 2 |
+| 23-04 | 04 | 10min | 1 | 2 |
 
 ## Accumulated Context
 
@@ -95,6 +97,16 @@ Progress: [██████████] 100% (overall: 38/38 currently planne
 - Storefront auth rejects admin tokens in the Fastify route and again in Yoga context, producing a clean HTTP 401 while keeping resolver auth defensive
 - Storefront SDK coverage now seeds explicit storefront/admin tokens and product fixtures through twin admin endpoints instead of relying on `clientCredentials()`
 
+**2026-03-12 - Phase 23 Plan 04 (Storefront public-header compatibility):**
+- Storefront auth now accepts both `Shopify-Storefront-Private-Token` and `X-Shopify-Storefront-Access-Token`, but always resolves the private header first so the pinned SDK path remains canonical
+- The Fastify Storefront route and Storefront Yoga context share the same token-resolution helper, keeping public-header and private-header requests aligned on admin-token rejection behavior
+- Sandbox restrictions blocked `pnpm test:sdk` socket-based verification here, so plan 04 was verified in-process with `buildApp()` plus `app.inject()` instead
+
+**2026-03-12 - Phase 23 Plan 03 (OAuth client credential validation):**
+- `/admin/oauth/access_token` now validates `client_id` and `client_secret` against `SHOPIFY_API_KEY` / `SHOPIFY_API_SECRET` before issuing tokens for any grant type
+- Auth-code requests still return `invalid_request` for missing fields, then `invalid_client` for wrong values, preserving the existing empty-body and invalid-grant contract
+- Sandbox restrictions blocked live `pnpm test:sdk` verification here, so plan 03 was verified in-process with `buildApp()` plus `app.inject()` and the official Shopify SDK wired through `setAbstractFetchFunc()`
+
 **2026-03-11 - Phase 21 Plan 02 (Seeder forward-protection):**
 - Use POST /admin/tokens on Shopify twin so seedShopifyAccessToken() survives Phase 23 OAuth tightening
 - Store Slack method-to-scope map in twins/slack/src/services/method-scopes.ts as single source of truth for seeders and Phase 26 enforcement
@@ -114,13 +126,13 @@ None.
 
 ### Blockers/Concerns
 
-None.
+- This sandbox still blocks local socket binds, so `pnpm test:sdk` cannot boot the live twin harness here. Use in-process `buildApp()` verification or a normal shell when socket-bound test runs are required.
 
 ## Session Continuity
 
-**Last completed:** Phase 23 plan 02 — Separate Storefront schema, dedicated Storefront Yoga routing, admin-token rejection, and expanded Storefront SDK coverage
-**Work in progress:** Phase 23 verification and phase completion tracking
-**Stopped at:** Completed 23-02-PLAN.md
+**Last completed:** Phase 23 — verification passed, with backfill commits `6b0ca43` and `52b5a21`
+**Work in progress:** Phase 24 planning
+**Stopped at:** Phase 23 complete — ready for Phase 24 planning
 **Timestamp:** 2026-03-12
 
 ---

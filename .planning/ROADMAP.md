@@ -47,7 +47,7 @@
 
 - [x] **Phase 21: Test Runner & Seeders** - Fix `pnpm test:sdk` ABI mismatch and update seeders before behavioral changes land (completed 2026-03-12)
 - [x] **Phase 22: Shopify Version Routing & Response Headers** - Parameterize API version routes and add conformance response headers (completed 2026-03-12)
-- [ ] **Phase 23: Shopify OAuth & Storefront** - Implement real OAuth authorize/callback flow and split Storefront schema
+- [x] **Phase 23: Shopify OAuth & Storefront** - Implement real OAuth authorize/callback flow and split Storefront schema (completed 2026-03-12)
 - [ ] **Phase 24: Shopify REST Persistence, Billing State Machine & Rate Limiting** - Persistent CRUD with real shapes, billing state machine, and accurate rate limiting
 - [ ] **Phase 25: Slack Method Coverage, Event Signing & State Tables** - Close 126-method gap, fix event headers, and add membership/view/pin state
 - [ ] **Phase 26: Slack Chat Scoping & Scope Enforcement** - Author/channel ownership rules and per-method OAuth scope requirements
@@ -226,11 +226,13 @@ Plans:
   2. `POST /admin/oauth/access_token` validates `client_id`, `client_secret`, and `code`; requests with an empty body or invalid credentials return an error response
   3. Storefront GraphQL endpoint `POST /api/:version/graphql.json` accepts `X-Shopify-Storefront-Access-Token` for auth and rejects requests using an admin access token
   4. `products(first: N)` query against the Storefront endpoint returns valid product data; admin-only mutations are not present in the Storefront schema
-**Plans:** 2/2 plans complete
+**Plans:** 4/4 plans complete
 
 Plans:
 - [x] 23-01-PLAN.md — OAuth foundation: StateManager oauth_codes + token_type, GET /admin/oauth/authorize, tightened POST /admin/oauth/access_token
 - [x] 23-02-PLAN.md — Storefront schema separation: storefront.graphql SDL, second Yoga instance, admin token rejection
+- [x] 23-03-PLAN.md — OAuth client credential validation: reject wrong `client_id`/`client_secret` pairs while preserving the pinned SDK happy paths
+- [x] 23-04-PLAN.md — Storefront public-header compatibility: accept `X-Shopify-Storefront-Access-Token`, preserve private-header precedence, and add focused header-path coverage
 
 ### Phase 24: Shopify REST Persistence, Billing State Machine & Rate Limiting
 **Goal**: Shopify REST resources persist state with real-Shopify-compatible shapes, billing implements a full PENDING → ACTIVE → CANCELLED state machine, and rate limiting uses correct bucket parameters.
@@ -293,7 +295,7 @@ Plans:
 | 20. Bolt Alternate Receivers & Drift Automation | v1.1 | 3/3 | Complete | 2026-03-10 |
 | 21. Test Runner & Seeders | 2/2 | Complete    | 2026-03-12 | - |
 | 22. Shopify Version Routing & Response Headers | 3/3 | Complete    | 2026-03-12 | - |
-| 23. Shopify OAuth & Storefront | 2/2 | In Progress | - | - |
+| 23. Shopify OAuth & Storefront | 4/4 | Complete    | 2026-03-12 | - |
 | 24. Shopify REST Persistence, Billing State Machine & Rate Limiting | v1.2 | 0/TBD | Not started | - |
 | 25. Slack Method Coverage, Event Signing & State Tables | v1.2 | 0/TBD | Not started | - |
 | 26. Slack Chat Scoping & Scope Enforcement | v1.2 | 0/TBD | Not started | - |
