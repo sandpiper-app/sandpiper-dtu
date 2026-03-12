@@ -2,37 +2,37 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
-status: executing
-stopped_at: Completed 23-01-PLAN.md
-last_updated: "2026-03-12T17:54:10Z"
-last_activity: 2026-03-12 — Phase 23 plan 01 complete; real Shopify authorize redirect, one-time OAuth code validation, token_type plumbing, and 12/12 targeted auth tests passing
+status: verifying
+stopped_at: Completed 23-02-PLAN.md
+last_updated: "2026-03-12T18:18:20Z"
+last_activity: 2026-03-12 — Phase 23 plan 02 complete; Storefront now has a dedicated schema/Yoga instance, admin tokens are rejected on the Storefront route, and full sdk-verification passed 197/197
 progress:
   total_phases: 15
   completed_phases: 10
   total_plans: 38
-  completed_plans: 37
-  percent: 98
+  completed_plans: 38
+  percent: 100
 ---
 
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-12
-**Status:** Executing Phase 23
+**Status:** Verifying Phase 23
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 23 Plan 02 (Storefront schema separation)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 23 verification and close-out
 
 ## Current Position
 
 Phase: 23 of 27 (Shopify OAuth & Storefront)
-Plan: 1 of 2 complete in current phase
-Status: Phase 23 In Progress — Next: Plan 02 (Storefront schema separation)
-Last activity: 2026-03-12 — Phase 23 plan 01 complete; twin OAuth now uses real authorize redirects, one-time code validation, token_type support, and targeted SDK auth verification passed 12/12 tests
+Plan: 2 of 2 complete in current phase
+Status: All plans complete — awaiting phase verification
+Last activity: 2026-03-12 — Phase 23 plan 02 complete; Storefront schema separation landed, admin tokens are rejected on `/api/:version/graphql.json`, and full sdk-verification passed 197/197
 
-Progress: [█████████░] 97% (overall: 37/38 total plans complete)
+Progress: [██████████] 100% (overall: 38/38 currently planned plans complete)
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Progress: [█████████░] 97% (overall: 37/38 total plans compl
 | 22-02 | 02 | 8min | 2 | 8 |
 | 22-03 | 03 | 3.5min | 2 | 8 |
 | 23-01 | 01 | 13min | 2 | 5 |
+| 23-02 | 02 | 13min | 2 | 3 |
 
 ## Accumulated Context
 
@@ -89,6 +90,11 @@ Progress: [█████████░] 97% (overall: 37/38 total plans compl
 - op.path honored when present in both live and twin adapters; shopifyAdminGraphqlPath() used only as fallback
 - gql() helper in pagination.test.ts parameterized with optional version argument defaulting to 2024-01 for backward compat
 
+**2026-03-12 - Phase 23 Plan 02 (Storefront schema separation):**
+- Storefront GraphQL now uses a dedicated SDL and Yoga instance so introspection on `/api/:version/graphql.json` cannot expose admin-only mutations
+- Storefront auth rejects admin tokens in the Fastify route and again in Yoga context, producing a clean HTTP 401 while keeping resolver auth defensive
+- Storefront SDK coverage now seeds explicit storefront/admin tokens and product fixtures through twin admin endpoints instead of relying on `clientCredentials()`
+
 **2026-03-11 - Phase 21 Plan 02 (Seeder forward-protection):**
 - Use POST /admin/tokens on Shopify twin so seedShopifyAccessToken() survives Phase 23 OAuth tightening
 - Store Slack method-to-scope map in twins/slack/src/services/method-scopes.ts as single source of truth for seeders and Phase 26 enforcement
@@ -112,9 +118,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 23 plan 01 — Real Shopify authorize redirect, one-time OAuth codes, token_type-aware tokens, and SDK auth validation coverage
-**Work in progress:** Phase 23 plan 02 — Separate Storefront schema and reject admin tokens on the Storefront endpoint
-**Stopped at:** Completed 23-01-PLAN.md
+**Last completed:** Phase 23 plan 02 — Separate Storefront schema, dedicated Storefront Yoga routing, admin-token rejection, and expanded Storefront SDK coverage
+**Work in progress:** Phase 23 verification and phase completion tracking
+**Stopped at:** Completed 23-02-PLAN.md
 **Timestamp:** 2026-03-12
 
 ---
