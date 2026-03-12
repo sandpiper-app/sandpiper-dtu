@@ -1078,6 +1078,97 @@ describe('Shopify Twin Integration', () => {
   });
 
   // ---------------------------------------------------------------------------
+  // Version routing and response headers (SHOP-17, SHOP-22)
+  // ---------------------------------------------------------------------------
+  describe('Version routing and response headers', () => {
+    let token: string;
+
+    beforeEach(async () => {
+      const oauthResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/oauth/access_token',
+        payload: { code: 'version-test' },
+      });
+      token = JSON.parse(oauthResponse.body).access_token;
+    });
+
+    it('2024-01 GraphQL route returns 200 with valid GraphQL response', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: { query: '{ orders(first: 1) { edges { node { id } } } }' },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.data).toBeDefined();
+      expect(body.errors).toBeUndefined();
+    });
+
+    it('2025-01 GraphQL route returns 200 with valid GraphQL response', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2025-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: { query: '{ orders(first: 1) { edges { node { id } } } }' },
+      });
+      expect(response.statusCode).toBe(200);
+      const body = JSON.parse(response.body);
+      expect(body.data).toBeDefined();
+      expect(body.errors).toBeUndefined();
+    });
+
+    it('2024-01 GraphQL route echoes x-shopify-api-version: 2024-01', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: { query: '{ orders(first: 1) { edges { node { id } } } }' },
+      });
+      expect(response.headers['x-shopify-api-version']).toBe('2024-01');
+    });
+
+    it('2025-01 GraphQL route echoes x-shopify-api-version: 2025-01', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2025-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: { query: '{ orders(first: 1) { edges { node { id } } } }' },
+      });
+      expect(response.headers['x-shopify-api-version']).toBe('2025-01');
+    });
+
+    it('unauthorized 2024-01 request still echoes x-shopify-api-version: 2024-01', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': 'invalid-token' },
+        payload: { query: '{ orders(first: 1) { edges { node { id } } } }' },
+      });
+      // Yoga returns 200 with GraphQL UNAUTHORIZED error
+      expect(response.statusCode).toBe(200);
+      expect(response.headers['x-shopify-api-version']).toBe('2024-01');
+      const body = JSON.parse(response.body);
+      expect(body.errors).toBeDefined();
+      expect(body.errors[0].extensions.code).toBe('UNAUTHORIZED');
+    });
+
+    it('unauthorized 2025-01 request still echoes x-shopify-api-version: 2025-01', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2025-01/graphql.json',
+        headers: { 'X-Shopify-Access-Token': 'invalid-token' },
+        payload: { query: '{ orders(first: 1) { edges { node { id } } } }' },
+      });
+      expect(response.statusCode).toBe(200);
+      expect(response.headers['x-shopify-api-version']).toBe('2025-01');
+      const body = JSON.parse(response.body);
+      expect(body.errors).toBeDefined();
+      expect(body.errors[0].extensions.code).toBe('UNAUTHORIZED');
+    });
+  });
+
+  // ---------------------------------------------------------------------------
   // API Conformance: OAuth form-urlencoded (SHOP-02)
   // ---------------------------------------------------------------------------
   describe('API Conformance: OAuth form-urlencoded', () => {

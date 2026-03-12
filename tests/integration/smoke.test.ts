@@ -74,12 +74,12 @@ describe('Shopify Twin Smoke Tests', () => {
     expect(body).toHaveProperty('access_token');
   });
 
-  it('POST /admin/api/2024-01/graphql.json responds to GraphQL with valid token', async () => {
+  it('POST /admin/api/2024-01/graphql.json responds to GraphQL with valid token and echoes version header', async () => {
     // Get a token first
     const tokenRes = await fetch(`${shopifyBaseUrl}/admin/oauth/access_token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: 'gql-test-code', client_id: 'test', client_secret: 'test' }),
+      body: JSON.stringify({ code: 'gql-2024-test-code', client_id: 'test', client_secret: 'test' }),
     });
     const { access_token } = await tokenRes.json();
 
@@ -92,6 +92,31 @@ describe('Shopify Twin Smoke Tests', () => {
       body: JSON.stringify({ query: '{ shop { name } }' }),
     });
     expect(res.status).toBe(200);
+    expect(res.headers.get('x-shopify-api-version')).toBe('2024-01');
+    const body = await res.json();
+    // GraphQL should return data (or errors), not HTTP errors
+    expect(body).toBeDefined();
+  });
+
+  it('POST /admin/api/2025-01/graphql.json responds to GraphQL with valid token and echoes version header', async () => {
+    // Get a token first
+    const tokenRes = await fetch(`${shopifyBaseUrl}/admin/oauth/access_token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: 'gql-2025-test-code', client_id: 'test', client_secret: 'test' }),
+    });
+    const { access_token } = await tokenRes.json();
+
+    const res = await fetch(`${shopifyBaseUrl}/admin/api/2025-01/graphql.json`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Access-Token': access_token,
+      },
+      body: JSON.stringify({ query: '{ shop { name } }' }),
+    });
+    expect(res.status).toBe(200);
+    expect(res.headers.get('x-shopify-api-version')).toBe('2025-01');
     const body = await res.json();
     // GraphQL should return data (or errors), not HTTP errors
     expect(body).toBeDefined();

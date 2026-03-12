@@ -13,15 +13,24 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { buildApp } from '../../src/index.js';
 
-/** Helper to make a GraphQL request to the twin */
-async function gql(app: any, token: string, query: string): Promise<any> {
+/** Helper to make a GraphQL request to the twin (defaults to 2024-01 for existing tests) */
+async function gql(app: any, token: string, query: string, version = '2024-01'): Promise<any> {
   const response = await app.inject({
     method: 'POST',
-    url: '/admin/api/2024-01/graphql.json',
+    url: `/admin/api/${version}/graphql.json`,
     headers: { 'X-Shopify-Access-Token': token },
     payload: { query },
   });
   return JSON.parse(response.body);
+}
+
+/** Make a raw REST request and return the full inject response (including headers) */
+async function restRequest(app: any, token: string, path: string): Promise<any> {
+  return app.inject({
+    method: 'GET',
+    url: path,
+    headers: { 'X-Shopify-Access-Token': token },
+  });
 }
 
 /** Load N orders as fixtures */
@@ -276,6 +285,39 @@ describe('Pagination Integration', () => {
     expect(body.errors).toBeDefined();
     expect(body.errors.length).toBeGreaterThan(0);
     expect(body.errors[0].message).toMatch(/resource type/i);
+  });
+
+  // ---------------------------------------------------------------------------
+  // Transport: version-aware Link header in REST pagination (SHOP-17, SHOP-22)
+  // ---------------------------------------------------------------------------
+  it('2024-01 REST products?page_info=test Link header preserves requested version', async () => {
+    const response = await restRequest(app, token, '/admin/api/2024-01/products.json?page_info=test');
+    expect(response.statusCode).toBe(200);
+    expect(response.headers['x-shopify-api-version']).toBe('2024-01');
+    const link = response.headers['link'] as string;
+    expect(link).toBeDefined();
+    expect(link).toContain('/admin/api/2024-01/products.json');
+  });
+
+  it('2025-01 REST products?page_info=test Link header preserves requested version', async () => {
+    const response = await restRequest(app, token, '/admin/api/2025-01/products.json?page_info=test');
+    expect(response.statusCode).toBe(200);
+    expect(response.headers['x-shopify-api-version']).toBe('2025-01');
+    const link = response.headers['link'] as string;
+    expect(link).toBeDefined();
+    expect(link).toContain('/admin/api/2025-01/products.json');
+  });
+
+  it('GraphQL via 2025-01 route returns valid data (transport parity)', async () => {
+    await loadOrders(app, 3);
+    const body = await gql(app, token, `{
+      orders(first: 3) {
+        edges { node { id } }
+        pageInfo { hasNextPage }
+      }
+    }`, '2025-01');
+    expect(body.errors).toBeUndefined();
+    expect(body.data.orders.edges).toHaveLength(3);
   });
 
   // ---------------------------------------------------------------------------
