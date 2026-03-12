@@ -214,6 +214,24 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
     }
     return { removed: true };
   });
+
+  // POST /admin/tokens - seed a Shopify access token directly (bypasses OAuth)
+  // Used by seedShopifyAccessToken() to avoid dependence on the permissive OAuth endpoint.
+  // Must be added before Phase 23 tightens OAuth validation.
+  fastify.post<{
+    Body: { token: string; shopDomain?: string; scopes?: string };
+  }>('/admin/tokens', async (request, reply) => {
+    const { token, shopDomain, scopes } = request.body ?? {};
+    if (!token) {
+      return reply.status(400).send({ error: 'token required' });
+    }
+    fastify.stateManager.createToken(
+      token,
+      shopDomain ?? 'twin.myshopify.com',
+      scopes ?? 'read_orders,write_orders,read_products,write_products,read_customers,write_customers'
+    );
+    return { token };
+  });
 };
 
 export default adminPlugin;
