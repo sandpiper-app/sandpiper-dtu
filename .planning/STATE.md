@@ -2,21 +2,22 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
-status: active
-stopped_at: null
-last_updated: "2026-03-11T00:00:00.000Z"
+status: planning
+stopped_at: Completed 21-01-PLAN.md
+last_updated: "2026-03-12T02:59:47.395Z"
+last_activity: 2026-03-11 — v1.2 roadmap created; 7 phases mapped across 18 requirements
 progress:
-  total_phases: 7
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_phases: 15
+  completed_phases: 8
+  total_plans: 33
+  completed_plans: 32
   percent: 0
 ---
 
 # Project State: Sandpiper DTU
 
-**Last Updated:** 2026-03-11
-**Status:** Roadmap created — ready to plan Phase 21
+**Last Updated:** 2026-03-12
+**Status:** Active — Phase 21 plan 01 complete
 
 ## Project Reference
 
@@ -27,11 +28,11 @@ progress:
 ## Current Position
 
 Phase: 21 of 27 (Test Runner & Seeders)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-03-11 — v1.2 roadmap created; 7 phases mapped across 18 requirements
+Plan: 1 of 2 complete in current phase
+Status: In Progress
+Last activity: 2026-03-12 — Phase 21 plan 01 complete; Node 22 LTS aligned across CI, Docker, and local dev
 
-Progress: [░░░░░░░░░░] 0% (v1.2: 0/7 phases complete)
+Progress: [██████████] 98% (v1.2: 1/7 plans complete in phase 21)
 
 ## Performance Metrics
 
@@ -40,9 +41,19 @@ Progress: [░░░░░░░░░░] 0% (v1.2: 0/7 phases complete)
 **Avg Tasks per Plan (v1.1):** ~3
 **Success Rate:** 100% (22/22 v1.1 requirements complete)
 
+| Phase | Plan | Duration | Tasks | Files |
+|-------|------|----------|-------|-------|
+| 21-01 | 01 | 2min | 2 | 4 |
+
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-12 - Phase 21 Plan 01 (Node 22 LTS alignment):**
+- Pin Node to 22 LTS across CI, Docker, and .nvmrc for ABI stability
+- Rebuild better-sqlite3 from source in sdk-verification CI job only (the only job running pnpm test:sdk)
+- No rebuild step in Dockerfile — pnpm install and runtime are same Node version, prebuilt binary fetched correctly
+- pnpm test:sdk confirmed: 27 files, 177 tests, exit 0, no ABI crash
 
 **2026-03-11 - v1.2 Roadmap Creation:**
 - 7 phases derived from 18 adversarial review requirements; granularity is fine
@@ -73,9 +84,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** v1.2 roadmap creation — 7 phases, 18 requirements mapped, 100% coverage
-**Stopped at:** Roadmap written; ready for `pnpm plan-phase 21`
-**Timestamp:** 2026-03-11
+**Last completed:** Phase 21 plan 01 — Node 22 LTS alignment, better-sqlite3 ABI fix, 177 tests passing
+**Stopped at:** Completed 21-01-PLAN.md
+**Timestamp:** 2026-03-12
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
