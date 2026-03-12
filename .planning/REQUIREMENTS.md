@@ -140,31 +140,31 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-19 | — | Pending |
-| INFRA-20 | — | Pending |
-| INFRA-21 | — | Pending |
-| INFRA-22 | — | Pending |
-| SHOP-17 | — | Pending |
-| SHOP-18 | — | Pending |
-| SHOP-19 | — | Pending |
-| SHOP-20 | — | Pending |
-| SHOP-21 | — | Pending |
-| SHOP-22 | — | Pending |
-| SHOP-23 | — | Pending |
-| SHOP-24 | — | Pending |
-| SLCK-14 | — | Pending |
-| SLCK-15 | — | Pending |
-| SLCK-16 | — | Pending |
-| SLCK-17 | — | Pending |
-| SLCK-18 | — | Pending |
-| SLCK-19 | — | Pending |
+| INFRA-19 | Phase 21 | Pending |
+| INFRA-20 | Phase 21 | Pending |
+| SHOP-17 | Phase 22 | Pending |
+| SHOP-22 | Phase 22 | Pending |
+| SHOP-23 | Phase 22 | Pending |
+| SHOP-18 | Phase 23 | Pending |
+| SHOP-19 | Phase 23 | Pending |
+| SHOP-20 | Phase 24 | Pending |
+| SHOP-21 | Phase 24 | Pending |
+| SHOP-24 | Phase 24 | Pending |
+| SLCK-14 | Phase 25 | Pending |
+| SLCK-16 | Phase 25 | Pending |
+| SLCK-17 | Phase 25 | Pending |
+| SLCK-15 | Phase 26 | Pending |
+| SLCK-18 | Phase 26 | Pending |
+| SLCK-19 | Phase 26 | Pending |
+| INFRA-21 | Phase 27 | Pending |
+| INFRA-22 | Phase 27 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 22 total (all complete)
 - v1.2 requirements: 18 total
-- Mapped to phases: 0
-- Unmapped: 18
+- Mapped to phases: 18
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-09*
-*Last updated: 2026-03-11 after v1.2 milestone requirements definition*
+*Last updated: 2026-03-11 after v1.2 roadmap creation*

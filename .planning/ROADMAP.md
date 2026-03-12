@@ -1,14 +1,34 @@
 # Roadmap: Sandpiper DTU
 
 **Project:** Sandpiper DTU (Digital Twin Universe)
-**Milestone:** v1.1 Official SDK Conformance
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 **Created:** 2026-03-09
 **Depth:** Comprehensive
 
-**Historical Note:** Previous work used Phases 1-12 under v1.0. This milestone resumes at Phase 13; the old Phase 12 manual-verification scope is absorbed into Phase 14.
+## Milestones
+
+- ✅ **v1.0 Foundation** - Phases 1-12 (shipped 2026-02-28)
+- ✅ **v1.1 Official SDK Conformance** - Phases 13-20 (shipped 2026-03-10)
+- 🚧 **v1.2 Behavioral Fidelity** - Phases 21-27 (in progress)
 
 ## Phases
+
+<details>
+<summary>✅ v1.0 Foundation (Phases 1-12) - SHIPPED 2026-02-28</summary>
+
+- [x] **Phase 1: Monorepo Foundation** - Shared tooling, state management, and HTTP framework
+- [x] **Phase 2: Shopify GraphQL Twin** - Admin GraphQL API, OAuth, session management
+- [x] **Phase 3: Webhooks & Conformance Framework** - Active webhook push, conformance runner
+- [x] **Phase 4: Shopify Advanced Features** - Relay pagination, rate limiting, fulfillment state machine
+- [x] **Phase 5: Slack Twin** - Web API, Events API, OAuth, Block Kit
+- [x] **Phase 6: Twin UIs** - State inspection and manual testing interfaces
+- [x] **Phase 7: Docker & CI Integration** - Docker-compose overlay, E2E wiring
+- [x] **Phases 8-12: Extended twin coverage and conformance hardening**
+
+</details>
+
+<details>
+<summary>✅ v1.1 Official SDK Conformance (Phases 13-20) - SHIPPED 2026-03-10</summary>
 
 - [x] **Phase 13: Upstream SDK Mirrors & Surface Inventory** - Freeze upstream source truth and generate public-surface manifests (completed 2026-03-09)
 - [x] **Phase 14: Verification Harness Foundation & Legacy Gap Merge** - Build the shared SDK verification workspace and absorb old manual verification coverage (completed 2026-03-09)
@@ -18,6 +38,20 @@
 - [x] **Phase 18: Slack WebClient Full Surface** - Make the Slack twin satisfy the full pinned `@slack/web-api` surface (completed 2026-03-10)
 - [x] **Phase 19: Slack OAuth & Bolt HTTP Surface** - Make `@slack/oauth` and Bolt's HTTP/Express application surface work against the twin (completed 2026-03-10)
 - [x] **Phase 20: Bolt Alternate Receivers & Drift Automation** - Close Socket Mode/AWS receiver gaps and enforce long-term SDK drift detection (completed 2026-03-10)
+
+</details>
+
+### 🚧 v1.2 Behavioral Fidelity (In Progress)
+
+**Milestone Goal:** Fix 13 adversarial review findings so the twins genuinely behave like the real services — structural comparison is bidirectional, coverage is evidence-based, OAuth flows are real, REST state persists, Slack covers all 275+ methods, and scope enforcement matches real Slack.
+
+- [ ] **Phase 21: Test Runner & Seeders** - Fix `pnpm test:sdk` ABI mismatch and update seeders before behavioral changes land
+- [ ] **Phase 22: Shopify Version Routing & Response Headers** - Parameterize API version routes and add conformance response headers
+- [ ] **Phase 23: Shopify OAuth & Storefront** - Implement real OAuth authorize/callback flow and split Storefront schema
+- [ ] **Phase 24: Shopify REST Persistence, Billing State Machine & Rate Limiting** - Persistent CRUD with real shapes, billing state machine, and accurate rate limiting
+- [ ] **Phase 25: Slack Method Coverage, Event Signing & State Tables** - Close 126-method gap, fix event headers, and add membership/view/pin state
+- [ ] **Phase 26: Slack Chat Scoping & Scope Enforcement** - Author/channel ownership rules and per-method OAuth scope requirements
+- [ ] **Phase 27: Conformance Harness & Coverage Infrastructure** - Bidirectional structural comparison and execution-evidence coverage tracking
 
 ## Phase Details
 
@@ -34,9 +68,9 @@
 **Plans:** 3/3 plans complete
 
 Plans:
-- [ ] 13-01-PLAN.md — Workspace config and CI submodule checkout (vitest.config.ts, twin Vitest alignment, conformance.yml + e2e.yml)
-- [ ] 13-02-PLAN.md — SDK package installs, ts-morph inventory generator, and five manifest JSON files
-- [ ] 13-03-PLAN.md — Git submodule add for three upstream forks, SHA pinning, and sdk-pins.json
+- [x] 13-01-PLAN.md — Workspace config and CI submodule checkout (vitest.config.ts, twin Vitest alignment, conformance.yml + e2e.yml)
+- [x] 13-02-PLAN.md — SDK package installs, ts-morph inventory generator, and five manifest JSON files
+- [x] 13-03-PLAN.md — Git submodule add for three upstream forks, SHA pinning, and sdk-pins.json
 
 ### Phase 14: Verification Harness Foundation & Legacy Gap Merge
 **Goal**: Build the shared verification harness that all SDK conformance work will use, merge the old manual verification checks into it, and establish the `auth.test` gateway and SDK URL redirection patterns.
@@ -52,11 +86,11 @@ Plans:
 **Plans:** 5/5 plans complete
 
 Plans:
-- [ ] 14-01-PLAN.md — Slack twin auth.test and api.test routes (authPlugin)
-- [ ] 14-02-PLAN.md — SDK verification workspace scaffold (vitest config, global setup, client helpers, test:sdk script)
-- [ ] 14-03-PLAN.md — SDK gateway tests: Slack auth.test via WebClient, Shopify client wire-up
-- [ ] 14-04-PLAN.md — Legacy conformance migration: HMAC signature, async webhook timing, UI structure tests
-- [ ] 14-05-PLAN.md — Coverage ledger (coverage-report.json) and basic drift detection script
+- [x] 14-01-PLAN.md — Slack twin auth.test and api.test routes (authPlugin)
+- [x] 14-02-PLAN.md — SDK verification workspace scaffold (vitest config, global setup, client helpers, test:sdk script)
+- [x] 14-03-PLAN.md — SDK gateway tests: Slack auth.test via WebClient, Shopify client wire-up
+- [x] 14-04-PLAN.md — Legacy conformance migration: HMAC signature, async webhook timing, UI structure tests
+- [x] 14-05-PLAN.md — Coverage ledger (coverage-report.json) and basic drift detection script
 
 ### Phase 15: Shopify Admin Client Compatibility
 **Goal**: Make the Shopify twin satisfy the low-level Admin GraphQL and generic REST clients.
@@ -69,9 +103,9 @@ Plans:
 **Plans:** 3/3 plans complete
 
 Plans:
-- [ ] 15-01-PLAN.md — GraphQL client method tests (request, fetch, getHeaders, getApiUrl) for SHOP-08
-- [ ] 15-02-PLAN.md — REST plugin for Shopify twin + createRestClient() helper for SHOP-09
-- [ ] 15-03-PLAN.md — REST client tests (all 4 verbs, searchParams, headers, retry, auth error) + coverage ledger update
+- [x] 15-01-PLAN.md — GraphQL client method tests (request, fetch, getHeaders, getApiUrl) for SHOP-08
+- [x] 15-02-PLAN.md — REST plugin for Shopify twin + createRestClient() helper for SHOP-09
+- [x] 15-03-PLAN.md — REST client tests (all 4 verbs, searchParams, headers, retry, auth error) + coverage ledger update
 
 ### Phase 16: Shopify `shopify-api` Platform Surface
 **Goal**: Make the high-level Shopify platform helpers work against the twin. Auth, session, and webhooks are the core; billing is lower priority and can be stubbed initially.
@@ -85,10 +119,10 @@ Plans:
 **Plans:** 4/4 plans complete
 
 Plans:
-- [ ] 16-01-PLAN.md — shopify-api-client.ts helper factory (setAbstractFetchFunc + mintSessionToken + computeShopifyHmac) + shopify-api-webhooks.test.ts (SHOP-12, 7 tests)
-- [ ] 16-02-PLAN.md — shopify-api-session.test.ts: decodeSessionToken, getOfflineId, getJwtSessionId, customAppSession, getCurrentId (SHOP-11, 7 tests)
-- [ ] 16-03-PLAN.md — shopify-api-auth.test.ts: tokenExchange, refreshToken, clientCredentials, begin, embedded URL helpers (SHOP-10, 6 tests)
-- [ ] 16-04-PLAN.md — Billing GraphQL stubs on twin schema/resolvers + shopify-api-billing.test.ts (SHOP-13, 3 tests) + coverage ledger update
+- [x] 16-01-PLAN.md — shopify-api-client.ts helper factory (setAbstractFetchFunc + mintSessionToken + computeShopifyHmac) + shopify-api-webhooks.test.ts (SHOP-12, 7 tests)
+- [x] 16-02-PLAN.md — shopify-api-session.test.ts: decodeSessionToken, getOfflineId, getJwtSessionId, customAppSession, getCurrentId (SHOP-11, 7 tests)
+- [x] 16-03-PLAN.md — shopify-api-auth.test.ts: tokenExchange, refreshToken, clientCredentials, begin, embedded URL helpers (SHOP-10, 6 tests)
+- [x] 16-04-PLAN.md — Billing GraphQL stubs on twin schema/resolvers + shopify-api-billing.test.ts (SHOP-13, 3 tests) + coverage ledger update
 
 ### Phase 17: Shopify Client Surfaces & Strategic REST Stubs
 **Goal**: Cover the Shopify client surfaces (`Graphql`, `Rest`, `Storefront`, `graphqlProxy`) and strategically stub deprecated REST resource classes. Full REST resource implementation is deprioritized given Shopify's April 2025 REST deprecation mandate.
@@ -101,10 +135,10 @@ Plans:
 **Plans:** 4/4 plans complete
 
 Plans:
-- [ ] 17-01-PLAN.md — GraphqlClient + graphqlProxy tests (6 tests, SHOP-14)
-- [ ] 17-02-PLAN.md — REST plugin Tier 1/2 routes + RestClient + REST resource class tests (8 tests, SHOP-14, SHOP-15)
-- [ ] 17-03-PLAN.md — Storefront twin endpoint + StorefrontClient tests (3 tests, SHOP-14)
-- [x] 17-04-PLAN.md — Coverage ledger update: Phase 17 client surfaces + all 74 REST resource tier attributions (SHOP-14, SHOP-15) (completed 2026-03-09)
+- [x] 17-01-PLAN.md — GraphqlClient + graphqlProxy tests (6 tests, SHOP-14)
+- [x] 17-02-PLAN.md — REST plugin Tier 1/2 routes + RestClient + REST resource class tests (8 tests, SHOP-14, SHOP-15)
+- [x] 17-03-PLAN.md — Storefront twin endpoint + StorefrontClient tests (3 tests, SHOP-14)
+- [x] 17-04-PLAN.md — Coverage ledger update: Phase 17 client surfaces + all 74 REST resource tier attributions (SHOP-14, SHOP-15)
 
 ### Phase 18: Slack WebClient Full Surface
 **Goal**: Make the Slack twin satisfy the full pinned `@slack/web-api` package surface using a tiered method family strategy.
@@ -119,11 +153,11 @@ Plans:
 **Plans:** 5/5 plans complete
 
 Plans:
-- [ ] 18-01-PLAN.md — rate-limiter expansion + files.ts plugin (filesUploadV2 chain) + chat.ts expansion (13 methods) + slack-webclient-base.test.ts + slack-chat.test.ts (SLCK-07, SLCK-08)
-- [ ] 18-02-PLAN.md — conversations.ts expansion (28 methods) + users.ts expansion (12 methods) + slack-conversations.test.ts + slack-users.test.ts (SLCK-08)
-- [ ] 18-03-PLAN.md — reactions.ts + pins.ts + views.ts plugins + index.ts registration + 3 test files (SLCK-08)
-- [ ] 18-04-PLAN.md — stubs.ts plugin (Tier 2 + misc families) + index.ts registration + slack-stubs-smoke.test.ts (SLCK-08)
-- [ ] 18-05-PLAN.md — Coverage ledger update: generate-report.ts LIVE_SYMBOLS + pnpm coverage:generate (SLCK-07, SLCK-08)
+- [x] 18-01-PLAN.md — rate-limiter expansion + files.ts plugin (filesUploadV2 chain) + chat.ts expansion (13 methods) + slack-webclient-base.test.ts + slack-chat.test.ts (SLCK-07, SLCK-08)
+- [x] 18-02-PLAN.md — conversations.ts expansion (28 methods) + users.ts expansion (12 methods) + slack-conversations.test.ts + slack-users.test.ts (SLCK-08)
+- [x] 18-03-PLAN.md — reactions.ts + pins.ts + views.ts plugins + index.ts registration + 3 test files (SLCK-08)
+- [x] 18-04-PLAN.md — stubs.ts plugin (Tier 2 + misc families) + index.ts registration + slack-stubs-smoke.test.ts (SLCK-08)
+- [x] 18-05-PLAN.md — Coverage ledger update: generate-report.ts LIVE_SYMBOLS + pnpm coverage:generate (SLCK-07, SLCK-08)
 
 ### Phase 19: Slack OAuth & Bolt HTTP Surface
 **Goal**: Make Slack OAuth and Bolt's HTTP-oriented framework surface work against the twin.
@@ -136,10 +170,10 @@ Plans:
 **Plans:** 4/4 plans complete
 
 Plans:
-- [ ] 19-01-PLAN.md — oauth.v2.access fix (enterprise: null) + InstallProvider flow tests (SLCK-09)
-- [ ] 19-02-PLAN.md — Bolt App listener API tests via processEvent() — 9 listener types (SLCK-10)
-- [ ] 19-03-PLAN.md — HTTPReceiver + ExpressReceiver tests — url_verification, HMAC, event delivery, custom routes (SLCK-11)
-- [ ] 19-04-PLAN.md — Coverage ledger update: @slack/oauth + @slack/bolt LIVE_SYMBOLS + pnpm coverage:generate (SLCK-09, SLCK-10, SLCK-11)
+- [x] 19-01-PLAN.md — oauth.v2.access fix (enterprise: null) + InstallProvider flow tests (SLCK-09)
+- [x] 19-02-PLAN.md — Bolt App listener API tests via processEvent() — 9 listener types (SLCK-10)
+- [x] 19-03-PLAN.md — HTTPReceiver + ExpressReceiver tests — url_verification, HMAC, event delivery, custom routes (SLCK-11)
+- [x] 19-04-PLAN.md — Coverage ledger update: @slack/oauth + @slack/bolt LIVE_SYMBOLS + pnpm coverage:generate (SLCK-09, SLCK-10, SLCK-11)
 
 ### Phase 20: Bolt Alternate Receivers & Drift Automation
 **Goal**: Close the remaining Bolt receiver surface and harden long-term SDK drift detection (basic drift detection established in Phase 14).
@@ -153,40 +187,125 @@ Plans:
 **Plans:** 3/3 plans complete
 
 Plans:
-- [ ] 20-01-PLAN.md — SocketModeReceiver harness: SlackStateManager wss methods + apps.connections.open stub + admin/set-wss-url + test file (SLCK-12)
-- [ ] 20-02-PLAN.md — AwsLambdaReceiver harness: pure in-process test — url_verification, HMAC rejection, event delivery (SLCK-12)
-- [x] 20-03-PLAN.md — Drift hardening: manifest staleness Gate 4 in check-drift.ts + Phase 20 LIVE_SYMBOLS + coverage ledger regeneration (INFRA-14) (completed 2026-03-10)
+- [x] 20-01-PLAN.md — SocketModeReceiver harness: SlackStateManager wss methods + apps.connections.open stub + admin/set-wss-url + test file (SLCK-12)
+- [x] 20-02-PLAN.md — AwsLambdaReceiver harness: pure in-process test — url_verification, HMAC rejection, event delivery (SLCK-12)
+- [x] 20-03-PLAN.md — Drift hardening: manifest staleness Gate 4 in check-drift.ts + Phase 20 LIVE_SYMBOLS + coverage ledger regeneration (INFRA-14)
+
+### Phase 21: Test Runner & Seeders
+**Goal**: Developer can run `pnpm test:sdk` and have all 177 existing tests pass, with seeders updated to protect against OAuth and scope-enforcement regressions before any behavioral changes land.
+**Depends on:** Phase 20
+**Requirements**: INFRA-19, INFRA-20
+**Success Criteria** (what must be TRUE):
+  1. `pnpm test:sdk` discovers and executes all SDK verification tests with no "no test files found" error and no ABI mismatch crash
+  2. All 177 existing SDK verification tests pass after the fix with no regressions
+  3. Shopify twin exposes `POST /admin/tokens` endpoint so seeders can inject access tokens without going through OAuth, protecting tests from OAuth tightening in Phase 23
+  4. `seedSlackBotToken()` uses a comprehensive default scope set covering all methods exercised across the SDK test suite, protecting tests from scope enforcement added in Phase 26
+**Plans:** TBD
+
+### Phase 22: Shopify Version Routing & Response Headers
+**Goal**: Shopify twin accepts any valid API version string in route paths and echoes conformance headers, making all subsequent Shopify work version-agnostic and removing the test-harness URL rewriting workaround.
+**Depends on:** Phase 21
+**Requirements**: SHOP-17, SHOP-22, SHOP-23
+**Success Criteria** (what must be TRUE):
+  1. `POST /admin/api/2025-01/graphql.json` and `POST /admin/api/2024-01/graphql.json` both return valid GraphQL responses (not 404); test helpers no longer rewrite URLs to a single hardcoded version
+  2. REST routes accept any `:version` segment; `GET /admin/api/2025-01/products.json` returns the same product list as `GET /admin/api/2024-01/products.json`
+  3. Every API response includes an `X-Shopify-API-Version` header that echoes the version string from the request URL path
+  4. Paginated REST list responses include a `Link` header with `rel="next"` and a `page_info` cursor parameter, matching real Shopify pagination format
+**Plans:** TBD
+
+### Phase 23: Shopify OAuth & Storefront
+**Goal**: Shopify twin implements a real OAuth authorize/callback flow and serves a separate Storefront API schema, matching what the official SDKs expect rather than bypassing both.
+**Depends on:** Phase 22
+**Requirements**: SHOP-18, SHOP-19
+**Success Criteria** (what must be TRUE):
+  1. `GET /admin/oauth/authorize` redirects to the callback URL with an HMAC-signed query string and sets a state-nonce cookie; the redirect and cookie pass `shopify-api`'s validation
+  2. `POST /admin/oauth/access_token` validates `client_id`, `client_secret`, and `code`; requests with an empty body or invalid credentials return an error response
+  3. Storefront GraphQL endpoint `POST /api/:version/graphql.json` accepts `X-Shopify-Storefront-Access-Token` for auth and rejects requests using an admin access token
+  4. `products(first: N)` query against the Storefront endpoint returns valid product data; admin-only mutations are not present in the Storefront schema
+**Plans:** TBD
+
+### Phase 24: Shopify REST Persistence, Billing State Machine & Rate Limiting
+**Goal**: Shopify REST resources persist state with real-Shopify-compatible shapes, billing implements a full PENDING → ACTIVE → CANCELLED state machine, and rate limiting uses correct bucket parameters.
+**Depends on:** Phase 22
+**Requirements**: SHOP-20, SHOP-21, SHOP-24
+**Success Criteria** (what must be TRUE):
+  1. `POST /admin/api/:version/products.json` creates a product with a numeric integer ID and `admin_graphql_api_id` field; a subsequent `GET /admin/api/:version/products/:id.json` returns that product
+  2. `GET /admin/api/:version/orders/:id.json` returns the specific order by ID (not a stub or first-order fallback)
+  3. `appSubscriptionCreate` mutation returns a subscription in PENDING state with a `confirmationUrl`; visiting the URL transitions it to ACTIVE; `currentAppInstallation` returns the active subscription data
+  4. `appSubscriptionCancel` validates that the subscription belongs to the requesting installation and transitions it to CANCELLED, returning an error on invalid ownership
+  5. GraphQL rate limiting uses bucket size 1000 and restore rate 50; `actualQueryCost` is computed from real query field traversal rather than echoing `requestedQueryCost`
+**Plans:** TBD
+
+### Phase 25: Slack Method Coverage, Event Signing & State Tables
+**Goal**: Slack twin covers all 275+ bound WebClient methods, delivers events with correct Slack signature headers, and persists membership, view, pin, and reaction state — the shared infrastructure on which Phase 26 scoping and enforcement depend.
+**Depends on:** Phase 21
+**Requirements**: SLCK-14, SLCK-16, SLCK-17
+**Success Criteria** (what must be TRUE):
+  1. Every bound WebClient method in the pinned `@slack/web-api` package returns a valid `{ok: true}` response against the twin, closing the 126-method gap including all `admin.*` (~95 methods), `workflows.*`, `canvases.*`, `openid.connect.*`, and `stars.*` families
+  2. Slack event delivery headers include `X-Slack-Signature` (format: `v0=` + HMAC-SHA256 hex of body using signing secret) and `X-Slack-Request-Timestamp`; `@slack/bolt` request verification passes without error
+  3. Interaction payloads route through a dedicated interactivity URL (not the event subscriptions endpoint); `response_url` is an absolute URL, not a relative path
+  4. `conversations.invite` and `conversations.kick` update real channel membership; `conversations.members` returns the actual member list; `conversations.open` returns a real DM channel ID
+  5. `views.open`/`update`/`push` maintain persistent view state with stable view IDs; `pins.add`/`remove`/`list` enforce deduplication (`already_pinned` error); `reactions.add`/`remove`/`list` enforce deduplication (`already_reacted` error)
+**Plans:** TBD
+
+### Phase 26: Slack Chat Scoping & Scope Enforcement
+**Goal**: Slack twin enforces channel and author ownership on message mutations and validates OAuth scope requirements per method, matching real Slack's access control behavior.
+**Depends on:** Phase 25
+**Requirements**: SLCK-15, SLCK-18, SLCK-19
+**Success Criteria** (what must be TRUE):
+  1. `chat.update` returns `{ok: false, error: "cant_update_message"}` when the message does not exist in the specified channel or when the calling bot token did not post the message
+  2. `chat.delete` returns `{ok: false, error: "cant_delete_message"}` under equivalent ownership violation conditions
+  3. Conformance tests exercise the actual `chat.update` and `chat.delete` methods against messages posted through the twin, not substitute `chat.postMessage` calls
+  4. Calling a method with a token that lacks the required scope returns `{ok: false, error: "missing_scope", needed: "<scope>", provided: "<scopes>"}`; OAuth token exchange validates `client_id`, `scope`, and `redirect_uri`
+  5. Successful method calls include `X-OAuth-Scopes` (token's granted scopes) and `X-Accepted-OAuth-Scopes` (method's required scopes) response headers
+**Plans:** TBD
+
+### Phase 27: Conformance Harness & Coverage Infrastructure
+**Goal**: Conformance harness performs real twin-vs-live structural comparison (not twin-vs-self), and coverage status is derived from test execution evidence rather than hand-authored metadata — establishing a trustworthy fidelity baseline going into v2.
+**Depends on:** Phase 24, Phase 26
+**Requirements**: INFRA-21, INFRA-22
+**Success Criteria** (what must be TRUE):
+  1. Conformance runner in live mode compares twin response against baseline with bidirectional field checking: twin response must contain all baseline fields AND baseline must contain all twin fields; array traversal covers all elements, not just the first
+  2. Primitive value comparison catches behavioral mismatches (not just structural ones) where both responses have the same shape but different values
+  3. Coverage status for each tracked symbol is derived from Vitest JSON reporter execution evidence (which test files exercised which endpoints), not the hand-authored `LIVE_SYMBOLS` map
+  4. CI gate validates that the 202+ live symbol count is satisfied by execution evidence; `pnpm drift:check` continues passing throughout the `LIVE_SYMBOLS` → evidence transition without a coverage gap
+**Plans:** TBD
 
 ## Progress
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 13. Upstream SDK Mirrors & Surface Inventory | 3/3 | Complete    | 2026-03-09 |
-| 14. Verification Harness Foundation & Legacy Gap Merge | 5/5 | Complete    | 2026-03-09 |
-| 15. Shopify Admin Client Compatibility | 3/3 | Complete    | 2026-03-09 |
-| 16. Shopify `shopify-api` Platform Surface | 4/4 | Complete    | 2026-03-09 |
-| 17. Shopify Client Surfaces & Strategic REST Stubs | 4/4 | Complete    | 2026-03-09 |
-| 18. Slack WebClient Full Surface | 5/5 | Complete    | 2026-03-10 |
-| 19. Slack OAuth & Bolt HTTP Surface | 4/4 | Complete    | 2026-03-10 |
-| 20. Bolt Alternate Receivers & Drift Automation | 3/3 | Complete    | 2026-03-10 |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 13. Upstream SDK Mirrors & Surface Inventory | v1.1 | 3/3 | Complete | 2026-03-09 |
+| 14. Verification Harness Foundation & Legacy Gap Merge | v1.1 | 5/5 | Complete | 2026-03-09 |
+| 15. Shopify Admin Client Compatibility | v1.1 | 3/3 | Complete | 2026-03-09 |
+| 16. Shopify `shopify-api` Platform Surface | v1.1 | 4/4 | Complete | 2026-03-09 |
+| 17. Shopify Client Surfaces & Strategic REST Stubs | v1.1 | 4/4 | Complete | 2026-03-09 |
+| 18. Slack WebClient Full Surface | v1.1 | 5/5 | Complete | 2026-03-10 |
+| 19. Slack OAuth & Bolt HTTP Surface | v1.1 | 4/4 | Complete | 2026-03-10 |
+| 20. Bolt Alternate Receivers & Drift Automation | v1.1 | 3/3 | Complete | 2026-03-10 |
+| 21. Test Runner & Seeders | v1.2 | 0/TBD | Not started | - |
+| 22. Shopify Version Routing & Response Headers | v1.2 | 0/TBD | Not started | - |
+| 23. Shopify OAuth & Storefront | v1.2 | 0/TBD | Not started | - |
+| 24. Shopify REST Persistence, Billing State Machine & Rate Limiting | v1.2 | 0/TBD | Not started | - |
+| 25. Slack Method Coverage, Event Signing & State Tables | v1.2 | 0/TBD | Not started | - |
+| 26. Slack Chat Scoping & Scope Enforcement | v1.2 | 0/TBD | Not started | - |
+| 27. Conformance Harness & Coverage Infrastructure | v1.2 | 0/TBD | Not started | - |
 
 ## Dependencies
 
 ```text
-Completed v1.0 baseline
+v1.1 Complete (Phases 13-20)
   ↓
-Phase 13 (Mirrors & Inventory)
-  ↓
-Phase 14 (Verification Harness)
-  ├──→ Phase 15 (Shopify Admin Client)
-  │      ↓
-  │    Phase 16 (Shopify Platform Surface)
-  │      ↓
-  │    Phase 17 (Shopify Client Surfaces & REST Stubs)
-  │
-  └──→ Phase 18 (Slack WebClient)
+Phase 21 (Test Runner & Seeders)
+  ├──→ Phase 22 (Shopify Version Routing & Response Headers)
+  │      ├──→ Phase 23 (Shopify OAuth & Storefront)
+  │      │      ↘
+  │      └──→ Phase 24 (Shopify REST, Billing & Rate Limiting)
+  │                  ↘
+  │                   Phase 27 (Conformance Harness & Coverage Infrastructure)
+  │                  ↗
+  └──→ Phase 25 (Slack Method Coverage, Event Signing & State Tables)
          ↓
-       Phase 19 (Slack OAuth & Bolt HTTP)
-         ↓
-       Phase 20 (Bolt Alternate Receivers & Drift Automation)
+       Phase 26 (Slack Chat Scoping & Scope Enforcement)
+              ↗ (also feeds Phase 27)
 ```
