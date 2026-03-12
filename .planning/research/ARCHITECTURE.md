@@ -1,905 +1,643 @@
-# Architecture Patterns
+# Architecture Research
 
-**Domain:** SDK conformance infrastructure for Shopify and Slack digital twins
-**Researched:** 2026-03-08
-**Confidence:** HIGH (verified against existing codebase, upstream SDK source, and official documentation)
+**Domain:** Behavioral fidelity fixes for Shopify and Slack digital twins (v1.2)
+**Researched:** 2026-03-11
+**Confidence:** HIGH (based on direct codebase inspection of all referenced files)
 
-## Recommended Architecture
+---
+
+## Standard Architecture
 
 ### System Overview
 
-```text
-+=========================================================================+
-|                     third_party/upstream/                                |
-|  Pinned fork submodules (shopify-app-js, node-slack-sdk, bolt-js)       |
-+============================+============================================+
-                             |
-                    inventory generator
-                             |
-              +--------------+--------------+
-              |                             |
-+-------------v-----------+  +--------------v-----------+
-| tools/sdk-surface/      |  | tools/sdk-surface/       |
-|   manifests/            |  |   generators/             |
-|   (checked-in JSON      |  |   (test matrix builders)  |
-|    per-package)         |  |                           |
-+-------------+-----------+  +--------------+------------+
-              |                             |
-              +----------+--+---------------+
-                         |
-         +===============v=================+
-         |   tests/sdk-verification/       |
-         |                                 |
-         |   shared/                       |
-         |     twin-lifecycle.ts           |
-         |     fixture-seeders.ts          |
-         |     callback-server.ts          |
-         |     socket-mode-broker.ts       |
-         |     lambda-harness.ts           |
-         |                                 |
-         |   shopify/                      |
-         |     admin-api-client.test.ts    |
-         |     shopify-api-auth.test.ts    |
-         |     shopify-api-billing.test.ts |
-         |     rest-resources.test.ts      |
-         |     ...                         |
-         |                                 |
-         |   slack/                        |
-         |     web-api-core.test.ts        |
-         |     web-api-methods.test.ts     |
-         |     oauth-provider.test.ts      |
-         |     bolt-listeners.test.ts      |
-         |     bolt-http-receiver.test.ts  |
-         |     bolt-socket-receiver.test.ts|
-         |     bolt-lambda-receiver.test.ts|
-         |     ...                         |
-         |                                 |
-         |   legacy/                       |
-         |     hmac-verification.test.ts   |
-         |     webhook-timing.test.ts      |
-         |     ui-structure.test.ts        |
-         +==+===========+==+==============+
-            |           |  |
-            v           v  v
-   +-----------+  +-----------+  +-----------+
-   | Shopify   |  | Slack     |  | Slack     |
-   | twin      |  | twin      |  | twin      |
-   | (Fastify  |  | (Fastify  |  | WS broker |
-   |  HTTP)    |  |  HTTP)    |  | (Socket   |
-   |           |  |           |  |  Mode)    |
-   +-----------+  +-----------+  +-----------+
+```
++------------------------------------------------------------------------+
+|                        Monorepo (pnpm workspaces)                       |
++------------------------------+-----------------------------------------+
+|     twins/shopify             |           twins/slack                   |
+|  +--------------------+       |  +------------------------------------+ |
+|  |  Fastify + plugins  |       |  |  Fastify + plugins                 | |
+|  |  +-------------+   |       |  |  +---------+ +-----------------+   | |
+|  |  | graphql.ts  |   |       |  |  | chat.ts | | conversations   |   | |
+|  |  | (Yoga, one  |   |       |  |  | views   | | .ts, stubs.ts   |   | |
+|  |  |  schema now)|   |       |  |  +---------+ +-----------------+   | |
+|  |  +-------------+   |       |  |  +------------------------------+   | |
+|  |  | rest.ts     |   |       |  |  |  events-api.ts               |   | |
+|  |  | oauth.ts    |   |       |  |  |  interactions.ts             |   | |
+|  |  | admin.ts    |   |       |  |  +------------------------------+   | |
+|  |  +-------------+   |       |  +------------------------------------+ |
+|  +--------+-----------+       +------------------+---------------------+
+|           | StateManager                          | SlackStateManager   |
++-----------+---------------------------------------+---------------------+
+|                         packages/                                        |
+|  +---------+  +---------+  +-------------+  +------------------------+  |
+|  | @dtu/   |  | @dtu/   |  | @dtu/       |  | @dtu/webhooks          |  |
+|  | state   |  | types   |  | conformance |  | (WebhookQueue +        |  |
+|  +---------+  +---------+  +-------------+  |  webhook-delivery.ts)  |  |
+|                                             +------------------------+  |
++--------------------------------------------------------------------------+
+|                     tests/sdk-verification                               |
+|  +------------------+  +------------------+  +------------------------+ |
+|  | setup/           |  | coverage/         |  | drift/                 | |
+|  | global-setup.ts  |  | generate-report   |  | check-drift.ts         | |
+|  | seeders.ts       |  | .ts (LIVE_SYMBOLS |  | (4 gates)              | |
+|  +------------------+  |  hand-authored)   |  +------------------------+ |
+|                         +------------------+                             |
++--------------------------------------------------------------------------+
 ```
 
-### Key Architectural Principle: Official SDKs Hit Real Transports
+### Component Responsibilities
 
-The v1.0 conformance system uses `app.inject()` (Fastify's in-process request injection) to bypass the network stack entirely. The v1.1 SDK conformance system must NOT do this for its primary verification path. The official SDK packages construct their own HTTP requests, manage their own WebSocket connections, and enforce their own retry/signing/auth behavior. The harness must boot the twins on real local ports and point the SDKs at those URLs.
+| Component | Responsibility | Current State (Pre-Fix) |
+|-----------|----------------|------------------------|
+| `twins/shopify/src/plugins/graphql.ts` | Shopify Admin GraphQL + Storefront endpoints | Single Yoga instance, single schema, Storefront URL rewritten to Admin endpoint |
+| `twins/shopify/src/plugins/oauth.ts` | OAuth token exchange | Only `POST /admin/oauth/access_token`; no authorize GET route |
+| `twins/shopify/src/plugins/rest.ts` | REST CRUD routes | Hardcoded version `2024-01`, GID-format IDs, most POST/PUT return static shapes |
+| `twins/shopify/src/schema/schema.graphql` | GraphQL schema | Single schema used for Admin AND Storefront |
+| `twins/shopify/src/schema/resolvers.ts` | GraphQL resolvers | Admin-specific mutations accessible via Storefront endpoint |
+| `packages/state/src/state-manager.ts` | Shopify SQLite state | Has `tokens`, `products`, `orders`, `customers`, `inventory_items`, `product_variants`, `fulfillments`; missing billing table |
+| `twins/slack/src/state/slack-state-manager.ts` | Slack SQLite state | Composition over StateManager; has messages/channels/users/tokens/reactions; missing membership/views/pins tables |
+| `twins/slack/src/plugins/web-api/chat.ts` | Chat API methods | `chat.update`/`delete` do not enforce channel+author scoping |
+| `twins/slack/src/plugins/web-api/stubs.ts` | Tier 2 method stubs | 126 missing method families not registered |
+| `twins/slack/src/services/event-dispatcher.ts` | Event webhook delivery | Uses Shopify HMAC headers (`X-Shopify-Hmac-Sha256`) via shared `@dtu/webhooks` |
+| `packages/webhooks/src/webhook-delivery.ts` | HTTP delivery with signing | Hardcodes `X-Shopify-Hmac-Sha256` and `X-Shopify-Topic` headers |
+| `packages/conformance/src/runner.ts` | Conformance test orchestration | `twin` mode compares twin to itself (always passes); `live` mode uses structural comparison |
+| `packages/conformance/src/comparator.ts` | Response comparison | `compareResponsesStructurally` only checks subset: twin keys must exist in baseline; extra baseline keys silently accepted |
+| `tests/sdk-verification/coverage/generate-report.ts` | Coverage tracking | `LIVE_SYMBOLS` is a 300-line hand-authored map; not derived from execution |
+| `tests/sdk-verification/vitest.config.ts` | SDK test runner | `globalSetup` exists; `better-sqlite3` ABI mismatch may cause failures |
 
-`app.inject()` remains useful for admin seeding and state reset operations, but the SDK-under-test must go through real network I/O.
+---
 
-## Component Boundaries
+## Fix Integration Map
 
-| Component | Responsibility | Communicates With | New vs Existing |
-|-----------|----------------|-------------------|-----------------|
-| `third_party/upstream/` | Freeze upstream SDK source at pinned commits | `tools/sdk-surface/` reads source | NEW directory |
-| `tools/sdk-surface/inventory/` | Walk package exports via TypeScript compiler API | Reads `third_party/upstream/` and `node_modules/` | NEW directory |
-| `tools/sdk-surface/manifests/` | Store checked-in JSON manifests per package | Read by `tests/sdk-verification/` and CI | NEW directory |
-| `tools/sdk-surface/generators/` | Produce test matrices from manifests | Writes to `tests/sdk-verification/` | NEW directory |
-| `tests/sdk-verification/shared/` | Twin lifecycle, fixture seeders, transport harnesses | Boots `twins/shopify/` and `twins/slack/` | NEW directory |
-| `tests/sdk-verification/shopify/` | Shopify SDK verification suites | Uses official SDK packages against Shopify twin | NEW directory |
-| `tests/sdk-verification/slack/` | Slack SDK verification suites | Uses official SDK packages against Slack twin | NEW directory |
-| `tests/sdk-verification/legacy/` | Merged Phase 12 HMAC/timing/UI checks | Reuses twins and shared helpers | NEW (ported from `.planning/carryover/`) |
-| `packages/conformance/` | Existing HTTP-level conformance framework | Existing twin adapters, suites, normalizers | EXISTING (unchanged) |
-| `twins/shopify/` | Shopify twin Fastify app | Receives SDK HTTP requests on local port | EXISTING (extended with new endpoints) |
-| `twins/slack/` | Slack twin Fastify app | Receives SDK HTTP requests on local port | EXISTING (extended with new endpoints + WS broker) |
+### Fix 1: Conformance harness — bidirectional structural comparison
 
-### What Changes in Existing Packages
+**Problem:** `compareResponsesStructurally` in `packages/conformance/src/comparator.ts` iterates only `Object.keys(twinObj)` and checks each against the baseline. Extra keys the real API returns but the twin omits are never detected. The comparison is subset-only, not bidirectional.
 
-| Package | Change | Rationale |
-|---------|--------|-----------|
-| `twins/shopify/` | Add REST resource routes, billing GraphQL mutations, Storefront proxy, session endpoints | `@shopify/shopify-api` expects these beyond current GraphQL/OAuth surface |
-| `twins/slack/` | Add ~250 additional Web API method stubs, add WebSocket endpoint for Socket Mode broker | `@slack/web-api` has 274 methods; Bolt expects Socket Mode transport |
-| `packages/types/` | May add shared SDK manifest types | Manifest format must be consistent across Shopify and Slack |
-| `packages/conformance/` | No changes needed | Existing conformance framework continues operating independently |
-| Root `vitest.config.ts` | Add `tests/sdk-verification` as a workspace project | New test suites need to be discoverable by the workspace runner |
-| Root `pnpm-workspace.yaml` | No change needed | `tests/sdk-verification` is not a publishable package; it uses workspace deps directly |
+**Root cause location:** `comparator.ts` lines 151-167 — the `twinType === 'object'` branch iterates twin keys and checks for presence in baseline, but never checks the reverse.
 
-## Directory Layout
+| File | Change Type | Change |
+|------|-------------|--------|
+| `packages/conformance/src/comparator.ts` | MODIFY | In `compareStructure()`, after iterating `Object.keys(twinObj)`, add a second loop over `Object.keys(baselineObj)` checking for keys absent in twinObj and reporting them as `deleted` differences. Add a `strict?: boolean` parameter (default `false`) to the function signature so existing twin-only suites continue passing. |
+| `packages/conformance/src/runner.ts` | MODIFY | Pass `strict: true` when calling `compareResponsesStructurally` in `live` mode. Alternatively surface as a suite-level option. |
+| `packages/conformance/src/types.ts` | MODIFY | Add `strict?: boolean` to function signatures or a `ComparisonOptions` type if one is introduced. |
 
-### New Directories
+**New files:** None.
 
-```text
-sandpiper-dtu/
-  third_party/
-    upstream/
-      shopify-app-js/          # Git submodule -> repo-owned fork
-      node-slack-sdk/          # Git submodule -> repo-owned fork
-      bolt-js/                 # Git submodule -> repo-owned fork
-    VERSIONS.json              # Pinned package name -> version -> commit SHA
+---
 
-  tools/
-    sdk-surface/
-      inventory/
-        walk-exports.ts        # TypeScript compiler API export walker
-        package-reader.ts      # Reads package.json exports field
-        run-inventory.ts       # CLI entrypoint: generate manifests
-      generators/
-        test-matrix.ts         # Produces test case skeletons from manifests
-      manifests/
-        shopify-admin-api-client@1.1.1.json
-        shopify-shopify-api@12.3.0.json
-        slack-web-api@7.14.1.json
-        slack-oauth@3.0.4.json
-        slack-bolt@4.6.0.json
+### Fix 2: Coverage tracking — execution-evidence-based
 
-  tests/
-    sdk-verification/
-      vitest.config.ts         # Workspace project config
-      package.json             # devDependencies: official SDK packages
-      shared/
-        twin-lifecycle.ts      # Boot/teardown/reset helpers
-        fixture-seeders.ts     # Seed shops, channels, users, tokens
-        callback-server.ts     # Ephemeral HTTP server for OAuth callbacks
-        socket-mode-broker.ts  # WebSocket broker for Socket Mode
-        lambda-harness.ts      # AWS Lambda event/context simulation
-        signing.ts             # HMAC/Slack signing secret helpers
-      shopify/
-        admin-api-client/
-          graphql.test.ts
-          rest.test.ts
-        shopify-api/
-          auth.test.ts
-          session.test.ts
-          webhooks.test.ts
-          billing.test.ts
-          clients.test.ts
-          rest-resources.test.ts
-      slack/
-        web-api/
-          core.test.ts         # apiCall, paginate, retry, rate-limit
-          methods.test.ts      # Generated method family coverage
-          files.test.ts        # filesUploadV2, ChatStreamer
-        oauth/
-          install-provider.test.ts
-        bolt/
-          listeners.test.ts    # event, message, action, command, etc.
-          http-receiver.test.ts
-          express-receiver.test.ts
-          socket-mode-receiver.test.ts
-          lambda-receiver.test.ts
-      legacy/
-        hmac-verification.test.ts
-        webhook-timing.test.ts
-        ui-structure.test.ts
+**Problem:** `LIVE_SYMBOLS` in `generate-report.ts` is manually maintained. New tests silently miss coverage if a developer forgets to update the map. The map also contains stale entries that point to tests that may have moved or been renamed.
+
+| File | Change Type | Change |
+|------|-------------|--------|
+| `tests/sdk-verification/coverage/generate-report.ts` | MODIFY | Replace the `LIVE_SYMBOLS` map with logic that reads a Vitest JSON reporter output file to derive live symbols from actual test execution results. Symbol attribution uses a naming convention: test description contains the symbol path, or test files are organized by symbol family and contribute known symbols. |
+| `tests/sdk-verification/vitest.config.ts` | MODIFY | Add `reporters: ['json']` (or `['verbose', 'json']`) so a machine-readable `vitest-results.json` is produced after test runs. |
+| `tests/sdk-verification/coverage/derive-symbols.ts` | NEW FILE | Helper that reads `vitest-results.json`, extracts test names and file paths, and produces a `Record<string, string>` (symbol key → test file) without requiring manual maintenance. |
+
+**Build dependency:** Fix 13 (SDK test entrypoint) must be working before this automation is valuable.
+
+---
+
+### Fix 3: Shopify OAuth — add authorize GET route and credential validation
+
+**Problem:** `twins/shopify/src/plugins/oauth.ts` only handles `POST /admin/oauth/access_token`. The real Shopify OAuth flow starts with `GET /admin/oauth/authorize` which validates query params and issues a redirect with a code.
+
+| File | Change Type | Change |
+|------|-------------|--------|
+| `twins/shopify/src/plugins/oauth.ts` | MODIFY | Add `GET /admin/oauth/authorize` route: validate `client_id`, `scope`, `redirect_uri`, `state` query params; redirect to `redirect_uri?code=<generated-uuid>&state=<echo-state>`. Modify `POST /admin/oauth/access_token` to validate `client_id` and `client_secret` are non-empty; return `{ error: 'invalid_client' }` if missing. Store the issued code temporarily so the token exchange can verify it. |
+| `twins/shopify/src/plugins/admin.ts` | MODIFY | Optionally add `POST /admin/set-oauth-app` to seed expected `client_id`/`client_secret` pairs for tests that want strict credential validation. |
+| `packages/state/src/state-manager.ts` | MODIFY | Add `oauth_codes` table: `(code TEXT PRIMARY KEY, client_id TEXT, redirect_uri TEXT, created_at INTEGER)` with `createOAuthCode(code, clientId, redirectUri)` and `consumeOAuthCode(code)` methods. This enables the token exchange to verify the code was actually issued. |
+
+---
+
+### Fix 4: Shopify Storefront — separate schema
+
+**Problem:** `graphql.ts` registers a single Yoga instance using the Admin schema (`schema.graphql`) and serves it at both `/admin/api/2024-01/graphql.json` and `/api/2024-01/graphql.json`. The Storefront endpoint should only expose product/collection queries, not admin mutations like `productCreate`.
+
+**Recommended approach:** Two independent Yoga instances with two separate SDL files. No schema stitching — the schemas share no mutation surface.
+
+| File | Change Type | Change |
+|------|-------------|--------|
+| `twins/shopify/src/plugins/graphql.ts` | MODIFY | Create a second `createYoga()` instance (`storefrontYoga`) using a Storefront-specific schema. Register it at `/api/:version/graphql.json`. Remove the URL-rewriting proxy workaround for the Storefront route. The Storefront Yoga instance uses `Shopify-Storefront-Private-Token` for auth (existing token validation in `validateAccessToken` already handles this). |
+| `twins/shopify/src/schema/storefront.graphql` | NEW FILE | Storefront-only SDL: `products`, `product`, `collections`, `collection` queries; `Cart` type; no mutations; no `productCreate`, `orderCreate`, etc. |
+| `twins/shopify/src/schema/storefront-resolvers.ts` | NEW FILE | Read-only resolvers delegating to existing `stateManager.listProducts()`, `stateManager.getProductByGid()`. |
+| `twins/shopify/src/schema/schema.graphql` | NO CHANGE | Stays as Admin-only schema. |
+| `twins/shopify/src/schema/resolvers.ts` | NO CHANGE | Admin resolvers unchanged. |
+
+---
+
+### Fix 5: Shopify API versioning — accept multiple versions
+
+**Problem:** All routes in `rest.ts` and the GraphQL endpoint in `graphql.ts` are hardcoded to `/admin/api/2024-01/`. The `@shopify/shopify-api` SDK sends requests with its configured version (e.g., `2024-10`, `2025-01`). The current test harness rewrites URLs to `2024-01` as a workaround; the twin should accept them natively.
+
+| File | Change Type | Change |
+|------|-------------|--------|
+| `twins/shopify/src/plugins/rest.ts` | MODIFY | Replace all `/admin/api/2024-01/` prefix route registrations with `/admin/api/:version/` parameterized routes. The `:version` param is accessible but ignored — the twin handles all versions identically. No per-version business logic needed. |
+| `twins/shopify/src/plugins/graphql.ts` | MODIFY | Register the Admin GraphQL handler at `/admin/api/:version/graphql.json` and Storefront handler at `/api/:version/graphql.json`. The Fastify route handler rewrites the URL to the Yoga `graphqlEndpoint` before calling `yoga.fetch()`. The Yoga `graphqlEndpoint` string does not need to change — only the Fastify route path changes. |
+
+**Implementation note:** Fastify parameterized routes (`/:version/`) match without conflicting with fixed path segments. Existing tests that call `2024-01` continue to work unchanged.
+
+---
+
+### Fix 6: Shopify REST — persistent CRUD with correct response shapes
+
+**Problem:** `rest.ts` POST and PUT handlers return hardcoded static responses (`{ product: { id: 'gid://shopify/Product/1', title: 'New Product' } }`) without persisting state. Real Shopify REST returns numeric `id` fields alongside `admin_graphql_api_id` (GID format).
+
+| File | Change Type | Change |
+|------|-------------|--------|
+| `twins/shopify/src/plugins/rest.ts` | MODIFY | `POST /products.json`: call `stateManager.createProduct(body.product)`, return `{ product: { id: <integer-autoincrement>, admin_graphql_api_id: <gid>, title, vendor, ... } }` with status 201. `PUT /products/:id.json`: call `stateManager.updateProduct()`. `DELETE /products/:id.json`: call `stateManager.deleteProduct()`. Same CRUD pattern for orders and customers. |
+| `packages/state/src/state-manager.ts` | MODIFY | Add `deleteProduct(gid: string)` method. Ensure `createProduct()`, `listProducts()`, `getProductByGid()` responses include the SQLite `id` (INTEGER PRIMARY KEY autoincrement) alongside the existing `gid`. The `products` table already has `id INTEGER PRIMARY KEY AUTOINCREMENT` — just expose it in returned row objects. |
+
+**Key shape:** Real Shopify REST returns `{ id: 1234567890, admin_graphql_api_id: "gid://shopify/Product/1234567890", title: "..." }`. The numeric `id` is the SQLite `id` (autoincrement integer); the GID encodes the same number via the existing `createGID()` utility.
+
+---
+
+### Fix 7: Shopify billing — install state machine
+
+**Problem:** Billing calls are accepted but do not mutate persistent state. The v1.2 requirement asks for state transitions: `appSubscriptionCreate` should persist a subscription with status `PENDING`, and an activation endpoint should transition it to `ACTIVE`.
+
+| File | Change Type | Change |
+|------|-------------|--------|
+| `packages/state/src/state-manager.ts` | MODIFY | Add `billing_subscriptions` table: `(id INTEGER PRIMARY KEY, shop_domain TEXT, charge_type TEXT, name TEXT, price TEXT, status TEXT, test BOOLEAN, created_at INTEGER)`. Add `createBillingSubscription()`, `getBillingSubscription(id)`, `activateBillingSubscription(id)`, `listBillingSubscriptions(shopDomain)` methods. |
+| `twins/shopify/src/schema/resolvers.ts` | MODIFY | `appSubscriptionCreate` mutation: call `stateManager.createBillingSubscription()` with status `PENDING`, return `confirmationUrl` as `<twinBaseUrl>/admin/billing/confirm/<id>`. |
+| `twins/shopify/src/schema/schema.graphql` | MODIFY | Ensure `AppSubscriptionStatus` enum exists with `PENDING`, `ACTIVE`, `DECLINED`, `EXPIRED` values. Ensure `appSubscriptionCreate` payload includes `confirmationUrl`. |
+| `twins/shopify/src/plugins/rest.ts` | MODIFY | Add REST billing routes: `GET /admin/api/:version/recurring_application_charges.json`, `POST /admin/api/:version/recurring_application_charges.json`, `GET /admin/api/:version/recurring_application_charges/:id/activate.json` — all delegating to the billing state machine. |
+| `twins/shopify/src/plugins/admin.ts` | MODIFY | Add `GET /admin/billing/confirm/:id` route that activates the subscription and redirects to the test callback URL. |
+
+---
+
+### Fix 8: Slack 126 missing methods — new plugin files per family
+
+**Problem:** The twin covers ~149 of ~275 bound `@slack/web-api` `WebClient` methods. Families missing include `admin.*`, `workflows.*`, `canvases.*`, `apps.*`, `oauth.v2.exchange`, and others.
+
+**Recommended approach:** One plugin file per method family, mirroring the existing per-family convention (`chat.ts`, `conversations.ts`, `reactions.ts`). The existing `stub()` helper pattern in `stubs.ts` handles auth + `{ ok: true }` in two lines per route.
+
+| File | Change Type | Change |
+|------|-------------|--------|
+| `twins/slack/src/plugins/web-api/admin.ts` | NEW FILE | Admin family stubs: `admin.apps.*`, `admin.channels.*`, `admin.conversations.*`, `admin.emoji.*`, `admin.teams.*`, `admin.usergroups.*`, `admin.users.*`, `admin.barriers.*` (~60 methods). |
+| `twins/slack/src/plugins/web-api/workflows.ts` | NEW FILE | `workflows.triggers.*`, `workflows.steps.listForApp` stubs. |
+| `twins/slack/src/plugins/web-api/canvases.ts` | NEW FILE | `canvases.create`, `canvases.delete`, `canvases.edit`, `canvases.sections.lookup` stubs. |
+| `twins/slack/src/plugins/web-api/apps.ts` | NEW FILE | `apps.event.authorizations.list`, `apps.manifest.*`, `apps.uninstall`, `apps.permissions.*` stubs. |
+| `twins/slack/src/plugins/web-api/slack-oauth-api.ts` | NEW FILE | `oauth.v2.exchange` stub (renamed to avoid collision with the OAuth install plugin at `twins/slack/src/plugins/oauth.ts`). |
+| `twins/slack/src/index.ts` | MODIFY | Import and register all new plugin files in `buildApp()` using `await fastify.register(...)`. |
+
+**Anti-pattern to avoid:** Expanding `stubs.ts` into a 500+ line file. Each family gets its own file.
+
+---
+
+### Fix 9: Slack chat.update/delete — channel+author scoping
+
+**Problem:** `chat.update` and `chat.delete` in `chat.ts` do not enforce that the calling token's user owns the message. Real Slack returns `cant_update_message` if a non-author attempts to update; `cant_delete_message` for delete. Bot tokens (`xoxb-`) can update/delete any message they own.
+
+| File | Change Type | Change |
+|------|-------------|--------|
+| `twins/slack/src/plugins/web-api/chat.ts` | MODIFY | In `chat.update` handler: after fetching `message = slackStateManager.getMessage(ts)`, compare `message.user_id` against `tokenRecord.user_id`. If `tokenRecord.token_type !== 'bot'` and `message.user_id !== tokenRecord.user_id`, return `{ ok: false, error: 'cant_update_message' }`. Apply the same pattern in `chat.delete`, returning `{ ok: false, error: 'cant_delete_message' }`. |
+| `twins/slack/src/state/slack-state-manager.ts` | NO CHANGE | `getMessage(ts)` already returns `user_id`; `getToken(token)` already returns `user_id` and `token_type`. Schema change not needed. |
+
+---
+
+### Fix 10: Slack events — Slack signing-secret headers
+
+**Problem:** `packages/webhooks/src/webhook-delivery.ts` hardcodes `X-Shopify-Hmac-Sha256` and `X-Shopify-Topic` headers for all webhook deliveries. Slack Events API requires `X-Slack-Signature: v0=<hex>` and `X-Slack-Request-Timestamp` using a different HMAC format (`v0:{ts}:{body}`, hex-encoded, not base64).
+
+**Slack signing algorithm:** `HMAC-SHA256(signingSecret, "v0:{timestamp}:{body}")` → hex → prefix `"v0="`.
+
+| File | Change Type | Change |
+|------|-------------|--------|
+| `packages/webhooks/src/types.ts` | MODIFY | Add `signingMode?: 'shopify' \| 'slack'` to `WebhookDelivery` interface. |
+| `packages/webhooks/src/webhook-delivery.ts` | MODIFY | Refactor header generation: when `delivery.signingMode === 'slack'`, generate `X-Slack-Request-Timestamp` (current Unix epoch as string) and `X-Slack-Signature: v0=<hex>` using the Slack signing algorithm. When `delivery.signingMode === 'shopify'` or undefined, current behavior unchanged (backward compatible). |
+| `twins/slack/src/services/event-dispatcher.ts` | MODIFY | Pass `signingMode: 'slack'` when constructing deliveries for `webhookQueue.enqueue()`. Also: inject `response_url` as an absolute URL in `block_actions` event payloads (requires dispatcher to know the twin's own base URL — pass via constructor option or `process.env.SLACK_TWIN_BASE_URL`). |
+| `twins/slack/src/plugins/interactions.ts` | MODIFY | Add `POST /interactions/response-url` route as the target for `response_url` callbacks from Block Kit actions. |
+
+---
+
+### Fix 11: Slack stateful operations — membership, view lifecycle, pin persistence, reaction deduplication
+
+**Problem:** `SlackStateManager` lacks tables for channel membership (join/leave/invite/kick/members), view lifecycle (open/push/update/publish/close), and pin persistence. Reaction deduplication is also missing (adding the same emoji twice by the same user should fail with `already_reacted`).
+
+| File | Change Type | Change |
+|------|-------------|--------|
+| `twins/slack/src/state/slack-state-manager.ts` | MODIFY | Add to `runSlackMigrations()`: `slack_channel_members (channel_id TEXT, user_id TEXT, joined_at INTEGER, PRIMARY KEY (channel_id, user_id))`, `slack_views (id TEXT PRIMARY KEY, trigger_id TEXT, type TEXT, user_id TEXT, app_id TEXT, hash TEXT, view_json TEXT, created_at INTEGER)`, `slack_pins (id INTEGER PRIMARY KEY, channel_id TEXT, message_ts TEXT, pinned_by TEXT, pinned_to TEXT, created_at INTEGER)`. Prepare statements and add CRUD methods: `addMember`, `removeMember`, `isMember`, `listMembers`, `createView`, `getView`, `updateView`, `deleteView`, `addPin`, `removePin`, `listPins`. Modify `addReaction()` to check for existing reaction and return error signal if duplicate. |
+| `twins/slack/src/plugins/web-api/conversations.ts` | MODIFY | `conversations.join`: call `slackStateManager.addMember(channel, tokenRecord.user_id)`. `conversations.leave`: call `removeMember`. `conversations.members`: call `listMembers`, return paginated list. `conversations.invite`: call `addMember` for each user. `conversations.kick`: call `removeMember`. |
+| `twins/slack/src/plugins/web-api/views.ts` | MODIFY | `views.open`: call `slackStateManager.createView(...)`, return `{ ok: true, view: { id, hash, type, ... } }`. `views.push`: append to view stack. `views.update`: call `updateView(id, hash)` — reject with `hash_conflict` if hash doesn't match. `views.publish`: upsert app home view (no `trigger_id` needed). |
+| `twins/slack/src/plugins/web-api/pins.ts` | MODIFY | `pins.add`: call `slackStateManager.addPin(channel, message_ts, userId)`. `pins.list`: call `listPins(channel)`. `pins.remove`: call `removePin`. |
+| `twins/slack/src/plugins/web-api/reactions.ts` | MODIFY | `reactions.add`: call `addReaction()` — if it returns a duplicate signal, return `{ ok: false, error: 'already_reacted' }`. `reactions.get`: query `slack_reactions` by `message_ts` and aggregate. `reactions.remove`: delete from `slack_reactions`. |
+
+---
+
+### Fix 12: Slack scope enforcement
+
+**Problem:** The twin validates token existence but not OAuth scopes. Real Slack returns `{ ok: false, error: 'missing_scope', needed: 'X', provided: 'Y' }` when a token lacks the required scope. The `slack_tokens.scope` column exists and is populated, but plugins ignore it.
+
+| File | Change Type | Change |
+|------|-------------|--------|
+| `twins/slack/src/services/scope-requirements.ts` | NEW FILE | Static `Record<string, string>` map: method name → required OAuth scope. Example: `'chat.postMessage': 'chat:write'`, `'conversations.list': 'channels:read'`, `'views.open': 'views:write'`. Covers all 275+ methods; methods with no scope requirement map to `''`. |
+| `twins/slack/src/services/token-validator.ts` | MODIFY | Add `checkScope(token: string, requiredScope: string, stateManager: SlackStateManager): ScopeCheckResult` where `ScopeCheckResult = { ok: boolean; needed?: string; provided?: string }`. Checks `tokenRecord.scope.split(',')` includes `requiredScope`. |
+| `twins/slack/src/plugins/web-api/chat.ts` | MODIFY | In `checkAuthRateError()`, add `checkScope(token, SCOPE_REQUIREMENTS['chat.postMessage'], ...)` call. Return `{ ok: false, error: 'missing_scope', needed, provided }` on failure. Apply to all methods in the chat plugin. |
+| `twins/slack/src/plugins/web-api/conversations.ts` | MODIFY | Same scope check pattern for `channels:read`, `channels:write`, `channels:manage`, `channels:join` as appropriate per method. |
+| `twins/slack/src/plugins/web-api/views.ts` | MODIFY | Add `views:write` scope check. |
+
+---
+
+### Fix 13: SDK test entrypoint — vitest config and better-sqlite3 ABI
+
+**Problem:** `pnpm test:sdk` fails intermittently due to two causes:
+1. `better-sqlite3` is a native Node.js addon compiled against a specific ABI. When Vitest's worker process uses a different Node.js binary than the build environment, the module load fails with `Error: The module was compiled against a different Node.js version`.
+2. `vitest.config.ts` configuration issues (pool, global setup path resolution) may cause startup failures.
+
+| File | Change Type | Change |
+|------|-------------|--------|
+| `tests/sdk-verification/vitest.config.ts` | MODIFY | Confirm `globalSetup` uses `resolve(__dirname, 'setup/global-setup.ts')` (already does). Confirm `pool: 'forks'` with `singleFork: true` (already set). Add `isolate: false` if module singleton sharing is needed across test files. |
+| Root `package.json` | MODIFY | Add a `postinstall` script: `"postinstall": "pnpm rebuild better-sqlite3"` to force native recompilation against the active Node.js ABI after every `pnpm install`. |
+| `.npmrc` | MODIFY (or create) | Add `rebuild-if-needed=true` if supported by pnpm version, or document the `pnpm rebuild better-sqlite3` step in CI. |
+
+**Diagnosis first:** Run `node -e "require('better-sqlite3')"` in the project root vs. within a `vitest` child process. If the error only appears in tests, ABI mismatch from the forks pool is the cause. If it appears immediately, the initial compile is stale.
+
+---
+
+## Recommended Project Structure (Post-Fix)
+
+```
+twins/shopify/src/
++-- plugins/
+|   +-- graphql.ts           # MODIFIED: two Yoga instances (Admin + Storefront)
+|   +-- oauth.ts             # MODIFIED: GET /admin/oauth/authorize
+|   +-- rest.ts              # MODIFIED: :version param, numeric IDs, real CRUD
+|   +-- admin.ts             # MODIFIED: billing confirm route
+|   +-- errors.ts            # (unchanged)
+|   +-- health.ts            # (unchanged)
+|   +-- ui.ts                # (unchanged)
++-- schema/
+|   +-- schema.graphql       # (unchanged - Admin only)
+|   +-- resolvers.ts         # MODIFIED: billing state machine
+|   +-- storefront.graphql   # NEW: Storefront-only schema
+|   +-- storefront-resolvers.ts # NEW: Storefront read-only resolvers
+
+twins/slack/src/
++-- plugins/web-api/
+|   +-- chat.ts              # MODIFIED: channel+author scoping
+|   +-- conversations.ts     # MODIFIED: membership operations
+|   +-- reactions.ts         # MODIFIED: deduplication
+|   +-- pins.ts              # MODIFIED: persistent storage
+|   +-- views.ts             # MODIFIED: view lifecycle
+|   +-- stubs.ts             # (unchanged)
+|   +-- admin.ts             # NEW: admin.* method stubs
+|   +-- workflows.ts         # NEW: workflows.* stubs
+|   +-- canvases.ts          # NEW: canvases.* stubs
+|   +-- apps.ts              # NEW: apps.* stubs
+|   +-- slack-oauth-api.ts   # NEW: oauth.v2.exchange stub
++-- services/
+|   +-- event-dispatcher.ts  # MODIFIED: Slack signing mode, response_url
+|   +-- scope-requirements.ts # NEW: method -> scope map
+|   +-- token-validator.ts   # MODIFIED: add checkScope()
++-- state/
+|   +-- slack-state-manager.ts # MODIFIED: membership/views/pins tables
++-- index.ts                 # MODIFIED: register new plugins
+
+packages/conformance/src/
++-- comparator.ts            # MODIFIED: bidirectional structural check
++-- runner.ts                # MODIFIED: strict mode in live comparison
++-- types.ts                 # MODIFIED: strict option
+
+packages/webhooks/src/
++-- webhook-delivery.ts      # MODIFIED: Slack signing mode support
++-- types.ts                 # MODIFIED: signingMode field
+
+packages/state/src/
++-- state-manager.ts         # MODIFIED: billing table, deleteProduct, oauth_codes
+
+tests/sdk-verification/
++-- coverage/
+|   +-- generate-report.ts   # MODIFIED: execution-evidence derivation
+|   +-- derive-symbols.ts    # NEW: reads vitest-results.json
++-- vitest.config.ts         # MODIFIED: JSON reporter
 ```
 
-### Layout Rationale
+---
 
-1. **`third_party/upstream/` at repo root**: Submodules are not workspace packages. They live outside `packages/` and `twins/` because they are not first-party code and should not participate in pnpm workspace resolution. A `VERSIONS.json` file at `third_party/` records the pinned package-name-to-version-to-SHA mapping so drift detection can compare it against `pnpm-lock.yaml`.
+## Architectural Patterns
 
-2. **`tools/sdk-surface/` at repo root**: Inventory and generation tooling is a build-time concern, not a runtime package. It reads upstream source and installed packages, writes manifests, and optionally generates test skeletons. It does not need to be a pnpm workspace member.
+### Pattern 1: Two-Yoga Split for Shopify Storefront
 
-3. **`tests/sdk-verification/` as a Vitest workspace project**: This directory has its own `vitest.config.ts` and `package.json` declaring the official SDK packages as `devDependencies`. It is a Vitest workspace project (listed in root `vitest.config.ts` `projects` array) but NOT a pnpm workspace package. This avoids polluting the twin or shared package dependency trees with the upstream SDK dependencies.
+**What:** Create a second `createYoga()` instance in `graphql.ts` with a Storefront-specific SDL and resolver set. Register it at `/api/:version/graphql.json`.
 
-4. **`tests/sdk-verification/shared/` contains all harness infrastructure**: Twin lifecycle management, fixture seeding, callback servers, and transport harnesses are shared across Shopify and Slack suites. This avoids duplication and ensures consistent boot/teardown patterns.
+**When to use:** When two API surfaces share the same backing data but have different schemas (read-only vs read-write, different field sets).
 
-5. **Legacy verification stays in the same workspace**: The old Phase 12 HMAC, async timing, and UI checks move into `tests/sdk-verification/legacy/` so they run under the same `pnpm test` invocation and share the same twin lifecycle helpers.
-
-## Patterns to Follow
-
-### Pattern 1: Twin Lifecycle Manager
-
-**What:** A shared helper that boots twin Fastify apps on ephemeral ports, provides base URLs, seeds initial state, and tears down cleanly.
-
-**When:** Every SDK verification test file.
-
-**Why:** The official SDKs construct their own HTTP clients. They need real `http://127.0.0.1:{port}` URLs, not `app.inject()`. Centralizing lifecycle avoids port conflicts and ensures consistent state reset.
+**Trade-offs:** Two Yoga instances means doubled schema object memory overhead (minimal). The alternative — schema stitching via `@graphql-tools/stitch` — adds a build-time dependency and runtime complexity for a simple isolation problem.
 
 **Example:**
-
 ```typescript
-// tests/sdk-verification/shared/twin-lifecycle.ts
-
-import type { FastifyInstance } from 'fastify';
-
-export interface TwinInstance {
-  app: FastifyInstance;
-  baseUrl: string;
-  port: number;
-}
-
-export async function bootTwin(
-  twinModule: string,  // e.g., '../../twins/shopify/src/index.js'
-  opts?: { dbPath?: string; env?: Record<string, string> }
-): Promise<TwinInstance> {
-  // Set environment before import
-  process.env.DB_PATH = opts?.dbPath ?? ':memory:';
-  process.env.WEBHOOK_SYNC_MODE = 'true';
-  process.env.WEBHOOK_TIME_SCALE = '0.001';
-  Object.assign(process.env, opts?.env ?? {});
-
-  const { buildApp } = await import(twinModule);
-  const app = await buildApp({ logger: false });
-  await app.listen({ port: 0, host: '127.0.0.1' });
-  const addr = app.addresses()[0];
-  const port = addr.port;
-  const baseUrl = `http://127.0.0.1:${port}`;
-
-  return { app, baseUrl, port };
-}
-
-export async function resetTwin(twin: TwinInstance): Promise<void> {
-  await fetch(`${twin.baseUrl}/admin/reset`, { method: 'POST' });
-}
-
-export async function teardownTwin(twin: TwinInstance): Promise<void> {
-  await twin.app.close();
-}
-```
-
-**Usage in test:**
-
-```typescript
-// tests/sdk-verification/shopify/admin-api-client/graphql.test.ts
-
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
-import { bootTwin, resetTwin, teardownTwin, TwinInstance } from '../../shared/twin-lifecycle.js';
-import { createAdminApiClient } from '@shopify/admin-api-client';
-
-let twin: TwinInstance;
-let client: ReturnType<typeof createAdminApiClient>;
-
-beforeAll(async () => {
-  twin = await bootTwin('../../../../twins/shopify/src/index.js');
-
-  // Shopify SDK constructs URL from storeDomain.
-  // The twin must be reachable at this domain. Two approaches:
-  // 1. Use scheme:'http' + storeDomain pointing to 127.0.0.1:{port}
-  // 2. Use customFetchApi to rewrite the URL
-  // Approach 1 requires DNS or /etc/hosts; approach 2 is simpler for tests.
-  client = createAdminApiClient({
-    storeDomain: `127.0.0.1:${twin.port}`,
-    apiVersion: '2024-01',
-    accessToken: 'will-be-set-after-oauth',
-    scheme: 'http',  // REST client only; GraphQL uses customFetchApi
-    customFetchApi: async (url, init) => {
-      // Rewrite https://{storeDomain} -> http://127.0.0.1:{port}
-      const rewritten = String(url).replace(
-        /^https:\/\/[^/]+/,
-        twin.baseUrl
-      );
-      return fetch(rewritten, init);
-    },
-  });
-}, 30_000);
-
-afterAll(async () => { await teardownTwin(twin); });
-beforeEach(async () => { await resetTwin(twin); });
-```
-
-### Pattern 2: Shopify SDK URL Redirection via customFetchApi
-
-**What:** The `@shopify/admin-api-client` constructs URLs from `storeDomain` (e.g., `https://{store}.myshopify.com/admin/api/{version}/graphql.json`). There is no `baseUrl` override for the GraphQL client. The REST client has a `scheme` option (`http|https`), but both clients derive the host from `storeDomain`.
-
-**When:** Every Shopify SDK verification test.
-
-**Why:** The twin runs on `http://127.0.0.1:{port}`. The SDK expects `https://{domain}`. Without redirection, SDK requests go to a non-existent HTTPS endpoint.
-
-**Concrete mechanism:**
-
-```typescript
-// Option A: customFetchApi URL rewriting (RECOMMENDED)
-// Works for both GraphQL and REST clients uniformly.
-const client = createAdminApiClient({
-  storeDomain: 'test-store.myshopify.com',
-  apiVersion: '2024-01',
-  accessToken: token,
-  customFetchApi: async (url, init) => {
-    const rewritten = String(url).replace(
-      /^https:\/\/test-store\.myshopify\.com/,
-      `http://127.0.0.1:${twinPort}`
-    );
-    return fetch(rewritten, init);
+// In graphql.ts
+const storefrontSchema = makeExecutableSchema({
+  typeDefs: readFileSync(storefrontSchemaPath, 'utf-8'),
+  resolvers: storefrontResolvers,
+});
+const storefrontYoga = createYoga({
+  schema: storefrontSchema,
+  graphqlEndpoint: '/api/STOREFRONT/graphql.json',
+  maskedErrors: false,
+  context: async ({ req }) => {
+    // Validate Shopify-Storefront-Private-Token
+    const token = req.headers['shopify-storefront-private-token'];
+    // ...
   },
 });
 
-// Option B: For REST client ONLY, use scheme + storeDomain trick
-const restClient = createAdminRestApiClient({
-  storeDomain: `127.0.0.1:${twinPort}`,
-  apiVersion: '2024-01',
-  accessToken: token,
-  scheme: 'http',
+fastify.route({
+  url: '/api/:version/graphql.json',
+  method: ['GET', 'POST', 'OPTIONS'],
+  handler: async (req, reply) => {
+    // rewrite URL to canonical storefront endpoint before yoga.fetch()
+    const url = req.url.replace(/\/api\/[^/]+\/graphql\.json/, '/api/STOREFRONT/graphql.json');
+    // ... delegate to storefrontYoga.fetch()
+  },
 });
 ```
 
-**Confidence:** HIGH -- `customFetchApi` is documented in the [official README](https://github.com/Shopify/shopify-app-js/blob/main/packages/api-clients/admin-api-client/README.md) and `scheme` is an explicit REST client option.
+---
 
-### Pattern 3: Slack SDK URL Redirection via slackApiUrl
+### Pattern 2: Fastify Parameterized Version Routes
 
-**What:** `@slack/web-api` `WebClient` accepts a `slackApiUrl` constructor option that overrides the base URL for all API calls (default: `https://slack.com/api/`).
+**What:** Replace hardcoded `/admin/api/2024-01/` with `/admin/api/:version/` to accept any Shopify API version string.
 
-**When:** Every Slack SDK verification test.
+**When to use:** When a URL path segment is variable but does not change routing behavior — Fastify parameterized routes are the standard approach.
 
-**Why:** The Slack twin serves at `http://127.0.0.1:{port}/api/`. The WebClient must be pointed there.
+**Trade-offs:** All existing test files using `2024-01` continue to work unchanged. The `:version` parameter is available in `req.params.version` but the twin does not need to use it for v1.2.
 
-**Concrete mechanism:**
+---
 
+### Pattern 3: Slack Signing via WebhookDelivery signingMode
+
+**What:** Extend `WebhookDelivery` with a `signingMode` discriminator and branch inside `deliverWebhook()`.
+
+**When to use:** When multiple services share the same delivery infrastructure but use different signing conventions. Avoids duplicating retry/DLQ/queue infrastructure.
+
+**Example:**
 ```typescript
-import { WebClient } from '@slack/web-api';
-
-const client = new WebClient(botToken, {
-  slackApiUrl: `http://127.0.0.1:${twinPort}/api/`,
-});
-
-// All method calls (chat.postMessage, users.info, etc.) now hit the twin.
-await client.chat.postMessage({ channel: 'C_GENERAL', text: 'test' });
-```
-
-**Confidence:** HIGH -- `slackApiUrl` is a well-documented WebClient constructor option.
-
-### Pattern 4: Socket Mode Broker (WebSocket Harness)
-
-**What:** A lightweight WebSocket server that simulates Slack's Socket Mode connection endpoint. Bolt's `SocketModeReceiver` wraps `@slack/socket-mode`'s `SocketModeClient`, which:
-1. Calls `apps.connections.open` (a Web API method) to get a WebSocket URL
-2. Opens a WebSocket to that URL
-3. Receives envelopes containing `events_api`, `slash_commands`, and `interactive` payloads
-4. Acknowledges each envelope by sending `{ envelope_id }` back over the WebSocket
-
-**When:** Phase 20 (Bolt Alternate Receivers).
-
-**Architecture:**
-
-```text
-                            SocketModeReceiver
-                                   |
-                            SocketModeClient
-                                   |
-                    +------+-------+-------+------+
-                    |                              |
-            apps.connections.open             WebSocket connect
-            (Web API call to twin)           (to returned wss:// URL)
-                    |                              |
-              Slack twin HTTP               Socket Mode Broker
-              (returns ws:// URL            (WebSocket server on
-               pointing to broker)           separate ephemeral port)
-                                                   |
-                                            Envelope dispatch
-                                            (JSON messages with
-                                             envelope_id, type,
-                                             and payload)
-```
-
-**Concrete implementation:**
-
-```typescript
-// tests/sdk-verification/shared/socket-mode-broker.ts
-
-import { WebSocketServer, WebSocket } from 'ws';
-import { randomUUID } from 'node:crypto';
-
-export interface SocketModeBroker {
-  url: string;           // ws://127.0.0.1:{port} for apps.connections.open response
-  port: number;
-  connections: WebSocket[];
-  sendEnvelope(type: string, payload: unknown): Promise<string>;  // returns envelope_id
-  waitForAck(envelopeId: string, timeoutMs?: number): Promise<unknown>;
-  close(): Promise<void>;
-}
-
-export async function createSocketModeBroker(): Promise<SocketModeBroker> {
-  const wss = new WebSocketServer({ port: 0, host: '127.0.0.1' });
-  const port = (wss.address() as any).port;
-  const connections: WebSocket[] = [];
-  const ackCallbacks = new Map<string, (response: unknown) => void>();
-
-  wss.on('connection', (ws) => {
-    connections.push(ws);
-
-    // Send hello message (Slack protocol requirement)
-    ws.send(JSON.stringify({
-      type: 'hello',
-      num_connections: connections.length,
-      connection_info: { app_id: 'A_TEST' },
-    }));
-
-    ws.on('message', (data) => {
-      const msg = JSON.parse(data.toString());
-      // Acknowledgements come back as { envelope_id, payload? }
-      if (msg.envelope_id && ackCallbacks.has(msg.envelope_id)) {
-        ackCallbacks.get(msg.envelope_id)!(msg.payload);
-        ackCallbacks.delete(msg.envelope_id);
-      }
-    });
-
-    ws.on('close', () => {
-      const idx = connections.indexOf(ws);
-      if (idx >= 0) connections.splice(idx, 1);
-    });
-  });
-
-  return {
-    url: `ws://127.0.0.1:${port}`,
-    port,
-    connections,
-
-    async sendEnvelope(type: string, payload: unknown): Promise<string> {
-      const envelopeId = randomUUID();
-      const envelope = JSON.stringify({
-        envelope_id: envelopeId,
-        type,
-        payload,
-        accepts_response_payload: true,
-      });
-      // Send to the first active connection
-      if (connections.length > 0 && connections[0].readyState === WebSocket.OPEN) {
-        connections[0].send(envelope);
-      }
-      return envelopeId;
-    },
-
-    async waitForAck(envelopeId: string, timeoutMs = 5000): Promise<unknown> {
-      return new Promise((resolve, reject) => {
-        const timer = setTimeout(
-          () => { ackCallbacks.delete(envelopeId); reject(new Error('Ack timeout')); },
-          timeoutMs
-        );
-        ackCallbacks.set(envelopeId, (response) => {
-          clearTimeout(timer);
-          resolve(response);
-        });
-      });
-    },
-
-    async close(): Promise<void> {
-      for (const ws of connections) ws.close();
-      await new Promise<void>((resolve) => wss.close(() => resolve()));
-    },
-  };
-}
-```
-
-**How it connects to Bolt's SocketModeReceiver:**
-
-The `SocketModeClient` calls `apps.connections.open` via its internal `WebClient`. The Slack twin must handle this endpoint and return the broker's WebSocket URL:
-
-```typescript
-// In Slack twin: add apps.connections.open handler
-// twins/slack/src/plugins/web-api/apps.ts (new plugin)
-
-fastify.post('/api/apps.connections.open', async (req, reply) => {
-  // The SOCKET_MODE_BROKER_URL env var or header tells the twin
-  // where the test's broker is listening
-  const brokerUrl = process.env.SOCKET_MODE_BROKER_URL
-    || req.headers['x-dtu-socket-broker-url'];
-
-  if (!brokerUrl) {
-    return reply.send({ ok: false, error: 'socket_mode_not_configured' });
-  }
-
-  return reply.send({
-    ok: true,
-    url: brokerUrl,
-  });
-});
-```
-
-**Test usage:**
-
-```typescript
-// tests/sdk-verification/slack/bolt/socket-mode-receiver.test.ts
-
-import { App, SocketModeReceiver } from '@slack/bolt';
-import { createSocketModeBroker } from '../../shared/socket-mode-broker.js';
-import { bootTwin, teardownTwin } from '../../shared/twin-lifecycle.js';
-
-let twin: TwinInstance;
-let broker: SocketModeBroker;
-let app: App;
-
-beforeAll(async () => {
-  broker = await createSocketModeBroker();
-  twin = await bootTwin('../../../../twins/slack/src/index.js', {
-    env: { SOCKET_MODE_BROKER_URL: broker.url },
-  });
-
-  app = new App({
-    socketMode: true,
-    appToken: 'xapp-test-token',
-    token: botToken,
-    // Point WebClient at the Slack twin for apps.connections.open
-    // SocketModeReceiver creates its own WebClient internally
-    receiver: new SocketModeReceiver({
-      appToken: 'xapp-test-token',
-      clientOptions: {
-        slackApiUrl: `${twin.baseUrl}/api/`,
-      },
-    }),
-  });
-});
-```
-
-**Confidence:** HIGH for the connection protocol (verified from [SocketModeClient source](https://github.com/slackapi/node-slack-sdk/blob/main/packages/socket-mode/src/SocketModeClient.ts) and [Slack Socket Mode docs](https://docs.slack.dev/apis/events-api/using-socket-mode/)). MEDIUM for `clientOptions.slackApiUrl` passthrough in SocketModeReceiver -- the receiver constructs its own SocketModeClient which constructs its own WebClient. Verify during Phase 20 implementation that the `clientOptions` path reaches the internal WebClient's `slackApiUrl`.
-
-### Pattern 5: AWS Lambda Receiver Harness
-
-**What:** A test helper that simulates the AWS Lambda invocation model. Bolt's `AwsLambdaReceiver` does not open an HTTP server. Instead, its `.start()` returns a handler function with the signature `(event: AwsEvent, context: any, callback: AwsCallback) => Promise<AwsResponse>`. The test harness constructs `AwsEvent` objects that match the `APIGatewayProxyEvent` shape and invokes the handler directly.
-
-**When:** Phase 20 (Bolt Alternate Receivers).
-
-**Architecture:**
-
-```text
-Test code
-    |
-    v
-lambda-harness.ts
-    |
-    +-- constructAwsEvent(method, path, body, headers)
-    |     -> builds AwsEvent (APIGatewayProxyEvent-like)
-    |
-    +-- invokeHandler(handler, event)
-    |     -> calls handler(event, context, callback)
-    |     -> returns AwsResponse
-    |
-    +-- Slack twin HTTP (for ack + API calls)
-         -> Bolt App's WebClient still calls the twin for
-            chat.postMessage, etc.
-```
-
-**Concrete implementation:**
-
-```typescript
-// tests/sdk-verification/shared/lambda-harness.ts
-
-export interface AwsEvent {
-  body: string | null;
-  headers: Record<string, string>;
-  httpMethod: string;
-  isBase64Encoded: boolean;
-  path: string;
-  queryStringParameters: Record<string, string> | null;
-  requestContext: { requestId: string };
-  resource: string;
-}
-
-export interface AwsResponse {
-  statusCode: number;
-  headers?: Record<string, string>;
-  body: string;
-  isBase64Encoded?: boolean;
-}
-
-export type AwsHandler = (
-  event: AwsEvent,
-  context: any,
-  callback: (err?: Error | null, result?: any) => void
-) => Promise<AwsResponse>;
-
-export function constructAwsEvent(opts: {
-  method?: string;
-  path?: string;
-  body: string;
-  headers: Record<string, string>;
-  queryParams?: Record<string, string>;
-}): AwsEvent {
-  return {
-    body: opts.body,
-    headers: opts.headers,
-    httpMethod: opts.method ?? 'POST',
-    isBase64Encoded: false,
-    path: opts.path ?? '/slack/events',
-    queryStringParameters: opts.queryParams ?? null,
-    requestContext: { requestId: crypto.randomUUID() },
-    resource: opts.path ?? '/slack/events',
-  };
-}
-
-export async function invokeHandler(
-  handler: AwsHandler,
-  event: AwsEvent
-): Promise<AwsResponse> {
-  return handler(event, {}, () => {});
-}
-```
-
-**Key insight:** Unlike HTTP and Socket Mode receivers, the Lambda receiver does NOT open any network listener. The test invokes the handler function directly with constructed events. However, the Bolt `App` still uses its internal `WebClient` for API calls (responding to messages, updating views). That `WebClient` must be pointed at the Slack twin via `slackApiUrl`.
-
-**Test usage:**
-
-```typescript
-// tests/sdk-verification/slack/bolt/lambda-receiver.test.ts
-
-import { App, AwsLambdaReceiver } from '@slack/bolt';
-import { constructAwsEvent, invokeHandler } from '../../shared/lambda-harness.js';
-import { bootTwin, teardownTwin } from '../../shared/twin-lifecycle.js';
-import { generateSlackSignature } from '../../shared/signing.js';
-
-let twin: TwinInstance;
-let handler: AwsHandler;
-
-beforeAll(async () => {
-  twin = await bootTwin('../../../../twins/slack/src/index.js');
-  const signingSecret = 'dev-signing-secret';
-
-  const receiver = new AwsLambdaReceiver({ signingSecret });
-  const app = new App({
-    token: botToken,
-    receiver,
-    // Point Bolt's WebClient at the twin
-    // so that app.client.chat.postMessage hits the twin
-  });
-
-  app.event('message', async ({ event, say }) => {
-    await say(`Echo: ${event.text}`);
-  });
-
-  await app.start();
-  handler = receiver.toHandler();
-});
-
-it('processes an event payload through the Lambda handler', async () => {
-  const body = JSON.stringify({
-    type: 'event_callback',
-    event: { type: 'message', text: 'hello', channel: 'C_GENERAL', user: 'U_TEST' },
-    token: 'test-verification-token',
-  });
+// packages/webhooks/src/webhook-delivery.ts
+if (delivery.signingMode === 'slack') {
   const timestamp = Math.floor(Date.now() / 1000).toString();
-  const signature = generateSlackSignature('dev-signing-secret', timestamp, body);
-
-  const event = constructAwsEvent({
-    body,
-    headers: {
-      'content-type': 'application/json',
-      'x-slack-signature': signature,
-      'x-slack-request-timestamp': timestamp,
-    },
-  });
-
-  const response = await invokeHandler(handler, event);
-  expect(response.statusCode).toBe(200);
-});
+  const baseString = `v0:${timestamp}:${body}`;
+  const hex = crypto.createHmac('sha256', delivery.secret)
+    .update(baseString, 'utf8').digest('hex');
+  headers['X-Slack-Signature'] = `v0=${hex}`;
+  headers['X-Slack-Request-Timestamp'] = timestamp;
+  delete headers['X-Shopify-Hmac-Sha256'];
+  delete headers['X-Shopify-Topic'];
+  delete headers['X-Shopify-Webhook-Id'];
+} else {
+  // existing Shopify signing (default)
+}
 ```
 
-**Confidence:** HIGH -- `AwsLambdaReceiver` type definitions verified from [source](https://github.com/slackapi/bolt-js/blob/main/src/receivers/AwsLambdaReceiver.ts). The handler signature, event shape, and `processBeforeResponse` default behavior are well-documented.
+---
 
-### Pattern 6: Callback Server for OAuth Flows
+### Pattern 4: Scope Requirement Map
 
-**What:** An ephemeral HTTP server that captures OAuth redirect callbacks. Both Shopify and Slack OAuth flows redirect the browser to a callback URL after authorization. The harness needs to capture these redirects to verify state, codes, and token exchange.
+**What:** A static `Record<string, string>` (method name → required OAuth scope) consulted by per-plugin auth helpers.
 
-**When:** Phases 15-16 (Shopify auth) and Phase 19 (Slack OAuth/Bolt).
+**When to use:** When many routes share the same enforcement pattern but each has a different required value. Externalizes the data from routing logic, making scope coverage easy to audit and extend.
 
-**Concrete mechanism:**
-
+**Example:**
 ```typescript
-// tests/sdk-verification/shared/callback-server.ts
-
-import { createServer, IncomingMessage, ServerResponse } from 'node:http';
-
-export interface CallbackCapture {
-  url: string;
-  port: number;
-  waitForCallback(timeoutMs?: number): Promise<{ path: string; query: URLSearchParams }>;
-  close(): Promise<void>;
-}
-
-export async function createCallbackServer(): Promise<CallbackCapture> {
-  let resolve: (val: { path: string; query: URLSearchParams }) => void;
-  const promise = new Promise<{ path: string; query: URLSearchParams }>((r) => { resolve = r; });
-
-  const server = createServer((req: IncomingMessage, res: ServerResponse) => {
-    const parsed = new URL(req.url!, `http://localhost`);
-    resolve({ path: parsed.pathname, query: parsed.searchParams });
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Callback captured');
-  });
-
-  await new Promise<void>((r) => server.listen(0, '127.0.0.1', r));
-  const port = (server.address() as any).port;
-
-  return {
-    url: `http://127.0.0.1:${port}`,
-    port,
-    waitForCallback: (timeout = 10_000) => Promise.race([
-      promise,
-      new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Callback timeout')), timeout)
-      ),
-    ]),
-    close: () => new Promise<void>((r) => server.close(() => r())),
-  };
-}
+// twins/slack/src/services/scope-requirements.ts (NEW FILE)
+export const SCOPE_REQUIREMENTS: Record<string, string> = {
+  'chat.postMessage':    'chat:write',
+  'chat.update':        'chat:write',
+  'chat.delete':        'chat:write',
+  'conversations.list': 'channels:read',
+  'conversations.join': 'channels:join',
+  'views.open':         'views:write',
+  // ... 275+ entries
+};
 ```
+
+---
 
 ## Data Flow
 
-### SDK Inventory Flow
+### Shopify OAuth (After Fix 3)
 
-```text
-1. Clone/update submodule refs in third_party/upstream/
-2. Run tools/sdk-surface/inventory/run-inventory.ts
-   a. For each targeted package:
-      - Resolve entrypoint from package.json "exports" field
-      - Walk exported symbols via TypeScript compiler API
-      - Record: { symbolName, kind, signatures, source file }
-   b. Write manifest JSON to tools/sdk-surface/manifests/
-3. Commit manifests alongside submodule ref updates
-4. CI compares manifest against VERSIONS.json to detect drift
+```
+SDK: GET /admin/oauth/authorize?client_id=X&scope=Y&redirect_uri=Z&state=S
+    |
+    v
+oauth.ts
+  -> validate client_id, scope, redirect_uri, state
+  -> stateManager.createOAuthCode(code, clientId, redirectUri)
+  -> HTTP 302 to Z?code=<uuid>&state=S
+    |
+    v
+SDK: POST /admin/oauth/access_token { client_id, client_secret, code }
+    |
+    v
+oauth.ts
+  -> validate client_id non-empty, client_secret non-empty
+  -> stateManager.consumeOAuthCode(code) -> verify code exists
+  -> stateManager.createToken(token, shop_domain, scopes)
+  -> { access_token: token, scope: scopes }
 ```
 
-### Conformance Test Flow
+### Storefront GraphQL (After Fix 4)
 
-```text
-1. Vitest discovers tests/sdk-verification/ as workspace project
-2. beforeAll():
-   a. bootTwin() starts Shopify and/or Slack twin on ephemeral port
-   b. Seed initial state via POST /admin/seed or /admin/reset
-   c. Obtain auth tokens (OAuth flow through twin)
-   d. Construct official SDK client with twin URL
-3. Test body:
-   a. Call official SDK method (e.g., client.request(query))
-   b. SDK constructs HTTP request -> sends to twin on local port
-   c. Twin processes request, returns response
-   d. Assert response shape, status, and semantics
-4. afterEach(): resetTwin() clears state
-5. afterAll(): teardownTwin() closes Fastify server
+```
+SDK: POST /api/2025-01/graphql.json
+     Header: Shopify-Storefront-Private-Token: xXx
+    |
+    v
+graphql.ts fastify route handler
+  -> validateStorefrontToken(xXx, stateManager)
+  -> storefrontYoga.fetch(rewritten_url, ...)
+    |
+    v
+storefrontResolvers
+  -> stateManager.listProducts() / stateManager.getProductByGid()
+  -> { data: { products: { edges: [...] } } }
 ```
 
-### Socket Mode Test Flow
+### Slack Events with Signing (After Fix 10)
 
-```text
-1. beforeAll():
-   a. createSocketModeBroker() starts WebSocket server
-   b. bootTwin() starts Slack twin with SOCKET_MODE_BROKER_URL
-   c. Construct Bolt App with SocketModeReceiver
-   d. App.start() -> SocketModeClient calls apps.connections.open
-      -> Twin returns broker's ws:// URL
-      -> SocketModeClient connects to broker
-      -> Broker sends 'hello' message
-2. Test body:
-   a. broker.sendEnvelope('events_api', { type: 'message', ... })
-   b. SocketModeClient receives envelope, dispatches to Bolt
-   c. Bolt App listener fires, calls ack()
-   d. broker.waitForAck(envelopeId) resolves
-   e. Assert ack payload and any side effects
-3. afterAll(): close App, broker, and twin
+```
+chat.postMessage handler
+  -> eventDispatcher.dispatch('message', payload)
+    |
+    v
+EventDispatcher
+  -> webhookQueue.enqueue({ signingMode: 'slack', secret: signingSecret, ... })
+    |
+    v
+webhook-delivery.ts
+  -> timestamp = Math.floor(Date.now() / 1000)
+  -> baseString = "v0:{timestamp}:{body}"
+  -> signature = "v0=" + HMAC-SHA256-hex(signingSecret, baseString)
+  -> HTTP POST to subscriber:
+     X-Slack-Signature: v0=<hex>
+     X-Slack-Request-Timestamp: <ts>
+     Body: { type: 'event_callback', event: { type: 'message', ... } }
 ```
 
-### Lambda Receiver Test Flow
-
-```text
-1. beforeAll():
-   a. bootTwin() starts Slack twin (for WebClient API calls)
-   b. Construct Bolt App with AwsLambdaReceiver
-   c. Register event/action/command listeners
-   d. app.start() -> receiver returns handler function
-2. Test body:
-   a. constructAwsEvent() builds APIGatewayProxyEvent-shaped object
-   b. Sign the body with Slack signing secret
-   c. invokeHandler(handler, event) calls handler directly
-   d. Handler processes event through Bolt middleware
-   e. Assert AwsResponse statusCode and body
-3. afterAll(): teardown twin
-```
-
-## Anti-Patterns to Avoid
-
-### Anti-Pattern 1: Stubbing SDK Network Internals
-
-**What:** Using `vi.mock('@slack/web-api')` or replacing `globalThis.fetch` to avoid starting real twin servers.
-
-**Why bad:** The entire point of SDK conformance is verifying that the official SDK's actual HTTP/WebSocket behavior works against the twin. Stubbing the transport makes the test prove nothing about twin fidelity.
-
-**Instead:** Boot twins on ephemeral ports. Use `customFetchApi` (Shopify) and `slackApiUrl` (Slack) to redirect SDK traffic to the twin. The network round-trip must actually happen.
-
-### Anti-Pattern 2: One Giant Test File Per SDK
-
-**What:** Putting all 274 Slack Web API method tests in a single file.
-
-**Why bad:** Failure triage becomes impossible. Test runtime grows unbounded. File becomes unmaintainable.
-
-**Instead:** Organize by package family (core, methods, files) and by SDK package (admin-api-client, shopify-api, web-api, oauth, bolt). Use generated test matrices for repetitive coverage and curated tests for semantic flows.
-
-### Anti-Pattern 3: Sharing Twin Instances Across Unrelated Test Files
-
-**What:** Booting one Shopify twin for all Shopify tests and relying on `beforeEach` reset to isolate state.
-
-**Why bad:** Test ordering dependencies. One slow test blocks everything. State reset may not be complete for all new features (billing, sessions, REST resources).
-
-**Instead:** Each test file boots its own twin instance. Use Vitest's `--pool forks` if parallel execution is needed. The boot time is <200ms with in-memory SQLite.
-
-### Anti-Pattern 4: Hardcoding Twin Ports
-
-**What:** Using `port: 3000` or `port: 3001` in test harnesses.
-
-**Why bad:** Port conflicts when running tests in parallel or when a development twin is already running.
-
-**Instead:** Always use `port: 0` (OS-assigned) and read the actual port from `app.addresses()[0].port`.
-
-## Scalability Considerations
-
-| Concern | At 50 symbols | At 500 symbols | At 2000+ symbols |
-|---------|---------------|----------------|-------------------|
-| Test runtime | <30s, single twin instance per file | ~2-5min, split by package family | Parallelize across Vitest pools with isolated twin instances |
-| Manifest size | Single JSON per package | Single JSON per package, group symbols by family for readability | Consider per-family manifest files for large packages |
-| Twin boot overhead | Negligible (<200ms) | Acceptable with file-level isolation | Add twin instance pooling if boot becomes bottleneck |
-| CI time | Single job | Split Shopify and Slack into parallel jobs | Add per-family matrix jobs |
-
-## Integration with Existing CI
-
-The existing CI workflow (`.github/workflows/`) runs twin conformance via `pnpm --filter @dtu/twin-shopify run conformance:twin`. The new SDK verification tests should run as a separate CI job:
-
-```yaml
-# .github/workflows/conformance.yml (additions)
-  sdk-verification:
-    name: SDK Verification
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true  # NEW: fetch third_party/upstream/ submodules
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: pnpm }
-      - run: pnpm install
-      - run: pnpm build
-      - run: pnpm exec vitest run --project sdk-verification
-```
-
-The existing `conformance:twin` jobs remain unchanged. They validate the HTTP-level twin behavior through the `@dtu/conformance` framework. The new `sdk-verification` job validates that the official SDK packages work end-to-end against the twins.
+---
 
 ## Build Order (Dependency-Aware)
 
-Given existing package dependencies:
+```
+Phase A: Infrastructure (no dependencies on other fixes)
+  Fix 13: SDK test entrypoint (vitest config + better-sqlite3 ABI)
+           -> unblocks ability to measure all other fixes
+  Fix 1:  Conformance harness bidirectional check
+           -> independent of twin changes
+  Fix 10: Slack signing headers (webhooks package change)
+           -> independent of twin plugin changes
 
-```text
-@dtu/types           (no deps)
-  -> @dtu/state      (depends on types)
-  -> @dtu/webhooks   (depends on types)
-  -> @dtu/conformance (depends on types via deep-diff)
-  -> @dtu/ui         (depends on types)
-  -> @dtu/twin-shopify (depends on state, types, webhooks, conformance, ui)
-  -> @dtu/twin-slack   (depends on state, types, webhooks, conformance, ui)
+Phase B: Shopify twin (Fix 5 enables Fix 6; Fix 4 independent)
+  Fix 5:  API versioning (:version routes)
+           -> must come before Fix 6 REST CRUD (routes already parameterized)
+  Fix 4:  Storefront separate schema
+           -> self-contained, no deps on other fixes
+  Fix 3:  OAuth authorize route
+           -> self-contained, add after Fix 5 so authorize also uses :version
+  Fix 6:  REST CRUD with correct shapes
+           -> depends on Fix 5 (version routes already exist)
+  Fix 7:  Billing state machine
+           -> depends on Fix 6 pattern (numeric IDs established)
+           -> depends on Fix 3 (install state after OAuth)
+
+Phase C: Slack twin stateful (Fix 11 enables Fix 9 and Fix 12)
+  Fix 11: Stateful operations (membership/views/pins/reaction dedup)
+           -> provides tables and methods needed for Fix 9 and Fix 12 tests
+  Fix 8:  126 missing method stubs
+           -> self-contained, can run parallel with Fix 11
+  Fix 9:  chat.update/delete scoping
+           -> depends on Fix 11 for reliable test setup (seeded membership)
+  Fix 12: Scope enforcement
+           -> depends on Fix 11 (token records need scopes verified via clean state)
+
+Phase D: Coverage automation (depends on Fix 13)
+  Fix 2:  Execution-evidence coverage
+           -> depends on Fix 13 (tests must pass to generate evidence)
 ```
 
-New components and their build order:
+| Fix | Depends On | Blocks | Can Parallelize With |
+|-----|-----------|--------|---------------------|
+| 13 (SDK entrypoint) | — | 2 | 1, 10 |
+| 1 (conformance bidirectional) | — | — | 13, 10 |
+| 10 (Slack signing) | — | — | 1, 13 |
+| 5 (API versioning) | — | 6 | 3, 4, 10 |
+| 4 (Storefront schema) | — | — | 3, 5 |
+| 3 (OAuth authorize) | — | 7 (partially) | 4, 5 |
+| 6 (REST CRUD shapes) | 5 | 7 | 4, 3 |
+| 7 (Billing state) | 6, 3 | — | 8, 11 |
+| 11 (Slack state tables) | — | 9, 12 | 7, 8 |
+| 9 (chat scoping) | 11 | — | 8, 12 |
+| 12 (scope enforcement) | 11 | — | 9, 8 |
+| 8 (126 missing methods) | — | — | 9, 11, 12 |
+| 2 (coverage automation) | 13 | — | — |
 
-```text
-Phase 13:
-  1. third_party/upstream/ submodules (no build needed, just git checkout)
-  2. tools/sdk-surface/ inventory tooling (standalone, reads node_modules + source)
-  3. tools/sdk-surface/manifests/ (generated output, checked in)
+---
 
-Phase 14:
-  4. tests/sdk-verification/package.json (adds SDK devDependencies)
-  5. tests/sdk-verification/shared/ (depends on twins being importable)
-  6. tests/sdk-verification/legacy/ (ports old checks, depends on shared/)
+## Anti-Patterns
 
-Phases 15-17 (Shopify):
-  7. twins/shopify/ expansion (new routes/plugins for REST, billing, etc.)
-  8. tests/sdk-verification/shopify/ suites (depends on shared/ + expanded twin)
+### Anti-Pattern 1: Expanding stubs.ts for 126 missing methods
 
-Phases 18-19 (Slack):
-  9. twins/slack/ expansion (new Web API stubs, apps.connections.open)
-  10. tests/sdk-verification/slack/ suites (depends on shared/ + expanded twin)
+**What people do:** Add all 126 missing routes to the existing `stubs.ts` file.
 
-Phase 20:
-  11. twins/slack/ WebSocket broker endpoint
-  12. tests/sdk-verification/shared/socket-mode-broker.ts
-  13. tests/sdk-verification/shared/lambda-harness.ts
-  14. tests/sdk-verification/slack/bolt/ receiver suites
-  15. CI drift gate (reads manifests + VERSIONS.json)
+**Why it's wrong:** `stubs.ts` already covers ~60 methods in 150 lines. Adding 126 more produces a 500+ line file that's impossible to navigate. The existing per-family grouping (`chat.ts`, `conversations.ts`, `reactions.ts`) is the established convention.
+
+**Do this instead:** One plugin file per method family: `admin.ts`, `workflows.ts`, `canvases.ts`, `apps.ts`, `slack-oauth-api.ts`.
+
+---
+
+### Anti-Pattern 2: Schema stitching for Shopify Storefront
+
+**What people do:** Use `@graphql-tools/stitch` to combine Admin and Storefront schemas with delegation resolvers.
+
+**Why it's wrong:** The two schemas share no mutation surface. Stitching adds a non-trivial dependency with its own version drift risk for a problem that has a simpler solution.
+
+**Do this instead:** Two independent `createYoga()` instances. Each serves exactly its endpoints. No stitching, no delegation.
+
+---
+
+### Anti-Pattern 3: Global Fastify preHandler for Slack scope enforcement
+
+**What people do:** Register `fastify.addHook('preHandler', scopeCheck)` globally.
+
+**Why it's wrong:** Not every route needs scope enforcement (health, admin, OAuth install flow, stubs serving `{ ok: true }`). A global hook requires explicit exclusion of those routes, inverting the established per-plugin pattern.
+
+**Do this instead:** Call `checkScope()` inside the existing per-plugin auth flow (`checkAuthRateError()` in `chat.ts`, similar helpers in other plugins). The scoping logic stays co-located with the route.
+
+---
+
+### Anti-Pattern 4: Duplicating webhook-delivery.ts for Slack
+
+**What people do:** Create `slack-webhook-delivery.ts` that copies the retry/delivery logic from `webhook-delivery.ts`.
+
+**Why it's wrong:** The retry, timeout, and error handling logic is shared infrastructure. The only difference is header generation and HMAC format.
+
+**Do this instead:** Add `signingMode` to `WebhookDelivery` and branch inside the existing `deliverWebhook()`. One function, two signing behaviors.
+
+---
+
+## Integration Points
+
+### Cross-Package Boundaries
+
+| Boundary | Communication Pattern | Fix # |
+|----------|----------------------|-------|
+| `@dtu/webhooks` webhook-delivery.ts <-> Slack event-dispatcher.ts | `signingMode: 'slack'` on `WebhookDelivery` | Fix 10 |
+| `packages/state` StateManager <-> Shopify REST plugin | `deleteProduct()`, numeric ID in list/get responses | Fix 6 |
+| `packages/state` StateManager <-> Shopify OAuth plugin | `createOAuthCode()`, `consumeOAuthCode()` | Fix 3 |
+| `packages/state` StateManager <-> Shopify billing resolvers | `billing_subscriptions` CRUD | Fix 7 |
+| `SlackStateManager` <-> Slack Web API plugins | `addMember`, `removeMember`, `createView`, `addPin` etc. | Fix 11 |
+| `packages/conformance` comparator <-> conformance suites | `strict: true` in live mode | Fix 1 |
+| Vitest JSON reporter <-> `generate-report.ts` | `vitest-results.json` artifact | Fix 2 |
+
+### Fastify Plugin Registration Order (twins/slack/src/index.ts)
+
+New plugins for Fix 8 must be registered after `slackStateManager` and `signingSecret` are decorated onto the Fastify instance. Append to the existing registration block:
+
+```typescript
+// After existing plugin registrations in buildApp()
+await fastify.register(adminWebApiPlugin);    // new — admin.* stubs
+await fastify.register(workflowsPlugin);      // new — workflows.* stubs
+await fastify.register(canvasesPlugin);       // new — canvases.* stubs
+await fastify.register(appsPlugin);           // new — apps.* stubs
+await fastify.register(slackOAuthApiPlugin);  // new — oauth.v2.exchange stub
 ```
+
+---
+
+## Scaling Considerations
+
+These fixes target dev/test infrastructure only. All twins run in-process with in-memory SQLite.
+
+| Scale | Notes |
+|-------|-------|
+| Single test run | All fixes appropriate |
+| CI parallelization | `pool: 'forks', singleFork: true` ensures sequential runs within sdk-verification — no state races |
+| Multi-tenant isolation | Each `buildApp()` call creates a fresh `:memory:` SQLite database — full isolation by default |
+
+---
 
 ## Sources
 
-- Existing codebase: `packages/conformance/src/` (adapter/runner/types), `twins/shopify/src/index.ts`, `twins/slack/src/index.ts`, `tests/integration/smoke.test.ts`
-- [Slack Socket Mode docs](https://docs.slack.dev/apis/events-api/using-socket-mode/) -- WebSocket connection protocol, apps.connections.open
-- [Slack Bolt Receiver docs](https://docs.slack.dev/tools/bolt-js/concepts/receiver/) -- Receiver interface contract
-- [Bolt AwsLambdaReceiver source](https://github.com/slackapi/bolt-js/blob/main/src/receivers/AwsLambdaReceiver.ts) -- AwsEvent/AwsResponse types, handler signature
-- [Bolt SocketModeReceiver source](https://github.com/slackapi/bolt-js/blob/main/src/receivers/SocketModeReceiver.ts) -- constructor options, SocketModeClient integration
-- [SocketModeClient source](https://github.com/slackapi/node-slack-sdk/blob/main/packages/socket-mode/src/SocketModeClient.ts) -- apps.connections.open call, WebSocket reconnection
-- [@shopify/admin-api-client README](https://github.com/Shopify/shopify-app-js/blob/main/packages/api-clients/admin-api-client/README.md) -- customFetchApi, scheme, storeDomain configuration
-- [@slack/web-api npm](https://www.npmjs.com/package/@slack/web-api) -- slackApiUrl constructor option
+All findings are HIGH confidence based on direct codebase inspection.
+
+- `twins/shopify/src/plugins/graphql.ts` — confirmed single Yoga instance, URL-rewrite workaround for Storefront
+- `twins/shopify/src/plugins/oauth.ts` — confirmed missing GET authorize route, no credential validation
+- `twins/shopify/src/plugins/rest.ts` — confirmed GID IDs on POST response, hardcoded `2024-01` prefix
+- `packages/state/src/state-manager.ts` — confirmed schema, existing tables, INTEGER PRIMARY KEY autoincrement on products
+- `twins/slack/src/state/slack-state-manager.ts` — confirmed missing membership/views/pins tables, reactions table exists
+- `twins/slack/src/plugins/web-api/chat.ts` — confirmed update/delete missing channel+author scope check
+- `twins/slack/src/plugins/web-api/stubs.ts` — confirmed 60 methods covered, 126 families absent
+- `twins/slack/src/services/event-dispatcher.ts` — confirmed uses `webhookQueue.enqueue()` without `signingMode`
+- `packages/webhooks/src/webhook-delivery.ts` — confirmed hardcoded `X-Shopify-Hmac-Sha256` and `X-Shopify-Topic`
+- `packages/conformance/src/comparator.ts` — confirmed `compareStructure()` iterates only twin keys, not bidirectional
+- `tests/sdk-verification/coverage/generate-report.ts` — confirmed 300-line hand-authored `LIVE_SYMBOLS` map
+- `tests/sdk-verification/vitest.config.ts` — confirmed `pool: 'forks', singleFork: true`
 
 ---
-*Architecture research for: SDK conformance infrastructure integration*
-*Researched: 2026-03-08*
+
+*Architecture research for: Sandpiper DTU v1.2 behavioral fidelity fixes*
+*Researched: 2026-03-11*
