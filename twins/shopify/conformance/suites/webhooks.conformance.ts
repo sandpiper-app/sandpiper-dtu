@@ -1,5 +1,6 @@
 import type { ConformanceSuite } from '@dtu/conformance';
 import { shopifyNormalizer } from '../normalizer.js';
+import { shopifyAdminGraphqlPath } from '../version.js';
 
 const WEBHOOK_SUBSCRIPTION_MUTATION = `
   mutation CreateWebhookSub($topic: WebhookSubscriptionTopic!, $webhookSubscription: WebhookSubscriptionInput!) {
@@ -36,7 +37,7 @@ export const webhooksSuite: ConformanceSuite = {
         name: 'webhookSubscriptionCreate',
         description: 'Create a webhook subscription for ORDERS_CREATE topic',
         method: 'POST',
-        path: '/admin/api/2024-01/graphql.json',
+        path: shopifyAdminGraphqlPath(),
         graphql: {
           query: WEBHOOK_SUBSCRIPTION_MUTATION,
           variables: {
@@ -58,7 +59,7 @@ export const webhooksSuite: ConformanceSuite = {
         name: 'webhookSubscriptionCreate-check-errors',
         description: 'Verify userErrors is empty on successful subscription creation',
         method: 'POST',
-        path: '/admin/api/2024-01/graphql.json',
+        path: shopifyAdminGraphqlPath(),
         graphql: {
           query: `mutation {
             webhookSubscriptionCreate(
@@ -83,7 +84,7 @@ export const webhooksSuite: ConformanceSuite = {
           name: 'create-subscription-for-state-check',
           description: 'Create a subscription so it appears in state',
           method: 'POST',
-          path: '/admin/api/2024-01/graphql.json',
+          path: shopifyAdminGraphqlPath(),
           graphql: {
             query: WEBHOOK_SUBSCRIPTION_MUTATION,
             variables: {
@@ -113,7 +114,7 @@ export const webhooksSuite: ConformanceSuite = {
           name: 'register-order-webhook',
           description: 'Register ORDERS_CREATE webhook subscription',
           method: 'POST',
-          path: '/admin/api/2024-01/graphql.json',
+          path: shopifyAdminGraphqlPath(),
           graphql: {
             query: WEBHOOK_SUBSCRIPTION_MUTATION,
             variables: {
@@ -129,7 +130,7 @@ export const webhooksSuite: ConformanceSuite = {
         name: 'orderCreate-with-webhook',
         description: 'Create order - webhook should be enqueued for async delivery',
         method: 'POST',
-        path: '/admin/api/2024-01/graphql.json',
+        path: shopifyAdminGraphqlPath(),
         graphql: {
           query: `mutation {
             orderCreate(order: {

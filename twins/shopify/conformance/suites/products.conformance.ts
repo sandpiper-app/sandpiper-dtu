@@ -1,5 +1,6 @@
 import type { ConformanceSuite } from '@dtu/conformance';
 import { shopifyNormalizer } from '../normalizer.js';
+import { shopifyAdminGraphqlPath } from '../version.js';
 
 const PRODUCT_FIELDS = `
   id
@@ -41,7 +42,7 @@ export const productsSuite: ConformanceSuite = {
         name: 'productCreate',
         description: 'Create a new product via productCreate mutation',
         method: 'POST',
-        path: '/admin/api/2024-01/graphql.json',
+        path: shopifyAdminGraphqlPath(),
         graphql: {
           query: CREATE_PRODUCT_MUTATION,
           variables: { input: productInput },
@@ -58,7 +59,7 @@ export const productsSuite: ConformanceSuite = {
           name: 'create-product-for-list',
           description: 'Create product so list is non-empty',
           method: 'POST',
-          path: '/admin/api/2024-01/graphql.json',
+          path: shopifyAdminGraphqlPath(),
           graphql: {
             query: CREATE_PRODUCT_MUTATION,
             variables: { input: productInput },
@@ -69,7 +70,7 @@ export const productsSuite: ConformanceSuite = {
         name: 'products-list',
         description: 'Query products list with first:10',
         method: 'POST',
-        path: '/admin/api/2024-01/graphql.json',
+        path: shopifyAdminGraphqlPath(),
         graphql: {
           query: `{
             products(first: 10) {
@@ -92,7 +93,7 @@ export const productsSuite: ConformanceSuite = {
         name: 'productCreate-invalid',
         description: 'Attempt to create product without required title field',
         method: 'POST',
-        path: '/admin/api/2024-01/graphql.json',
+        path: shopifyAdminGraphqlPath(),
         graphql: {
           query: `mutation {
             productCreate(input: {

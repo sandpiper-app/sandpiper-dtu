@@ -18,6 +18,7 @@
  */
 
 import type { ConformanceAdapter, ConformanceOperation, ConformanceResponse } from '@dtu/conformance';
+import { SHOPIFY_ADMIN_API_VERSION, shopifyAdminGraphqlPath, shopifyAdminRestPath } from '../version.js';
 
 export class ShopifyLiveAdapter implements ConformanceAdapter {
   readonly name = 'Shopify Dev Store';
@@ -93,7 +94,7 @@ export class ShopifyLiveAdapter implements ConformanceAdapter {
     }
 
     // Validate the token (whether freshly obtained or pre-supplied) with a shop health check
-    const url = `${this.baseUrl}/admin/api/2024-01/shop.json`;
+    const url = `${this.baseUrl}${shopifyAdminRestPath('/shop.json', SHOPIFY_ADMIN_API_VERSION)}`;
     const response = await fetch(url, {
       headers: {
         'X-Shopify-Access-Token': this.accessToken,
@@ -114,8 +115,10 @@ export class ShopifyLiveAdapter implements ConformanceAdapter {
   }
 
   async execute(op: ConformanceOperation): Promise<ConformanceResponse> {
+    // For GraphQL operations: honor op.path when provided (suite declares the version);
+    // fall back to the shared default helper only when the suite omitted it.
     const url = op.graphql
-      ? `${this.baseUrl}/admin/api/2024-01/graphql.json`
+      ? `${this.baseUrl}${op.path ?? shopifyAdminGraphqlPath()}`
       : `${this.baseUrl}${op.path}`;
 
     const body = op.graphql

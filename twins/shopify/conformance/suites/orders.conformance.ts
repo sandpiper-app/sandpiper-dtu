@@ -1,5 +1,6 @@
 import type { ConformanceSuite } from '@dtu/conformance';
 import { shopifyNormalizer } from '../normalizer.js';
+import { shopifyAdminGraphqlPath } from '../version.js';
 
 const ORDER_FIELDS = `
   id
@@ -64,7 +65,7 @@ export const ordersSuite: ConformanceSuite = {
         name: 'orderCreate',
         description: 'Create a new order via orderCreate mutation',
         method: 'POST',
-        path: '/admin/api/2024-01/graphql.json',
+        path: shopifyAdminGraphqlPath(),
         graphql: {
           query: CREATE_ORDER_MUTATION,
           variables: { order: orderInput },
@@ -74,7 +75,7 @@ export const ordersSuite: ConformanceSuite = {
         name: 'orderCreate',
         description: 'Create a new order via orderCreate mutation (real API)',
         method: 'POST',
-        path: '/admin/api/2024-01/graphql.json',
+        path: shopifyAdminGraphqlPath(),
         graphql: {
           query: CREATE_ORDER_MUTATION_LIVE,
           variables: { order: orderInput },
@@ -91,7 +92,7 @@ export const ordersSuite: ConformanceSuite = {
           name: 'create-order-for-list',
           description: 'Create order so list is non-empty',
           method: 'POST',
-          path: '/admin/api/2024-01/graphql.json',
+          path: shopifyAdminGraphqlPath(),
           graphql: {
             query: CREATE_ORDER_MUTATION,
             variables: { order: orderInput },
@@ -102,7 +103,7 @@ export const ordersSuite: ConformanceSuite = {
         name: 'orders-list',
         description: 'Query orders list with first:10',
         method: 'POST',
-        path: '/admin/api/2024-01/graphql.json',
+        path: shopifyAdminGraphqlPath(),
         graphql: {
           query: `{
             orders(first: 10) {
@@ -126,7 +127,7 @@ export const ordersSuite: ConformanceSuite = {
         name: 'orderCreate-invalid',
         description: 'Attempt to create order without required lineItems',
         method: 'POST',
-        path: '/admin/api/2024-01/graphql.json',
+        path: shopifyAdminGraphqlPath(),
         graphql: {
           query: `mutation {
             orderCreate(order: {

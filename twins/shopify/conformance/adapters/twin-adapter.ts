@@ -7,6 +7,7 @@
 
 import { buildApp } from '../../src/index.js';
 import type { ConformanceAdapter, ConformanceOperation, ConformanceResponse } from '@dtu/conformance';
+import { shopifyAdminGraphqlPath } from '../version.js';
 
 export class ShopifyTwinAdapter implements ConformanceAdapter {
   readonly name = 'Shopify Twin';
@@ -41,9 +42,12 @@ export class ShopifyTwinAdapter implements ConformanceAdapter {
     }
 
     if (op.graphql) {
+      // Honor op.path when provided (suite declares the version);
+      // fall back to the shared default helper only when the suite omitted it.
+      const graphqlUrl = op.path ?? shopifyAdminGraphqlPath();
       const response = await this.app.inject({
         method: 'POST',
-        url: '/admin/api/2024-01/graphql.json',
+        url: graphqlUrl,
         headers: {
           'X-Shopify-Access-Token': this.accessToken,
           'Content-Type': 'application/json',
