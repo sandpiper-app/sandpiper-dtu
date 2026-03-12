@@ -54,13 +54,13 @@ Requirements for milestone `v1.2 Behavioral Fidelity`. Fixes 13 adversarial revi
 
 ### Shopify Fidelity
 
-- [ ] **SHOP-17**: Shopify twin serves GraphQL and REST routes with parameterized API version (`:version` in URL path) accepting any valid Shopify API version string, not hardcoded to `2024-01`; unsupported/sunset versions return appropriate error responses; test helpers no longer rewrite request URLs to a single version
+- [x] **SHOP-17**: Shopify twin serves GraphQL and REST routes with parameterized API version (`:version` in URL path) accepting any valid Shopify API version string, not hardcoded to `2024-01`; unsupported/sunset versions return appropriate error responses; test helpers no longer rewrite request URLs to a single version
 - [ ] **SHOP-18**: Shopify twin implements full OAuth authorize flow: `GET /admin/oauth/authorize` returns redirect with HMAC-signed callback URL and state nonce cookie; `POST /admin/oauth/access_token` validates `client_id`, `client_secret`, and authorization code; empty-body requests return error; replayed/expired codes and invalid state are rejected with correct error responses
 - [ ] **SHOP-19**: Shopify twin serves Storefront API on separate GraphQL schema at `/api/:version/graphql.json` using `X-Shopify-Storefront-Access-Token` header for auth; admin-only mutations are not exposed on the Storefront endpoint; schema covers the types exercised by the pinned `@shopify/storefront-api-client` tests (products, collections, shop at minimum); rejects admin access tokens
 - [ ] **SHOP-20**: Shopify REST resources use persistent CRUD backed by StateManager: (a) `POST /products.json` creates a product retrievable by subsequent `GET /products.json` and `GET /products/:id.json`; (b) response shapes use numeric integer IDs with `admin_graphql_api_id` field (e.g., `"gid://shopify/Product/12345"`); (c) `GET /orders/:id.json` returns the specific order by numeric ID
 - [ ] **SHOP-21**: Shopify billing implements state machine: `appSubscriptionCreate` returns subscription in PENDING state with `confirmationUrl`; confirming transitions to ACTIVE; `currentAppInstallation` returns actual subscription data; `appSubscriptionCancel` validates subscription ownership and transitions to CANCELLED
-- [ ] **SHOP-22**: Shopify twin returns `X-Shopify-API-Version` response header on all API responses, echoing the version from the request URL path
-- [ ] **SHOP-23**: Shopify REST list endpoints return `Link` header with `rel="next"` and `page_info` cursor parameter for paginated responses, matching real Shopify pagination format
+- [x] **SHOP-22**: Shopify twin returns `X-Shopify-API-Version` response header on all API responses, echoing the version from the request URL path
+- [x] **SHOP-23**: Shopify REST list endpoints return `Link` header with `rel="next"` and `page_info` cursor parameter for paginated responses, matching real Shopify pagination format
 - [ ] **SHOP-24**: Shopify rate limiting uses correct bucket size (maxAvailable=1000, restoreRate=50) and computes `actualQueryCost` based on real query field traversal rather than forcing it equal to `requestedQueryCost`
 
 ### Slack Fidelity
@@ -146,9 +146,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | INFRA-19 | Phase 21 | Complete |
 | INFRA-20 | Phase 21 | Complete |
-| SHOP-17 | Phase 22 | Pending |
-| SHOP-22 | Phase 22 | Pending |
-| SHOP-23 | Phase 22 | Pending |
+| SHOP-17 | Phase 22 | Complete |
+| SHOP-22 | Phase 22 | Complete |
+| SHOP-23 | Phase 22 | Complete |
 | SHOP-18 | Phase 23 | Pending |
 | SHOP-19 | Phase 23 | Pending |
 | SHOP-20 | Phase 24 | Pending |

@@ -215,7 +215,7 @@ Plans:
   2. REST routes accept any `:version` segment; `GET /admin/api/2025-01/products.json` returns the same product list as `GET /admin/api/2024-01/products.json`
   3. Every API response includes an `X-Shopify-API-Version` header that echoes the version string from the request URL path
   4. Paginated REST list responses include a `Link` header with `rel="next"` and a `page_info` cursor parameter, matching real Shopify pagination format
-**Plans:** TBD
+**Plans:** 1/3 plans executed
 
 ### Phase 23: Shopify OAuth & Storefront
 **Goal**: Shopify twin implements a real OAuth authorize/callback flow and serves a separate Storefront API schema, matching what the official SDKs expect rather than bypassing both.
@@ -288,7 +288,7 @@ Plans:
 | 19. Slack OAuth & Bolt HTTP Surface | v1.1 | 4/4 | Complete | 2026-03-10 |
 | 20. Bolt Alternate Receivers & Drift Automation | v1.1 | 3/3 | Complete | 2026-03-10 |
 | 21. Test Runner & Seeders | 2/2 | Complete    | 2026-03-12 | - |
-| 22. Shopify Version Routing & Response Headers | v1.2 | 0/TBD | Not started | - |
+| 22. Shopify Version Routing & Response Headers | 1/3 | In Progress|  | - |
 | 23. Shopify OAuth & Storefront | v1.2 | 0/TBD | Not started | - |
 | 24. Shopify REST Persistence, Billing State Machine & Rate Limiting | v1.2 | 0/TBD | Not started | - |
 | 25. Slack Method Coverage, Event Signing & State Tables | v1.2 | 0/TBD | Not started | - |

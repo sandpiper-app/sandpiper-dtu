@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 21-02-PLAN.md
-last_updated: "2026-03-12T03:11:44.008Z"
+stopped_at: Completed 22-01-PLAN.md
+last_updated: "2026-03-12T16:16:03.862Z"
 last_activity: 2026-03-11 — Phase 21 plan 02 complete; seeder forward-protection and Slack method-scopes catalog added
 progress:
   total_phases: 15
   completed_phases: 9
-  total_plans: 33
-  completed_plans: 33
+  total_plans: 36
+  completed_plans: 34
   percent: 100
 ---
 
@@ -23,16 +23,16 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 21 (Test Runner & Seeders) complete
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 22 (Shopify Version Routing) in progress
 
 ## Current Position
 
-Phase: 21 of 27 (Test Runner & Seeders)
-Plan: 2 of 2 complete in current phase
-Status: Phase 21 Complete — Next: Phase 22 (Shopify GraphQL Version Routing)
-Last activity: 2026-03-11 — Phase 21 plan 02 complete; seeder forward-protection and Slack method-scopes catalog added
+Phase: 22 of 27 (Shopify Version Routing & Response Headers)
+Plan: 1 of 3 complete in current phase
+Status: Phase 22 Plan 01 Complete — Next: Phase 22 Plan 02 (SDK helper cleanup and verification)
+Last activity: 2026-03-12 — Phase 22 plan 01 complete; versioned GraphQL and REST routes with X-Shopify-API-Version headers
 
-Progress: [██████████] 100% (v1.2: 2/2 plans complete in phase 21)
+Progress: [██████████] 97% (v1.2: 34/36 total plans complete)
 
 ## Performance Metrics
 
@@ -45,6 +45,7 @@ Progress: [██████████] 100% (v1.2: 2/2 plans complete in pha
 |-------|------|----------|-------|-------|
 | 21-01 | 01 | 2min | 2 | 4 |
 | 21-02 | 02 | 8min | 2 | 3 |
+| 22-01 | 01 | 4min | 2 | 3 |
 
 ## Accumulated Context
 
@@ -67,6 +68,12 @@ Progress: [██████████] 100% (v1.2: 2/2 plans complete in pha
 
 **2026-03-11 - Completed quick task 2:**
 - Fix Shopify twin empty variants resolver and audit related hardcoded resolvers (commit 83640c6)
+
+**2026-03-12 - Phase 22 Plan 01 (Shopify version routing and response headers):**
+- Keep Yoga canonical endpoint fixed at /admin/api/2024-01/graphql.json; Fastify wrapper routes accept :version and rewrite URL before yoga.fetch()
+- Set X-Shopify-API-Version before auth/throttle branches so 401 and 429 responses also carry the version header
+- Build pagination Link header URL from req.params.version via buildAdminApiPath() — no hardcoded 2024-01 in Link header
+- api-version.ts is the single shared utility for both GraphQL and REST plugins (parseShopifyApiVersion, setApiVersionHeader, buildAdminApiPath)
 
 **2026-03-11 - Phase 21 Plan 02 (Seeder forward-protection):**
 - Use POST /admin/tokens on Shopify twin so seedShopifyAccessToken() survives Phase 23 OAuth tightening
@@ -91,8 +98,8 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 21 plan 02 — Seeder forward-protection; POST /admin/tokens on Shopify twin; METHOD_SCOPES catalog; 177 tests passing
-**Stopped at:** Completed 21-02-PLAN.md
+**Last completed:** Phase 22 plan 01 — Versioned GraphQL and REST routes; X-Shopify-API-Version on all responses including 401/429; version-aware pagination Link headers; api-version.ts shared utility
+**Stopped at:** Completed 22-01-PLAN.md
 **Timestamp:** 2026-03-12
 
 ---
