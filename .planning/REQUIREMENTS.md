@@ -32,7 +32,7 @@ Requirements for milestone `v1.1 Official SDK Conformance`. All complete.
 
 - [x] **SLCK-06.5**: Developer can call `auth.test` and `api.test` via WebClient and receive valid auth verification responses
 - [x] **SLCK-07**: Developer can use `@slack/web-api` `WebClient` base behaviors (`apiCall`, `paginate`, `filesUploadV2`, `ChatStreamer`, retries, and rate-limit handling) against the Slack twin
-- [x] **SLCK-08**: Developer can call every bound method exposed by the pinned `@slack/web-api` package against the Slack twin, including admin, files, views, workflows, assistant, canvases, and other advanced method families
+- [x] **SLCK-08**: Developer can call every bound method exposed by the pinned `@slack/web-api` package against the Slack twin — Tier 1 (~60 methods) with full behavioral coverage, Tier 2 stubbed with valid shapes, Tier 3 (admin.* and 126 other methods) manifest-tracked but deferred to v1.2
 - [x] **SLCK-09**: Developer can use `@slack/oauth` `InstallProvider` flows (`handleInstallPath`, `generateInstallUrl`, `handleCallback`, `authorize`) against the Slack twin with valid state, cookie, redirect, and installation-store behavior
 - [x] **SLCK-10**: Developer can use `@slack/bolt` `App` listener APIs (`event`, `message`, `action`, `command`, `options`, `shortcut`, `view`, `function`, and `assistant`) against twin-backed Slack requests with correct ack semantics
 - [x] **SLCK-11**: Developer can use `@slack/bolt` HTTP and Express receiver flows against the Slack twin, including request verification, URL verification, response_url behavior, and custom routes
@@ -44,20 +44,20 @@ Requirements for milestone `v1.2 Behavioral Fidelity`. Fixes 13 adversarial revi
 
 ### Test Infrastructure
 
-- [ ] **INFRA-19**: Developer can run `pnpm test:sdk` and have it discover and execute all SDK verification tests with no ABI mismatch or "no test files found" errors
-- [ ] **INFRA-20**: Test seeders (`seedShopifyAccessToken`, `seedSlackBotToken`) support behavioral tightening: Shopify twin exposes `POST /admin/tokens` for direct token seeding bypassing OAuth; Slack seeder uses comprehensive default scope set covering all exercised methods
+- [ ] **INFRA-19**: Developer can run `pnpm test:sdk` and have it discover and execute all SDK verification tests with no ABI mismatch or "no test files found" errors; CI pipeline and Docker images use matching Node version with correctly rebuilt native dependencies
+- [ ] **INFRA-20**: Test seeders (`seedShopifyAccessToken`, `seedSlackBotToken`) support behavioral tightening: Shopify twin exposes `POST /admin/tokens` (gated behind test-only admin routes) for direct token seeding bypassing OAuth; Slack seeder uses a checked-in method-to-scope catalog shared by both seeding and enforcement to prevent drift
 
 ### Conformance Infrastructure
 
-- [ ] **INFRA-21**: Conformance harness performs bidirectional structural comparison in live mode — twin response must contain all baseline fields AND baseline response must contain all twin fields — with full array traversal (not just first element) and primitive value comparison
-- [ ] **INFRA-22**: Coverage status for each tracked symbol is derived from test execution evidence (Vitest JSON reporter or equivalent instrumentation), not hand-authored `LIVE_SYMBOLS` map; CI gate validates coverage without manual symbol attribution
+- [ ] **INFRA-21**: Conformance harness performs bidirectional structural comparison in live mode — twin response must contain all baseline fields AND baseline response must contain all twin fields — with full array traversal (not just first element) and primitive value comparison; includes a normalizer contract with declared ignore lists for non-deterministic fields (timestamps, cursor IDs, signed URLs), ordering rules, and per-endpoint exact-vs-structural mode declarations
+- [ ] **INFRA-22**: Coverage status for each tracked symbol is derived from test execution evidence (Vitest JSON reporter or equivalent instrumentation), not hand-authored `LIVE_SYMBOLS` map; evidence schema defines how test files map to symbols, how aliases are attributed, and how local-only utilities are excluded; dual-run migration keeps `LIVE_SYMBOLS` and evidence in parallel until evidence matches or exceeds the 202+ symbol count, then removes `LIVE_SYMBOLS`
 
 ### Shopify Fidelity
 
-- [ ] **SHOP-17**: Shopify twin serves GraphQL and REST routes with parameterized API version (`:version` in URL path) accepting any valid Shopify API version string, not hardcoded to `2024-01`; test helpers no longer rewrite request URLs to a single version
-- [ ] **SHOP-18**: Shopify twin implements full OAuth authorize flow: `GET /admin/oauth/authorize` returns redirect with HMAC-signed callback URL and state nonce cookie; `POST /admin/oauth/access_token` validates `client_id`, `client_secret`, and authorization code; empty-body requests return error
-- [ ] **SHOP-19**: Shopify twin serves Storefront API on separate GraphQL schema at `/api/:version/graphql.json` using `X-Shopify-Storefront-Access-Token` header for auth; admin-only mutations are not exposed on the Storefront endpoint; `products(first:N)` returns data with valid Storefront token
-- [ ] **SHOP-20**: Shopify REST resources use persistent CRUD backed by StateManager: `POST /products.json` creates a product retrievable by subsequent `GET /products.json`; response shapes use numeric integer IDs with `admin_graphql_api_id` field (e.g., `"gid://shopify/Product/12345"`); `GET /orders/:id.json` returns the requested order
+- [ ] **SHOP-17**: Shopify twin serves GraphQL and REST routes with parameterized API version (`:version` in URL path) accepting any valid Shopify API version string, not hardcoded to `2024-01`; unsupported/sunset versions return appropriate error responses; test helpers no longer rewrite request URLs to a single version
+- [ ] **SHOP-18**: Shopify twin implements full OAuth authorize flow: `GET /admin/oauth/authorize` returns redirect with HMAC-signed callback URL and state nonce cookie; `POST /admin/oauth/access_token` validates `client_id`, `client_secret`, and authorization code; empty-body requests return error; replayed/expired codes and invalid state are rejected with correct error responses
+- [ ] **SHOP-19**: Shopify twin serves Storefront API on separate GraphQL schema at `/api/:version/graphql.json` using `X-Shopify-Storefront-Access-Token` header for auth; admin-only mutations are not exposed on the Storefront endpoint; schema covers the types exercised by the pinned `@shopify/storefront-api-client` tests (products, collections, shop at minimum); rejects admin access tokens
+- [ ] **SHOP-20**: Shopify REST resources use persistent CRUD backed by StateManager: (a) `POST /products.json` creates a product retrievable by subsequent `GET /products.json` and `GET /products/:id.json`; (b) response shapes use numeric integer IDs with `admin_graphql_api_id` field (e.g., `"gid://shopify/Product/12345"`); (c) `GET /orders/:id.json` returns the specific order by numeric ID
 - [ ] **SHOP-21**: Shopify billing implements state machine: `appSubscriptionCreate` returns subscription in PENDING state with `confirmationUrl`; confirming transitions to ACTIVE; `currentAppInstallation` returns actual subscription data; `appSubscriptionCancel` validates subscription ownership and transitions to CANCELLED
 - [ ] **SHOP-22**: Shopify twin returns `X-Shopify-API-Version` response header on all API responses, echoing the version from the request URL path
 - [ ] **SHOP-23**: Shopify REST list endpoints return `Link` header with `rel="next"` and `page_info` cursor parameter for paginated responses, matching real Shopify pagination format
@@ -65,12 +65,16 @@ Requirements for milestone `v1.2 Behavioral Fidelity`. Fixes 13 adversarial revi
 
 ### Slack Fidelity
 
-- [ ] **SLCK-14**: All bound WebClient methods from the pinned `@slack/web-api` package are registered and callable against the Slack twin, closing the 126-method gap including all `admin.*` (~95 methods), `workflows.*`, `canvases.*`, `openid.connect.*`, `stars.*`, `files.upload`, `oauth.access`, and other missing families
+- [ ] **SLCK-14**: All bound WebClient methods from the pinned `@slack/web-api` package are registered and callable against the Slack twin, closing the 126-method gap; high-value families (admin.apps, admin.conversations, admin.users, workflows) have semantically correct responses; remaining admin.* and low-traffic families are explicitly marked as stubs with documented limitations
 - [ ] **SLCK-15**: Slack `chat.update` enforces channel scoping (message must exist in the specified channel) and author ownership (bot tokens can only update messages they posted), returning `{ok: false, error: "cant_update_message"}` on violations; `chat.delete` enforces equivalent rules with `cant_delete_message`; conformance tests exercise the actual `chat.update` and `chat.delete` methods (not substituting `chat.postMessage`)
 - [ ] **SLCK-16**: Slack event delivery uses `X-Slack-Signature` (`v0=` + HMAC-SHA256 hex using signing secret) and `X-Slack-Request-Timestamp` headers instead of Shopify webhook signature headers; interactions route through a dedicated interactivity request URL (not through event subscriptions); `response_url` is an absolute URL (not relative path)
 - [ ] **SLCK-17**: Slack `conversations.invite`/`kick` manage actual channel membership; `conversations.members` returns real member list; `conversations.open` returns a real DM channel (not canned `D_TWIN`); `views.open`/`update`/`push` maintain persistent view lifecycle with stable view IDs; `pins.add`/`remove`/`list` are stateful with deduplication (`already_pinned` error); `reactions.add`/`remove`/`list`/`get` are stateful with deduplication (`already_reacted` error)
 - [ ] **SLCK-18**: Slack auth enforces OAuth scope requirements per method, returning `{ok: false, error: "missing_scope", needed: "<scope>", provided: "<scopes>"}` when token lacks the required scope; OAuth token exchange validates `client_id`, `scope`, and `redirect_uri` parameters
 - [ ] **SLCK-19**: Slack API responses include `X-OAuth-Scopes` (token's granted scopes) and `X-Accepted-OAuth-Scopes` (method's required scopes) headers on successful calls
+
+### Cross-Cutting
+
+- [ ] **XCUT-01**: Every new SQLite table added in v1.2 is included in the corresponding StateManager/SlackStateManager `reset()` logic, verified by a reset coverage test, and keeps reset performance within the existing sub-100ms target
 
 ## v2 Requirements
 

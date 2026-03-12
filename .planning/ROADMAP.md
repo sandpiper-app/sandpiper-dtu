@@ -226,7 +226,7 @@ Plans:
 
 ### Phase 24: Shopify REST Persistence, Billing State Machine & Rate Limiting
 **Goal**: Shopify REST resources persist state with real-Shopify-compatible shapes, billing implements a full PENDING → ACTIVE → CANCELLED state machine, and rate limiting uses correct bucket parameters.
-**Depends on:** Phase 22
+**Depends on:** Phase 22, Phase 23 (billing requires OAuth/session from Phase 23)
 **Requirements**: SHOP-20, SHOP-21, SHOP-24
 **Success Criteria** (what must be TRUE):
   1. `POST /admin/api/:version/products.json` creates a product with a numeric integer ID and `admin_graphql_api_id` field; a subsequent `GET /admin/api/:version/products/:id.json` returns that product
@@ -299,8 +299,8 @@ v1.1 Complete (Phases 13-20)
 Phase 21 (Test Runner & Seeders)
   ├──→ Phase 22 (Shopify Version Routing & Response Headers)
   │      ├──→ Phase 23 (Shopify OAuth & Storefront)
-  │      │      ↘
-  │      └──→ Phase 24 (Shopify REST, Billing & Rate Limiting)
+  │      │      ↓
+  │      └──→ Phase 24 (Shopify REST, Billing & Rate Limiting) [depends on 22 + 23]
   │                  ↘
   │                   Phase 27 (Conformance Harness & Coverage Infrastructure)
   │                  ↗
