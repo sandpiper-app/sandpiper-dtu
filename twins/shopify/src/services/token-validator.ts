@@ -9,6 +9,7 @@ import type { StateManager } from '@dtu/state';
 export interface TokenValidationResult {
   valid: boolean;
   shopDomain?: string;
+  tokenType?: string;
 }
 
 /**
@@ -26,5 +27,6 @@ export async function validateAccessToken(
   return {
     valid: true,
     shopDomain: tokenRecord.shop_domain,
+    tokenType: tokenRecord.token_type,
   };
 }

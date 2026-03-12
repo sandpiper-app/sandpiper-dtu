@@ -25,8 +25,10 @@ export class StateManager {
   private deleteByIdStmt: Database.Statement | null = null;
 
   // Shopify-specific prepared statements
-  private createTokenStmt: Database.Statement | null = null;
+  private createTokenV2Stmt: Database.Statement | null = null;
   private getTokenStmt: Database.Statement | null = null;
+  private storeOAuthCodeStmt: Database.Statement | null = null;
+  private consumeOAuthCodeStmt: Database.Statement | null = null;
   private createOrderStmt: Database.Statement | null = null;
   private updateOrderStmt: Database.Statement | null = null;
   private getOrderStmt: Database.Statement | null = null;
@@ -93,8 +95,10 @@ export class StateManager {
       this.listByTypeStmt = null;
       this.deleteByIdStmt = null;
       // Reset Shopify-specific statements
-      this.createTokenStmt = null;
+      this.createTokenV2Stmt = null;
       this.getTokenStmt = null;
+      this.storeOAuthCodeStmt = null;
+      this.consumeOAuthCodeStmt = null;
       this.createOrderStmt = null;
       this.updateOrderStmt = null;
       this.getOrderStmt = null;
@@ -144,8 +148,10 @@ export class StateManager {
       this.listByTypeStmt = null;
       this.deleteByIdStmt = null;
       // Clear Shopify-specific statements
-      this.createTokenStmt = null;
+      this.createTokenV2Stmt = null;
       this.getTokenStmt = null;
+      this.storeOAuthCodeStmt = null;
+      this.consumeOAuthCodeStmt = null;
       this.createOrderStmt = null;
       this.updateOrderStmt = null;
       this.getOrderStmt = null;
@@ -256,6 +262,12 @@ export class StateManager {
         token TEXT PRIMARY KEY,
         shop_domain TEXT NOT NULL,
         scopes TEXT NOT NULL,
+        token_type TEXT NOT NULL DEFAULT 'admin',
+        created_at INTEGER NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS oauth_codes (
+        code TEXT PRIMARY KEY,
         created_at INTEGER NOT NULL
       );
 
@@ -350,6 +362,14 @@ export class StateManager {
       CREATE INDEX IF NOT EXISTS idx_customers_gid ON customers(gid);
       CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
     `);
+
+    try {
+      this.database.exec(
+        "ALTER TABLE tokens ADD COLUMN token_type TEXT NOT NULL DEFAULT 'admin'"
+      );
+    } catch {
+      // Idempotent migration for existing databases.
+    }
   }
 
   private prepareStatements(): void {
@@ -363,10 +383,16 @@ export class StateManager {
     this.deleteByIdStmt = db.prepare('DELETE FROM entities WHERE id = ?');
 
     // Shopify-specific prepared statements
-    this.createTokenStmt = db.prepare(
-      'INSERT INTO tokens (token, shop_domain, scopes, created_at) VALUES (?, ?, ?, ?)'
+    this.createTokenV2Stmt = db.prepare(
+      'INSERT INTO tokens (token, shop_domain, scopes, token_type, created_at) VALUES (?, ?, ?, ?, ?)'
     );
     this.getTokenStmt = db.prepare('SELECT * FROM tokens WHERE token = ?');
+    this.storeOAuthCodeStmt = db.prepare(
+      'INSERT INTO oauth_codes (code, created_at) VALUES (?, ?)'
+    );
+    this.consumeOAuthCodeStmt = db.prepare(
+      'DELETE FROM oauth_codes WHERE code = ?'
+    );
 
     this.createOrderStmt = db.prepare(
       'INSERT INTO orders (gid, name, total_price, currency_code, customer_gid, line_items, display_fulfillment_status, display_financial_status, closed_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
@@ -449,20 +475,52 @@ export class StateManager {
   // Shopify-specific methods
 
   /** Create a token record */
-  createToken(token: string, shopDomain: string, scopes: string): void {
-    if (!this.createTokenStmt) {
+  createToken(token: string, shopDomain: string, scopes: string, tokenType = 'admin'): void {
+    if (!this.createTokenV2Stmt) {
       throw new Error('StateManager not initialized. Call init() first.');
     }
     const now = Math.floor(Date.now() / 1000);
-    this.createTokenStmt.run(token, shopDomain, scopes, now);
+    this.createTokenV2Stmt.run(token, shopDomain, scopes, tokenType, now);
   }
 
   /** Get a token record by token string */
-  getToken(token: string): { token: string; shop_domain: string; scopes: string; created_at: number } | undefined {
+  getToken(token: string): { token: string; shop_domain: string; scopes: string; token_type: string; created_at: number } | undefined {
     if (!this.getTokenStmt) {
       throw new Error('StateManager not initialized. Call init() first.');
     }
-    return this.getTokenStmt.get(token) as { token: string; shop_domain: string; scopes: string; created_at: number } | undefined;
+    return this.getTokenStmt.get(token) as { token: string; shop_domain: string; scopes: string; token_type: string; created_at: number } | undefined;
+  }
+
+  /** Store a one-time OAuth code for later exchange */
+  storeOAuthCode(code: string): void {
+    if (!this.storeOAuthCodeStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+    this.storeOAuthCodeStmt.run(code, Math.floor(Date.now() / 1000));
+  }
+
+  /** Consume a one-time OAuth code if it exists and is not expired */
+  consumeOAuthCode(code: string): boolean {
+    if (!this.consumeOAuthCodeStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
+
+    const record = this.database
+      .prepare('SELECT code, created_at FROM oauth_codes WHERE code = ?')
+      .get(code) as { code: string; created_at: number } | undefined;
+
+    if (!record) {
+      return false;
+    }
+
+    const now = Math.floor(Date.now() / 1000);
+    this.consumeOAuthCodeStmt.run(code);
+
+    if (record.created_at + 60 < now) {
+      return false;
+    }
+
+    return true;
   }
 
   /** Create an order and return its ID */
