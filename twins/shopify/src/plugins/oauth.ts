@@ -42,6 +42,7 @@ declare module 'fastify' {
 const ADMIN_SCOPES =
   'read_orders,write_orders,read_products,write_products,read_customers,write_customers';
 const TWIN_SHOP_DOMAIN = 'dev.myshopify.com';
+const TWIN_API_KEY = process.env.SHOPIFY_API_KEY ?? 'test-api-key';
 const TWIN_API_SECRET = process.env.SHOPIFY_API_SECRET ?? 'test-api-secret';
 const PASSTHROUGH_GRANT_TYPES = new Set([
   'client_credentials',
@@ -51,6 +52,13 @@ const PASSTHROUGH_GRANT_TYPES = new Set([
 
 function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.length > 0;
+}
+
+function hasExactTwinCredentials(body: OAuthTokenRequestBody): boolean {
+  return (
+    body.client_id === TWIN_API_KEY &&
+    body.client_secret === TWIN_API_SECRET
+  );
 }
 
 function computeOAuthCallbackHmac(
@@ -126,15 +134,6 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
       });
     }
 
-    const issueAccessToken = (): OAuthTokenResponse => {
-      const token = randomUUID();
-      fastify.stateManager.createToken(token, TWIN_SHOP_DOMAIN, ADMIN_SCOPES, 'admin');
-      return {
-        access_token: token,
-        scope: ADMIN_SCOPES,
-      };
-    };
-
     if (!PASSTHROUGH_GRANT_TYPES.has(body.grant_type ?? '')) {
       if (
         !isNonEmptyString(body.client_id) ||
@@ -146,8 +145,33 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
           error_description: 'client_id, client_secret, and code are required',
         });
       }
+    }
 
-      const consumed = fastify.stateManager.consumeOAuthCode(body.code);
+    if (!hasExactTwinCredentials(body)) {
+      return reply.status(401).send({
+        error: 'invalid_client',
+        error_description: 'client_id or client_secret is invalid',
+      });
+    }
+
+    const issueAccessToken = (): OAuthTokenResponse => {
+      const token = randomUUID();
+      fastify.stateManager.createToken(token, TWIN_SHOP_DOMAIN, ADMIN_SCOPES, 'admin');
+      return {
+        access_token: token,
+        scope: ADMIN_SCOPES,
+      };
+    };
+
+    if (!PASSTHROUGH_GRANT_TYPES.has(body.grant_type ?? '')) {
+      const { code } = body;
+      if (!isNonEmptyString(code)) {
+        return reply.status(400).send({
+          error: 'invalid_request',
+          error_description: 'client_id, client_secret, and code are required',
+        });
+      }
+      const consumed = fastify.stateManager.consumeOAuthCode(code);
       if (!consumed) {
         return reply.status(400).send({
           error: 'invalid_grant',

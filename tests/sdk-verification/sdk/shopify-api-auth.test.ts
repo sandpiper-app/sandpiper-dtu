@@ -1,12 +1,12 @@
 /**
  * SHOP-10: shopify.auth helpers — live twin + mock adapter tests.
  *
- * 12 tests total:
+ * 15 tests total:
  *   - token flows (live twin): tokenExchange, refreshToken, clientCredentials (3)
  *   - begin redirect (mock adapter): redirect to /admin/oauth/authorize (1)
  *   - callback OAuth exchange (begin→authorize→callback flow, live twin): (1)
  *   - access_token validation and grant branching (live twin): empty body, missing fields,
- *     unknown code, replayed code, client_credentials preservation (5)
+ *     unknown code, replayed code, invalid_client cases, client_credentials preservation (8)
  *   - embedded URL helpers (pure): getEmbeddedAppUrl, buildEmbeddedAppUrl (2)
  *
  * Live twin calls use resetShopify() in beforeEach to clear token state.
@@ -351,6 +351,60 @@ describe('POST /admin/oauth/access_token — SHOP-18 validation', () => {
     });
     expect(replayResponse.status).toBe(400);
     expect(await replayResponse.json()).toMatchObject({ error: 'invalid_grant' });
+  });
+
+  it('returns 401 when client_id is wrong for a real authorization code', async () => {
+    const callbackRedirectUrl = await getAuthorizeRedirectFromTwin({
+      state: 'wrong-client-id',
+    });
+    const code = callbackRedirectUrl.searchParams.get('code');
+    expect(code).toBeTruthy();
+
+    const response = await postAccessToken({
+      client_id: 'wrong-api-key',
+      client_secret: 'test-api-secret',
+      code: code!,
+    });
+
+    expect(response.status).toBe(401);
+    expect(await response.json()).toMatchObject({
+      error: 'invalid_client',
+      error_description: 'client_id or client_secret is invalid',
+    });
+  });
+
+  it('returns 401 when client_secret is wrong for a real authorization code', async () => {
+    const callbackRedirectUrl = await getAuthorizeRedirectFromTwin({
+      state: 'wrong-client-secret',
+    });
+    const code = callbackRedirectUrl.searchParams.get('code');
+    expect(code).toBeTruthy();
+
+    const response = await postAccessToken({
+      client_id: 'test-api-key',
+      client_secret: 'wrong-api-secret',
+      code: code!,
+    });
+
+    expect(response.status).toBe(401);
+    expect(await response.json()).toMatchObject({
+      error: 'invalid_client',
+      error_description: 'client_id or client_secret is invalid',
+    });
+  });
+
+  it('returns 401 for client_credentials when client_secret is wrong', async () => {
+    const response = await postAccessToken({
+      grant_type: 'client_credentials',
+      client_id: 'test-api-key',
+      client_secret: 'wrong-api-secret',
+    });
+
+    expect(response.status).toBe(401);
+    expect(await response.json()).toMatchObject({
+      error: 'invalid_client',
+      error_description: 'client_id or client_secret is invalid',
+    });
   });
 
   it('preserves the client_credentials grant flow', async () => {
