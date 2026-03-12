@@ -35,6 +35,7 @@ const __dirname = dirname(__filename);
 
 // Yoga's canonical admin GraphQL endpoint — never changes.
 const CANONICAL_ADMIN_GRAPHQL = '/admin/api/2024-01/graphql.json';
+const CANONICAL_STOREFRONT_GRAPHQL = '/api/2024-01/graphql.json';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -49,13 +50,44 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
   const schemaPath = __dirname.includes('/dist/')
     ? join(__dirname, '../../src/schema/schema.graphql')
     : join(__dirname, '../schema/schema.graphql');
+  const storefrontSchemaPath = __dirname.includes('/dist/')
+    ? join(__dirname, '../../src/schema/storefront.graphql')
+    : join(__dirname, '../schema/storefront.graphql');
 
   const typeDefs = readFileSync(schemaPath, 'utf-8');
+  const storefrontTypeDefs = readFileSync(storefrontSchemaPath, 'utf-8');
+
+  const storefrontResolvers = {
+    DateTime: resolvers.DateTime,
+    QueryRoot: {
+      products: resolvers.QueryRoot.products,
+      shop: resolvers.QueryRoot.shop,
+      collections: () => ({
+        edges: [],
+        nodes: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: null,
+          endCursor: null,
+        },
+      }),
+    },
+    Product: {
+      id: resolvers.Product.id,
+      productType: resolvers.Product.productType,
+      variants: resolvers.Product.variants,
+    },
+  };
 
   // Create executable schema
   const schema = makeExecutableSchema({
     typeDefs,
     resolvers,
+  });
+  const storefrontSchema = makeExecutableSchema({
+    typeDefs: storefrontTypeDefs,
+    resolvers: storefrontResolvers,
   });
 
   // Create GraphQL Yoga instance with a fixed canonical endpoint.
@@ -103,12 +135,49 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
     // Auth enforcement happens in resolvers via requireAuth() helper
   });
 
+  const storefrontYoga = createYoga<{
+    req: FastifyRequest;
+    reply: FastifyReply;
+  }>({
+    schema: storefrontSchema,
+    graphqlEndpoint: CANONICAL_STOREFRONT_GRAPHQL,
+    maskedErrors: false,
+    logging: {
+      debug: (...args) => args.forEach((arg) => fastify.log.debug(arg)),
+      info: (...args) => args.forEach((arg) => fastify.log.info(arg)),
+      warn: (...args) => args.forEach((arg) => fastify.log.warn(arg)),
+      error: (...args) => args.forEach((arg) => fastify.log.error(arg)),
+    },
+    context: async ({ req }) => {
+      const token = req.headers['shopify-storefront-private-token'];
+      let authorized = false;
+      let shopDomain = '';
+
+      if (token && typeof token === 'string') {
+        const validation = await validateAccessToken(token, fastify.stateManager);
+        if (validation.valid && validation.tokenType !== 'admin') {
+          authorized = true;
+          shopDomain = validation.shopDomain!;
+        }
+      }
+
+      return {
+        stateManager: fastify.stateManager,
+        errorSimulator: fastify.errorSimulator,
+        webhookSecret: fastify.webhookSecret,
+        webhookQueue: fastify.webhookQueue,
+        shopDomain,
+        authorized,
+      };
+    },
+  });
+
   // ---------------------------------------------------------------------------
   // Storefront API route — /api/:version/graphql.json
   // ---------------------------------------------------------------------------
-  // Uses same yoga instance (same schema) but different auth header.
+  // Uses a separate Storefront Yoga instance and schema.
   // Auth: Shopify-Storefront-Private-Token (not X-Shopify-Access-Token)
-  // Rewrites incoming URL to the canonical admin endpoint so Yoga routes
+  // Rewrites incoming URL to the canonical Storefront endpoint so Yoga routes
   // the query correctly.
   fastify.route({
     url: '/api/:version/graphql.json',
@@ -127,20 +196,26 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
 
       // Validate Shopify-Storefront-Private-Token
       const token = req.headers['shopify-storefront-private-token'];
-      let authorized = false;
-      if (token && typeof token === 'string') {
-        const validation = await validateAccessToken(token, fastify.stateManager);
-        if (validation.valid) authorized = true;
-      }
-      if (!authorized) {
+      if (!token || typeof token !== 'string') {
         reply.status(401).header('content-type', 'application/json');
         return reply.send(JSON.stringify({ errors: [{ message: 'Unauthorized' }] }));
       }
+      const validation = await validateAccessToken(token, fastify.stateManager);
+      if (!validation.valid) {
+        reply.status(401).header('content-type', 'application/json');
+        return reply.send(JSON.stringify({ errors: [{ message: 'Unauthorized' }] }));
+      }
+      if (validation.tokenType === 'admin') {
+        reply.status(401).header('content-type', 'application/json');
+        return reply.send(JSON.stringify({
+          errors: [{ message: 'Unauthorized: admin token not valid for Storefront API' }],
+        }));
+      }
 
-      // Rewrite URL to the canonical admin endpoint so yoga routes correctly.
+      // Rewrite URL to the canonical Storefront endpoint so yoga routes correctly.
       const storefrontPattern = `/api/${version}/graphql.json`;
-      const adminUrl = new URL(
-        req.url.replace(storefrontPattern, CANONICAL_ADMIN_GRAPHQL),
+      const storefrontUrl = new URL(
+        req.url.replace(storefrontPattern, CANONICAL_STOREFRONT_GRAPHQL),
         `http://${req.hostname}`
       );
 
@@ -149,8 +224,8 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
         if (value) headers[key] = Array.isArray(value) ? value[0] : value;
       }
 
-      const response = await yoga.fetch(
-        adminUrl.toString(),
+      const response = await storefrontYoga.fetch(
+        storefrontUrl.toString(),
         {
           method: req.method,
           headers,

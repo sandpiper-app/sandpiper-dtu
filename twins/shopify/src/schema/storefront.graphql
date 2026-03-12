@@ -1,0 +1,71 @@
+scalar DateTime
+
+type ShopInfo {
+  name: String!
+}
+
+type ProductVariantConnection {
+  nodes: [ProductVariant!]!
+}
+
+type ProductVariant {
+  id: ID!
+  title: String!
+  sku: String
+  price: String!
+  inventoryQuantity: Int
+}
+
+type Product {
+  id: ID!
+  title: String!
+  description: String
+  vendor: String
+  productType: String
+  variants(first: Int): ProductVariantConnection!
+}
+
+type ProductEdge {
+  node: Product!
+  cursor: String!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type ProductConnection {
+  edges: [ProductEdge!]!
+  nodes: [Product!]!
+  pageInfo: PageInfo!
+}
+
+type Collection {
+  id: ID!
+  title: String!
+  handle: String!
+}
+
+type CollectionEdge {
+  node: Collection!
+  cursor: String!
+}
+
+type CollectionConnection {
+  edges: [CollectionEdge!]!
+  nodes: [Collection!]!
+  pageInfo: PageInfo!
+}
+
+type QueryRoot {
+  products(first: Int, after: String, last: Int, before: String): ProductConnection!
+  shop: ShopInfo
+  collections(first: Int, after: String): CollectionConnection!
+}
+
+schema {
+  query: QueryRoot
+}
