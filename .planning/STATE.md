@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 25-01-PLAN.md
-last_updated: "2026-03-13T03:50:44.752Z"
-last_activity: "2026-03-13 — Phase 24 Plan 04 complete: persistent app_subscriptions table, three state-backed resolvers, confirm_recurring HTTP route"
+stopped_at: Completed 25-03-PLAN.md
+last_updated: "2026-03-13T03:58:54.004Z"
+last_activity: "2026-03-13 — Phase 25 Plan 01 complete: three new test files + smoke.test.ts XCUT-01 additions (all Wave 0 RED state)"
 progress:
   total_phases: 15
   completed_phases: 12
   total_plans: 48
-  completed_plans: 45
+  completed_plans: 46
   percent: 99
 ---
 
@@ -57,6 +57,7 @@ Progress: [██████████] 99% (overall: 43/44 currently planned
 | 24-03 | 03 | 8min | 2 | 5 |
 | Phase 24-04 P04 | 3min | 2 tasks | 4 files |
 | Phase 25-01 P01 | 6min | 3 tasks | 4 files |
+| Phase 25-03 P03 | 12min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -166,7 +167,7 @@ None.
 
 **Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
 **Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 25-01-PLAN.md
+**Stopped at:** Completed 25-03-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
