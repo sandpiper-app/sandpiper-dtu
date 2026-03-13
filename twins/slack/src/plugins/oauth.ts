@@ -19,6 +19,12 @@ declare module 'fastify' {
   }
 }
 
+interface CodeBinding {
+  redirectUri: string;
+  scope: string;
+  clientId: string;
+}
+
 const oauthPlugin: FastifyPluginAsync = async (fastify) => {
   // GET /oauth/v2/authorize — simplified redirect flow
   fastify.get<{
@@ -29,15 +35,19 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
       state?: string;
     };
   }>('/oauth/v2/authorize', async (request, reply) => {
-    const { redirect_uri, state } = request.query;
+    const { client_id, scope, redirect_uri, state } = request.query;
 
     if (!redirect_uri) {
       return reply.status(400).send({ ok: false, error: 'missing_redirect_uri' });
     }
 
-    // Generate a random authorization code and store it
+    if (!scope) {
+      return reply.status(400).send({ ok: false, error: 'invalid_scope' });
+    }
+
+    // Generate a random authorization code and store it with binding
     const code = randomUUID();
-    issuedCodes.add(code);
+    issuedCodes.set(code, { redirectUri: redirect_uri, scope, clientId: client_id ?? '' });
 
     // Redirect to the app's redirect_uri with code and state
     const url = new URL(redirect_uri);
@@ -49,8 +59,8 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
     return reply.redirect(url.toString());
   });
 
-  // Track issued authorization codes (valid until exchanged)
-  const issuedCodes = new Set<string>();
+  // Track issued authorization codes (valid until exchanged) with per-code binding
+  const issuedCodes = new Map<string, CodeBinding>();
 
   // POST /api/oauth.v2.access — token exchange
   fastify.post<{
@@ -62,21 +72,32 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
       redirect_uri?: string;
     };
   }>('/api/oauth.v2.access', async (request) => {
-    const { code, client_id } = request.body ?? {};
+    const { code, client_id, redirect_uri } = request.body ?? {};
 
     // SLCK-18: validate required parameters
     if (!client_id) {
       return { ok: false, error: 'invalid_arguments' };
     }
 
-    if (!code || !issuedCodes.has(code)) {
+    const binding = code ? issuedCodes.get(code) : undefined;
+    if (!binding) {
       return { ok: false, error: 'invalid_code' };
+    }
+
+    // SLCK-18b+: validate client_id matches the code binding
+    if (client_id !== binding.clientId) {
+      return { ok: false, error: 'invalid_client' };
+    }
+
+    // SLCK-18f: validate redirect_uri binding if provided at exchange time
+    if (redirect_uri && redirect_uri !== binding.redirectUri) {
+      return { ok: false, error: 'redirect_uri_mismatch' };
     }
 
     // Consume code (one-time use)
     issuedCodes.delete(code);
 
-    request.log.info({ code }, 'OAuth v2 token exchange');
+    request.log.info('OAuth v2 token exchange');
 
     const teamId = 'T_TWIN';
     const appId = 'A_TWIN';
