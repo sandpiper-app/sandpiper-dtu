@@ -54,6 +54,65 @@ function resolveStorefrontToken(headers: Record<string, string | string[] | unde
     ?? headerValue(headers['x-shopify-storefront-access-token']);
 }
 
+/**
+ * Walk a GraphQL response data object and count actual items in Connection fields.
+ * Connections are identified by having an `edges` array or `nodes` array.
+ *
+ * Strategy: for each connection found, compute the fraction (actualItems / expectedItems)
+ * and apply that fraction to reduce the cost attributed to that connection.
+ *
+ * For simplicity: count total edges+nodes across all connections in the response.
+ * If no connections found (or all empty), return a base cost of 1 (the query root cost).
+ * This ensures billing.check with 0 oneTimePurchases returns nearly-zero actualQueryCost.
+ *
+ * @param data - Response data object from yoga.fetch()
+ * @param requestedCost - The pre-execution estimated query cost
+ * @returns actualQueryCost — always <= requestedCost, always >= 1 (minimum 1 for any valid query)
+ */
+function computeActualCost(data: unknown, requestedCost: number): number {
+  if (!data || typeof data !== 'object' || requestedCost <= 1) return requestedCost;
+
+  // Count total actual items across all connection fields in the response
+  let totalActualItems = 0;
+  let totalConnectionsFound = 0;
+
+  function walk(obj: unknown): void {
+    if (!obj || typeof obj !== 'object') return;
+    if (Array.isArray(obj)) {
+      obj.forEach(walk);
+      return;
+    }
+    const record = obj as Record<string, unknown>;
+    // Check if this is a Connection-like object (has edges or nodes array)
+    if (Array.isArray(record.edges) || Array.isArray(record.nodes)) {
+      totalConnectionsFound++;
+      totalActualItems += (record.edges as unknown[])?.length ?? 0;
+      totalActualItems += (record.nodes as unknown[])?.length ?? 0;
+    }
+    for (const value of Object.values(record)) {
+      walk(value);
+    }
+  }
+
+  walk(data);
+
+  // If no connections found, it's a simple scalar query — use requestedCost as-is
+  if (totalConnectionsFound === 0) return requestedCost;
+
+  // If all connections are empty, return base cost of 1 (minimum valid query cost)
+  if (totalActualItems === 0) return 1;
+
+  // Scale: keep base cost + a proportional share based on actual items.
+  // requestedCost - 1 is the "connection items" component; scale it by actual ratio.
+  // This is an approximation — sufficient for the twin's use case.
+  const baseCost = 1;
+  const connectionCost = requestedCost - baseCost;
+  // Assume a rough "max items" based on requestedCost — each item costs ~1pt.
+  // actualQueryCost = baseCost + min(totalActualItems, connectionCost)
+  const actualConnectionCost = Math.min(totalActualItems, connectionCost);
+  return Math.max(1, Math.floor(baseCost + actualConnectionCost));
+}
+
 declare module 'fastify' {
   interface FastifyInstance {
     rateLimiter: LeakyBucketRateLimiter;
@@ -392,6 +451,18 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
           return reply;
         }
 
+        // Post-execution: compute actualQueryCost from actual items returned
+        const actualQueryCost = computeActualCost(responseBody.data, queryCost);
+
+        // Refund unused capacity: requestedQueryCost was consumed upfront; deduct only actualQueryCost
+        const refund = queryCost - actualQueryCost;
+        if (refund > 0) {
+          fastify.rateLimiter.refund(rateLimitKey, refund);
+        }
+
+        // currentlyAvailable after refund
+        const postRefundAvailable = throttleResult.currentlyAvailable + refund;
+
         // Inject cost extensions (mirrors Shopify's format for successful requests)
         responseBody.extensions = {
           ...(typeof responseBody.extensions === 'object' && responseBody.extensions !== null
@@ -399,10 +470,10 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
             : {}),
           cost: {
             requestedQueryCost: queryCost,
-            actualQueryCost: queryCost,
+            actualQueryCost,
             throttleStatus: {
               maximumAvailable: fastify.rateLimiter.maxAvailable,
-              currentlyAvailable: throttleResult.currentlyAvailable,
+              currentlyAvailable: Math.min(fastify.rateLimiter.maxAvailable, postRefundAvailable),
               restoreRate: fastify.rateLimiter.restoreRate,
             },
           },

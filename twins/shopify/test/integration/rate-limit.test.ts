@@ -20,13 +20,14 @@ describe('GraphQL Rate Limiting', () => {
     app = await buildApp({ logger: false });
     await app.ready();
 
-    // Get a valid access token
-    const oauthResponse = await app.inject({
+    // Seed a valid access token directly (bypasses OAuth — Phase 23 tightened OAuth to require
+    // client_id + client_secret; use POST /admin/tokens as established in Phase 24-01 decisions).
+    token = 'rate-limit-test-token';
+    await app.inject({
       method: 'POST',
-      url: '/admin/oauth/access_token',
-      payload: { code: 'test-rate-limit' },
+      url: '/admin/tokens',
+      payload: { token, shopDomain: 'rate-limit-test.myshopify.com' },
     });
-    token = JSON.parse(oauthResponse.body).access_token;
   });
 
   afterEach(async () => {
@@ -101,11 +102,9 @@ describe('GraphQL Rate Limiting', () => {
   describe('throttling', () => {
     it('returns HTTP 429 with Retry-After when bucket is depleted', async () => {
       // Use a very expensive query to exhaust the 1000-point bucket quickly.
-      // orders(first:250) within integration test needs to resolve — but since
-      // we're testing throttling (HTTP level), we can use a high-cost query
-      // that the twin would accept schema-wise.
-      // Cost: orders(first:250) = 2+250=252, edges=1*250=250, node=1*250=250, id=0 → total=752
-      // Two such queries would exhaust 1504 > 1000 so second gets throttled.
+      // Seed 250 orders so the connection returns real items; actualQueryCost
+      // will be close to requestedQueryCost (752 pts for orders(first:250) with 250 items).
+      // Two such queries exhaust 1504 > 1000 so the second gets throttled.
 
       const expensiveQuery = `{
         orders(first: 250) {
@@ -120,6 +119,25 @@ describe('GraphQL Rate Limiting', () => {
 
       // Reset first to ensure we start from a fresh bucket
       await app.inject({ method: 'POST', url: '/admin/reset' });
+
+      // After reset, re-seed token (reset clears all state including tokens)
+      await app.inject({
+        method: 'POST',
+        url: '/admin/tokens',
+        payload: { token, shopDomain: 'rate-limit-test.myshopify.com' },
+      });
+
+      // Seed enough orders so the connection returns real items (non-empty results = real cost)
+      const orders = Array.from({ length: 250 }, (_, i) => ({
+        name: `#${1000 + i}`,
+        email: `order${i}@example.com`,
+        total_price: '10.00',
+      }));
+      await app.inject({
+        method: 'POST',
+        url: '/admin/fixtures/load',
+        payload: { orders },
+      });
 
       const responses: number[] = [];
       let throttledResponse: any = null;
@@ -168,7 +186,9 @@ describe('GraphQL Rate Limiting', () => {
   // ---------------------------------------------------------------------------
   describe('/admin/reset clears rate limiter', () => {
     it('subsequent query succeeds after reset', async () => {
-      // Use a high-cost query to consume most of the bucket
+      // Use a high-cost query with seeded orders to consume real bucket points.
+      // orders(first:100) with 100 seeded items: actualQueryCost ≈ requestedQueryCost.
+      // Cost: (2+100) + 1*100 + 1*100 = 302 pts. Four queries: 1208 > 1000 → throttled.
       const expensiveQuery = `{
         orders(first: 100) {
           edges {
@@ -180,9 +200,22 @@ describe('GraphQL Rate Limiting', () => {
         }
       }`;
 
-      // Exhaust budget with multiple requests
+      // Seed 100 orders so connection returns real items (non-empty = real cost deducted)
+      const orders = Array.from({ length: 100 }, (_, i) => ({
+        name: `#${2000 + i}`,
+        email: `reset-test-order${i}@example.com`,
+        total_price: '15.00',
+      }));
+      await app.inject({
+        method: 'POST',
+        url: '/admin/fixtures/load',
+        payload: { orders },
+      });
+
+      // Exhaust budget with multiple requests (up to 15 — with 100 items seeded,
+      // net cost per query is ~101 pts; 1000/101 ≈ 10 requests to drain, 11th throttles)
       let throttled = false;
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 15; i++) {
         const res = await app.inject({
           method: 'POST',
           url: '/admin/api/2024-01/graphql.json',
@@ -205,6 +238,13 @@ describe('GraphQL Rate Limiting', () => {
       });
       expect(resetRes.statusCode).toBe(200);
       expect(JSON.parse(resetRes.body).reset).toBe(true);
+
+      // After reset, re-seed token (reset clears all state including tokens)
+      await app.inject({
+        method: 'POST',
+        url: '/admin/tokens',
+        payload: { token, shopDomain: 'rate-limit-test.myshopify.com' },
+      });
 
       // After reset, a simple query should succeed immediately
       const afterReset = await app.inject({
@@ -237,12 +277,13 @@ describe('actualQueryCost vs requestedQueryCost', () => {
     app = await buildApp({ logger: false });
     await app.ready();
 
-    const oauthResponse = await app.inject({
+    // Seed a valid access token directly — POST /admin/tokens bypasses Phase 23 OAuth tightening.
+    token = 'actual-cost-test-token';
+    await app.inject({
       method: 'POST',
-      url: '/admin/oauth/access_token',
-      payload: { code: 'test-rate-limit' },
+      url: '/admin/tokens',
+      payload: { token, shopDomain: 'actual-cost-test.myshopify.com' },
     });
-    token = JSON.parse(oauthResponse.body).access_token;
   });
 
   afterEach(async () => {
