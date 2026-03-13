@@ -2,6 +2,22 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { createRestClient } from '../helpers/shopify-rest-client.js';
 import { resetShopify, seedShopifyAccessToken } from '../setup/seeders.js';
 
+/** Seed N products in the twin via the admin fixtures endpoint. */
+async function seedProducts(count: number): Promise<void> {
+  const twinUrl = process.env.SHOPIFY_API_URL!;
+  const products = Array.from({ length: count }, (_, i) => ({
+    title: `Pagination Product ${i + 1}`,
+  }));
+  const res = await fetch(twinUrl + '/admin/fixtures/load', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ products }),
+  });
+  if (!res.ok) {
+    throw new Error(`seedProducts: POST /admin/fixtures/load failed with ${res.status}`);
+  }
+}
+
 describe('AdminRestApiClient methods (SHOP-09)', () => {
   let accessToken: string;
 
@@ -88,13 +104,21 @@ describe('AdminRestApiClient methods (SHOP-09)', () => {
     expect(response.headers.get('x-shopify-api-version')).toBe('2025-01');
   });
 
-  it('get() with page_info=test and apiVersion 2025-01 returns version-aware Link header', async () => {
+  it('get() with limit=2 and 3 seeded products returns Link header with page_info cursor (RED until Plan 02)', async () => {
+    // Seed 3 products so a limit=2 request has a second page
+    await seedProducts(3);
+
     const client = createRestClient({ accessToken, apiVersion: '2025-01' });
-    const response = await client.get('products', { searchParams: { page_info: 'test' } });
+
+    // Page 1: request with limit=2 via 2025-01
+    const response = await client.get('products', { searchParams: { limit: 2 } });
     expect(response.ok).toBe(true);
+
+    // Twin must return a Link header with page_info cursor
+    // RED: link header will be absent (null) until Plan 02 implements cursor pagination
     const linkHeader = response.headers.get('link');
-    expect(linkHeader).toBeDefined();
-    // The Link header URL must contain /admin/api/2025-01/ (not a hardcoded 2024-01)
-    expect(linkHeader).toContain('/admin/api/2025-01/');
+    expect(linkHeader).not.toBeNull();
+    expect(linkHeader!).toContain('page_info=');
+    expect(linkHeader!).toContain('/admin/api/2025-01/');
   });
 });

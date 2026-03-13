@@ -3,16 +3,17 @@
  * SHOP-15: shopify.rest.* resource classes — Tier 1 and Tier 2 stub tests.
  *
  * 10 tests total:
- *   Test 1  (RestClient.get):        client.get({ path: 'products' }) → body.products is array
- *   Test 1b (RestClient.get+Link):   client.get with page_info=test query → result.pageInfo populated
- *   Test 2  (RestClient.post):       client.post products → body.product.id defined
- *   Test 3  (RestClient.put):        client.put products/1 → body.product.id defined
- *   Test 4  (RestClient.delete):     client.delete products/1 → resolves without throw
- *   Test 5  (RestClient.retry):      client.get test-retry with tries:2 → resolves (429→200)
- *   Test 6  (Product.all Tier 1):    shopify.rest.Product.all({ session }) → data is array
- *   Test 7  (Customer.all Tier 1):   shopify.rest.Customer.all({ session }) → data is array
- *   Test 8  (Order.all Tier 1):      shopify.rest.Order.all({ session }) → data is array
- *   Test 9  (Metafield.all Tier 2):  shopify.rest.Metafield.all({ session }) → data is array
+ *   Test 1  (RestClient.get):          client.get({ path: 'products' }) → body.products is array
+ *   Test 1b (RestClient.get+multipage): client.get with limit=2 and 3 products → pageInfo.nextPage (RED until Plan 02)
+ *   Test 2  (RestClient.post):         client.post products → body.product.id defined
+ *   Test 3  (RestClient.put):          client.put products/1 → body.product.id defined
+ *   Test 4  (RestClient.delete):       client.delete products/1 → resolves without throw
+ *   Test 5  (RestClient.retry):        client.get test-retry with tries:2 → resolves (429→200)
+ *   Test 5b (RestClient.version-page): client.get limit=2 apiVersion 2025-01 → pageInfo.nextPageUrl has 2025-01 (RED until Plan 02)
+ *   Test 6  (Product.all Tier 1):      shopify.rest.Product.all({ session }) → data is array
+ *   Test 7  (Customer.all Tier 1):     shopify.rest.Customer.all({ session }) → data is array
+ *   Test 8  (Order.all Tier 1):        shopify.rest.Order.all({ session }) → data is array
+ *   Test 9  (Metafield.all Tier 2):    shopify.rest.Metafield.all({ session }) → data is array
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
@@ -21,6 +22,22 @@ import { ApiVersion } from '@shopify/shopify-api';
 import { restResources } from '@shopify/shopify-api/rest/admin/2024-01';
 import { createShopifyApiClient } from '../helpers/shopify-api-client.js';
 import { resetShopify } from '../setup/seeders.js';
+
+/** Seed N products in the twin via the admin fixtures endpoint. */
+async function seedProducts(count: number): Promise<void> {
+  const twinUrl = process.env.SHOPIFY_API_URL!;
+  const products = Array.from({ length: count }, (_, i) => ({
+    title: `Pagination Product ${i + 1}`,
+  }));
+  const res = await fetch(twinUrl + '/admin/fixtures/load', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ products }),
+  });
+  if (!res.ok) {
+    throw new Error(`seedProducts: POST /admin/fixtures/load failed with ${res.status}`);
+  }
+}
 
 // Pass REST resources so shopify.rest.Product/Customer/Order/Metafield are populated
 const shopify = createShopifyApiClient({ restResources });
@@ -48,16 +65,32 @@ describe('shopify.clients.Rest — SHOP-14 (live twin)', () => {
     expect(result.pageInfo?.nextPageUrl).toBeUndefined();
   });
 
-  it('get() with page_info=test query returns pageInfo with nextPageUrl', async () => {
+  it('get() with limit=2 and 3 seeded products returns pageInfo.nextPage for second page (RED until Plan 02)', async () => {
+    // Seed 3 products so a limit=2 request has a second page
+    await seedProducts(3);
+
     const RestClient = shopify.clients.Rest;
     const client = new RestClient({ session });
-    const result = await client.get<{ products: unknown[] }>({
+
+    // Page 1: request with limit=2
+    const page1 = await client.get<{ products: unknown[] }>({
       path: 'products',
-      query: { page_info: 'test' },
+      query: { limit: '2' },
     });
-    // Twin returns Link header for ?page_info=test → SDK parses it into result.pageInfo
-    expect(result.pageInfo).toBeDefined();
-    expect(result.pageInfo?.nextPageUrl).toBeDefined();
+    expect(Array.isArray(page1.body.products)).toBe(true);
+
+    // Twin must return a Link header → SDK parses it into pageInfo.nextPage
+    // RED: pageInfo.nextPage is undefined until Plan 02 implements cursor pagination
+    expect(page1.pageInfo?.nextPage).toBeDefined();
+
+    // Follow the next page
+    const page2 = await client.get<{ products: unknown[] }>({
+      path: page1.pageInfo!.nextPage!.path,
+      query: page1.pageInfo!.nextPage!.query,
+    });
+    expect(Array.isArray(page2.body.products)).toBe(true);
+    // Page 2 should have the remaining 1 product
+    expect(page2.body.products).toHaveLength(1);
   });
 
   // ── Version echo and version-aware Link assertions (Phase 22-02) ─────────
@@ -82,17 +115,24 @@ describe('shopify.clients.Rest — SHOP-14 (live twin)', () => {
     expect(version).toBe('2025-01');
   });
 
-  it('get() with page_info=test and apiVersion 2025-01 returns version-aware Link header', async () => {
+  it('get() with apiVersion 2025-01 and limit=2 returns pageInfo.nextPageUrl containing 2025-01 (RED until Plan 02)', async () => {
+    // Seed 3 products so a limit=2 request with apiVersion 2025-01 has a second page
+    await seedProducts(3);
+
     const RestClient = shopify.clients.Rest;
     const client = new RestClient({ session, apiVersion: ApiVersion.January25 });
-    const result = await client.get<{ products: unknown[] }>({
+
+    // Page 1: request with limit=2 via 2025-01 version
+    const page1 = await client.get<{ products: unknown[] }>({
       path: 'products',
-      query: { page_info: 'test' },
+      query: { limit: '2' },
     });
-    // pageInfo is populated from the Link header — the URL must contain 2025-01
-    expect(result.pageInfo).toBeDefined();
-    expect(result.pageInfo?.nextPageUrl).toBeDefined();
-    expect(result.pageInfo?.nextPageUrl).toContain('/admin/api/2025-01/');
+    expect(Array.isArray(page1.body.products)).toBe(true);
+
+    // Link header must contain the 2025-01 version path
+    // RED: pageInfo.nextPage is undefined until Plan 02 implements cursor pagination
+    expect(page1.pageInfo?.nextPage).toBeDefined();
+    expect(page1.pageInfo?.nextPageUrl).toContain('/admin/api/2025-01/');
   });
 
   it('post() returns body.product with id', async () => {
