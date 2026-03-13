@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 26-02-PLAN.md
-last_updated: "2026-03-13T04:56:54.038Z"
-last_activity: "2026-03-13 — Phase 26 Plan 02 complete: checkScope() + chat.ts ownership enforcement + oauth client_id; SLCK-15/18/19 chat-surface GREEN"
+stopped_at: Completed 26-03-PLAN.md
+last_updated: "2026-03-13T05:08:43.639Z"
+last_activity: "2026-03-13 — Phase 26 Plan 03 complete: universal checkScope() across all 10 web-api plugins; SLCK-18+19 fully GREEN; Phase 26 DONE"
 progress:
   total_phases: 15
-  completed_phases: 13
+  completed_phases: 14
   total_plans: 51
-  completed_plans: 50
+  completed_plans: 51
   percent: 98
 ---
 
@@ -23,16 +23,16 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 26 Plan 01 complete (Wave 0 RED test scaffold for SLCK-15/18/19)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 26 COMPLETE (SLCK-15/18/19 all GREEN); ready for Phase 27 (conformance/coverage)
 
 ## Current Position
 
-Phase: 26 of 27 (Slack Chat Scoping & Scope Enforcement)
-Plan: 2 of 3 complete
-Status: Plan 26-02 complete — checkScope() helper, chat.update/delete ownership enforcement, scope headers in checkAuthRateError, oauth.v2.access client_id validation; SLCK-15 (5/5) GREEN, SLCK-18 (3/5) GREEN, SLCK-19 (2/2) GREEN
-Last activity: 2026-03-13 — Phase 26 Plan 02 complete: scope enforcement in chat.ts/oauth.ts, SLCK-15+18+19 chat-surface GREEN
+Phase: 26 of 27 (Slack Chat Scoping & Scope Enforcement) — COMPLETE
+Plan: 3 of 3 complete
+Status: Plan 26-03 complete — universal scope enforcement across all 9 remaining web-api plugins; SLCK-18 (5/5) GREEN, SLCK-19 universal; Phase 26 fully closed
+Last activity: 2026-03-13 — Phase 26 Plan 03 complete: checkScope() wired into all 10 plugin files; SLCK-18+19 universally GREEN across entire Slack twin
 
-Progress: [██████████] 98% (overall: 49/51 currently planned plans complete)
+Progress: [██████████] 100% (overall: 51/51 plans complete)
 
 ## Performance Metrics
 
@@ -62,10 +62,18 @@ Progress: [██████████] 98% (overall: 49/51 currently planned
 | Phase 25 P02 | 20min | 2 tasks | 6 files |
 | Phase 26-01 P01 | 2min | 1 tasks | 1 files |
 | Phase 26 P02 | 5min | 2 tasks | 4 files |
+| Phase 26 P03 | 9min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-13 - Phase 26 Plan 03 (universal scope enforcement — SLCK-18/19 across all 9 remaining plugins):**
+- stub(method, extra?) factory pattern for stubs.ts/admin.ts/new-families.ts: method name as first arg enables checkScope() inside factory without 95+ inline call sites
+- conversations.ts/users.ts have both shared checkAuth() AND inline auth blocks for list/info/history — both code paths needed separate scope enforcement
+- pins.ts/reactions.ts/views.ts use synchronous authCheck() — checkScope() + header injection work synchronously before rate-limit check
+- SLCK-18 (5/5) GREEN, SLCK-19 universal across all plugins; Phase 26 complete
+- 4 pre-existing failures in slack-state-tables.test.ts are known failures with "This FAILS because..." comments — not caused by this plan
 
 **2026-03-13 - Phase 26 Plan 02 (chat scope enforcement — SLCK-15/18/19):**
 - checkAuthRateError return type widened to {token, tokenRecord} enabling ownership checks without second getToken() call
@@ -199,7 +207,7 @@ None.
 
 **Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
 **Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 26-02-PLAN.md
+**Stopped at:** Completed 26-03-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
