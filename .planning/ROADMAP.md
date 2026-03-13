@@ -55,7 +55,7 @@
 - [x] **Phase 28: Shopify REST Pagination & Version Policy** - Real cursor pagination and supported version validation (gap closure) (completed 2026-03-13)
 - [x] **Phase 29: Shopify Billing Transitions & Test Migration** - Billing state machine guards and legacy test migration (gap closure) (completed 2026-03-13)
 - [x] **Phase 30: Slack Transport & State Fixes** - Provider-aware event delivery and stateful reactions/views (gap closure) (completed 2026-03-13)
-- [ ] **Phase 31: Slack OAuth & Method Coverage** - OAuth exchange validation and comprehensive method smoke tests (gap closure)
+- [x] **Phase 31: Slack OAuth & Method Coverage** - OAuth exchange validation and comprehensive method smoke tests (gap closure) (completed 2026-03-13)
 - [ ] **Phase 32: Conformance Harness & Evidence** - Primitive value comparison and real execution evidence (gap closure)
 - [ ] **Phase 33: Cross-Cutting Reset Coverage** - Verify all new SQLite tables in StateManager reset logic (gap closure)
 
@@ -343,7 +343,7 @@ Plans:
 **Goal:** Slack OAuth exchange validates scope, redirect_uri, and binds codes to authorize requests; method coverage tests prove all 275+ WebClient methods are callable.
 **Requirements:** SLCK-18, SLCK-14
 **Gap Closure:** Closes partial SLCK-18 (OAuth under-validated) and partial SLCK-14 (insufficient method coverage testing); adds Phase 25/26 test files to evidence map
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 31-01-PLAN.md — SLCK-14: expand slack-method-coverage.test.ts (slackLists/rtm/entity families) + EVIDENCE_MAP Phase 25/26 additions
@@ -381,7 +381,7 @@ Plans:
 | 28. Shopify REST Pagination & Version Policy | 3/3 | Complete    | 2026-03-13 | - |
 | 29. Shopify Billing Transitions & Test Migration | 2/2 | Complete    | 2026-03-13 | - |
 | 30. Slack Transport & State Fixes | 2/2 | Complete    | 2026-03-13 | - |
-| 31. Slack OAuth & Method Coverage | v1.2 | 0/2 | Pending | - |
+| 31. Slack OAuth & Method Coverage | 2/2 | Complete   | 2026-03-13 | - |
 | 32. Conformance Harness & Evidence | v1.2 | 0/0 | Pending | - |
 | 33. Cross-Cutting Reset Coverage | v1.2 | 0/0 | Pending | - |
 

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 28-03-PLAN.md
-last_updated: "2026-03-13T20:45:53.561Z"
+stopped_at: Completed 31-01-PLAN.md
+last_updated: "2026-03-13T21:07:57.387Z"
 last_activity: "2026-03-13 — Phase 28 Plan 02 complete: REST cursor pagination, paginateList helper, SHOP-23 GREEN"
 progress:
   total_phases: 21
-  completed_phases: 18
+  completed_phases: 19
   total_plans: 62
-  completed_plans: 60
+  completed_plans: 62
   percent: 97
 ---
 
@@ -23,16 +23,16 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 30 Plan 02 COMPLETE (SLCK-17 state table correctness: views.update view_not_found, reactions.list real state, try/catch test assertions)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 31 Plan 02 COMPLETE (SLCK-18 OAuth binding: Map-based code binding, scope at authorize, redirect_uri at exchange, safe log)
 
 ## Current Position
 
-Phase: 28 of 33 (Shopify REST Pagination & Version Policy) — IN PROGRESS
-Plan: 2 of 3 complete
-Status: Plan 28-02 complete — paginateList helper + real cursor pagination on 4 Tier 1 REST list endpoints; SHOP-23 4 tests GREEN; SHOP-17 still RED (Plan 03)
-Last activity: 2026-03-13 — Phase 28 Plan 02 complete: REST cursor pagination, paginateList helper, SHOP-23 GREEN
+Phase: 31 of 33 (Slack OAuth Method Coverage) — COMPLETE
+Plan: 2 of 2 complete
+Status: Plan 31-02 complete — Map-based OAuth code binding; SLCK-18f (redirect_uri_mismatch) and SLCK-18g (invalid_scope) GREEN; SLCK-18 fully satisfied
+Last activity: 2026-03-13 — Phase 31 Plan 02 complete: OAuth code binding, scope validation, safe log
 
-Progress: [██████████] 97% (overall: 88/91 plans complete)
+Progress: [██████████] 100% (overall: 91/91 plans complete)
 
 ## Performance Metrics
 
@@ -72,10 +72,20 @@ Progress: [██████████] 97% (overall: 88/91 plans complete)
 | Phase 28-01 P01 | 7 | 2 tasks | 3 files |
 | Phase 28 P02 | 8min | 1 tasks | 1 files |
 | Phase 28 P03 | 2min | 2 tasks | 3 files |
+| Phase 31 P01 | 2min | 2 tasks | 3 files |
+| Phase 31-slack-oauth-method-coverage P02 | 2min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-13 - Phase 31 Plan 02 (Slack OAuth binding — SLCK-18f/18g):**
+- CodeBinding interface stores redirectUri + scope + clientId per issued code — Map<string, CodeBinding> replaces Set<string> for typed per-code binding
+- redirect_uri validation at exchange is conditional: only enforced if redirect_uri is provided (matches real Slack — redirect_uri is optional at exchange)
+- client_id validation at exchange uses binding.clientId (bound at authorize time), not a global constant — correct multi-client model
+- Scope check at authorize returns 400 invalid_scope before code generation — reject before redirect, never issue unusable codes
+- Removed { code } field from token exchange log entry (security anti-pattern — raw tokens must not appear in logs)
+- SLCK-18 fully satisfied: all 7 subtests GREEN (18a-18g)
 
 **2026-03-13 - Phase 29 Plan 02 (integration test OAuth migration — SHOP-21):**
 - OAuth describe blocks use full authorize→exchange flow (GET /admin/oauth/authorize + POST /admin/oauth/access_token with credentials) so OAuth endpoint behavior is genuinely tested
@@ -261,7 +271,7 @@ None.
 
 **Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
 **Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 28-03-PLAN.md
+**Stopped at:** Completed 31-01-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
