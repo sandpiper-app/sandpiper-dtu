@@ -1,6 +1,6 @@
 {
   "$schema": "https://sandpiper.dev/schemas/coverage-report.json",
-  "generatedAt": "2026-03-13T16:39:23.073Z",
+  "generatedAt": "2026-03-13T21:06:18.776Z",
   "phase": "27",
   "note": "Phase 27: INFRA-22 — coverage derived from Vitest JSON reporter execution evidence. EVIDENCE_MAP replaces hand-authored LIVE_SYMBOLS.",
   "packages": {
@@ -119870,8 +119870,8 @@
         "testFile": null
       },
       "WebClient.admin.apps.approved.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.admin.apps.clearResolution": {
         "tier": "deferred",
@@ -119958,8 +119958,8 @@
         "testFile": null
       },
       "WebClient.admin.conversations.create": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.admin.conversations.delete": {
         "tier": "deferred",
@@ -120014,8 +120014,8 @@
         "testFile": null
       },
       "WebClient.admin.conversations.search": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.admin.conversations.setConversationPrefs": {
         "tier": "deferred",
@@ -120106,8 +120106,8 @@
         "testFile": null
       },
       "WebClient.admin.teams.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.admin.teams.owners.list": {
         "tier": "deferred",
@@ -120158,12 +120158,12 @@
         "testFile": null
       },
       "WebClient.admin.users.invite": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.admin.users.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.admin.users.remove": {
         "tier": "deferred",
@@ -120350,12 +120350,12 @@
         "testFile": null
       },
       "WebClient.canvases.create": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.canvases.delete": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.canvases.edit": {
         "tier": "deferred",
@@ -120558,8 +120558,8 @@
         "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.entity.presentDetails": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.files.completeUploadExternal": {
         "tier": "live",
@@ -120642,20 +120642,20 @@
         "testFile": null
       },
       "WebClient.oauth.v2.access": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-scope-enforcement.test.ts"
       },
       "WebClient.oauth.v2.exchange": {
         "tier": "deferred",
         "testFile": null
       },
       "WebClient.openid.connect.token": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.openid.connect.userInfo": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.pins.add": {
         "tier": "live",
@@ -120706,8 +120706,8 @@
         "testFile": "sdk/slack-stubs-smoke.test.ts"
       },
       "WebClient.rtm.connect": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.rtm.start": {
         "tier": "deferred",
@@ -120734,8 +120734,8 @@
         "testFile": null
       },
       "WebClient.slackLists.create": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.slackLists.download.get": {
         "tier": "deferred",
@@ -120906,16 +120906,16 @@
         "testFile": "sdk/slack-views.test.ts"
       },
       "WebClient.stars.add": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.stars.list": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.stars.remove": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.workflows.featured.add": {
         "tier": "deferred",
@@ -120934,16 +120934,16 @@
         "testFile": null
       },
       "WebClient.workflows.stepCompleted": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.workflows.stepFailed": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.workflows.updateStep": {
-        "tier": "deferred",
-        "testFile": null
+        "tier": "live",
+        "testFile": "sdk/slack-method-coverage.test.ts"
       },
       "WebClient.eventNames": {
         "tier": "deferred",
@@ -130732,8 +130732,8 @@
     }
   },
   "summary": {
-    "live": 202,
+    "live": 222,
     "stub": 0,
-    "deferred": 32477
+    "deferred": 32457
   }
 }

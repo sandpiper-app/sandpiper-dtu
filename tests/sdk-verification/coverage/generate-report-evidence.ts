@@ -287,6 +287,28 @@ const EVIDENCE_MAP: Record<string, string> = {
   '@slack/bolt@4.6.0/AwsLambdaReceiver.start': 'sdk/slack-bolt-aws-lambda-receiver.test.ts',
   '@slack/bolt@4.6.0/AwsLambdaReceiver.stop': 'sdk/slack-bolt-aws-lambda-receiver.test.ts',
   '@slack/bolt@4.6.0/AwsLambdaReceiver.toHandler': 'sdk/slack-bolt-aws-lambda-receiver.test.ts',
+  // Phase 25: SLCK-14 — slack-method-coverage.test.ts
+  '@slack/web-api@7.14.1/WebClient.admin.users.list': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.admin.conversations.search': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.admin.teams.list': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.admin.apps.approved.list': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.admin.users.invite': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.admin.conversations.create': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.workflows.stepCompleted': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.workflows.stepFailed': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.workflows.updateStep': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.canvases.create': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.canvases.delete': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.openid.connect.token': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.openid.connect.userInfo': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.stars.list': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.stars.add': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.stars.remove': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.slackLists.create': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.rtm.connect': 'sdk/slack-method-coverage.test.ts',
+  '@slack/web-api@7.14.1/WebClient.entity.presentDetails': 'sdk/slack-method-coverage.test.ts',
+  // Phase 26: SLCK-18 — slack-scope-enforcement.test.ts
+  '@slack/web-api@7.14.1/WebClient.oauth.v2.access': 'sdk/slack-scope-enforcement.test.ts',
 };
 
 // Manifest loading types (same as generate-report.ts)
