@@ -296,7 +296,11 @@ Plans:
   2. Primitive value comparison catches behavioral mismatches (not just structural ones) where both responses have the same shape but different values
   3. Coverage status for each tracked symbol is derived from Vitest JSON reporter execution evidence (which test files exercised which endpoints), not the hand-authored `LIVE_SYMBOLS` map
   4. CI gate validates that the 202+ live symbol count is satisfied by execution evidence; `pnpm drift:check` continues passing throughout the `LIVE_SYMBOLS` → evidence transition without a coverage gap
-**Plans:** TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 27-01-PLAN.md — INFRA-21: bidirectional comparator fix (types, comparator, runner, TwinAdapter, unit tests)
+- [ ] 27-02-PLAN.md — INFRA-22: evidence-based coverage generator, 202-live-count gate, LIVE_SYMBOLS migration
 
 ## Progress
 
