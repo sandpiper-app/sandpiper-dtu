@@ -6,7 +6,7 @@
  * for delivery to all subscribed apps via WebhookQueue.
  */
 
-import { randomUUID } from 'node:crypto';
+import { randomUUID, createHmac } from 'node:crypto';
 import type { WebhookQueue } from '@dtu/webhooks';
 import type { SlackStateManager } from '../state/slack-state-manager.js';
 import { generateSlackId } from './id-generator.js';
@@ -74,13 +74,21 @@ export class EventDispatcher {
         continue;
       }
 
+      const bodyStr = JSON.stringify(envelope);
+      const ts = Math.floor(Date.now() / 1000);
+      const sig = `v0=${createHmac('sha256', this.signingSecret).update(`v0:${ts}:${bodyStr}`).digest('hex')}`;
+
       await this.webhookQueue.enqueue({
         id: randomUUID(),
         topic: `slack:${eventType}`,
         callbackUrl: sub.request_url,
         payload: envelope,
         secret: this.signingSecret,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Slack-Signature': sig,
+          'X-Slack-Request-Timestamp': String(ts),
+        },
       });
     }
   }
