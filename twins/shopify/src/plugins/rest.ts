@@ -6,7 +6,8 @@
  *
  * Routes (all under /admin/api/:version/):
  *   GET    /products.json               → { products: [...] }
- *   POST   /products.json               → { product: {} } 201
+ *   POST   /products.json               → { product: { id, admin_graphql_api_id, title, ... } } 201
+ *   GET    /products/:id.json           → { product: {} } or 404
  *   PUT    /products/:id.json           → { product: {} } 200
  *   DELETE /products/:id.json           → {} 200
  *   GET    /test-retry.json             → 429 first call, 200 second
@@ -15,7 +16,7 @@
  *   GET    /customers.json              → { customers: [...] }
  *   GET    /customers/:id.json          → { customer: {} | null }
  *   GET    /orders.json                 → { orders: [...] }
- *   GET    /orders/:id.json             → { order: null } stub
+ *   GET    /orders/:id.json             → { order: {} } state-backed by id
  *   GET    /orders/:order_id/fulfillments.json → { fulfillments: [] }
  *   GET    /inventory_items.json        → { inventory_items: [...] }
  *   GET    /inventory_levels.json       → { inventory_levels: [] } stub
@@ -136,8 +137,52 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
     const version = parseVersionHeader(req, reply);
     if (version === null) return;
     if (!await requireToken(req, reply)) return;
+    const input = (req.body as any)?.product ?? {};
+    // Two-step insert: use temp GID, get row id, update GID to use actual row id
+    const tempGid = `gid://shopify/Product/temp-${Date.now()}`;
+    const rowId = (fastify as any).stateManager.createProduct({
+      gid: tempGid,
+      title: input.title ?? 'New Product',
+      description: input.description ?? null,
+      vendor: input.vendor ?? null,
+      product_type: input.product_type ?? null,
+    });
+    const finalGid = `gid://shopify/Product/${rowId}`;
+    (fastify as any).stateManager.database
+      .prepare('UPDATE products SET gid = ? WHERE id = ?')
+      .run(finalGid, rowId);
+    const product = (fastify as any).stateManager.getProduct(rowId);
     reply.status(201);
-    return { product: { id: 'gid://shopify/Product/1', title: 'New Product' } };
+    return {
+      product: {
+        id: product.id,
+        admin_graphql_api_id: product.gid,
+        title: product.title,
+        created_at: new Date(product.created_at * 1000).toISOString(),
+        updated_at: new Date(product.updated_at * 1000).toISOString(),
+      },
+    };
+  });
+
+  // GET /admin/api/:version/products/:id.json
+  fastify.get(adminPath('/products/:id.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    const numericId = parseInt((req.params.id as string).replace(/\.json$/, ''), 10);
+    const product = (fastify as any).stateManager.getProduct(numericId);
+    if (!product) {
+      return reply.status(404).send({ errors: 'Not Found' });
+    }
+    return {
+      product: {
+        id: product.id,
+        admin_graphql_api_id: product.gid,
+        title: product.title,
+        created_at: new Date(product.created_at * 1000).toISOString(),
+        updated_at: new Date(product.updated_at * 1000).toISOString(),
+      },
+    };
   });
 
   // PUT /admin/api/:version/products/:id.json
@@ -192,12 +237,29 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
     return { orders: (fastify as any).stateManager.listOrders() };
   });
 
-  // GET /admin/api/:version/orders/:id.json
+  // GET /admin/api/:version/orders/:id.json — state-backed by id
   fastify.get(adminPath('/orders/:id.json'), async (req: any, reply) => {
     const version = parseVersionHeader(req, reply);
     if (version === null) return;
     if (!await requireToken(req, reply)) return;
-    return { order: null };
+    const numericId = parseInt((req.params.id as string).replace(/\.json$/, ''), 10);
+    const order = (fastify as any).stateManager.getOrderById(numericId);
+    if (!order) {
+      return reply.status(404).send({ errors: 'Not Found' });
+    }
+    return {
+      order: {
+        id: order.id,
+        admin_graphql_api_id: order.gid,
+        name: order.name,
+        total_price: order.total_price,
+        currency_code: order.currency_code,
+        display_fulfillment_status: order.display_fulfillment_status,
+        display_financial_status: order.display_financial_status,
+        created_at: new Date(order.created_at * 1000).toISOString(),
+        updated_at: new Date(order.updated_at * 1000).toISOString(),
+      },
+    };
   });
 
   // GET /admin/api/:version/orders/:order_id/fulfillments.json
