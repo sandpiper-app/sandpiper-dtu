@@ -79,6 +79,12 @@ Progress: [██████████] 100% (overall: 91/91 plans complete)
 
 ### Key Decisions
 
+**2026-03-13 - Phase 31 Plan 01 (Slack method coverage — SLCK-14):**
+- slackLists.create, rtm.connect, entity.presentDetails verified present in METHOD_SCOPES before adding tests — all pass with broad-scope seedSlackBotToken()
+- oauth.v2.access confirmed in slack-web-api@7.14.1 manifest before adding EVIDENCE_MAP entry
+- EVIDENCE_MAP live count 202 → 222 with 20 new Phase 25/26 symbol attributions (19 SLCK-14 + 1 oauth.v2.access)
+- SLCK-14 fully satisfied: slack-method-coverage.test.ts has 19 tests covering all 9 registered WebClient method families
+
 **2026-03-13 - Phase 31 Plan 02 (Slack OAuth binding — SLCK-18f/18g):**
 - CodeBinding interface stores redirectUri + scope + clientId per issued code — Map<string, CodeBinding> replaces Set<string> for typed per-code binding
 - redirect_uri validation at exchange is conditional: only enforced if redirect_uri is provided (matches real Slack — redirect_uri is optional at exchange)
