@@ -56,7 +56,7 @@
 - [x] **Phase 29: Shopify Billing Transitions & Test Migration** - Billing state machine guards and legacy test migration (gap closure) (completed 2026-03-13)
 - [x] **Phase 30: Slack Transport & State Fixes** - Provider-aware event delivery and stateful reactions/views (gap closure) (completed 2026-03-13)
 - [x] **Phase 31: Slack OAuth & Method Coverage** - OAuth exchange validation and comprehensive method smoke tests (gap closure) (completed 2026-03-13)
-- [ ] **Phase 32: Conformance Harness & Evidence** - Primitive value comparison and real execution evidence (gap closure)
+- [x] **Phase 32: Conformance Harness & Evidence** - Primitive value comparison and real execution evidence (gap closure) (completed 2026-03-13)
 - [ ] **Phase 33: Cross-Cutting Reset Coverage** - Verify all new SQLite tables in StateManager reset logic (gap closure)
 
 ## Phase Details
@@ -353,7 +353,7 @@ Plans:
 **Goal:** Conformance comparator catches primitive value mismatches in structural mode, and coverage attribution is derived from real test execution evidence rather than a hand-authored symbol map.
 **Requirements:** INFRA-21, INFRA-22
 **Gap Closure:** Closes unsatisfied INFRA-21 (primitives skipped) and unsatisfied INFRA-22 (hand-authored EVIDENCE_MAP); includes Phase 25/26 test file evidence integration
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 32-01-PLAN.md — INFRA-21: compareValueFields in FieldNormalizerConfig + comparator implementation + unit tests + shopifyNormalizer proof-of-concept
@@ -387,7 +387,7 @@ Plans:
 | 29. Shopify Billing Transitions & Test Migration | 2/2 | Complete    | 2026-03-13 | - |
 | 30. Slack Transport & State Fixes | 2/2 | Complete    | 2026-03-13 | - |
 | 31. Slack OAuth & Method Coverage | 2/2 | Complete    | 2026-03-13 | - |
-| 32. Conformance Harness & Evidence | 1/2 | In Progress|  | - |
+| 32. Conformance Harness & Evidence | 2/2 | Complete   | 2026-03-13 | - |
 | 33. Cross-Cutting Reset Coverage | v1.2 | 0/0 | Pending | - |
 
 ## Dependencies

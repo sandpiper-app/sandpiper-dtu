@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 32-02-PLAN.md
-last_updated: "2026-03-13T21:57:21.070Z"
+stopped_at: Completed 32-01-PLAN.md
+last_updated: "2026-03-13T21:58:31.776Z"
 last_activity: "2026-03-13 — Phase 32 Plan 02 complete: REQUIRED_LIVE_COUNT 202→222, INFRA-22 exclusion pattern documented, coverage-report.json regenerated"
 progress:
   total_phases: 21
-  completed_phases: 19
+  completed_phases: 20
   total_plans: 64
-  completed_plans: 63
-  percent: 100
+  completed_plans: 64
+  percent: 99
 ---
 
 # Project State: Sandpiper DTU
@@ -23,7 +23,7 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 32 Plan 02 COMPLETE (INFRA-22: coverage gate raised to 222, integration-test exclusion pattern documented, coverage-report.json regenerated)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 32 Plan 01 COMPLETE (INFRA-21: compareValueFields in structural mode, 3 unit tests GREEN, shopifyNormalizer proof-of-concept)
 
 ## Current Position
 
@@ -75,10 +75,17 @@ Progress: [██████████] 99% (overall: 92/93 plans complete)
 | Phase 31 P01 | 2min | 2 tasks | 3 files |
 | Phase 31-slack-oauth-method-coverage P02 | 2min | 2 tasks | 2 files |
 | Phase 32 P02 | 1min | 2 tasks | 3 files |
+| Phase 32-01 P01 | 2min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-13 - Phase 32 Plan 01 (compareValueFields — INFRA-21):**
+- compareValueFields loop deduplicates via reportedPaths Set so type-mismatch from compareStructure is not double-reported as value mismatch
+- Guard requires non-undefined AND non-object (typeof !== 'object') to silently skip stripped/nested fields — null passes typeof guard as false, excluded from comparison
+- shopifyNormalizer.compareValueFields: ['ok'] wires feature end-to-end; ok is deterministic on both twin and live Shopify responses
+- INFRA-21 fully satisfied: 3 new unit tests GREEN (struct-7/8/9); 21 comparator tests pass total
 
 **2026-03-13 - Phase 32 Plan 02 (Coverage gate update — INFRA-22):**
 - REQUIRED_LIVE_COUNT raised from 202 to 222 in check-drift.ts after Phase 31 added 20 new EVIDENCE_MAP entries (19 SLCK-14 method families + oauth.v2.access)
@@ -285,7 +292,7 @@ None.
 
 **Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
 **Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 32-02-PLAN.md
+**Stopped at:** Completed 32-01-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
