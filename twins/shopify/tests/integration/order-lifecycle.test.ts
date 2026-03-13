@@ -9,6 +9,7 @@
  * - State transitions trigger orders/update webhook delivery
  */
 
+import { randomUUID } from 'node:crypto';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { buildApp } from '../../src/index.js';
 
@@ -23,14 +24,19 @@ async function gql(app: any, token: string, query: string): Promise<any> {
   return JSON.parse(response.body);
 }
 
-/** Helper: get a fresh auth token */
-async function getToken(app: any, code = 'test-order-lifecycle'): Promise<string> {
-  const oauthResponse = await app.inject({
+/** Helper: seed a fresh auth token directly — Phase 23 tightened OAuth to require
+ *  client_id + client_secret; POST /admin/tokens bypasses that for test setup. */
+async function seedToken(
+  app: Awaited<ReturnType<typeof buildApp>>,
+  shopDomain = 'twin.myshopify.com'
+): Promise<string> {
+  const token = randomUUID();
+  await app.inject({
     method: 'POST',
-    url: '/admin/oauth/access_token',
-    payload: { code },
+    url: '/admin/tokens',
+    payload: { token, shopDomain },
   });
-  return JSON.parse(oauthResponse.body).access_token;
+  return token;
 }
 
 /** Helper: create an order and return its GID */
@@ -110,7 +116,7 @@ describe('Order Lifecycle Integration', () => {
     process.env.WEBHOOK_TIME_SCALE = '0.001';
     app = await buildApp({ logger: false });
     await app.ready();
-    token = await getToken(app);
+    token = await seedToken(app);
   });
 
   afterEach(async () => {
