@@ -89,6 +89,9 @@ export const productsSuite: ConformanceSuite = {
       name: 'Product creation returns userErrors for missing title',
       category: 'products',
       requirements: ['SHOP-01'],
+      // Validation error responses are deterministic (always same userErrors shape + values),
+      // so exact deep-equal comparison is appropriate here (proof-of-concept for comparisonMode).
+      comparisonMode: 'exact',
       operation: {
         name: 'productCreate-invalid',
         description: 'Attempt to create product without required title field',

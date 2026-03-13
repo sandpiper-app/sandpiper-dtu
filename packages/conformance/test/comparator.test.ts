@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { compareResponses } from '../src/comparator.js';
+import { compareResponses, compareResponsesStructurally } from '../src/comparator.js';
 import type { ConformanceResponse, FieldNormalizerConfig } from '../src/types.js';
 
 const emptyNormalizer: FieldNormalizerConfig = {
@@ -244,6 +244,101 @@ describe('compareResponses', () => {
       twin, baseline, normalizer
     );
 
+    expect(result.passed).toBe(true);
+  });
+});
+
+describe('compareResponsesStructurally', () => {
+  it('detects baseline-only field missing from twin (bidirectional)', () => {
+    const twin = makeResponse({ body: { ok: true } });
+    const baseline = makeResponse({ body: { ok: true, needed_field: 'value' } });
+    const result = compareResponsesStructurally(
+      'struct-1', 'baseline field missing from twin', 'test',
+      twin, baseline, [], emptyNormalizer
+    );
+    expect(result.passed).toBe(false);
+    const d = result.differences.find(d => d.path.includes('needed_field'));
+    expect(d).toBeDefined();
+    expect(d!.kind).toBe('deleted');
+  });
+
+  it('detects twin-only field not in baseline (original direction)', () => {
+    const twin = makeResponse({ body: { ok: true, extra_field: 'bonus' } });
+    const baseline = makeResponse({ body: { ok: true } });
+    const result = compareResponsesStructurally(
+      'struct-2', 'twin extra field', 'test',
+      twin, baseline, [], emptyNormalizer
+    );
+    expect(result.passed).toBe(false);
+    const d = result.differences.find(d => d.path.includes('extra_field'));
+    expect(d).toBeDefined();
+    expect(d!.kind).toBe('added');
+  });
+
+  it('detects mismatch in second array element (not just index 0)', () => {
+    const twin = makeResponse({
+      body: { items: [{ id: 1, name: 'A' }, { id: 2, name: 'B' }] },
+    });
+    const baseline = makeResponse({
+      body: { items: [{ id: 1, name: 'A' }, { id: 2, name: 'B', required: 'yes' }] },
+    });
+    const result = compareResponsesStructurally(
+      'struct-3', 'all array elements', 'test',
+      twin, baseline, [], emptyNormalizer
+    );
+    expect(result.passed).toBe(false);
+    const d = result.differences.find(d => d.path.includes('[1]'));
+    expect(d).toBeDefined();
+  });
+
+  it('detects array length mismatch — extra baseline element reported as deleted', () => {
+    const twin = makeResponse({ body: { items: [{ id: 1 }] } });
+    const baseline = makeResponse({ body: { items: [{ id: 1 }, { id: 2 }] } });
+    const result = compareResponsesStructurally(
+      'struct-4', 'array length mismatch', 'test',
+      twin, baseline, [], emptyNormalizer
+    );
+    expect(result.passed).toBe(false);
+    const d = result.differences.find(d => d.path.includes('[1]'));
+    expect(d).toBeDefined();
+    expect(d!.kind).toBe('deleted');
+  });
+
+  it('detects array length mismatch — extra twin element reported as added', () => {
+    const twin = makeResponse({ body: { items: [{ id: 1 }, { id: 2 }, { id: 3 }] } });
+    const baseline = makeResponse({ body: { items: [{ id: 1 }, { id: 2 }] } });
+    const result = compareResponsesStructurally(
+      'struct-4b', 'array length mismatch twin longer', 'test',
+      twin, baseline, [], emptyNormalizer
+    );
+    expect(result.passed).toBe(false);
+    const d = result.differences.find(d => d.path.includes('[2]'));
+    expect(d).toBeDefined();
+    expect(d!.kind).toBe('added');
+  });
+
+  it('sortFields: out-of-order arrays pass after sorting', () => {
+    const twin = makeResponse({ body: { channels: ['C2', 'C1', 'C3'] } });
+    const baseline = makeResponse({ body: { channels: ['C1', 'C2', 'C3'] } });
+    const normalizer: FieldNormalizerConfig = {
+      stripFields: [],
+      normalizeFields: {},
+      sortFields: ['channels'],
+    };
+    const result = compareResponsesStructurally(
+      'struct-5', 'sortFields normalizer', 'test',
+      twin, baseline, [], normalizer
+    );
+    expect(result.passed).toBe(true);
+  });
+
+  it('structural mode: identical shape passes even when primitive values differ', () => {
+    const twin = makeResponse({ body: { ok: true, ts: '1000.0001', user: 'U_TWIN' } });
+    const baseline = makeResponse({ body: { ok: true, ts: '9999.9999', user: 'U_REAL' } });
+    const result = compareResponsesStructurally(
+      'struct-6', 'primitive values differ — structural passes', 'test',
+      twin, baseline, [], emptyNormalizer
+    );
     expect(result.passed).toBe(true);
   });
 });

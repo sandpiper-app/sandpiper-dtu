@@ -5,6 +5,7 @@
  * without starting a real HTTP server.
  */
 
+import { randomUUID } from 'node:crypto';
 import { buildApp } from '../../src/index.js';
 import type { ConformanceAdapter, ConformanceOperation, ConformanceResponse } from '@dtu/conformance';
 import { shopifyAdminGraphqlPath } from '../version.js';
@@ -21,19 +22,26 @@ export class ShopifyTwinAdapter implements ConformanceAdapter {
     this.app = await buildApp({ logger: false });
     await this.app.ready();
 
-    // Perform OAuth to get access token (simplified twin exchange)
-    const oauthResponse = await this.app.inject({
+    // POST /admin/tokens introduced in Phase 21 — bypasses OAuth for test seeding.
+    // Phase 23 tightened /admin/oauth/access_token to require client_id + client_secret,
+    // making the old { code: 'conformance-test-code' } approach broken.
+    const token = `shpat_conformance_${randomUUID()}`;
+    const tokenResponse = await this.app.inject({
       method: 'POST',
-      url: '/admin/oauth/access_token',
-      payload: { code: 'conformance-test-code' },
+      url: '/admin/tokens',
+      headers: { 'content-type': 'application/json' },
+      payload: {
+        token,
+        shopDomain: 'dev.myshopify.com',
+        scopes: 'read_orders,write_orders,read_products,write_products,read_customers,write_customers',
+      },
     });
 
-    if (oauthResponse.statusCode !== 200) {
-      throw new Error(`OAuth failed: ${oauthResponse.body}`);
+    if (tokenResponse.statusCode !== 200) {
+      throw new Error(`Token seeding failed (POST /admin/tokens): ${tokenResponse.body}`);
     }
 
-    const oauthBody = JSON.parse(oauthResponse.body);
-    this.accessToken = oauthBody.access_token;
+    this.accessToken = token;
   }
 
   async execute(op: ConformanceOperation): Promise<ConformanceResponse> {

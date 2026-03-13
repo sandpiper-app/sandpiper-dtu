@@ -95,18 +95,29 @@ export class ConformanceRunner {
           }
 
           if (baselineResponse) {
-            const result = this.mode === 'live'
-              ? compareResponsesStructurally(
-                  test.id, test.name, test.category,
-                  twinResponse, baselineResponse,
-                  test.requirements ?? [],
-                  suite.normalizer
-                )
-              : compareResponses(
+            let result: ComparisonResult;
+            if (this.mode === 'live') {
+              if (test.comparisonMode === 'exact') {
+                result = compareResponses(
                   test.id, test.name, test.category,
                   twinResponse, baselineResponse,
                   suite.normalizer, test.requirements ?? []
                 );
+              } else {
+                result = compareResponsesStructurally(
+                  test.id, test.name, test.category,
+                  twinResponse, baselineResponse,
+                  test.requirements ?? [],
+                  suite.normalizer
+                );
+              }
+            } else {
+              result = compareResponses(
+                test.id, test.name, test.category,
+                twinResponse, baselineResponse,
+                suite.normalizer, test.requirements ?? []
+              );
+            }
             results.push(result);
           } else {
             // No baseline available
