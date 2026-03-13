@@ -7,7 +7,7 @@
     "build": "pnpm -r --filter='./packages/*' run build",
     "test": "vitest run",
     "test:sdk": "vitest run --project sdk-verification",
-    "coverage:generate": "tsx tests/sdk-verification/coverage/generate-report.ts",
+    "coverage:generate": "tsx tests/sdk-verification/coverage/generate-report-evidence.ts",
     "drift:check": "tsx tests/sdk-verification/drift/check-drift.ts",
     "lint": "pnpm -r run lint",
     "clean": "pnpm -r run clean && rm -rf node_modules"
