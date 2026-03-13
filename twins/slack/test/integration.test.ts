@@ -238,12 +238,12 @@ describe('Slack Twin Integration — Phase 5 Success Criteria', () => {
     const callbackPort = (callbackServer.address() as any).port;
 
     try {
-      // Subscribe for interaction delivery
-      app.slackStateManager.createEventSubscription(
-        'A_TWIN',
-        `http://localhost:${callbackPort}/events`,
-        ['*']
-      );
+      // Register dedicated interactivity URL for interaction delivery
+      await app.inject({
+        method: 'POST',
+        url: '/admin/set-interactivity-url',
+        payload: { url: `http://localhost:${callbackPort}/events` },
+      });
 
       // Trigger button click via admin
       const triggerRes = await app.inject({
@@ -259,16 +259,17 @@ describe('Slack Twin Integration — Phase 5 Success Criteria', () => {
       });
       const triggerBody = JSON.parse(triggerRes.body);
       expect(triggerBody.ok).toBe(true);
-      expect(triggerBody.response_url).toMatch(/^\/response-url\//);
+      // response_url must be absolute (http://...) for Bolt compatibility
+      expect(triggerBody.response_url).toMatch(/^http:\/\//);
 
       await new Promise(resolve => setTimeout(resolve, 50));
 
-      // Verify interaction payload received (form-encoded)
+      // Verify interaction payload received at interactivity URL (form-encoded)
       // The callback server receives the parsed payload
       expect(receivedPayloads.length).toBeGreaterThanOrEqual(1);
 
-      // Use response URL to post a follow-up message
-      const responseUrlPath = triggerBody.response_url;
+      // Use response URL path to post a follow-up message via app.inject()
+      const responseUrlPath = new URL(triggerBody.response_url).pathname;
       const responseRes = await app.inject({
         method: 'POST',
         url: responseUrlPath,

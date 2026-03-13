@@ -101,6 +101,7 @@ export async function buildApp(options: { logger?: boolean | object; rateLimit?:
   const interactionHandler = new InteractionHandler({
     slackStateManager,
     signingSecret,
+    baseUrl: process.env.SLACK_API_URL ?? 'http://localhost:3001',
   });
 
   // Decorate Fastify with services

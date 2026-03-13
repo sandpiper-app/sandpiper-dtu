@@ -5,6 +5,7 @@
  * POST /response-url/:id — response URL endpoint for follow-up messages
  */
 
+import { createHmac } from 'node:crypto';
 import type { FastifyPluginAsync } from 'fastify';
 import type { InteractionHandler } from '../services/interaction-handler.js';
 
@@ -44,21 +45,28 @@ const interactionsPlugin: FastifyPluginAsync = async (fastify) => {
       blockId: block_id,
     });
 
-    // Deliver to subscribed app's request URL as form-encoded
+    // Deliver to the dedicated interactivity URL (not event subscription URL)
     // (CRITICAL: Slack sends interaction payloads as application/x-www-form-urlencoded
-    //  with a 'payload' field containing JSON, not as raw JSON)
-    const subscriptions = fastify.slackStateManager.listEventSubscriptions();
+    //  with a 'payload' field containing JSON, signed with Slack HMAC headers)
+    const interactivityUrl = fastify.slackStateManager.getInteractivityUrl();
+    const signingSecret = fastify.signingSecret;
 
-    for (const sub of subscriptions) {
+    if (interactivityUrl) {
       try {
         const formBody = `payload=${encodeURIComponent(JSON.stringify(payload))}`;
-        await fetch(sub.request_url, {
+        const ts = Math.floor(Date.now() / 1000);
+        const sig = `v0=${createHmac('sha256', signingSecret).update(`v0:${ts}:${formBody}`).digest('hex')}`;
+        await fetch(interactivityUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Slack-Signature': sig,
+            'X-Slack-Request-Timestamp': String(ts),
+          },
           body: formBody,
         });
       } catch (err) {
-        request.log.warn({ error: err, url: sub.request_url }, 'Failed to deliver interaction payload');
+        request.log.warn({ error: err, url: interactivityUrl }, 'Failed to deliver interaction payload');
       }
     }
 

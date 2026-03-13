@@ -160,6 +160,14 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
     return reply.send({ ok: true });
   });
 
+  // POST /admin/set-interactivity-url — seed the interactivity URL for interaction delivery
+  fastify.post<{ Body: { url: string } }>('/admin/set-interactivity-url', async (request, reply) => {
+    const { url } = request.body;
+    if (!url) return reply.status(400).send({ error: 'url is required' });
+    fastify.slackStateManager.setInteractivityUrl(url);
+    return reply.send({ ok: true });
+  });
+
   // ---------------------------------------------------------------------------
   // Dead Letter Queue (DLQ) inspection endpoints
   // ---------------------------------------------------------------------------
