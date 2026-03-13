@@ -122,6 +122,32 @@ export function compareResponsesStructurally(
   // Compare body structure recursively
   compareStructure(twinBody, baselineBody, 'body', differences);
 
+  // compareValueFields: report primitive value mismatches for declared critical fields
+  // even in structural mode. Runs after compareStructure so type mismatches are already reported.
+  if (normalizer?.compareValueFields?.length) {
+    const reportedPaths = new Set(differences.map(d => d.path));
+    for (const fieldPath of normalizer.compareValueFields) {
+      const fullPath = `body.${fieldPath}`;
+      if (reportedPaths.has(fullPath)) continue; // already reported by compareStructure
+      const twinVal = getNestedValue(twinBody, fieldPath);
+      const baselineVal = getNestedValue(baselineBody, fieldPath);
+      if (
+        twinVal !== undefined &&
+        baselineVal !== undefined &&
+        typeof twinVal !== 'object' &&
+        typeof baselineVal !== 'object' &&
+        twinVal !== baselineVal
+      ) {
+        differences.push({
+          path: fullPath,
+          kind: 'changed',
+          lhs: twinVal,
+          rhs: baselineVal,
+        });
+      }
+    }
+  }
+
   return { testId, testName, category, passed: differences.length === 0, differences, requirements };
 }
 
@@ -372,4 +398,14 @@ function sortArrayFieldRecursive(obj: unknown, parts: string[], index: number): 
   } else {
     sortArrayFieldRecursive(record[current], parts, index + 1);
   }
+}
+
+function getNestedValue(obj: unknown, fieldPath: string): unknown {
+  const parts = fieldPath.split('.');
+  let cur: unknown = obj;
+  for (const part of parts) {
+    if (cur === null || cur === undefined || typeof cur !== 'object') return undefined;
+    cur = (cur as Record<string, unknown>)[part];
+  }
+  return cur;
 }

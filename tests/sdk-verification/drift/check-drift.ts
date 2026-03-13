@@ -122,9 +122,9 @@ try {
 
 // ─── 2b. Evidence-based live count gate (INFRA-22) ─────────────────────────
 console.log('\n=== Evidence-Based Live Count Gate (INFRA-22) ===\n');
-console.log('Live coverage must be >= 202 (from execution evidence, not hand-authored map).\n');
+console.log('Live coverage must be >= 222 (from execution evidence, not hand-authored map).\n');
 
-const REQUIRED_LIVE_COUNT = 202;
+const REQUIRED_LIVE_COUNT = 222;  // raised from 202 after Phase 31 (20 new symbols: SLCK-14 + oauth.v2.access)
 try {
   const coveragePath = join(root, 'tests/sdk-verification/coverage/coverage-report.json');
   const report = JSON.parse(readFileSync(coveragePath, 'utf8'));

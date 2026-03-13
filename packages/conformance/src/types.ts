@@ -85,6 +85,14 @@ export interface FieldNormalizerConfig {
    * and baseline before comparison, so different orderings pass.
    */
   sortFields?: string[];
+  /**
+   * Primitive field paths whose values must match exactly even in structural mode.
+   * Paths use dot notation relative to response body (e.g., 'ok', 'error', 'data.status').
+   * Only applies in structural mode; in exact mode all fields are value-compared via deep-diff.
+   * Only supports simple dot-notation paths to primitive fields (no array bracket notation).
+   * For array-path comparison use comparisonMode: 'exact'.
+   */
+  compareValueFields?: string[];
   /** Custom normalizer function for complex cases */
   custom?: (obj: unknown) => unknown;
 }

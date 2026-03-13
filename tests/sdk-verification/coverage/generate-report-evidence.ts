@@ -58,6 +58,23 @@ for (const result of evidence.testResults) {
 }
 console.log(`Evidence: ${passedFiles.size} test files passed.`);
 
+// INTEGRATION-TEST EXCLUSIONS
+// The following test files appear in vitest-evidence.json as passing but have no
+// EVIDENCE_MAP entries. They cover behavioral integration contracts (not manifest
+// symbols) or exercise SDK methods already attributed to dedicated primary test files.
+// This satisfies the INFRA-22 requirement: "evidence schema defines how local-only
+// utilities are excluded."
+//
+//   sdk/slack-signing.test.ts      — SLCK-16: event delivery Slack HMAC headers,
+//                                    absolute response_url, interactivity URL routing.
+//                                    Uses WebClient calls already covered in
+//                                    slack-chat.test.ts et al.
+//   sdk/slack-state-tables.test.ts — SLCK-17: conversations.invite/kick/members,
+//                                    conversations.open DM stability, views.update
+//                                    lifecycle, pins.add dedup, reactions.add/remove.
+//                                    All WebClient methods already attributed to their
+//                                    primary test files.
+
 // EVIDENCE_MAP: copy of LIVE_SYMBOLS from generate-report.ts
 // Key format: "{packageName}@{version}/{symbolPath}"
 // Value: relative test file path (relative to tests/sdk-verification/)
@@ -352,8 +369,8 @@ for (const file of manifestFiles) {
 const report = {
   $schema: 'https://sandpiper.dev/schemas/coverage-report.json',
   generatedAt: new Date().toISOString(),
-  phase: '27',
-  note: 'Phase 27: INFRA-22 — coverage derived from Vitest JSON reporter execution evidence. EVIDENCE_MAP replaces hand-authored LIVE_SYMBOLS.',
+  phase: '32',
+  note: 'Phase 32: INFRA-21/22 — primitive value comparison in structural mode (compareValueFields); coverage gate raised to 222; integration-test exclusion pattern documented.',
   packages,
   summary: { live: totalLive, stub: 0, deferred: totalDeferred },
 };
@@ -361,8 +378,8 @@ const report = {
 writeFileSync(outputPath, JSON.stringify(report, null, 2) + '\n');
 console.log(`Coverage report written to ${outputPath}`);
 console.log(`Summary: ${totalLive} live, 0 stub, ${totalDeferred} deferred`);
-if (totalLive >= 202) {
-  console.log(`INFRA-22: evidence-based live count ${totalLive} >= 202 required. Migration complete.`);
+if (totalLive >= 222) {
+  console.log(`INFRA-22: evidence-based live count ${totalLive} >= 222 required. Migration complete.`);
 } else {
-  console.error(`INFRA-22 WARNING: evidence-based live count ${totalLive} < 202. Check that vitest-evidence.json is fresh.`);
+  console.error(`INFRA-22 WARNING: evidence-based live count ${totalLive} < 222. Check that vitest-evidence.json is fresh.`);
 }
