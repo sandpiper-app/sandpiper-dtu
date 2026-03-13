@@ -16,18 +16,40 @@ import type { FastifyReply } from 'fastify';
 
 const SHOPIFY_API_VERSION_RE = /^(unstable|\d{4}-\d{2})$/;
 
+/** Versions that were valid Shopify API versions but are now sunset (no longer supported). */
+const SUNSET_VERSIONS = new Set<string>([
+  '2023-01', '2023-04', '2023-07', '2023-10',
+]);
+
+/** Month validation: rejects values outside 01-12 (e.g., 2024-99, 2024-00). */
+const VALID_MONTH_RE = /^(0[1-9]|1[0-2])$/;
+
 /**
  * Validate and return a Shopify API version string.
  *
  * Returns the version unchanged when valid, throws a TypeError with
  * a descriptive message when invalid so callers can surface an error
  * response without mixing version logic into route handlers.
+ *
+ * Throws a TypeError for syntactically-invalid versions (e.g. "2024-99").
+ * Throws an Error with err.sunset=true for known-sunset versions (e.g. "2023-01").
  */
 export function parseShopifyApiVersion(raw: string | undefined): string {
   if (!raw || !SHOPIFY_API_VERSION_RE.test(raw)) {
     throw new TypeError(
       `Invalid Shopify API version: "${raw}". Expected "unstable" or a YYYY-MM string.`
     );
+  }
+  if (raw !== 'unstable') {
+    const month = raw.split('-')[1];
+    if (!VALID_MONTH_RE.test(month)) {
+      throw new TypeError(`Invalid Shopify API version: "${raw}". Month out of range.`);
+    }
+  }
+  if (SUNSET_VERSIONS.has(raw)) {
+    const err = new Error(`Sunset Shopify API version: "${raw}".`) as any;
+    err.sunset = true;
+    throw err;
   }
   return raw;
 }
