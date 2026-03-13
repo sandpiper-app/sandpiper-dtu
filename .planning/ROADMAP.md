@@ -52,7 +52,7 @@
 - [x] **Phase 25: Slack Method Coverage, Event Signing & State Tables** - Close 126-method gap, fix event headers, and add membership/view/pin state (completed 2026-03-13)
 - [x] **Phase 26: Slack Chat Scoping & Scope Enforcement** - Author/channel ownership rules and per-method OAuth scope requirements (completed 2026-03-13)
 - [x] **Phase 27: Conformance Harness & Coverage Infrastructure** - Bidirectional structural comparison and execution-evidence coverage tracking (completed 2026-03-13)
-- [ ] **Phase 28: Shopify REST Pagination & Version Policy** - Real cursor pagination and supported version validation (gap closure)
+- [x] **Phase 28: Shopify REST Pagination & Version Policy** - Real cursor pagination and supported version validation (gap closure) (completed 2026-03-13)
 - [x] **Phase 29: Shopify Billing Transitions & Test Migration** - Billing state machine guards and legacy test migration (gap closure) (completed 2026-03-13)
 - [x] **Phase 30: Slack Transport & State Fixes** - Provider-aware event delivery and stateful reactions/views (gap closure) (completed 2026-03-13)
 - [ ] **Phase 31: Slack OAuth & Method Coverage** - OAuth exchange validation and comprehensive method smoke tests (gap closure)
@@ -312,7 +312,7 @@ Plans:
 **Goal:** Shopify REST list endpoints implement real cursor pagination with result slicing and cursor advancement, and the API version router rejects unsupported/sunset versions with appropriate error responses.
 **Requirements:** SHOP-23, SHOP-17
 **Gap Closure:** Closes unsatisfied SHOP-23 (fake pagination) and partial SHOP-17 (accepts invalid versions) from audit
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [ ] 28-01-PLAN.md — Wave 0: migrate pagination.test.ts OAuth seeding to POST /admin/tokens, add failing REST pagination + version policy tests
@@ -378,7 +378,7 @@ Plans:
 | 25. Slack Method Coverage, Event Signing & State Tables | 4/4 | Complete    | 2026-03-13 | - |
 | 26. Slack Chat Scoping & Scope Enforcement | 3/3 | Complete    | 2026-03-13 | - |
 | 27. Conformance Harness & Coverage Infrastructure | 2/2 | Complete    | 2026-03-13 | - |
-| 28. Shopify REST Pagination & Version Policy | 2/3 | In Progress|  | - |
+| 28. Shopify REST Pagination & Version Policy | 3/3 | Complete   | 2026-03-13 | - |
 | 29. Shopify Billing Transitions & Test Migration | 2/2 | Complete    | 2026-03-13 | - |
 | 30. Slack Transport & State Fixes | 2/2 | Complete    | 2026-03-13 | - |
 | 31. Slack OAuth & Method Coverage | v1.2 | 0/2 | Pending | - |
