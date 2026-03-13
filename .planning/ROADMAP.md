@@ -54,7 +54,7 @@
 - [x] **Phase 27: Conformance Harness & Coverage Infrastructure** - Bidirectional structural comparison and execution-evidence coverage tracking (completed 2026-03-13)
 - [ ] **Phase 28: Shopify REST Pagination & Version Policy** - Real cursor pagination and supported version validation (gap closure)
 - [ ] **Phase 29: Shopify Billing Transitions & Test Migration** - Billing state machine guards and legacy test migration (gap closure)
-- [ ] **Phase 30: Slack Transport & State Fixes** - Provider-aware event delivery and stateful reactions/views (gap closure)
+- [x] **Phase 30: Slack Transport & State Fixes** - Provider-aware event delivery and stateful reactions/views (gap closure) (completed 2026-03-13)
 - [ ] **Phase 31: Slack OAuth & Method Coverage** - OAuth exchange validation and comprehensive method smoke tests (gap closure)
 - [ ] **Phase 32: Conformance Harness & Evidence** - Primitive value comparison and real execution evidence (gap closure)
 - [ ] **Phase 33: Cross-Cutting Reset Coverage** - Verify all new SQLite tables in StateManager reset logic (gap closure)
@@ -333,7 +333,7 @@ Plans:
 **Goal:** Slack event deliveries carry only Slack signature headers (no Shopify headers), and state tables for reactions, views, and pins work correctly with proper error handling.
 **Requirements:** SLCK-16, SLCK-17
 **Gap Closure:** Closes partial SLCK-16 (dual headers) and partial SLCK-17 (stub reactions.list, views JSON parse, views.update unknown ID, test assertion bugs)
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 30-01-PLAN.md — SLCK-16: Replace WebhookQueue with direct fetch() in EventDispatcher (Slack-only headers)
@@ -375,7 +375,7 @@ Plans:
 | 27. Conformance Harness & Coverage Infrastructure | 2/2 | Complete    | 2026-03-13 | - |
 | 28. Shopify REST Pagination & Version Policy | v1.2 | 0/3 | Pending | - |
 | 29. Shopify Billing Transitions & Test Migration | 1/2 | In Progress|  | - |
-| 30. Slack Transport & State Fixes | 1/2 | In Progress|  | - |
+| 30. Slack Transport & State Fixes | 2/2 | Complete   | 2026-03-13 | - |
 | 31. Slack OAuth & Method Coverage | v1.2 | 0/0 | Pending | - |
 | 32. Conformance Harness & Evidence | v1.2 | 0/0 | Pending | - |
 | 33. Cross-Cutting Reset Coverage | v1.2 | 0/0 | Pending | - |

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: completed
-stopped_at: Completed 29-01-PLAN.md
-last_updated: "2026-03-13T20:24:02.620Z"
+stopped_at: Completed 30-02-PLAN.md
+last_updated: "2026-03-13T20:26:19.612Z"
 last_activity: "2026-03-13 — Phase 30 Plan 01 complete: EventDispatcher WebhookQueue removed, direct fetch() with X-Slack-Signature, 4/4 slack-signing tests GREEN"
 progress:
   total_phases: 21
-  completed_phases: 15
+  completed_phases: 16
   total_plans: 60
-  completed_plans: 55
+  completed_plans: 56
   percent: 93
 ---
 
@@ -23,16 +23,16 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 30 Plan 01 COMPLETE (Slack EventDispatcher direct fetch(), SLCK-16a GREEN)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 30 Plan 02 COMPLETE (SLCK-17 state table correctness: views.update view_not_found, reactions.list real state, try/catch test assertions)
 
 ## Current Position
 
-Phase: 30 of 33 (Slack Transport & State Fixes) — In Progress
-Plan: 1 of 2 complete
-Status: Plan 30-01 complete — EventDispatcher now delivers via direct fetch() with Slack HMAC headers; SLCK-16 requirement satisfied
-Last activity: 2026-03-13 — Phase 30 Plan 01 complete: EventDispatcher WebhookQueue removed, direct fetch() with X-Slack-Signature, 4/4 slack-signing tests GREEN
+Phase: 30 of 33 (Slack Transport & State Fixes) — COMPLETE
+Plan: 2 of 2 complete
+Status: Plan 30-02 complete — reactions.list now queries real state via listReactionsByUser; views.update returns view_not_found; SLCK-17 fully GREEN (248/248 tests)
+Last activity: 2026-03-13 — Phase 30 Plan 02 complete: reactions.list real state query, views.update view_not_found, SLCK-17 try/catch test fixes, 248/248 GREEN
 
-Progress: [█████████░] 93% (overall: 54/60 plans complete)
+Progress: [██████████] 96% (overall: 56/60 plans complete)
 
 ## Performance Metrics
 
@@ -67,6 +67,7 @@ Progress: [█████████░] 93% (overall: 54/60 plans complete)
 | Phase 27-01 P01 | 8min | 3 tasks | 6 files |
 | Phase 30 P01 | 1min | 1 tasks | 2 files |
 | Phase 29-01 P01 | 2min | 2 tasks | 2 files |
+| Phase 30-02 P02 | 4min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,12 @@ Progress: [█████████░] 93% (overall: 54/60 plans complete)
 - Direct fetch() pattern: JSON body + v0=${createHmac('sha256', secret).update(`v0:ts:body`).digest('hex')} sig in X-Slack-Signature header (same pattern as interactions.ts)
 - AbortSignal.timeout(5000) for per-delivery timeout; individual network errors non-fatal (log and continue)
 - SLCK-16a GREEN: delivered events carry X-Slack-Signature v0=<hex64> + X-Slack-Request-Timestamp; no X-Shopify-Hmac-Sha256
+
+**2026-03-13 - Phase 30 Plan 02 (SLCK-17 state table correctness):**
+- views.update with unknown view_id: return ok:false error:'view_not_found' (not ok:true fallback) — breaking change also requires fixing slack-views.test.ts (SLCK-08) to open a real view first
+- reactions.list groups raw DB rows by (channel_id, message_ts) key using Map; each item holds reactions array with count and users — no more empty stub
+- SLCK-17 test assertion pattern: WebClient throws on ok:false — tests must use try/catch with e.data?.error (same pattern as SLCK-15 in Phase 26-02)
+- Task 1 product changes were pre-committed in feat(29-01) by the prior agent — listReactionsByUser, view_not_found fix, and form-parse guard all already in HEAD before this plan ran
 
 **2026-03-13 - Phase 27 Plan 01 (conformance comparator fix + ShopifyTwinAdapter OAuth fix):**
 - Union-of-keys (allKeys Set) in compareStructure catches both directions: twin-extra as 'added', baseline-only as 'deleted'
@@ -230,7 +237,7 @@ None.
 
 **Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
 **Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 29-01-PLAN.md
+**Stopped at:** Completed 30-02-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
