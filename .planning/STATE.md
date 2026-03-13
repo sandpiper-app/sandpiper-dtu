@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 25-03-PLAN.md
-last_updated: "2026-03-13T03:58:54.004Z"
-last_activity: "2026-03-13 — Phase 25 Plan 01 complete: three new test files + smoke.test.ts XCUT-01 additions (all Wave 0 RED state)"
+stopped_at: Completed 25-04-PLAN.md
+last_updated: "2026-03-13T04:03:10.022Z"
+last_activity: "2026-03-13 — Phase 25 Plan 04 complete: 3 new SQLite tables, 8 new StateManager methods, 4 updated plugins, smoke XCUT-01 GREEN (84/84 tests)"
 progress:
   total_phases: 15
-  completed_phases: 12
+  completed_phases: 13
   total_plans: 48
-  completed_plans: 46
+  completed_plans: 48
   percent: 99
 ---
 
@@ -23,14 +23,14 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 25 Plan 01 complete (Wave 0 failing tests)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 25 Plan 04 complete (SLCK-17 state tables GREEN)
 
 ## Current Position
 
 Phase: 25 of 27 (Slack Method Coverage, Event Signing & State Tables)
-Plan: 1 of 4 complete
-Status: Plan 25-01 complete — Wave 0 failing tests for SLCK-14 / SLCK-16 / SLCK-17 / XCUT-01 written; all in RED state
-Last activity: 2026-03-13 — Phase 25 Plan 01 complete: three new test files + smoke.test.ts XCUT-01 additions (all Wave 0 RED state)
+Plan: 4 of 4 complete
+Status: Plan 25-04 complete — SLCK-17 state tables: slack_channel_members, slack_views, slack_pins, UNIQUE reactions index; all handlers stateful; XCUT-01 GREEN
+Last activity: 2026-03-13 — Phase 25 Plan 04 complete: 3 new SQLite tables, 8 new StateManager methods, 4 updated plugins, smoke XCUT-01 GREEN (84/84 tests)
 
 Progress: [██████████] 99% (overall: 43/44 currently planned plans complete)
 
@@ -58,10 +58,18 @@ Progress: [██████████] 99% (overall: 43/44 currently planned
 | Phase 24-04 P04 | 3min | 2 tasks | 4 files |
 | Phase 25-01 P01 | 6min | 3 tasks | 4 files |
 | Phase 25-03 P03 | 12min | 2 tasks | 7 files |
+| Phase 25 P04 | 18min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-13 - Phase 25 Plan 04 (SLCK-17 state tables):**
+- SQLITE_CONSTRAINT_UNIQUE catch pattern used in pins.add and reactions.add for already_pinned/already_reacted errors
+- conversations.open uses deterministic DM ID: D_${sorted users joined by _} so same user pair always yields same channel
+- After reset() on in-memory SQLite, db reference captured before reset is stale — must re-read app.slackStateManager.database after reset
+- InteractionHandler.baseUrl made optional (default localhost:3001) to fix pre-existing build error introduced in Plan 25-03
+- views.update falls back to buildView for view_ids not found in store (backward compat with tests using made-up IDs)
 
 **2026-03-13 - Phase 25 Plan 01 (Wave 0 failing tests):**
 - openid.connect.token requires client_id and client_secret per @slack/web-api types — test calls must include both fields
@@ -167,7 +175,7 @@ None.
 
 **Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
 **Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 25-03-PLAN.md
+**Stopped at:** Completed 25-04-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
