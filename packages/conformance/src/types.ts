@@ -53,6 +53,12 @@ export interface ConformanceTest {
   liveSkip?: boolean;
   /** Override operation to use in live mode (e.g., when real API schema differs from twin schema) */
   liveOperation?: ConformanceOperation;
+  /**
+   * Comparison mode for live mode. Default: 'structural'.
+   * 'structural': field shapes and types must match; primitive values may differ.
+   * 'exact': full deep-equal after normalization (same as twin/offline mode).
+   */
+  comparisonMode?: 'structural' | 'exact';
 }
 
 /** A collection of conformance tests with shared normalizer */
@@ -73,6 +79,12 @@ export interface FieldNormalizerConfig {
   stripFields: string[];
   /** Fields to replace with placeholder values (field path -> placeholder) */
   normalizeFields: Record<string, string>;
+  /**
+   * Array field paths to sort before comparison (prevents order sensitivity).
+   * Example: ['channels'] sorts the top-level 'channels' array in both twin
+   * and baseline before comparison, so different orderings pass.
+   */
+  sortFields?: string[];
   /** Custom normalizer function for complex cases */
   custom?: (obj: unknown) => unknown;
 }
