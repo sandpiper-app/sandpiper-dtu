@@ -286,3 +286,28 @@ export function allScopesString(): string {
   }
   return [...set].sort().join(',');
 }
+
+export interface ScopeCheckResult {
+  error: 'missing_scope';
+  needed: string;
+  provided: string;
+}
+
+/**
+ * Check whether a token's scope string satisfies the required scopes for a method.
+ *
+ * Returns null if all required scopes are present or if the method has no requirements.
+ * Returns a ScopeCheckResult if any required scope is missing.
+ *
+ * Used by Phase 26 scope enforcement in all Slack twin plugins.
+ */
+export function checkScope(method: string, tokenScope: string): ScopeCheckResult | null {
+  const required = METHOD_SCOPES[method];
+  if (!required || required.length === 0) return null;
+
+  const granted = new Set(tokenScope.split(',').map(s => s.trim()).filter(Boolean));
+  const missing = required.find(s => !granted.has(s));
+  if (!missing) return null;
+
+  return { error: 'missing_scope', needed: missing, provided: tokenScope };
+}
