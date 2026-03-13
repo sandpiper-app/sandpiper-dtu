@@ -290,27 +290,6 @@ describe('Pagination Integration', () => {
     expect(body.errors[0].message).toMatch(/resource type/i);
   });
 
-  // ---------------------------------------------------------------------------
-  // Transport: version-aware Link header in REST pagination (SHOP-17, SHOP-22)
-  // ---------------------------------------------------------------------------
-  it('2024-01 REST products?page_info=test Link header preserves requested version', async () => {
-    const response = await restRequest(app, token, '/admin/api/2024-01/products.json?page_info=test');
-    expect(response.statusCode).toBe(200);
-    expect(response.headers['x-shopify-api-version']).toBe('2024-01');
-    const link = response.headers['link'] as string;
-    expect(link).toBeDefined();
-    expect(link).toContain('/admin/api/2024-01/products.json');
-  });
-
-  it('2025-01 REST products?page_info=test Link header preserves requested version', async () => {
-    const response = await restRequest(app, token, '/admin/api/2025-01/products.json?page_info=test');
-    expect(response.statusCode).toBe(200);
-    expect(response.headers['x-shopify-api-version']).toBe('2025-01');
-    const link = response.headers['link'] as string;
-    expect(link).toBeDefined();
-    expect(link).toContain('/admin/api/2025-01/products.json');
-  });
-
   it('GraphQL via 2025-01 route returns valid data (transport parity)', async () => {
     await loadOrders(app, 3);
     const body = await gql(app, token, `{
@@ -358,5 +337,115 @@ describe('Pagination Integration', () => {
     expect(edges).toHaveLength(2);
     expect(pageInfo.hasNextPage).toBe(true);
     expect(pageInfo.hasPreviousPage).toBe(false);
+  });
+
+  // ---------------------------------------------------------------------------
+  // REST cursor pagination (SHOP-23) — RED until Plan 02
+  // ---------------------------------------------------------------------------
+  describe('REST cursor pagination (SHOP-23)', () => {
+    it('GET products.json page 1 with 5 products returns Link rel=next header with page_info cursor', async () => {
+      // Seed 5 products via fixtures/load
+      await loadProducts(app, 5);
+
+      const response = await restRequest(app, token, '/admin/api/2025-01/products.json?limit=3');
+      expect(response.statusCode).toBe(200);
+
+      const body = JSON.parse(response.body);
+      expect(body.products).toHaveLength(3);
+
+      const link = response.headers['link'] as string;
+      expect(link).toBeDefined();
+      expect(link).toContain('rel="next"');
+      expect(link).toContain('page_info=');
+      expect(link).toContain('limit=3');
+    });
+
+    it('GET products.json page 2 via cursor returns remaining items with Link rel=previous only', async () => {
+      // Seed 5 products via fixtures/load
+      await loadProducts(app, 5);
+
+      // Get page 1 to obtain the cursor
+      const page1Response = await restRequest(app, token, '/admin/api/2025-01/products.json?limit=3');
+      expect(page1Response.statusCode).toBe(200);
+
+      const page1Link = page1Response.headers['link'] as string;
+      expect(page1Link).toBeDefined();
+      expect(page1Link).toContain('rel="next"');
+
+      // Extract page_info cursor from Link header
+      // Link header format: <URL?page_info=CURSOR&limit=3>; rel="next"
+      const match = page1Link.match(/page_info=([^&>]+)/);
+      expect(match).toBeTruthy();
+      const cursor = match![1];
+
+      // Get page 2 via cursor
+      const page2Response = await restRequest(
+        app,
+        token,
+        `/admin/api/2025-01/products.json?page_info=${cursor}&limit=3`
+      );
+      expect(page2Response.statusCode).toBe(200);
+
+      const page2Body = JSON.parse(page2Response.body);
+      // 5 products total, page 1 has 3, page 2 should have remaining 2
+      expect(page2Body.products).toHaveLength(2);
+
+      // Page 1 and page 2 products must not overlap
+      const page1Body = JSON.parse(page1Response.body);
+      const page1Ids = page1Body.products.map((p: any) => p.id);
+      const page2Ids = page2Body.products.map((p: any) => p.id);
+      for (const id of page2Ids) {
+        expect(page1Ids).not.toContain(id);
+      }
+
+      // Page 2 (last page) Link header must have rel="previous" but NOT rel="next"
+      const page2Link = page2Response.headers['link'] as string | undefined;
+      if (page2Link) {
+        expect(page2Link).toContain('rel="previous"');
+        expect(page2Link).not.toContain('rel="next"');
+      } else {
+        // If no link header at all, that's also wrong — we expect a previous link
+        expect(page2Link).toBeDefined();
+      }
+    });
+
+    it('GET products.json with invalid page_info cursor returns 400', async () => {
+      const response = await restRequest(
+        app,
+        token,
+        '/admin/api/2025-01/products.json?page_info=notvalidbase64!!!'
+      );
+      expect(response.statusCode).toBe(400);
+    });
+
+    it('GET orders.json paginates with correct resource type', async () => {
+      // Seed 3 orders via fixtures/load
+      await loadOrders(app, 3);
+
+      const response = await restRequest(app, token, '/admin/api/2025-01/orders.json?limit=2');
+      expect(response.statusCode).toBe(200);
+
+      const body = JSON.parse(response.body);
+      expect(body.orders).toHaveLength(2);
+
+      const link = response.headers['link'] as string;
+      expect(link).toBeDefined();
+      expect(link).toContain('page_info=');
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // Version policy (SHOP-17) — RED until Plan 03
+  // ---------------------------------------------------------------------------
+  describe('Version policy (SHOP-17)', () => {
+    it('GET with invalid month 2024-99 returns 400', async () => {
+      const response = await restRequest(app, token, '/admin/api/2024-99/products.json');
+      expect(response.statusCode).toBe(400);
+    });
+
+    it('GET with sunset version 2023-01 returns 400', async () => {
+      const response = await restRequest(app, token, '/admin/api/2023-01/products.json');
+      expect(response.statusCode).toBe(400);
+    });
   });
 });
