@@ -72,6 +72,11 @@ Progress: [█████████░] 93% (overall: 54/60 plans complete)
 
 ### Key Decisions
 
+**2026-03-13 - Phase 29 Plan 01 (billing transition guards — SHOP-21e/21f):**
+- Cancel guard placed after ownership check, before updateAppSubscriptionStatus — uses already-fetched subscription.status with zero extra DB reads
+- Post-condition uses empty currentAppInstallation.activeSubscriptions to prove guard prevented mutation (PENDING/CANCELLED subs not visible in activeSubscriptions)
+- SHOP-21 fully satisfied: all 6 billing behaviors (21a–21f) verified by 9/9 GREEN billing-state-machine tests
+
 **2026-03-13 - Phase 30 Plan 01 (Slack EventDispatcher direct fetch() — SLCK-16):**
 - Bypass WebhookQueue entirely for Slack event delivery: deliverWebhook() unconditionally injects Shopify headers before merging delivery.headers, so they always win
 - EventDispatcherOptions.webhookQueue removed — EventDispatcher is now independent of @dtu/webhooks
