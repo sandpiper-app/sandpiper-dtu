@@ -94,7 +94,6 @@ export async function buildApp(options: { logger?: boolean | object; rateLimit?:
 
   // Initialize event dispatcher
   const eventDispatcher = new EventDispatcher({
-    webhookQueue,
     slackStateManager,
     signingSecret,
   });
