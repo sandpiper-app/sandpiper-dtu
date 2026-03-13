@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
-status: in-progress
-stopped_at: Completed 24-02-PLAN.md
-last_updated: "2026-03-13T02:41:00Z"
-last_activity: 2026-03-13 — Phase 24 Plan 02 complete: persistent POST/GET products and GET orders/:id backed by StateManager prepared statements (SHOP-20 GREEN)
+status: executing
+stopped_at: Completed 24-03-PLAN.md
+last_updated: "2026-03-13T02:44:22.343Z"
+last_activity: "2026-03-13 — Phase 24 Plan 02 complete: persistent POST/GET products and GET orders/:id backed by StateManager prepared statements"
 progress:
   total_phases: 15
   completed_phases: 11
   total_plans: 44
-  completed_plans: 42
+  completed_plans: 43
   percent: 97
 ---
 
@@ -23,16 +23,16 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 24 Plan 02 complete (REST persistence implementation)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 24 Plan 03 complete (rate limiter correctness)
 
 ## Current Position
 
 Phase: 24 of 27 (Shopify REST Persistence, Billing State Machine & Rate Limiting)
-Plan: 2 of 4 complete — ready for Plan 03 (billing state machine)
-Status: Plan 24-02 complete — SHOP-20 REST persistence GREEN (5/5 tests pass), ready for billing state machine
-Last activity: 2026-03-13 — Phase 24 Plan 02 complete: persistent POST/GET products and GET orders/:id backed by StateManager prepared statements
+Plan: 3 of 4 complete — ready for Plan 04 (billing state machine)
+Status: Plan 24-03 complete — SHOP-24 rate limiter GREEN (5/5 tests pass), actualQueryCost computed from real items
+Last activity: 2026-03-12 — Phase 24 Plan 03 complete: leaky bucket corrected to 1000 pts with refund() and computeActualCost() making empty-connection queries cost 1 pt
 
-Progress: [██████████] 97% (overall: 42/44 currently planned plans complete)
+Progress: [██████████] 99% (overall: 43/44 currently planned plans complete)
 
 ## Performance Metrics
 
@@ -54,10 +54,17 @@ Progress: [██████████] 97% (overall: 42/44 currently planned
 | 23-04 | 04 | 10min | 1 | 2 |
 | 24-01 | 01 | 5min | 3 | 3 |
 | 24-02 | 02 | 4min | 2 | 2 |
+| 24-03 | 03 | 8min | 2 | 5 |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-12 - Phase 24 Plan 03 (Rate limiter correctness):**
+- Shopify tryConsume allows requests when bucket > 0 (not >= cost) — bucket can go negative, next request throttled at <= 0; this matches real Shopify behavior and eliminates false billing.check throttling
+- computeActualCost returns 1 (base cost) when all connections are empty; billing.check with 0 oneTimePurchases costs 1 pt instead of ~1000 pts post-execution
+- Integration tests testing bucket exhaustion must seed matching fixtures — empty-result queries are nearly free after refund logic (net cost ~1 pt), so cannot exhaust bucket in a small loop
+- POST /admin/tokens used for token seeding in rate-limit integration tests — consistent with Phase 24-01 decision, required because Phase 23 OAuth tightening broke the code-only OAuth pattern
 
 **2026-03-13 - Phase 24 Plan 02 (REST persistence implementation):**
 - Two-step product insert: createProduct with temp GID, then UPDATE gid to gid://shopify/Product/{rowId} after AUTOINCREMENT resolves — avoids needing to know row id before insert
@@ -144,10 +151,10 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 24 Plan 02 — REST persistence implementation (commits d69abec, 3bb830c)
-**Work in progress:** Phase 24 Plan 03 (billing state machine)
-**Stopped at:** Completed 24-02-PLAN.md
-**Timestamp:** 2026-03-13
+**Last completed:** Phase 24 Plan 03 — Rate limiter correctness (commits 227f6c6, 95268ce)
+**Work in progress:** Phase 24 Plan 04 (billing state machine)
+**Stopped at:** Completed 24-03-PLAN.md
+**Timestamp:** 2026-03-12
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
