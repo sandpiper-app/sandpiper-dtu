@@ -49,27 +49,27 @@ Requirements for milestone `v1.2 Behavioral Fidelity`. Fixes 13 adversarial revi
 
 ### Conformance Infrastructure
 
-- [x] **INFRA-21**: Conformance harness performs bidirectional structural comparison in live mode — twin response must contain all baseline fields AND baseline response must contain all twin fields — with full array traversal (not just first element) and primitive value comparison; includes a normalizer contract with declared ignore lists for non-deterministic fields (timestamps, cursor IDs, signed URLs), ordering rules, and per-endpoint exact-vs-structural mode declarations
-- [x] **INFRA-22**: Coverage status for each tracked symbol is derived from test execution evidence (Vitest JSON reporter or equivalent instrumentation), not hand-authored `LIVE_SYMBOLS` map; evidence schema defines how test files map to symbols, how aliases are attributed, and how local-only utilities are excluded; dual-run migration keeps `LIVE_SYMBOLS` and evidence in parallel until evidence matches or exceeds the 202+ symbol count, then removes `LIVE_SYMBOLS`
+- [ ] **INFRA-21**: Conformance harness performs bidirectional structural comparison in live mode — twin response must contain all baseline fields AND baseline response must contain all twin fields — with full array traversal (not just first element) and primitive value comparison; includes a normalizer contract with declared ignore lists for non-deterministic fields (timestamps, cursor IDs, signed URLs), ordering rules, and per-endpoint exact-vs-structural mode declarations
+- [ ] **INFRA-22**: Coverage status for each tracked symbol is derived from test execution evidence (Vitest JSON reporter or equivalent instrumentation), not hand-authored `LIVE_SYMBOLS` map; evidence schema defines how test files map to symbols, how aliases are attributed, and how local-only utilities are excluded; dual-run migration keeps `LIVE_SYMBOLS` and evidence in parallel until evidence matches or exceeds the 202+ symbol count, then removes `LIVE_SYMBOLS`
 
 ### Shopify Fidelity
 
-- [x] **SHOP-17**: Shopify twin serves GraphQL and REST routes with parameterized API version (`:version` in URL path) accepting any valid Shopify API version string, not hardcoded to `2024-01`; unsupported/sunset versions return appropriate error responses; test helpers no longer rewrite request URLs to a single version
+- [ ] **SHOP-17**: Shopify twin serves GraphQL and REST routes with parameterized API version (`:version` in URL path) accepting any valid Shopify API version string, not hardcoded to `2024-01`; unsupported/sunset versions return appropriate error responses; test helpers no longer rewrite request URLs to a single version
 - [x] **SHOP-18**: Shopify twin implements full OAuth authorize flow: `GET /admin/oauth/authorize` returns redirect with HMAC-signed callback URL and state nonce cookie; `POST /admin/oauth/access_token` validates `client_id`, `client_secret`, and authorization code; empty-body requests return error; replayed/expired codes and invalid state are rejected with correct error responses
 - [x] **SHOP-19**: Shopify twin serves Storefront API on separate GraphQL schema at `/api/:version/graphql.json` using `X-Shopify-Storefront-Access-Token` header for auth; admin-only mutations are not exposed on the Storefront endpoint; schema covers the types exercised by the pinned `@shopify/storefront-api-client` tests (products, collections, shop at minimum); rejects admin access tokens
 - [x] **SHOP-20**: Shopify REST resources use persistent CRUD backed by StateManager: (a) `POST /products.json` creates a product retrievable by subsequent `GET /products.json` and `GET /products/:id.json`; (b) response shapes use numeric integer IDs with `admin_graphql_api_id` field (e.g., `"gid://shopify/Product/12345"`); (c) `GET /orders/:id.json` returns the specific order by numeric ID
-- [x] **SHOP-21**: Shopify billing implements state machine: `appSubscriptionCreate` returns subscription in PENDING state with `confirmationUrl`; confirming transitions to ACTIVE; `currentAppInstallation` returns actual subscription data; `appSubscriptionCancel` validates subscription ownership and transitions to CANCELLED
+- [ ] **SHOP-21**: Shopify billing implements state machine: `appSubscriptionCreate` returns subscription in PENDING state with `confirmationUrl`; confirming transitions to ACTIVE; `currentAppInstallation` returns actual subscription data; `appSubscriptionCancel` validates subscription ownership and transitions to CANCELLED
 - [x] **SHOP-22**: Shopify twin returns `X-Shopify-API-Version` response header on all API responses, echoing the version from the request URL path
-- [x] **SHOP-23**: Shopify REST list endpoints return `Link` header with `rel="next"` and `page_info` cursor parameter for paginated responses, matching real Shopify pagination format
+- [ ] **SHOP-23**: Shopify REST list endpoints return `Link` header with `rel="next"` and `page_info` cursor parameter for paginated responses, matching real Shopify pagination format
 - [x] **SHOP-24**: Shopify rate limiting uses correct bucket size (maxAvailable=1000, restoreRate=50) and computes `actualQueryCost` based on real query field traversal rather than forcing it equal to `requestedQueryCost`
 
 ### Slack Fidelity
 
-- [x] **SLCK-14**: All bound WebClient methods from the pinned `@slack/web-api` package are registered and callable against the Slack twin, closing the 126-method gap; high-value families (admin.apps, admin.conversations, admin.users, workflows) have semantically correct responses; remaining admin.* and low-traffic families are explicitly marked as stubs with documented limitations
+- [ ] **SLCK-14**: All bound WebClient methods from the pinned `@slack/web-api` package are registered and callable against the Slack twin, closing the 126-method gap; high-value families (admin.apps, admin.conversations, admin.users, workflows) have semantically correct responses; remaining admin.* and low-traffic families are explicitly marked as stubs with documented limitations
 - [x] **SLCK-15**: Slack `chat.update` enforces channel scoping (message must exist in the specified channel) and author ownership (bot tokens can only update messages they posted), returning `{ok: false, error: "cant_update_message"}` on violations; `chat.delete` enforces equivalent rules with `cant_delete_message`; conformance tests exercise the actual `chat.update` and `chat.delete` methods (not substituting `chat.postMessage`)
-- [x] **SLCK-16**: Slack event delivery uses `X-Slack-Signature` (`v0=` + HMAC-SHA256 hex using signing secret) and `X-Slack-Request-Timestamp` headers instead of Shopify webhook signature headers; interactions route through a dedicated interactivity request URL (not through event subscriptions); `response_url` is an absolute URL (not relative path)
-- [x] **SLCK-17**: Slack `conversations.invite`/`kick` manage actual channel membership; `conversations.members` returns real member list; `conversations.open` returns a real DM channel (not canned `D_TWIN`); `views.open`/`update`/`push` maintain persistent view lifecycle with stable view IDs; `pins.add`/`remove`/`list` are stateful with deduplication (`already_pinned` error); `reactions.add`/`remove`/`list`/`get` are stateful with deduplication (`already_reacted` error)
-- [x] **SLCK-18**: Slack auth enforces OAuth scope requirements per method, returning `{ok: false, error: "missing_scope", needed: "<scope>", provided: "<scopes>"}` when token lacks the required scope; OAuth token exchange validates `client_id`, `scope`, and `redirect_uri` parameters
+- [ ] **SLCK-16**: Slack event delivery uses `X-Slack-Signature` (`v0=` + HMAC-SHA256 hex using signing secret) and `X-Slack-Request-Timestamp` headers instead of Shopify webhook signature headers; interactions route through a dedicated interactivity request URL (not through event subscriptions); `response_url` is an absolute URL (not relative path)
+- [ ] **SLCK-17**: Slack `conversations.invite`/`kick` manage actual channel membership; `conversations.members` returns real member list; `conversations.open` returns a real DM channel (not canned `D_TWIN`); `views.open`/`update`/`push` maintain persistent view lifecycle with stable view IDs; `pins.add`/`remove`/`list` are stateful with deduplication (`already_pinned` error); `reactions.add`/`remove`/`list`/`get` are stateful with deduplication (`already_reacted` error)
+- [ ] **SLCK-18**: Slack auth enforces OAuth scope requirements per method, returning `{ok: false, error: "missing_scope", needed: "<scope>", provided: "<scopes>"}` when token lacks the required scope; OAuth token exchange validates `client_id`, `scope`, and `redirect_uri` parameters
 - [x] **SLCK-19**: Slack API responses include `X-OAuth-Scopes` (token's granted scopes) and `X-Accepted-OAuth-Scopes` (method's required scopes) headers on successful calls
 
 ### Cross-Cutting
@@ -146,27 +146,28 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | INFRA-19 | Phase 21 | Complete |
 | INFRA-20 | Phase 21 | Complete |
-| SHOP-17 | Phase 22 | Complete |
+| SHOP-17 | Phase 22, 28 | Pending |
 | SHOP-22 | Phase 22 | Complete |
-| SHOP-23 | Phase 22 | Complete |
+| SHOP-23 | Phase 22, 28 | Pending |
 | SHOP-18 | Phase 23 | Complete |
 | SHOP-19 | Phase 23 | Complete |
 | SHOP-20 | Phase 24 | Complete |
-| SHOP-21 | Phase 24 | Complete |
+| SHOP-21 | Phase 24, 29 | Pending |
 | SHOP-24 | Phase 24 | Complete |
-| SLCK-14 | Phase 25 | Complete |
-| SLCK-16 | Phase 25 | Complete |
-| SLCK-17 | Phase 25 | Complete |
+| SLCK-14 | Phase 25, 31 | Pending |
+| SLCK-16 | Phase 25, 30 | Pending |
+| SLCK-17 | Phase 25, 30 | Pending |
 | SLCK-15 | Phase 26 | Complete |
-| SLCK-18 | Phase 26 | Complete |
+| SLCK-18 | Phase 26, 31 | Pending |
 | SLCK-19 | Phase 26 | Complete |
-| INFRA-21 | Phase 27 | Complete |
-| INFRA-22 | Phase 27 | Complete |
+| INFRA-21 | Phase 27, 32 | Pending |
+| INFRA-22 | Phase 27, 32 | Pending |
+| XCUT-01 | Phase 33 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 22 total (all complete)
-- v1.2 requirements: 18 total
-- Mapped to phases: 18
+- v1.2 requirements: 19 total (9 complete, 10 pending gap closure)
+- Mapped to phases: 19
 - Unmapped: 0
 
 ---

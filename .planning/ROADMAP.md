@@ -9,7 +9,7 @@
 
 - ✅ **v1.0 Foundation** - Phases 1-12 (shipped 2026-02-28)
 - ✅ **v1.1 Official SDK Conformance** - Phases 13-20 (shipped 2026-03-10)
-- 🚧 **v1.2 Behavioral Fidelity** - Phases 21-27 (in progress)
+- 🚧 **v1.2 Behavioral Fidelity** - Phases 21-33 (in progress)
 
 ## Phases
 
@@ -52,6 +52,12 @@
 - [x] **Phase 25: Slack Method Coverage, Event Signing & State Tables** - Close 126-method gap, fix event headers, and add membership/view/pin state (completed 2026-03-13)
 - [x] **Phase 26: Slack Chat Scoping & Scope Enforcement** - Author/channel ownership rules and per-method OAuth scope requirements (completed 2026-03-13)
 - [x] **Phase 27: Conformance Harness & Coverage Infrastructure** - Bidirectional structural comparison and execution-evidence coverage tracking (completed 2026-03-13)
+- [ ] **Phase 28: Shopify REST Pagination & Version Policy** - Real cursor pagination and supported version validation (gap closure)
+- [ ] **Phase 29: Shopify Billing Transitions & Test Migration** - Billing state machine guards and legacy test migration (gap closure)
+- [ ] **Phase 30: Slack Transport & State Fixes** - Provider-aware event delivery and stateful reactions/views (gap closure)
+- [ ] **Phase 31: Slack OAuth & Method Coverage** - OAuth exchange validation and comprehensive method smoke tests (gap closure)
+- [ ] **Phase 32: Conformance Harness & Evidence** - Primitive value comparison and real execution evidence (gap closure)
+- [ ] **Phase 33: Cross-Cutting Reset Coverage** - Verify all new SQLite tables in StateManager reset logic (gap closure)
 
 ## Phase Details
 
@@ -302,6 +308,36 @@ Plans:
 - [ ] 27-01-PLAN.md — INFRA-21: bidirectional comparator fix (types, comparator, runner, TwinAdapter, unit tests)
 - [ ] 27-02-PLAN.md — INFRA-22: evidence-based coverage generator, 202-live-count gate, LIVE_SYMBOLS migration
 
+### Phase 28: Shopify REST Pagination & Version Policy
+**Goal:** Shopify REST list endpoints implement real cursor pagination with result slicing and cursor advancement, and the API version router rejects unsupported/sunset versions with appropriate error responses.
+**Requirements:** SHOP-23, SHOP-17
+**Gap Closure:** Closes unsatisfied SHOP-23 (fake pagination) and partial SHOP-17 (accepts invalid versions) from audit
+
+### Phase 29: Shopify Billing Transitions & Test Migration
+**Goal:** Shopify billing state machine validates legal state transitions (rejecting PENDING→CANCELLED and double-cancel) and legacy integration tests are migrated from old OAuth pattern to POST /admin/tokens.
+**Requirements:** SHOP-21
+**Gap Closure:** Closes partial SHOP-21 (no transition validation) and integration issue (32+ test failures from Phase 23 OAuth tightening)
+
+### Phase 30: Slack Transport & State Fixes
+**Goal:** Slack event deliveries carry only Slack signature headers (no Shopify headers), and state tables for reactions, views, and pins work correctly with proper error handling.
+**Requirements:** SLCK-16, SLCK-17
+**Gap Closure:** Closes partial SLCK-16 (dual headers) and partial SLCK-17 (stub reactions.list, views JSON parse, views.update unknown ID, test assertion bugs)
+
+### Phase 31: Slack OAuth & Method Coverage
+**Goal:** Slack OAuth exchange validates scope, redirect_uri, and binds codes to authorize requests; method coverage tests prove all 275+ WebClient methods are callable.
+**Requirements:** SLCK-18, SLCK-14
+**Gap Closure:** Closes partial SLCK-18 (OAuth under-validated) and partial SLCK-14 (insufficient method coverage testing); adds Phase 25/26 test files to evidence map
+
+### Phase 32: Conformance Harness & Evidence
+**Goal:** Conformance comparator catches primitive value mismatches in structural mode, and coverage attribution is derived from real test execution evidence rather than a hand-authored symbol map.
+**Requirements:** INFRA-21, INFRA-22
+**Gap Closure:** Closes unsatisfied INFRA-21 (primitives skipped) and unsatisfied INFRA-22 (hand-authored EVIDENCE_MAP); includes Phase 25/26 test file evidence integration
+
+### Phase 33: Cross-Cutting Reset Coverage
+**Goal:** Every new SQLite table added in v1.2 is included in StateManager/SlackStateManager reset() logic, verified by a reset coverage test, within sub-100ms performance target.
+**Requirements:** XCUT-01
+**Gap Closure:** Closes orphaned XCUT-01 (reset coverage not formally tracked)
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -321,6 +357,12 @@ Plans:
 | 25. Slack Method Coverage, Event Signing & State Tables | 4/4 | Complete    | 2026-03-13 | - |
 | 26. Slack Chat Scoping & Scope Enforcement | 3/3 | Complete    | 2026-03-13 | - |
 | 27. Conformance Harness & Coverage Infrastructure | 2/2 | Complete    | 2026-03-13 | - |
+| 28. Shopify REST Pagination & Version Policy | v1.2 | 0/0 | Pending | - |
+| 29. Shopify Billing Transitions & Test Migration | v1.2 | 0/0 | Pending | - |
+| 30. Slack Transport & State Fixes | v1.2 | 0/0 | Pending | - |
+| 31. Slack OAuth & Method Coverage | v1.2 | 0/0 | Pending | - |
+| 32. Conformance Harness & Evidence | v1.2 | 0/0 | Pending | - |
+| 33. Cross-Cutting Reset Coverage | v1.2 | 0/0 | Pending | - |
 
 ## Dependencies
 
@@ -339,4 +381,12 @@ Phase 21 (Test Runner & Seeders)
          ↓
        Phase 26 (Slack Chat Scoping & Scope Enforcement)
               ↗ (also feeds Phase 27)
+
+  Gap Closure (Phases 28-33):
+
+  Phase 28 (Shopify REST Pagination & Version Policy) ──┐
+  Phase 29 (Shopify Billing Transitions & Test Migration) ─┤
+  Phase 30 (Slack Transport & State Fixes) ──┤──→ Phase 32 (Conformance & Evidence)
+  Phase 31 (Slack OAuth & Method Coverage) ──┘         ↓
+                                                Phase 33 (Cross-Cutting Reset)
 ```
