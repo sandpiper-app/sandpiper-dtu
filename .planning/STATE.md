@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: completed
-stopped_at: Completed 27-01-PLAN.md
-last_updated: "2026-03-13T16:44:26.173Z"
-last_activity: "2026-03-13 — Phase 27 Plan 01 complete: allKeys comparator, full array traversal, ShopifyTwinAdapter POST /admin/tokens, 18/18 unit tests GREEN"
+stopped_at: Completed 29-01-PLAN.md
+last_updated: "2026-03-13T20:24:02.620Z"
+last_activity: "2026-03-13 — Phase 30 Plan 01 complete: EventDispatcher WebhookQueue removed, direct fetch() with X-Slack-Signature, 4/4 slack-signing tests GREEN"
 progress:
-  total_phases: 15
+  total_phases: 21
   completed_phases: 15
-  total_plans: 53
-  completed_plans: 53
-  percent: 100
+  total_plans: 60
+  completed_plans: 55
+  percent: 93
 ---
 
 # Project State: Sandpiper DTU
@@ -23,16 +23,16 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 27 Plan 01 COMPLETE (conformance comparator fixes + ShopifyTwinAdapter OAuth); Phase 27 complete
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 30 Plan 01 COMPLETE (Slack EventDispatcher direct fetch(), SLCK-16a GREEN)
 
 ## Current Position
 
-Phase: 27 of 27 (Conformance Harness & Coverage Infrastructure) — COMPLETE
-Plan: 1 of 2 complete (Plan 02 completed earlier in session)
-Status: Plan 27-01 complete — bidirectional structural comparator, sortFields normalization, comparisonMode routing, ShopifyTwinAdapter OAuth fix; INFRA-21 GREEN
-Last activity: 2026-03-13 — Phase 27 Plan 01 complete: allKeys comparator, full array traversal, ShopifyTwinAdapter POST /admin/tokens, 18/18 unit tests GREEN
+Phase: 30 of 33 (Slack Transport & State Fixes) — In Progress
+Plan: 1 of 2 complete
+Status: Plan 30-01 complete — EventDispatcher now delivers via direct fetch() with Slack HMAC headers; SLCK-16 requirement satisfied
+Last activity: 2026-03-13 — Phase 30 Plan 01 complete: EventDispatcher WebhookQueue removed, direct fetch() with X-Slack-Signature, 4/4 slack-signing tests GREEN
 
-Progress: [██████████] 100% (overall: 51/51 plans complete)
+Progress: [█████████░] 93% (overall: 54/60 plans complete)
 
 ## Performance Metrics
 
@@ -65,10 +65,19 @@ Progress: [██████████] 100% (overall: 51/51 plans complete)
 | Phase 26 P03 | 9min | 2 tasks | 10 files |
 | Phase 27 P02 | 3min | 3 tasks | 6 files |
 | Phase 27-01 P01 | 8min | 3 tasks | 6 files |
+| Phase 30 P01 | 1min | 1 tasks | 2 files |
+| Phase 29-01 P01 | 2min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-13 - Phase 30 Plan 01 (Slack EventDispatcher direct fetch() — SLCK-16):**
+- Bypass WebhookQueue entirely for Slack event delivery: deliverWebhook() unconditionally injects Shopify headers before merging delivery.headers, so they always win
+- EventDispatcherOptions.webhookQueue removed — EventDispatcher is now independent of @dtu/webhooks
+- Direct fetch() pattern: JSON body + v0=${createHmac('sha256', secret).update(`v0:ts:body`).digest('hex')} sig in X-Slack-Signature header (same pattern as interactions.ts)
+- AbortSignal.timeout(5000) for per-delivery timeout; individual network errors non-fatal (log and continue)
+- SLCK-16a GREEN: delivered events carry X-Slack-Signature v0=<hex64> + X-Slack-Request-Timestamp; no X-Shopify-Hmac-Sha256
 
 **2026-03-13 - Phase 27 Plan 01 (conformance comparator fix + ShopifyTwinAdapter OAuth fix):**
 - Union-of-keys (allKeys Set) in compareStructure catches both directions: twin-extra as 'added', baseline-only as 'deleted'
@@ -216,7 +225,7 @@ None.
 
 **Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
 **Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 27-01-PLAN.md
+**Stopped at:** Completed 29-01-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---

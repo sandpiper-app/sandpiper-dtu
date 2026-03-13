@@ -323,7 +323,7 @@ Plans:
 **Goal:** Shopify billing state machine validates legal state transitions (rejecting PENDING→CANCELLED and double-cancel) and legacy integration tests are migrated from old OAuth pattern to POST /admin/tokens.
 **Requirements:** SHOP-21
 **Gap Closure:** Closes partial SHOP-21 (no transition validation) and integration issue (32+ test failures from Phase 23 OAuth tightening)
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 29-01-PLAN.md — Transition guard tests (SHOP-21e/21f RED) + appSubscriptionCancel status guard in resolvers.ts
@@ -333,7 +333,7 @@ Plans:
 **Goal:** Slack event deliveries carry only Slack signature headers (no Shopify headers), and state tables for reactions, views, and pins work correctly with proper error handling.
 **Requirements:** SLCK-16, SLCK-17
 **Gap Closure:** Closes partial SLCK-16 (dual headers) and partial SLCK-17 (stub reactions.list, views JSON parse, views.update unknown ID, test assertion bugs)
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 30-01-PLAN.md — SLCK-16: Replace WebhookQueue with direct fetch() in EventDispatcher (Slack-only headers)
@@ -374,8 +374,8 @@ Plans:
 | 26. Slack Chat Scoping & Scope Enforcement | 3/3 | Complete    | 2026-03-13 | - |
 | 27. Conformance Harness & Coverage Infrastructure | 2/2 | Complete    | 2026-03-13 | - |
 | 28. Shopify REST Pagination & Version Policy | v1.2 | 0/3 | Pending | - |
-| 29. Shopify Billing Transitions & Test Migration | v1.2 | 0/2 | Pending | - |
-| 30. Slack Transport & State Fixes | v1.2 | 0/2 | In Progress | - |
+| 29. Shopify Billing Transitions & Test Migration | 1/2 | In Progress|  | - |
+| 30. Slack Transport & State Fixes | 1/2 | In Progress|  | - |
 | 31. Slack OAuth & Method Coverage | v1.2 | 0/0 | Pending | - |
 | 32. Conformance Harness & Evidence | v1.2 | 0/0 | Pending | - |
 | 33. Cross-Cutting Reset Coverage | v1.2 | 0/0 | Pending | - |
