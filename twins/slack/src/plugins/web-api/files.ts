@@ -14,6 +14,7 @@
 
 import type { FastifyPluginAsync } from 'fastify';
 import { extractToken } from '../../services/token-validator.js';
+import { checkScope, METHOD_SCOPES } from '../../services/method-scopes.js';
 import type { SlackStateManager } from '../../state/slack-state-manager.js';
 
 declare module 'fastify' {
@@ -27,6 +28,12 @@ const filesPlugin: FastifyPluginAsync = async (fastify) => {
     if (!token) return reply.send({ ok: false, error: 'not_authed' });
     const tokenRecord = fastify.slackStateManager.getToken(token);
     if (!tokenRecord) return reply.send({ ok: false, error: 'invalid_auth' });
+    // SLCK-18: scope enforcement
+    const scopeCheck = checkScope('files.getUploadURLExternal', tokenRecord.scope);
+    if (scopeCheck) return reply.status(200).send({ ok: false, ...scopeCheck });
+    // SLCK-19: scope headers
+    reply.header('X-OAuth-Scopes', tokenRecord.scope);
+    reply.header('X-Accepted-OAuth-Scopes', METHOD_SCOPES['files.getUploadURLExternal']?.join(',') ?? '');
     const file_id = `F_${Math.random().toString(36).substring(2, 11).toUpperCase()}`;
     // CRITICAL: upload_url MUST be absolute — SDK calls it directly, not via slackApiUrl
     // Read SLACK_API_URL per-request (set by globalSetup AFTER twin boots)
@@ -48,6 +55,12 @@ const filesPlugin: FastifyPluginAsync = async (fastify) => {
     if (!token) return reply.send({ ok: false, error: 'not_authed' });
     const tokenRecord = fastify.slackStateManager.getToken(token);
     if (!tokenRecord) return reply.send({ ok: false, error: 'invalid_auth' });
+    // SLCK-18: scope enforcement
+    const scopeCheck = checkScope('files.completeUploadExternal', tokenRecord.scope);
+    if (scopeCheck) return reply.status(200).send({ ok: false, ...scopeCheck });
+    // SLCK-19: scope headers
+    reply.header('X-OAuth-Scopes', tokenRecord.scope);
+    reply.header('X-Accepted-OAuth-Scopes', METHOD_SCOPES['files.completeUploadExternal']?.join(',') ?? '');
     const { files } = (request.body as any) ?? {};
     const completed = (files ?? []).map((f: any) => ({ id: f.id, title: f.title ?? 'Uploaded file' }));
     return { ok: true, files: completed };

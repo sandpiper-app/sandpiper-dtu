@@ -17,6 +17,7 @@
 
 import type { FastifyPluginAsync } from 'fastify';
 import { extractToken } from '../../services/token-validator.js';
+import { checkScope, METHOD_SCOPES } from '../../services/method-scopes.js';
 import type { SlackStateManager } from '../../state/slack-state-manager.js';
 import type { SlackRateLimiter } from '../../services/rate-limiter.js';
 
@@ -46,6 +47,17 @@ const authPlugin: FastifyPluginAsync = async (fastify) => {
     if (!tokenRecord) {
       return reply.status(200).send({ ok: false, error: 'invalid_auth' });
     }
+
+    // SLCK-18: scope enforcement (auth.test has empty scope requirement — checkScope returns null)
+    const scopeCheck = checkScope('auth.test', tokenRecord.scope);
+    if (scopeCheck) {
+      return reply.status(200).send({ ok: false, ...scopeCheck });
+    }
+
+    // SLCK-19: pre-set scope response headers
+    const accepted = METHOD_SCOPES['auth.test']?.join(',') ?? '';
+    reply.header('X-OAuth-Scopes', tokenRecord.scope);
+    reply.header('X-Accepted-OAuth-Scopes', accepted);
 
     // 3. Rate limit check
     const limited = fastify.rateLimiter.check('auth.test', token);
