@@ -337,4 +337,96 @@ describe('Billing State Machine', () => {
       expect(ownershipRejected).toBe(true);
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // SHOP-21e/21f: appSubscriptionCancel rejects illegal state transitions
+  // (SHOP-21e contains) — guard: only ACTIVE subscriptions can be cancelled
+  // ---------------------------------------------------------------------------
+  describe('SHOP-21e/21f — appSubscriptionCancel rejects illegal state transitions', () => {
+    it('SHOP-21e: rejects cancel on a PENDING subscription (never confirmed)', async () => {
+      // Step 1: Create a subscription — it starts PENDING
+      const createResult = await sendGql(app, token, CREATE_SUBSCRIPTION_MUTATION, {
+        name: 'Pending Plan',
+        returnUrl: 'https://test-app.example.com/billing/confirm',
+        test: true,
+        lineItems: [],
+      });
+
+      expect(createResult.data).toBeDefined();
+      const subscriptionGid =
+        createResult.data.appSubscriptionCreate.appSubscription.id;
+
+      // Step 2: Do NOT visit confirmationUrl — subscription stays PENDING
+
+      // Step 3: Attempt to cancel the PENDING subscription
+      const cancelResult = await sendGql(app, token, CANCEL_SUBSCRIPTION_MUTATION, {
+        id: subscriptionGid,
+      });
+
+      expect(cancelResult.data).toBeDefined();
+      const { appSubscription, userErrors } = cancelResult.data.appSubscriptionCancel;
+
+      // Guard must reject: userErrors non-empty AND appSubscription null
+      expect(userErrors.length).toBeGreaterThan(0);
+      expect(appSubscription).toBeNull();
+
+      // Post-condition: subscription must NOT have been mutated to CANCELLED.
+      // currentAppInstallation.activeSubscriptions being empty proves the subscription
+      // is still PENDING (not ACTIVE and not erroneously visible as active).
+      const installResult = await sendGql(app, token, CURRENT_APP_INSTALLATION_QUERY);
+      const { activeSubscriptions } = installResult.data.currentAppInstallation;
+      expect(activeSubscriptions).toHaveLength(0);
+    });
+
+    it('SHOP-21f: rejects double-cancel on an already-CANCELLED subscription', async () => {
+      // Step 1: Create a subscription
+      const createResult = await sendGql(app, token, CREATE_SUBSCRIPTION_MUTATION, {
+        name: 'Double Cancel Plan',
+        returnUrl: 'https://test-app.example.com/billing/confirm',
+        test: true,
+        lineItems: [],
+      });
+
+      expect(createResult.data).toBeDefined();
+      const subscriptionGid =
+        createResult.data.appSubscriptionCreate.appSubscription.id;
+      const { confirmationUrl } = createResult.data.appSubscriptionCreate;
+      const match = confirmationUrl.match(/\/admin\/charges\/(\d+)\/confirm_recurring/);
+      expect(match).not.toBeNull();
+
+      // Step 2: Confirm (PENDING → ACTIVE)
+      await app.inject({
+        method: 'GET',
+        url: `/admin/charges/${match![1]}/confirm_recurring`,
+      });
+
+      // Step 3: First cancel (ACTIVE → CANCELLED) — must succeed
+      const firstCancel = await sendGql(app, token, CANCEL_SUBSCRIPTION_MUTATION, {
+        id: subscriptionGid,
+      });
+      expect(firstCancel.data).toBeDefined();
+      expect(firstCancel.data.appSubscriptionCancel.userErrors).toHaveLength(0);
+      expect(firstCancel.data.appSubscriptionCancel.appSubscription).not.toBeNull();
+
+      // Step 4: Second cancel attempt on already-CANCELLED subscription — must be rejected
+      const secondCancel = await sendGql(app, token, CANCEL_SUBSCRIPTION_MUTATION, {
+        id: subscriptionGid,
+      });
+
+      expect(secondCancel.data).toBeDefined();
+      const { appSubscription: sub2, userErrors: errors2 } =
+        secondCancel.data.appSubscriptionCancel;
+
+      // Guard must reject: userErrors non-empty AND appSubscription null
+      expect(errors2.length).toBeGreaterThan(0);
+      expect(sub2).toBeNull();
+
+      // Post-condition: subscription must remain CANCELLED (not double-mutated or reset).
+      // After a successful first cancel, activeSubscriptions must be empty
+      // (CANCELLED subscriptions do not appear in activeSubscriptions).
+      const installResult = await sendGql(app, token, CURRENT_APP_INSTALLATION_QUERY);
+      const { activeSubscriptions } = installResult.data.currentAppInstallation;
+      expect(activeSubscriptions).toHaveLength(0);
+    });
+  });
 });
