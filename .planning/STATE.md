@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 26-01-PLAN.md
-last_updated: "2026-03-13T04:48:36.395Z"
-last_activity: "2026-03-13 — Phase 25 Plan 04 complete: 3 new SQLite tables, 8 new StateManager methods, 4 updated plugins, smoke XCUT-01 GREEN (84/84 tests)"
+stopped_at: Completed 26-02-PLAN.md
+last_updated: "2026-03-13T04:56:54.038Z"
+last_activity: "2026-03-13 — Phase 26 Plan 02 complete: checkScope() + chat.ts ownership enforcement + oauth client_id; SLCK-15/18/19 chat-surface GREEN"
 progress:
   total_phases: 15
   completed_phases: 13
   total_plans: 51
-  completed_plans: 49
-  percent: 99
+  completed_plans: 50
+  percent: 98
 ---
 
 # Project State: Sandpiper DTU
@@ -28,9 +28,9 @@ progress:
 ## Current Position
 
 Phase: 26 of 27 (Slack Chat Scoping & Scope Enforcement)
-Plan: 1 of 3 complete
-Status: Plan 26-01 complete — Wave 0 failing test scaffold: SLCK-15 ownership violations (4 tests), SLCK-18 missing_scope enforcement (4 tests), SLCK-19 OAuth headers (2 tests); all 10 enforcement tests RED
-Last activity: 2026-03-13 — Phase 26 Plan 01 complete: slack-scope-enforcement.test.ts created, 10/12 tests RED as expected
+Plan: 2 of 3 complete
+Status: Plan 26-02 complete — checkScope() helper, chat.update/delete ownership enforcement, scope headers in checkAuthRateError, oauth.v2.access client_id validation; SLCK-15 (5/5) GREEN, SLCK-18 (3/5) GREEN, SLCK-19 (2/2) GREEN
+Last activity: 2026-03-13 — Phase 26 Plan 02 complete: scope enforcement in chat.ts/oauth.ts, SLCK-15+18+19 chat-surface GREEN
 
 Progress: [██████████] 98% (overall: 49/51 currently planned plans complete)
 
@@ -61,10 +61,18 @@ Progress: [██████████] 98% (overall: 49/51 currently planned
 | Phase 25 P04 | 18min | 2 tasks | 7 files |
 | Phase 25 P02 | 20min | 2 tasks | 6 files |
 | Phase 26-01 P01 | 2min | 1 tasks | 1 files |
+| Phase 26 P02 | 5min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-13 - Phase 26 Plan 02 (chat scope enforcement — SLCK-15/18/19):**
+- checkAuthRateError return type widened to {token, tokenRecord} enabling ownership checks without second getToken() call
+- Scope enforcement placed BEFORE rate-limit/error-sim in checkAuthRateError so missing_scope is never masked by simulated errors
+- chat.postMessage refactored from inline auth to checkAuthRateError so SLCK-19 scope headers accompany all postMessage responses
+- SLCK-15 tests fixed from result.ok pattern to try/catch (WebClient throws on ok:false, error.data.error contains the Slack error code)
+- SLCK-15 (5/5) GREEN, SLCK-18 (3/5 — 18d/18e wait for Plan 03) GREEN, SLCK-19 (2/2) GREEN
 
 **2026-03-13 - Phase 26 Plan 01 (Wave 0 failing tests — SLCK-15/18/19):**
 - Attacker token seeded with broad scope ('chat:write,channels:read,...') but different userId (U_ATTACKER) so SLCK-15 tests isolate userId ownership check, not scope mismatch
@@ -191,7 +199,7 @@ None.
 
 **Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
 **Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 26-01-PLAN.md
+**Stopped at:** Completed 26-02-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
