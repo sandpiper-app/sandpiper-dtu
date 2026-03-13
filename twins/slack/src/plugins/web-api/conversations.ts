@@ -16,6 +16,7 @@
 import { randomUUID } from 'node:crypto';
 import type { FastifyPluginAsync, FastifyRequest } from 'fastify';
 import { extractToken } from '../../services/token-validator.js';
+import { checkScope, METHOD_SCOPES } from '../../services/method-scopes.js';
 import type { SlackStateManager } from '../../state/slack-state-manager.js';
 import type { SlackRateLimiter } from '../../services/rate-limiter.js';
 
@@ -101,6 +102,18 @@ async function checkAuth(
     return null;
   }
 
+  // SLCK-18: scope enforcement
+  const scopeCheck = checkScope(methodName, tokenRecord.scope);
+  if (scopeCheck) {
+    reply.status(200).send({ ok: false, ...scopeCheck });
+    return null;
+  }
+
+  // SLCK-19: pre-set scope response headers
+  const accepted = METHOD_SCOPES[methodName]?.join(',') ?? '';
+  reply.header('X-OAuth-Scopes', tokenRecord.scope);
+  reply.header('X-Accepted-OAuth-Scopes', accepted);
+
   const limited = fastify.rateLimiter.check(methodName, token);
   if (limited) {
     reply
@@ -134,6 +147,13 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
     if (!tokenRecord) {
       return reply.status(200).send({ ok: false, error: 'invalid_auth' });
     }
+
+    // SLCK-18: scope enforcement
+    const scopeCheck = checkScope('conversations.list', tokenRecord.scope);
+    if (scopeCheck) return reply.status(200).send({ ok: false, ...scopeCheck });
+    // SLCK-19: scope response headers
+    reply.header('X-OAuth-Scopes', tokenRecord.scope);
+    reply.header('X-Accepted-OAuth-Scopes', METHOD_SCOPES['conversations.list']?.join(',') ?? '');
 
     // Rate limit check
     const limited = fastify.rateLimiter.check('conversations.list', token);
@@ -190,6 +210,13 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.status(200).send({ ok: false, error: 'invalid_auth' });
     }
 
+    // SLCK-18: scope enforcement
+    const scopeCheck = checkScope('conversations.info', tokenRecord.scope);
+    if (scopeCheck) return reply.status(200).send({ ok: false, ...scopeCheck });
+    // SLCK-19: scope response headers
+    reply.header('X-OAuth-Scopes', tokenRecord.scope);
+    reply.header('X-Accepted-OAuth-Scopes', METHOD_SCOPES['conversations.info']?.join(',') ?? '');
+
     // Rate limit check
     const limited = fastify.rateLimiter.check('conversations.info', token);
     if (limited) {
@@ -234,6 +261,13 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
     if (!tokenRecord) {
       return reply.status(200).send({ ok: false, error: 'invalid_auth' });
     }
+
+    // SLCK-18: scope enforcement
+    const scopeCheck = checkScope('conversations.history', tokenRecord.scope);
+    if (scopeCheck) return reply.status(200).send({ ok: false, ...scopeCheck });
+    // SLCK-19: scope response headers
+    reply.header('X-OAuth-Scopes', tokenRecord.scope);
+    reply.header('X-Accepted-OAuth-Scopes', METHOD_SCOPES['conversations.history']?.join(',') ?? '');
 
     // Rate limit check
     const limited = fastify.rateLimiter.check('conversations.history', token);

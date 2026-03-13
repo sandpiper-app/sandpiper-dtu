@@ -12,6 +12,7 @@
 
 import type { FastifyPluginAsync } from 'fastify';
 import { extractToken } from '../../services/token-validator.js';
+import { checkScope, METHOD_SCOPES } from '../../services/method-scopes.js';
 import type { SlackStateManager } from '../../state/slack-state-manager.js';
 import type { SlackRateLimiter } from '../../services/rate-limiter.js';
 
@@ -29,6 +30,12 @@ const pinsPlugin: FastifyPluginAsync = async (fastify) => {
     if (!token) { reply.send({ ok: false, error: 'not_authed' }); return null; }
     const tokenRecord = fastify.slackStateManager.getToken(token);
     if (!tokenRecord) { reply.send({ ok: false, error: 'invalid_auth' }); return null; }
+    // SLCK-18: scope enforcement
+    const scopeCheck = checkScope(method, tokenRecord.scope);
+    if (scopeCheck) { reply.status(200).send({ ok: false, ...scopeCheck }); return null; }
+    // SLCK-19: scope response headers
+    reply.header('X-OAuth-Scopes', tokenRecord.scope);
+    reply.header('X-Accepted-OAuth-Scopes', METHOD_SCOPES[method]?.join(',') ?? '');
     const limited = fastify.rateLimiter.check(method, token);
     if (limited) {
       reply.status(429).header('Retry-After', String(limited.retryAfter)).send({ ok: false, error: 'ratelimited' });
