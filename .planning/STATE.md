@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 25-02-PLAN.md
-last_updated: "2026-03-13T04:07:13.516Z"
+stopped_at: Completed 26-01-PLAN.md
+last_updated: "2026-03-13T04:48:36.395Z"
 last_activity: "2026-03-13 — Phase 25 Plan 04 complete: 3 new SQLite tables, 8 new StateManager methods, 4 updated plugins, smoke XCUT-01 GREEN (84/84 tests)"
 progress:
   total_phases: 15
   completed_phases: 13
-  total_plans: 48
-  completed_plans: 48
+  total_plans: 51
+  completed_plans: 49
   percent: 99
 ---
 
@@ -23,16 +23,16 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 25 Plan 04 complete (SLCK-17 state tables GREEN)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 26 Plan 01 complete (Wave 0 RED test scaffold for SLCK-15/18/19)
 
 ## Current Position
 
-Phase: 25 of 27 (Slack Method Coverage, Event Signing & State Tables)
-Plan: 4 of 4 complete
-Status: Plan 25-04 complete — SLCK-17 state tables: slack_channel_members, slack_views, slack_pins, UNIQUE reactions index; all handlers stateful; XCUT-01 GREEN
-Last activity: 2026-03-13 — Phase 25 Plan 04 complete: 3 new SQLite tables, 8 new StateManager methods, 4 updated plugins, smoke XCUT-01 GREEN (84/84 tests)
+Phase: 26 of 27 (Slack Chat Scoping & Scope Enforcement)
+Plan: 1 of 3 complete
+Status: Plan 26-01 complete — Wave 0 failing test scaffold: SLCK-15 ownership violations (4 tests), SLCK-18 missing_scope enforcement (4 tests), SLCK-19 OAuth headers (2 tests); all 10 enforcement tests RED
+Last activity: 2026-03-13 — Phase 26 Plan 01 complete: slack-scope-enforcement.test.ts created, 10/12 tests RED as expected
 
-Progress: [██████████] 99% (overall: 43/44 currently planned plans complete)
+Progress: [██████████] 98% (overall: 49/51 currently planned plans complete)
 
 ## Performance Metrics
 
@@ -60,10 +60,18 @@ Progress: [██████████] 99% (overall: 43/44 currently planned
 | Phase 25-03 P03 | 12min | 2 tasks | 7 files |
 | Phase 25 P04 | 18min | 2 tasks | 7 files |
 | Phase 25 P02 | 20min | 2 tasks | 6 files |
+| Phase 26-01 P01 | 2min | 1 tasks | 1 files |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-13 - Phase 26 Plan 01 (Wave 0 failing tests — SLCK-15/18/19):**
+- Attacker token seeded with broad scope ('chat:write,channels:read,...') but different userId (U_ATTACKER) so SLCK-15 tests isolate userId ownership check, not scope mismatch
+- allScopesString() not imported in test file — hardcoded BROAD_SCOPE constant avoids coupling test to twin internals
+- SLCK-18 non-chat scope tests (18d/18e) seed chat:write-only token inline per test (beforeEach calls resetSlack() clearing all tokens)
+- Raw fetch() used for SLCK-18 and SLCK-19 tests: WebClient throws on ok:false masking error details and does not expose response headers
+- 10 of 12 tests RED (enforcement not yet implemented), 2 regression guards GREEN (owner update/broad-scope post succeed as expected)
 
 **2026-03-12 - Phase 25 Plan 02 (Slack method coverage — SLCK-14):**
 - admin.ts covers 97 routes (plan said 95) — manifest had admin.apps.activities.list and admin.functions.* not in hand-listed plan
@@ -183,7 +191,7 @@ None.
 
 **Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
 **Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 25-02-PLAN.md
+**Stopped at:** Completed 26-01-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
