@@ -363,6 +363,10 @@ Plans:
 **Goal:** Every new SQLite table added in v1.2 is included in StateManager/SlackStateManager reset() logic, verified by a reset coverage test, within sub-100ms performance target.
 **Requirements:** XCUT-01
 **Gap Closure:** Closes orphaned XCUT-01 (reset coverage not formally tracked)
+**Plans:** 1 plan
+
+Plans:
+- [ ] 33-01-PLAN.md — XCUT-01: Shopify v1.2 table reset coverage + sub-100ms performance tests
 
 ## Progress
 
@@ -388,7 +392,7 @@ Plans:
 | 30. Slack Transport & State Fixes | 2/2 | Complete    | 2026-03-13 | - |
 | 31. Slack OAuth & Method Coverage | 2/2 | Complete    | 2026-03-13 | - |
 | 32. Conformance Harness & Evidence | 2/2 | Complete    | 2026-03-13 | - |
-| 33. Cross-Cutting Reset Coverage | v1.2 | 0/0 | Pending | - |
+| 33. Cross-Cutting Reset Coverage | v1.2 | 0/1 | In Progress | - |
 
 ## Dependencies
 
