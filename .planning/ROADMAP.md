@@ -280,7 +280,12 @@ Plans:
   3. Conformance tests exercise the actual `chat.update` and `chat.delete` methods against messages posted through the twin, not substitute `chat.postMessage` calls
   4. Calling a method with a token that lacks the required scope returns `{ok: false, error: "missing_scope", needed: "<scope>", provided: "<scopes>"}`; OAuth token exchange validates `client_id`, `scope`, and `redirect_uri`
   5. Successful method calls include `X-OAuth-Scopes` (token's granted scopes) and `X-Accepted-OAuth-Scopes` (method's required scopes) response headers
-**Plans:** TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 26-01-PLAN.md — Wave 0 failing tests: slack-scope-enforcement.test.ts covering SLCK-15, SLCK-18, SLCK-19
+- [ ] 26-02-PLAN.md — SLCK-15 + SLCK-18 + SLCK-19 core: checkScope() helper, checkAuthRateError refactor, chat.update/delete ownership, oauth.ts client_id validation
+- [ ] 26-03-PLAN.md — SLCK-18 + SLCK-19 across remaining 9 plugins: conversations, users, pins, reactions, views, stubs, admin, new-families, files, auth
 
 ### Phase 27: Conformance Harness & Coverage Infrastructure
 **Goal**: Conformance harness performs real twin-vs-live structural comparison (not twin-vs-self), and coverage status is derived from test execution evidence rather than hand-authored metadata — establishing a trustworthy fidelity baseline going into v2.
@@ -310,7 +315,7 @@ Plans:
 | 23. Shopify OAuth & Storefront | 4/4 | Complete    | 2026-03-12 | - |
 | 24. Shopify REST Persistence, Billing State Machine & Rate Limiting | 4/4 | Complete    | 2026-03-13 | - |
 | 25. Slack Method Coverage, Event Signing & State Tables | 4/4 | Complete    | 2026-03-13 | - |
-| 26. Slack Chat Scoping & Scope Enforcement | v1.2 | 0/TBD | Not started | - |
+| 26. Slack Chat Scoping & Scope Enforcement | v1.2 | 0/3 | Not started | - |
 | 27. Conformance Harness & Coverage Infrastructure | v1.2 | 0/TBD | Not started | - |
 
 ## Dependencies
