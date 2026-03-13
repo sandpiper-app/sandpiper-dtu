@@ -299,6 +299,52 @@ describe('SLCK-18: Missing-scope enforcement', () => {
     expect(body.needed).toBe('users:read');
     expect(body.provided).toBe('chat:write');
   });
+
+  // SLCK-18f: oauth.v2.access with mismatched redirect_uri returns redirect_uri_mismatch
+  it('SLCK-18f: oauth.v2.access with redirect_uri that does not match authorize-time value returns redirect_uri_mismatch', async () => {
+    const slackUrl = process.env.SLACK_API_URL!;
+
+    // Step 1: Authorize with redirect_uri=http://localhost/correct
+    const authorizeRes = await fetch(
+      slackUrl + '/oauth/v2/authorize?client_id=test-client&scope=chat:write&redirect_uri=http%3A%2F%2Flocalhost%2Fcorrect&state=test',
+      { method: 'GET', redirect: 'manual' }
+    );
+    // Extract code from the redirect Location header
+    const location = authorizeRes.headers.get('location') ?? '';
+    const codeMatch = location.match(/[?&]code=([^&]+)/);
+    expect(codeMatch).not.toBeNull();
+    const code = codeMatch![1];
+
+    // Step 2: Exchange with a DIFFERENT redirect_uri — must fail
+    const res = await fetch(slackUrl + '/api/oauth.v2.access', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        code,
+        client_id: 'test-client',
+        redirect_uri: 'http://localhost/wrong',  // mismatch
+      }),
+    });
+    const body = await res.json() as { ok: boolean; error?: string };
+    expect(body.ok).toBe(false);
+    expect(body.error).toBe('redirect_uri_mismatch');
+  });
+
+  // SLCK-18g: GET /oauth/v2/authorize without scope returns invalid_scope
+  it('SLCK-18g: GET /oauth/v2/authorize without scope parameter returns invalid_scope', async () => {
+    const slackUrl = process.env.SLACK_API_URL!;
+
+    // Authorize without scope — must be rejected
+    const res = await fetch(
+      slackUrl + '/oauth/v2/authorize?client_id=test-client&redirect_uri=http%3A%2F%2Flocalhost%2Fcallback&state=test',
+      { method: 'GET', redirect: 'manual' }
+    );
+    // Should return 400, not 302
+    expect(res.status).toBe(400);
+    const body = await res.json() as { ok: boolean; error?: string };
+    expect(body.ok).toBe(false);
+    expect(body.error).toBe('invalid_scope');
+  });
 });
 
 // ============================================================================
