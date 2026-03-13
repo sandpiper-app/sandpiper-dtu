@@ -265,8 +265,11 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
       let version: string;
       try {
         version = parseShopifyApiVersion(req.params.version);
-      } catch {
+      } catch (err: any) {
         reply.status(400).header('content-type', 'application/json');
+        if (err.sunset) {
+          return reply.send(JSON.stringify({ errors: [{ message: 'This API version is no longer supported' }] }));
+        }
         return reply.send(JSON.stringify({ errors: [{ message: 'Invalid API version' }] }));
       }
       setApiVersionHeader(reply, version);
@@ -341,8 +344,11 @@ export const graphqlPlugin: FastifyPluginAsync = async (fastify) => {
       let version: string;
       try {
         version = parseShopifyApiVersion(req.params.version);
-      } catch {
+      } catch (err: any) {
         reply.status(400).header('content-type', 'application/json');
+        if (err.sunset) {
+          return reply.send(JSON.stringify({ errors: [{ message: 'This API version is no longer supported' }] }));
+        }
         return reply.send(JSON.stringify({ errors: [{ message: 'Invalid API version' }] }));
       }
       setApiVersionHeader(reply, version);

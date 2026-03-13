@@ -137,10 +137,16 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
     let version: string;
     try {
       version = parseShopifyApiVersion(request.params?.version);
-    } catch {
-      reply.status(400).header('content-type', 'application/json').send({
-        errors: 'Invalid API version',
-      });
+    } catch (err: any) {
+      if (err.sunset) {
+        reply.status(400).header('content-type', 'application/json').send({
+          errors: 'This API version is no longer supported',
+        });
+      } else {
+        reply.status(400).header('content-type', 'application/json').send({
+          errors: 'Invalid API version',
+        });
+      }
       return null;
     }
     setApiVersionHeader(reply, version);
