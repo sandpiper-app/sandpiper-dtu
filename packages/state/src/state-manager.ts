@@ -33,8 +33,10 @@ export class StateManager {
   private updateOrderStmt: Database.Statement | null = null;
   private getOrderStmt: Database.Statement | null = null;
   private getOrderByGidStmt: Database.Statement | null = null;
+  private getOrderByIdStmt: Database.Statement | null = null;
   private listOrdersStmt: Database.Statement | null = null;
   private createProductStmt: Database.Statement | null = null;
+  private getProductStmt: Database.Statement | null = null;
   private getProductByGidStmt: Database.Statement | null = null;
   private listProductsStmt: Database.Statement | null = null;
   private createCustomerStmt: Database.Statement | null = null;
@@ -103,8 +105,10 @@ export class StateManager {
       this.updateOrderStmt = null;
       this.getOrderStmt = null;
       this.getOrderByGidStmt = null;
+      this.getOrderByIdStmt = null;
       this.listOrdersStmt = null;
       this.createProductStmt = null;
+      this.getProductStmt = null;
       this.getProductByGidStmt = null;
       this.listProductsStmt = null;
       this.createCustomerStmt = null;
@@ -156,8 +160,10 @@ export class StateManager {
       this.updateOrderStmt = null;
       this.getOrderStmt = null;
       this.getOrderByGidStmt = null;
+      this.getOrderByIdStmt = null;
       this.listOrdersStmt = null;
       this.createProductStmt = null;
+      this.getProductStmt = null;
       this.getProductByGidStmt = null;
       this.listProductsStmt = null;
       this.createCustomerStmt = null;
@@ -402,11 +408,13 @@ export class StateManager {
     );
     this.getOrderStmt = db.prepare('SELECT * FROM orders WHERE id = ?');
     this.getOrderByGidStmt = db.prepare('SELECT * FROM orders WHERE gid = ?');
+    this.getOrderByIdStmt = db.prepare('SELECT * FROM orders WHERE id = ?');
     this.listOrdersStmt = db.prepare('SELECT * FROM orders ORDER BY id ASC');
 
     this.createProductStmt = db.prepare(
       'INSERT INTO products (gid, title, description, vendor, product_type, price, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
     );
+    this.getProductStmt = db.prepare('SELECT * FROM products WHERE id = ?');
     this.getProductByGidStmt = db.prepare('SELECT * FROM products WHERE gid = ?');
     this.listProductsStmt = db.prepare('SELECT * FROM products ORDER BY id ASC');
 
@@ -580,6 +588,12 @@ export class StateManager {
     return this.getOrderByGidStmt.get(gid);
   }
 
+  /** Get an order by integer id */
+  getOrderById(id: number): any | undefined {
+    if (!this.getOrderByIdStmt) throw new Error('StateManager not initialized. Call init() first.');
+    return this.getOrderByIdStmt.get(id) as any | undefined;
+  }
+
   /** List all orders */
   listOrders(): any[] {
     if (!this.listOrdersStmt) {
@@ -635,9 +649,9 @@ export class StateManager {
   }
 
   /** Get a product by internal ID */
-  getProduct(id: number): any | undefined {
-    const stmt = this.database.prepare('SELECT * FROM products WHERE id = ?');
-    return stmt.get(id);
+  getProduct(rowId: number): any | undefined {
+    if (!this.getProductStmt) throw new Error('StateManager not initialized. Call init() first.');
+    return this.getProductStmt.get(rowId) as any | undefined;
   }
 
   /** Get a product by Shopify GID */
