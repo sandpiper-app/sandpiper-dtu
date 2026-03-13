@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 28-01-PLAN.md
-last_updated: "2026-03-13T20:38:04.280Z"
+stopped_at: Completed 28-02-PLAN.md
+last_updated: "2026-03-13T20:39:06.277Z"
 last_activity: "2026-03-13 — Phase 28 Plan 01 complete: pagination.test.ts OAuth migration + 6 RED tests, SDK sentinel replacements with real multi-page assertions"
 progress:
   total_phases: 21
   completed_phases: 17
   total_plans: 62
-  completed_plans: 58
+  completed_plans: 59
   percent: 97
 ---
 
@@ -28,11 +28,11 @@ progress:
 ## Current Position
 
 Phase: 28 of 33 (Shopify REST Pagination & Version Policy) — IN PROGRESS
-Plan: 1 of 3 complete
-Status: Plan 28-01 complete — Wave 0 RED tests written; OAuth seeding migrated to POST /admin/tokens; 6 SHOP-23/SHOP-17 failing tests define contracts for Plans 02 and 03
-Last activity: 2026-03-13 — Phase 28 Plan 01 complete: pagination.test.ts OAuth migration + 6 RED tests, SDK sentinel replacements with real multi-page assertions
+Plan: 2 of 3 complete
+Status: Plan 28-02 complete — paginateList helper + real cursor pagination on 4 Tier 1 REST list endpoints; SHOP-23 4 tests GREEN; SHOP-17 still RED (Plan 03)
+Last activity: 2026-03-13 — Phase 28 Plan 02 complete: REST cursor pagination, paginateList helper, SHOP-23 GREEN
 
-Progress: [██████████] 97% (overall: 57/60 plans complete)
+Progress: [██████████] 97% (overall: 88/91 plans complete)
 
 ## Performance Metrics
 
@@ -70,6 +70,7 @@ Progress: [██████████] 97% (overall: 57/60 plans complete)
 | Phase 30-02 P02 | 4min | 2 tasks | 5 files |
 | Phase 29 P02 | 10min | 2 tasks | 3 files |
 | Phase 28-01 P01 | 7 | 2 tasks | 3 files |
+| Phase 28 P02 | 8min | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,12 @@ Progress: [██████████] 97% (overall: 57/60 plans complete)
 - API Conformance form-urlencoded tests use full authorize flow with credentials in form-urlencoded format — preserves content-type coverage path
 - rate-limit.test.ts was already migrated in Phase 24-03 (5/5 GREEN, isolation check confirmed skip)
 - SHOP-21 fully satisfied: 50 previously-failing tests now GREEN across all 4 files
+
+**2026-03-13 - Phase 28 Plan 02 (REST cursor pagination — SHOP-23):**
+- paginateList<T> is a module-level function in rest.ts; uses encodeCursor/decodeCursor from services/cursor.ts (same utilities as GraphQL layer)
+- Previous cursor encodes all[prevStartIdx - 1].id (not all[startIdx - 1].id) — using startIdx-1 would encode the last ID before the current window and return the same page again
+- Link header URLs use https://dev.myshopify.com consistent with test harness; limit= parameter forwarded in both rel=next and rel=previous URLs
+- SHOP-23 fully satisfied: 4 REST cursor pagination tests GREEN; SHOP-17 (invalid month/sunset version) stays RED for Plan 03
 
 **2026-03-13 - Phase 28 Plan 01 (Wave 0 REST pagination + version policy tests):**
 - Sentinel page_info=test tests removed from pagination.test.ts + SDK files; replaced with real multi-page assertions using limit=2 and 3 seeded products
@@ -253,7 +260,7 @@ None.
 
 **Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
 **Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 28-01-PLAN.md
+**Stopped at:** Completed 28-02-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---

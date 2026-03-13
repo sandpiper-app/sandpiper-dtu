@@ -312,7 +312,7 @@ Plans:
 **Goal:** Shopify REST list endpoints implement real cursor pagination with result slicing and cursor advancement, and the API version router rejects unsupported/sunset versions with appropriate error responses.
 **Requirements:** SHOP-23, SHOP-17
 **Gap Closure:** Closes unsatisfied SHOP-23 (fake pagination) and partial SHOP-17 (accepts invalid versions) from audit
-**Plans:** 1/3 plans executed
+**Plans:** 2/3 plans executed
 
 Plans:
 - [ ] 28-01-PLAN.md — Wave 0: migrate pagination.test.ts OAuth seeding to POST /admin/tokens, add failing REST pagination + version policy tests
@@ -378,7 +378,7 @@ Plans:
 | 25. Slack Method Coverage, Event Signing & State Tables | 4/4 | Complete    | 2026-03-13 | - |
 | 26. Slack Chat Scoping & Scope Enforcement | 3/3 | Complete    | 2026-03-13 | - |
 | 27. Conformance Harness & Coverage Infrastructure | 2/2 | Complete    | 2026-03-13 | - |
-| 28. Shopify REST Pagination & Version Policy | 1/3 | In Progress|  | - |
+| 28. Shopify REST Pagination & Version Policy | 2/3 | In Progress|  | - |
 | 29. Shopify Billing Transitions & Test Migration | 2/2 | Complete    | 2026-03-13 | - |
 | 30. Slack Transport & State Fixes | 2/2 | Complete    | 2026-03-13 | - |
 | 31. Slack OAuth & Method Coverage | v1.2 | 0/2 | Pending | - |
