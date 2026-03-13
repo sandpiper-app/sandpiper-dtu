@@ -262,7 +262,13 @@ Plans:
   3. Interaction payloads route through a dedicated interactivity URL (not the event subscriptions endpoint); `response_url` is an absolute URL, not a relative path
   4. `conversations.invite` and `conversations.kick` update real channel membership; `conversations.members` returns the actual member list; `conversations.open` returns a real DM channel ID
   5. `views.open`/`update`/`push` maintain persistent view state with stable view IDs; `pins.add`/`remove`/`list` enforce deduplication (`already_pinned` error); `reactions.add`/`remove`/`list` enforce deduplication (`already_reacted` error)
-**Plans:** TBD
+**Plans:** 4 plans
+
+Plans:
+- [ ] 25-01-PLAN.md — Wave 0 test scaffold: slack-method-coverage.test.ts, slack-signing.test.ts, slack-state-tables.test.ts, smoke.test.ts XCUT-01 additions
+- [ ] 25-02-PLAN.md — SLCK-14: admin.ts (95 routes), new-families.ts (~34 routes), method-scopes.ts additions, index.ts registration
+- [ ] 25-03-PLAN.md — SLCK-16: EventDispatcher Slack HMAC headers, absolute response_url, dedicated interactivity URL routing
+- [ ] 25-04-PLAN.md — SLCK-17: 3 new state tables + updated conversations/pins/reactions/views handlers + XCUT-01 reset coverage
 
 ### Phase 26: Slack Chat Scoping & Scope Enforcement
 **Goal**: Slack twin enforces channel and author ownership on message mutations and validates OAuth scope requirements per method, matching real Slack's access control behavior.
@@ -303,7 +309,7 @@ Plans:
 | 22. Shopify Version Routing & Response Headers | 3/3 | Complete    | 2026-03-12 | - |
 | 23. Shopify OAuth & Storefront | 4/4 | Complete    | 2026-03-12 | - |
 | 24. Shopify REST Persistence, Billing State Machine & Rate Limiting | 4/4 | Complete    | 2026-03-13 | - |
-| 25. Slack Method Coverage, Event Signing & State Tables | v1.2 | 0/TBD | Not started | - |
+| 25. Slack Method Coverage, Event Signing & State Tables | v1.2 | 0/4 | Not started | - |
 | 26. Slack Chat Scoping & Scope Enforcement | v1.2 | 0/TBD | Not started | - |
 | 27. Conformance Harness & Coverage Infrastructure | v1.2 | 0/TBD | Not started | - |
 
