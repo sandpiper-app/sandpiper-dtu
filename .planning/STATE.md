@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 31-01-PLAN.md
-last_updated: "2026-03-13T21:12:28.360Z"
-last_activity: "2026-03-13 — Phase 31 Plan 02 complete: OAuth code binding, scope validation, safe log"
+stopped_at: Completed 32-02-PLAN.md
+last_updated: "2026-03-13T21:57:21.070Z"
+last_activity: "2026-03-13 — Phase 32 Plan 02 complete: REQUIRED_LIVE_COUNT 202→222, INFRA-22 exclusion pattern documented, coverage-report.json regenerated"
 progress:
   total_phases: 21
   completed_phases: 19
-  total_plans: 62
-  completed_plans: 62
+  total_plans: 64
+  completed_plans: 63
   percent: 100
 ---
 
@@ -23,16 +23,16 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 31 Plan 02 COMPLETE (SLCK-18 OAuth binding: Map-based code binding, scope at authorize, redirect_uri at exchange, safe log)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 32 Plan 02 COMPLETE (INFRA-22: coverage gate raised to 222, integration-test exclusion pattern documented, coverage-report.json regenerated)
 
 ## Current Position
 
-Phase: 31 of 33 (Slack OAuth Method Coverage) — COMPLETE
+Phase: 32 of 33 (Conformance Harness Evidence) — In Progress
 Plan: 2 of 2 complete
-Status: Plan 31-02 complete — Map-based OAuth code binding; SLCK-18f (redirect_uri_mismatch) and SLCK-18g (invalid_scope) GREEN; SLCK-18 fully satisfied
-Last activity: 2026-03-13 — Phase 31 Plan 02 complete: OAuth code binding, scope validation, safe log
+Status: Plan 32-02 complete — REQUIRED_LIVE_COUNT 202→222; INTEGRATION-TEST EXCLUSIONS block documenting slack-signing.test.ts and slack-state-tables.test.ts; coverage-report.json regenerated with phase '32' and live 222
+Last activity: 2026-03-13 — Phase 32 Plan 02 complete: REQUIRED_LIVE_COUNT 202→222, INFRA-22 exclusion pattern documented, coverage-report.json regenerated
 
-Progress: [██████████] 100% (overall: 91/91 plans complete)
+Progress: [██████████] 99% (overall: 92/93 plans complete)
 
 ## Performance Metrics
 
@@ -74,10 +74,18 @@ Progress: [██████████] 100% (overall: 91/91 plans complete)
 | Phase 28 P03 | 2min | 2 tasks | 3 files |
 | Phase 31 P01 | 2min | 2 tasks | 3 files |
 | Phase 31-slack-oauth-method-coverage P02 | 2min | 2 tasks | 2 files |
+| Phase 32 P02 | 1min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-13 - Phase 32 Plan 02 (Coverage gate update — INFRA-22):**
+- REQUIRED_LIVE_COUNT raised from 202 to 222 in check-drift.ts after Phase 31 added 20 new EVIDENCE_MAP entries (19 SLCK-14 method families + oauth.v2.access)
+- Integration-test exclusion pattern documented in generate-report-evidence.ts: comment block before EVIDENCE_MAP explains slack-signing.test.ts (SLCK-16) and slack-state-tables.test.ts (SLCK-17) have no entries because all their WebClient methods are attributed to dedicated primary test files
+- Phase metadata updated '27' → '32'; note string references Phase 32 changes including compareValueFields
+- REQUIRED_LIVE_COUNT and internal generate gate must always stay in sync — both raised to 222
+- pnpm drift:check passes all checks cleanly (live 222 >= 222 required)
 
 **2026-03-13 - Phase 31 Plan 01 (Slack method coverage — SLCK-14):**
 - slackLists.create, rtm.connect, entity.presentDetails verified present in METHOD_SCOPES before adding tests — all pass with broad-scope seedSlackBotToken()
@@ -277,7 +285,7 @@ None.
 
 **Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
 **Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 31-01-PLAN.md
+**Stopped at:** Completed 32-02-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
