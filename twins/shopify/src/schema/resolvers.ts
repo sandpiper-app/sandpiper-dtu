@@ -846,6 +846,15 @@ export const resolvers = {
           userErrors: [{ field: ['id'], message: 'Subscription does not belong to this installation' }],
         };
       }
+      if (subscription.status !== 'ACTIVE') {
+        return {
+          appSubscription: null,
+          userErrors: [{
+            field: ['id'],
+            message: 'Only ACTIVE subscriptions can be cancelled',
+          }],
+        };
+      }
       context.stateManager.updateAppSubscriptionStatus(numericId, 'CANCELLED');
       const updated = context.stateManager.getAppSubscription(numericId);
       return {

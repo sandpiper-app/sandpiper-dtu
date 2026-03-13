@@ -42,7 +42,13 @@ describe('Slack views family (SLCK-08)', () => {
 
   it('views.update returns ok:true and a view object', async () => {
     const client = createSlackClient(token);
-    const result = await client.views.update({ view_id: 'V_FAKE', view: sampleView });
+    // Open a view first to get a real view_id
+    const openResult = await client.views.open({ trigger_id: 'TRIGGER_FAKE', view: sampleView });
+    expect(openResult.ok).toBe(true);
+    const viewId = openResult.view?.id;
+    expect(viewId).toBeDefined();
+    // Update using the real view_id
+    const result = await client.views.update({ view_id: viewId!, view: sampleView });
     expect(result.ok).toBe(true);
     expect(result.view?.id).toBeDefined();
   });

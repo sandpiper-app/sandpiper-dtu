@@ -55,6 +55,7 @@ export class SlackStateManager {
 
   private addReactionStmt: Database.Statement | null = null;
   private listReactionsStmt: Database.Statement | null = null;
+  private listReactionsByUserStmt: Database.Statement | null = null;
   private removeReactionStmt: Database.Statement | null = null;
 
   private addChannelMemberStmt: Database.Statement | null = null;
@@ -411,6 +412,10 @@ export class SlackStateManager {
     return this.listReactionsStmt!.all(messageTs);
   }
 
+  listReactionsByUser(userId: string): any[] {
+    return this.listReactionsByUserStmt!.all(userId);
+  }
+
   removeReaction(messageTs: string, channelId: string, userId: string, reaction: string): void {
     this.removeReactionStmt!.run(messageTs, channelId, userId, reaction);
   }
@@ -680,6 +685,9 @@ export class SlackStateManager {
     this.listReactionsStmt = db.prepare(
       'SELECT * FROM slack_reactions WHERE message_ts = ? ORDER BY created_at ASC'
     );
+    this.listReactionsByUserStmt = db.prepare(
+      'SELECT * FROM slack_reactions WHERE user_id = ? ORDER BY created_at ASC'
+    );
     this.removeReactionStmt = db.prepare(
       'DELETE FROM slack_reactions WHERE message_ts = ? AND channel_id = ? AND user_id = ? AND reaction = ?'
     );
@@ -759,6 +767,7 @@ export class SlackStateManager {
     this.clearErrorConfigsStmt = null;
     this.addReactionStmt = null;
     this.listReactionsStmt = null;
+    this.listReactionsByUserStmt = null;
     this.removeReactionStmt = null;
     this.addChannelMemberStmt = null;
     this.removeChannelMemberStmt = null;
