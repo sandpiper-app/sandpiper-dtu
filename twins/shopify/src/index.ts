@@ -82,10 +82,9 @@ export async function buildApp(options: { logger?: boolean | object; rateLimit?:
     }
   }
 
-  // Initialize rate limiter (increased to 2000 pts max to accommodate billing.check
-  // which uses oneTimePurchases(first: 250) — that query costs ~1004 pts under the
-  // twin's conservative cost model; real Shopify charges for actual items returned).
-  const rateLimiter = new LeakyBucketRateLimiter(2000, 50, options.rateLimit !== false);
+  // Shopify default: 1000 pts bucket, 50 pts/sec restore rate.
+  // actualQueryCost (post-execution) is deducted, not requestedQueryCost — see graphql.ts.
+  const rateLimiter = new LeakyBucketRateLimiter(1000, 50, options.rateLimit !== false);
 
   // Decorate Fastify with stateManager, errorSimulator, webhookSecret, queue, and rateLimiter
   fastify.decorate('stateManager', stateManager);

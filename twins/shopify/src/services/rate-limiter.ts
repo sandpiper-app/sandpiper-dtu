@@ -64,24 +64,37 @@ export class LeakyBucketRateLimiter {
     );
     bucket.lastRefill = now;
 
-    if (bucket.available >= cost) {
-      // Allowed — deduct cost
-      bucket.available -= cost;
-      return {
-        allowed: true,
-        currentlyAvailable: bucket.available,
-        retryAfterMs: 0,
-      };
-    } else {
-      // Throttled — calculate how long until enough points are restored
-      const deficit = cost - bucket.available;
-      const retryAfterMs = Math.ceil((deficit / this.restoreRate) * 1000);
+    // Shopify allows requests when bucket has any capacity — deducts full cost, can go negative.
+    // Next request is throttled if available <= 0.
+    if (bucket.available <= 0) {
+      // Throttled — calculate how long until any points are restored
+      const deficit = -bucket.available;
+      const retryAfterMs = Math.ceil(((deficit + 1) / this.restoreRate) * 1000);
       return {
         allowed: false,
-        currentlyAvailable: bucket.available,
+        currentlyAvailable: Math.max(0, bucket.available),
         retryAfterMs,
       };
     }
+    // Deduct requestedQueryCost upfront; post-execution refund will credit back the difference.
+    bucket.available -= cost;
+    return {
+      allowed: true,
+      currentlyAvailable: bucket.available,
+      retryAfterMs: 0,
+    };
+  }
+
+  /**
+   * Refund points back to the bucket (used after post-execution actualQueryCost is known).
+   * Refund amount is capped so bucket does not exceed maxAvailable.
+   * No-op when rate limiting is disabled.
+   */
+  refund(key: string, amount: number): void {
+    if (!this.enabled || amount <= 0) return;
+    const bucket = this.buckets.get(key);
+    if (!bucket) return;
+    bucket.available = Math.min(this.maxAvailable, bucket.available + amount);
   }
 
   /**

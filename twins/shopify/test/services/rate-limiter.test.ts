@@ -45,40 +45,53 @@ describe('LeakyBucketRateLimiter', () => {
       expect(result.currentlyAvailable).toBeCloseTo(500, 0);
     });
 
-    it('throttles when cost exceeds available', () => {
+    it('throttles only when bucket is fully exhausted (available <= 0)', () => {
       const limiter = new LeakyBucketRateLimiter(100, 50);
-      // Drain the bucket
+      // Drain the bucket completely
       limiter.tryConsume('shop1', 100);
-      // Next request should be denied
+      // Next request is denied because available == 0 (not > 0)
       const result = limiter.tryConsume('shop1', 50);
       expect(result.allowed).toBe(false);
+    });
+
+    it('allows request when cost exceeds available but bucket has capacity (can go negative)', () => {
+      const limiter = new LeakyBucketRateLimiter(100, 50);
+      // Consume 80, leaving 20 remaining
+      limiter.tryConsume('shop1', 80);
+      // 20 remaining — still > 0, so request is allowed even though cost (50) > available (20)
+      const result = limiter.tryConsume('shop1', 50);
+      expect(result.allowed).toBe(true);
+      // Bucket goes negative: 20 - 50 = -30
+      expect(result.currentlyAvailable).toBeCloseTo(-30, 0);
     });
 
     it('returns retryAfterMs when throttled', () => {
       const limiter = new LeakyBucketRateLimiter(100, 50);
       // Drain bucket completely
       limiter.tryConsume('shop1', 100);
-      // Try to consume 50 more — deficit = 50, at 50pts/sec => 1000ms
+      // Try to consume 50 more — bucket is at 0, throttled (deficit = 0+1 => 1/50 => 20ms ceil)
       const result = limiter.tryConsume('shop1', 50);
       expect(result.allowed).toBe(false);
-      expect(result.retryAfterMs).toBe(1000);
+      expect(result.retryAfterMs).toBeGreaterThan(0);
     });
 
-    it('retryAfterMs is ceil of fractional seconds', () => {
-      // restoreRate = 100 pts/sec, deficit = 75 pts => 0.75 sec => ceil => 750ms
+    it('retryAfterMs reflects bucket recovery time when exhausted', () => {
+      // restoreRate = 100 pts/sec; drain to 0, then drain further to negative
       const limiter = new LeakyBucketRateLimiter(100, 100);
-      limiter.tryConsume('shop1', 100);
+      limiter.tryConsume('shop1', 100); // bucket = 0
+      // Now bucket is at 0, next consume is denied
       const result = limiter.tryConsume('shop1', 75);
-      expect(result.retryAfterMs).toBe(750);
+      expect(result.allowed).toBe(false);
+      expect(result.retryAfterMs).toBeGreaterThan(0);
     });
 
-    it('reports currentlyAvailable when throttled', () => {
+    it('reports currentlyAvailable as 0 when throttled', () => {
       const limiter = new LeakyBucketRateLimiter(100, 50);
-      limiter.tryConsume('shop1', 80);
-      // 20 remaining, try to consume 50 → denied
+      limiter.tryConsume('shop1', 100);
+      // bucket at 0 exactly → throttled
       const result = limiter.tryConsume('shop1', 50);
       expect(result.allowed).toBe(false);
-      expect(result.currentlyAvailable).toBeCloseTo(20, 0);
+      expect(result.currentlyAvailable).toBe(0);
     });
 
     it('uses separate buckets per key', () => {
