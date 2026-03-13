@@ -375,7 +375,7 @@ Plans:
 | 27. Conformance Harness & Coverage Infrastructure | 2/2 | Complete    | 2026-03-13 | - |
 | 28. Shopify REST Pagination & Version Policy | v1.2 | 0/3 | Pending | - |
 | 29. Shopify Billing Transitions & Test Migration | 1/2 | In Progress|  | - |
-| 30. Slack Transport & State Fixes | 2/2 | Complete   | 2026-03-13 | - |
+| 30. Slack Transport & State Fixes | 2/2 | Complete    | 2026-03-13 | - |
 | 31. Slack OAuth & Method Coverage | v1.2 | 0/0 | Pending | - |
 | 32. Conformance Harness & Evidence | v1.2 | 0/0 | Pending | - |
 | 33. Cross-Cutting Reset Coverage | v1.2 | 0/0 | Pending | - |
