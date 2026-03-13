@@ -33,3 +33,6 @@ Thumbs.db
 *.db
 *.sqlite
 *.sqlite3
+
+# Vitest JSON reporter output — regenerated before drift:check, not checked in (INFRA-22)
+tests/sdk-verification/coverage/vitest-evidence.json
