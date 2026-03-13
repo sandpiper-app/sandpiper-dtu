@@ -20,16 +20,19 @@ interface ResponseUrlEntry {
 export interface InteractionHandlerOptions {
   slackStateManager: SlackStateManager;
   signingSecret: string;
+  baseUrl?: string;
 }
 
 export class InteractionHandler {
   private slackStateManager: SlackStateManager;
   private signingSecret: string;
+  private baseUrl: string;
   private responseUrls: Map<string, ResponseUrlEntry> = new Map();
 
   constructor(options: InteractionHandlerOptions) {
     this.slackStateManager = options.slackStateManager;
     this.signingSecret = options.signingSecret;
+    this.baseUrl = options.baseUrl ?? 'http://localhost:3001';
   }
 
   /**
@@ -56,7 +59,7 @@ export class InteractionHandler {
       expiresAt: Date.now() + 30 * 60 * 1000, // 30 minutes
     });
 
-    const responseUrl = `/response-url/${responseUrlId}`;
+    const responseUrl = `${this.baseUrl}/response-url/${responseUrlId}`;
 
     // Build block_actions payload matching Slack's format
     const payload = {

@@ -21,6 +21,7 @@ export class SlackStateManager {
 
   // Ephemeral in-memory state (not persisted to SQLite)
   private wssUrl: string | null = null;
+  private interactivityUrl: string | null = null;
 
   // Prepared statements — nullified on reset/close
   private createTeamStmt: Database.Statement | null = null;
@@ -84,6 +85,7 @@ export class SlackStateManager {
     this.prepareStatements();
     this.seedDefaults();
     this.wssUrl = null;
+    this.interactivityUrl = null;
   }
 
   /** Close database connection and release resources */
@@ -104,6 +106,16 @@ export class SlackStateManager {
   /** Retrieve the stored WebSocket server URL, or null if not yet seeded */
   getWssUrl(): string | null {
     return this.wssUrl;
+  }
+
+  /** Store the interactivity URL for interaction payload delivery */
+  setInteractivityUrl(url: string): void {
+    this.interactivityUrl = url;
+  }
+
+  /** Retrieve the stored interactivity URL, or null if not yet seeded */
+  getInteractivityUrl(): string | null {
+    return this.interactivityUrl;
   }
 
   // ---------------------------------------------------------------------------
