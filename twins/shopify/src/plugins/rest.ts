@@ -40,6 +40,7 @@ import {
   setApiVersionHeader,
   buildAdminApiPath,
 } from '../services/api-version.js';
+import { encodeCursor, decodeCursor } from '../services/cursor.js';
 
 // Route prefix helper — generates /admin/api/:version/{suffix} strings.
 // Used only at registration time (Fastify route matching), not at request time.
@@ -47,6 +48,64 @@ const adminPath = (suffix: string): string => {
   const normalizedSuffix = suffix.startsWith('/') ? suffix : `/${suffix}`;
   return `/admin/api/:version${normalizedSuffix}`;
 };
+
+// ---------------------------------------------------------------------------
+// Cursor-based pagination helper
+// ---------------------------------------------------------------------------
+
+interface PaginationResult<T extends { id: number }> {
+  items: T[];
+  linkHeader: string | null;
+}
+
+/**
+ * Slice `all` (sorted by id ASC) into a cursor-paginated page.
+ *
+ * @param all          - Full sorted list of items (id ASC)
+ * @param resourceType - Resource type string used in cursor encoding (e.g. 'Product')
+ * @param version      - API version string for building Link header URLs
+ * @param path         - URL path suffix (e.g. '/products.json')
+ * @param limit        - Maximum items per page (1–250)
+ * @param afterId      - Decoded cursor: return items with id > afterId (0 = first page)
+ */
+function paginateList<T extends { id: number }>(
+  all: T[],
+  resourceType: string,
+  version: string,
+  path: string,
+  limit: number,
+  afterId: number,
+): PaginationResult<T> {
+  // When afterId=0 (first page), start from index 0.
+  // When afterId>0 (subsequent page), start from the first item with id > afterId.
+  const startIdx = afterId === 0 ? 0 : all.findIndex((item) => item.id > afterId);
+  const slice = startIdx === -1 ? [] : all.slice(startIdx, startIdx + limit);
+  const hasNext = startIdx !== -1 && startIdx + limit < all.length;
+  const hasPrev = afterId > 0;
+
+  const parts: string[] = [];
+
+  if (hasPrev) {
+    // Previous cursor: go back one full page from the current start.
+    // prevStartIdx = max(0, startIdx - limit)
+    // prevAfterId = prevStartIdx === 0 ? 0 : all[prevStartIdx - 1].id
+    const prevStartIdx = Math.max(0, startIdx - limit);
+    const prevAfterId = prevStartIdx === 0 ? 0 : all[prevStartIdx - 1].id;
+    const prevCursor = encodeCursor(resourceType, prevAfterId);
+    const prevUrl = `https://dev.myshopify.com${buildAdminApiPath(version, path)}?page_info=${prevCursor}&limit=${limit}`;
+    parts.push(`<${prevUrl}>; rel="previous"`);
+  }
+
+  if (hasNext && slice.length > 0) {
+    const lastId = slice[slice.length - 1].id;
+    const nextCursor = encodeCursor(resourceType, lastId);
+    const nextUrl = `https://dev.myshopify.com${buildAdminApiPath(version, path)}?page_info=${nextCursor}&limit=${limit}`;
+    parts.push(`<${nextUrl}>; rel="next"`);
+  }
+
+  const linkHeader = parts.length > 0 ? parts.join(', ') : null;
+  return { items: slice, linkHeader };
+}
 
 const restPlugin: FastifyPluginAsync = async (fastify) => {
   /**
@@ -116,20 +175,29 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
   // Products — Tier 1 (state-backed)
   // ---------------------------------------------------------------------------
 
-  // GET /admin/api/:version/products.json
-  // Supports pagination test: ?page_info=test → returns version-aware Link header
+  // GET /admin/api/:version/products.json — real cursor pagination
   fastify.get(adminPath('/products.json'), async (req: any, reply) => {
     const version = parseVersionHeader(req, reply);
     if (version === null) return;
     if (!await requireToken(req, reply)) return;
-    const pageInfo = req.query?.page_info;
-    if (pageInfo === 'test') {
-      // Build the pagination URL using the requested version so the Link header
-      // is consistent with the route that was actually called.
-      const nextUrl = `https://dev.myshopify.com${buildAdminApiPath(version, '/products.json')}?page_info=next123`;
-      reply.header('Link', `<${nextUrl}>; rel="next"`);
+
+    const limitParam = parseInt(String(req.query?.limit ?? '50'), 10);
+    const limit = Math.min(isNaN(limitParam) ? 50 : limitParam, 250);
+    const pageInfoToken = req.query?.page_info as string | undefined;
+
+    let afterId = 0;
+    if (pageInfoToken) {
+      try {
+        afterId = decodeCursor(pageInfoToken, 'Product');
+      } catch {
+        return reply.status(400).send({ errors: 'Invalid page_info cursor' });
+      }
     }
-    return { products: (fastify as any).stateManager.listProducts() };
+
+    const all = (fastify as any).stateManager.listProducts();
+    const { items, linkHeader } = paginateList(all, 'Product', version, '/products.json', limit, afterId);
+    if (linkHeader) reply.header('Link', linkHeader);
+    return { products: items };
   });
 
   // POST /admin/api/:version/products.json
@@ -207,12 +275,29 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
   // Customers — Tier 1 (state-backed)
   // ---------------------------------------------------------------------------
 
-  // GET /admin/api/:version/customers.json
+  // GET /admin/api/:version/customers.json — real cursor pagination
   fastify.get(adminPath('/customers.json'), async (req: any, reply) => {
     const version = parseVersionHeader(req, reply);
     if (version === null) return;
     if (!await requireToken(req, reply)) return;
-    return { customers: (fastify as any).stateManager.listCustomers() };
+
+    const limitParam = parseInt(String(req.query?.limit ?? '50'), 10);
+    const limit = Math.min(isNaN(limitParam) ? 50 : limitParam, 250);
+    const pageInfoToken = req.query?.page_info as string | undefined;
+
+    let afterId = 0;
+    if (pageInfoToken) {
+      try {
+        afterId = decodeCursor(pageInfoToken, 'Customer');
+      } catch {
+        return reply.status(400).send({ errors: 'Invalid page_info cursor' });
+      }
+    }
+
+    const all = (fastify as any).stateManager.listCustomers();
+    const { items, linkHeader } = paginateList(all, 'Customer', version, '/customers.json', limit, afterId);
+    if (linkHeader) reply.header('Link', linkHeader);
+    return { customers: items };
   });
 
   // GET /admin/api/:version/customers/:id.json
@@ -229,12 +314,29 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
   // Orders — Tier 1 (state-backed)
   // ---------------------------------------------------------------------------
 
-  // GET /admin/api/:version/orders.json
+  // GET /admin/api/:version/orders.json — real cursor pagination
   fastify.get(adminPath('/orders.json'), async (req: any, reply) => {
     const version = parseVersionHeader(req, reply);
     if (version === null) return;
     if (!await requireToken(req, reply)) return;
-    return { orders: (fastify as any).stateManager.listOrders() };
+
+    const limitParam = parseInt(String(req.query?.limit ?? '50'), 10);
+    const limit = Math.min(isNaN(limitParam) ? 50 : limitParam, 250);
+    const pageInfoToken = req.query?.page_info as string | undefined;
+
+    let afterId = 0;
+    if (pageInfoToken) {
+      try {
+        afterId = decodeCursor(pageInfoToken, 'Order');
+      } catch {
+        return reply.status(400).send({ errors: 'Invalid page_info cursor' });
+      }
+    }
+
+    const all = (fastify as any).stateManager.listOrders();
+    const { items, linkHeader } = paginateList(all, 'Order', version, '/orders.json', limit, afterId);
+    if (linkHeader) reply.header('Link', linkHeader);
+    return { orders: items };
   });
 
   // GET /admin/api/:version/orders/:id.json — state-backed by id
@@ -274,12 +376,29 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
   // Inventory — Tier 1 (state-backed) + Tier 1 stub
   // ---------------------------------------------------------------------------
 
-  // GET /admin/api/:version/inventory_items.json
+  // GET /admin/api/:version/inventory_items.json — real cursor pagination
   fastify.get(adminPath('/inventory_items.json'), async (req: any, reply) => {
     const version = parseVersionHeader(req, reply);
     if (version === null) return;
     if (!await requireToken(req, reply)) return;
-    return { inventory_items: (fastify as any).stateManager.listInventoryItems() };
+
+    const limitParam = parseInt(String(req.query?.limit ?? '50'), 10);
+    const limit = Math.min(isNaN(limitParam) ? 50 : limitParam, 250);
+    const pageInfoToken = req.query?.page_info as string | undefined;
+
+    let afterId = 0;
+    if (pageInfoToken) {
+      try {
+        afterId = decodeCursor(pageInfoToken, 'InventoryItem');
+      } catch {
+        return reply.status(400).send({ errors: 'Invalid page_info cursor' });
+      }
+    }
+
+    const all = (fastify as any).stateManager.listInventoryItems();
+    const { items, linkHeader } = paginateList(all, 'InventoryItem', version, '/inventory_items.json', limit, afterId);
+    if (linkHeader) reply.header('Link', linkHeader);
+    return { inventory_items: items };
   });
 
   // GET /admin/api/:version/inventory_levels.json — stub (no state)
