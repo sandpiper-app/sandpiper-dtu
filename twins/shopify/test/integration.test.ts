@@ -1237,4 +1237,52 @@ describe('Shopify Twin Integration', () => {
       expect(gqlBody.errors).toBeUndefined();
     });
   });
+
+  describe('XCUT-01: v1.2 tables cleared on reset', () => {
+    it('app_subscriptions is empty after reset', async () => {
+      const dbBefore = app.stateManager.database;
+      const now = Math.floor(Date.now() / 1000);
+      dbBefore.prepare(
+        `INSERT INTO app_subscriptions (gid, name, status, shop_domain, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?)`
+      ).run('gid://shopify/AppSubscription/test-1', 'Test Plan', 'PENDING',
+        'twin.myshopify.com', now, now);
+
+      const res = await app.inject({ method: 'POST', url: '/admin/reset' });
+      expect(res.statusCode).toBe(200);
+
+      const dbAfter = app.stateManager.database;
+      const count = (dbAfter.prepare('SELECT COUNT(*) as c FROM app_subscriptions').get() as any).c;
+      expect(count).toBe(0);
+    });
+
+    it('product_variants is empty after reset', async () => {
+      const dbBefore = app.stateManager.database;
+      const now = Math.floor(Date.now() / 1000);
+      dbBefore.prepare(
+        `INSERT INTO product_variants (gid, product_gid, title, price, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?)`
+      ).run('gid://shopify/ProductVariant/test-1', 'gid://shopify/Product/test-1',
+        'Test Variant', '9.99', now, now);
+
+      const res = await app.inject({ method: 'POST', url: '/admin/reset' });
+      expect(res.statusCode).toBe(200);
+
+      const dbAfter = app.stateManager.database;
+      const count = (dbAfter.prepare('SELECT COUNT(*) as c FROM product_variants').get() as any).c;
+      expect(count).toBe(0);
+    });
+
+    it('reset completes in under 100ms', async () => {
+      // Warm-up: ensure app is ready and route is resolved before timing
+      const warmup = await app.inject({ method: 'POST', url: '/admin/reset' });
+      expect(warmup.statusCode).toBe(200);
+
+      const start = Date.now();
+      const res = await app.inject({ method: 'POST', url: '/admin/reset' });
+      const elapsed = Date.now() - start;
+      expect(res.statusCode).toBe(200);
+      expect(elapsed).toBeLessThan(100);
+    });
+  });
 });
