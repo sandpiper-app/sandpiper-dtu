@@ -2,37 +2,37 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
-status: planning
-stopped_at: Phase 23 complete — ready for Phase 24 planning
-last_updated: "2026-03-12T23:52:10Z"
-last_activity: 2026-03-12 — Phase 23 verified passed after gap-closure plans 03-04; backfill commits 6b0ca43 and 52b5a21 landed, and the project is ready for Phase 24 planning
+status: in-progress
+stopped_at: Completed 24-01-PLAN.md
+last_updated: "2026-03-13T02:32:14Z"
+last_activity: 2026-03-13 — Phase 24 Plan 01 complete: Wave 0 TDD scaffold with 3 integration test files in RED state (SHOP-20, SHOP-21, SHOP-24)
 progress:
   total_phases: 15
   completed_phases: 11
-  total_plans: 40
-  completed_plans: 40
+  total_plans: 44
+  completed_plans: 41
   percent: 100
 ---
 
 # Project State: Sandpiper DTU
 
-**Last Updated:** 2026-03-12
-**Status:** Ready to plan
+**Last Updated:** 2026-03-13
+**Status:** In progress
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 23 is verified complete; next step is Phase 24 planning
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 24 Plan 01 complete (Wave 0 test scaffold)
 
 ## Current Position
 
 Phase: 24 of 27 (Shopify REST Persistence, Billing State Machine & Rate Limiting)
-Plan: Planning not started for current phase
-Status: Phase 23 closed and verified — ready to plan Phase 24
-Last activity: 2026-03-12 — Phase 23 verification passed, the OAuth and Storefront gap-closure commits were backfilled, and the project advanced to Phase 24 planning
+Plan: 1 of 4 complete — ready for Plan 02 (REST persistence implementation)
+Status: Plan 24-01 complete — Wave 0 test scaffold in RED state, ready for implementation plans
+Last activity: 2026-03-13 — Phase 24 Plan 01 complete: Wave 0 TDD scaffold with 3 test files (rest-persistence, billing-state-machine, rate-limit updates)
 
-Progress: [██████████] 100% (overall: 40/40 currently planned plans complete)
+Progress: [██████████] 96% (overall: 41/44 currently planned plans complete)
 
 ## Performance Metrics
 
@@ -52,10 +52,17 @@ Progress: [██████████] 100% (overall: 40/40 currently planne
 | 23-02 | 02 | 13min | 2 | 3 |
 | 23-03 | 03 | 35min | 1 | 2 |
 | 23-04 | 04 | 10min | 1 | 2 |
+| 24-01 | 01 | 5min | 3 | 3 |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-13 - Phase 24 Plan 01 (Wave 0 test scaffold):**
+- Use POST /admin/tokens (not /admin/oauth/access_token) for token seeding in all new Phase 24 integration tests — Phase 23 OAuth tightening broke the code-only pattern used in older tests
+- SHOP-21a uniqueness test calls appSubscriptionCreate twice and asserts different IDs — directly catches the hardcoded stub returning gid://shopify/AppSubscription/1
+- SHOP-21d ownership test seeds a second token for other-shop.myshopify.com to test cross-shop rejection
+- Wave 0 pattern established: write failing tests in RED state before implementation plans; Plans 02-04 have concrete verify commands
 
 **2026-03-12 - Phase 21 Plan 01 (Node 22 LTS alignment):**
 - Pin Node to 22 LTS across CI, Docker, and .nvmrc for ABI stability
@@ -130,10 +137,10 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 23 — verification passed, with backfill commits `6b0ca43` and `52b5a21`
-**Work in progress:** Phase 24 planning
-**Stopped at:** Phase 23 complete — ready for Phase 24 planning
-**Timestamp:** 2026-03-12
+**Last completed:** Phase 24 Plan 01 — Wave 0 test scaffold (commits dbb131d, 6961094, fc39326)
+**Work in progress:** Phase 24 Plan 02 (REST persistence implementation)
+**Stopped at:** Completed 24-01-PLAN.md
+**Timestamp:** 2026-03-13
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
