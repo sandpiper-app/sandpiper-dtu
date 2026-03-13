@@ -58,9 +58,16 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
       code?: string;
       client_id?: string;
       client_secret?: string;
+      scope?: string;
+      redirect_uri?: string;
     };
   }>('/api/oauth.v2.access', async (request) => {
-    const { code } = request.body ?? {};
+    const { code, client_id } = request.body ?? {};
+
+    // SLCK-18: validate required parameters
+    if (!client_id) {
+      return { ok: false, error: 'invalid_arguments' };
+    }
 
     if (!code || !issuedCodes.has(code)) {
       return { ok: false, error: 'invalid_code' };

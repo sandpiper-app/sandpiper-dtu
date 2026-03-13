@@ -82,50 +82,71 @@ describe('SLCK-15: chat.update / chat.delete ownership enforcement', () => {
   it('SLCK-15a: chat.update with wrong channel returns cant_update_message', async () => {
     const ownerClient = createSlackClient(ownerToken);
     // Owner updates their message but sends to wrong channel
-    const result = await ownerClient.chat.update({
-      channel: otherChannelId,
-      ts: messageTs,
-      text: 'updated text',
-    });
-    expect(result.ok).toBe(false);
-    expect((result as any).error).toBe('cant_update_message');
+    // WebClient throws on ok:false — catch the error and assert its data field
+    let thrownError: any;
+    try {
+      await ownerClient.chat.update({
+        channel: otherChannelId,
+        ts: messageTs,
+        text: 'updated text',
+      });
+    } catch (e) {
+      thrownError = e;
+    }
+    expect(thrownError).toBeDefined();
+    expect(thrownError.data?.error).toBe('cant_update_message');
   });
 
   // SLCK-15b: chat.update by different userId returns cant_update_message
   it('SLCK-15b: chat.update by different userId returns cant_update_message', async () => {
     const attackerClient = createSlackClient(attackerToken);
     // Attacker tries to update owner's message on the correct channel
-    const result = await attackerClient.chat.update({
-      channel: channelId,
-      ts: messageTs,
-      text: 'attacker text',
-    });
-    expect(result.ok).toBe(false);
-    expect((result as any).error).toBe('cant_update_message');
+    let thrownError: any;
+    try {
+      await attackerClient.chat.update({
+        channel: channelId,
+        ts: messageTs,
+        text: 'attacker text',
+      });
+    } catch (e) {
+      thrownError = e;
+    }
+    expect(thrownError).toBeDefined();
+    expect(thrownError.data?.error).toBe('cant_update_message');
   });
 
   // SLCK-15c: chat.delete with wrong channel returns cant_delete_message
   it('SLCK-15c: chat.delete with wrong channel returns cant_delete_message', async () => {
     const ownerClient = createSlackClient(ownerToken);
     // Owner deletes their message but sends to wrong channel
-    const result = await ownerClient.chat.delete({
-      channel: otherChannelId,
-      ts: messageTs,
-    });
-    expect(result.ok).toBe(false);
-    expect((result as any).error).toBe('cant_delete_message');
+    let thrownError: any;
+    try {
+      await ownerClient.chat.delete({
+        channel: otherChannelId,
+        ts: messageTs,
+      });
+    } catch (e) {
+      thrownError = e;
+    }
+    expect(thrownError).toBeDefined();
+    expect(thrownError.data?.error).toBe('cant_delete_message');
   });
 
   // SLCK-15d: chat.delete by different userId returns cant_delete_message
   it('SLCK-15d: chat.delete by different userId returns cant_delete_message', async () => {
     const attackerClient = createSlackClient(attackerToken);
     // Attacker tries to delete owner's message on the correct channel
-    const result = await attackerClient.chat.delete({
-      channel: channelId,
-      ts: messageTs,
-    });
-    expect(result.ok).toBe(false);
-    expect((result as any).error).toBe('cant_delete_message');
+    let thrownError: any;
+    try {
+      await attackerClient.chat.delete({
+        channel: channelId,
+        ts: messageTs,
+      });
+    } catch (e) {
+      thrownError = e;
+    }
+    expect(thrownError).toBeDefined();
+    expect(thrownError.data?.error).toBe('cant_delete_message');
   });
 
   // SLCK-15e: owner update on correct channel succeeds (regression guard)
