@@ -378,7 +378,7 @@ Plans:
 | 25. Slack Method Coverage, Event Signing & State Tables | 4/4 | Complete    | 2026-03-13 | - |
 | 26. Slack Chat Scoping & Scope Enforcement | 3/3 | Complete    | 2026-03-13 | - |
 | 27. Conformance Harness & Coverage Infrastructure | 2/2 | Complete    | 2026-03-13 | - |
-| 28. Shopify REST Pagination & Version Policy | 3/3 | Complete   | 2026-03-13 | - |
+| 28. Shopify REST Pagination & Version Policy | 3/3 | Complete    | 2026-03-13 | - |
 | 29. Shopify Billing Transitions & Test Migration | 2/2 | Complete    | 2026-03-13 | - |
 | 30. Slack Transport & State Fixes | 2/2 | Complete    | 2026-03-13 | - |
 | 31. Slack OAuth & Method Coverage | v1.2 | 0/2 | Pending | - |
