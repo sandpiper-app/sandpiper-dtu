@@ -381,7 +381,7 @@ Plans:
 | 28. Shopify REST Pagination & Version Policy | 3/3 | Complete    | 2026-03-13 | - |
 | 29. Shopify Billing Transitions & Test Migration | 2/2 | Complete    | 2026-03-13 | - |
 | 30. Slack Transport & State Fixes | 2/2 | Complete    | 2026-03-13 | - |
-| 31. Slack OAuth & Method Coverage | 2/2 | Complete   | 2026-03-13 | - |
+| 31. Slack OAuth & Method Coverage | 2/2 | Complete    | 2026-03-13 | - |
 | 32. Conformance Harness & Evidence | v1.2 | 0/0 | Pending | - |
 | 33. Cross-Cutting Reset Coverage | v1.2 | 0/0 | Pending | - |
 
