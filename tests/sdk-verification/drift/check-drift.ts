@@ -120,6 +120,31 @@ try {
   hasError = true;
 }
 
+// ─── 2b. Evidence-based live count gate (INFRA-22) ─────────────────────────
+console.log('\n=== Evidence-Based Live Count Gate (INFRA-22) ===\n');
+console.log('Live coverage must be >= 202 (from execution evidence, not hand-authored map).\n');
+
+const REQUIRED_LIVE_COUNT = 202;
+try {
+  const coveragePath = join(root, 'tests/sdk-verification/coverage/coverage-report.json');
+  const report = JSON.parse(readFileSync(coveragePath, 'utf8'));
+  const liveCount = report.summary?.live ?? 0;
+  if (liveCount >= REQUIRED_LIVE_COUNT) {
+    console.log(`  OK  Live coverage: ${liveCount} >= ${REQUIRED_LIVE_COUNT} required.`);
+  } else {
+    console.error(`  FAIL  Live coverage: ${liveCount} < ${REQUIRED_LIVE_COUNT} required.`);
+    console.error('        Run: pnpm test:sdk --reporter=verbose --reporter=json --outputFile.json=tests/sdk-verification/coverage/vitest-evidence.json && pnpm coverage:generate');
+    hasError = true;
+  }
+} catch (err: any) {
+  if (err.code === 'ENOENT') {
+    console.error('  FAIL  coverage-report.json not found. Run: pnpm coverage:generate');
+  } else {
+    console.error(`  FAIL  Error reading coverage-report.json: ${err.message}`);
+  }
+  hasError = true;
+}
+
 // ─── 3. Submodule ref check ─────────────────────────────────────────────────
 console.log('\n=== Submodule Ref Check ===\n');
 console.log('Verifying pinned submodule commits match current git submodule state...\n');

@@ -1,8 +1,8 @@
 {
   "$schema": "https://sandpiper.dev/schemas/coverage-report.json",
-  "generatedAt": "2026-03-10T02:35:54.620Z",
-  "phase": "20",
-  "note": "Phase 20: @slack/bolt SocketModeReceiver + AwsLambdaReceiver (SLCK-12). Phase 19: @slack/oauth InstallProvider (SLCK-09), @slack/bolt App listener APIs (SLCK-10), HTTPReceiver + ExpressReceiver (SLCK-11). Phase 18: @slack/web-api WebClient full surface — SLCK-07 + SLCK-08 complete.",
+  "generatedAt": "2026-03-13T16:39:23.073Z",
+  "phase": "27",
+  "note": "Phase 27: INFRA-22 — coverage derived from Vitest JSON reporter execution evidence. EVIDENCE_MAP replaces hand-authored LIVE_SYMBOLS.",
   "packages": {
     "@shopify/admin-api-client@1.1.1": {
       "createAdminApiClient": {

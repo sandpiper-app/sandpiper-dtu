@@ -108,8 +108,11 @@ jobs:
       - name: Build packages
         run: pnpm build
 
-      - name: Run SDK verification suite (pnpm test:sdk)
-        run: pnpm test:sdk
+      - name: Run SDK verification suite with evidence
+        run: pnpm test:sdk --reporter=verbose --reporter=json --outputFile.json=tests/sdk-verification/coverage/vitest-evidence.json
+
+      - name: Generate evidence-based coverage report
+        run: pnpm coverage:generate
 
       - name: Run SDK drift check (pnpm drift:check)
         run: pnpm drift:check
