@@ -49,7 +49,7 @@ Requirements for milestone `v1.2 Behavioral Fidelity`. Fixes 13 adversarial revi
 
 ### Conformance Infrastructure
 
-- [ ] **INFRA-21**: Conformance harness performs bidirectional structural comparison in live mode — twin response must contain all baseline fields AND baseline response must contain all twin fields — with full array traversal (not just first element) and primitive value comparison; includes a normalizer contract with declared ignore lists for non-deterministic fields (timestamps, cursor IDs, signed URLs), ordering rules, and per-endpoint exact-vs-structural mode declarations
+- [x] **INFRA-21**: Conformance harness performs bidirectional structural comparison in live mode — twin response must contain all baseline fields AND baseline response must contain all twin fields — with full array traversal (not just first element) and primitive value comparison; includes a normalizer contract with declared ignore lists for non-deterministic fields (timestamps, cursor IDs, signed URLs), ordering rules, and per-endpoint exact-vs-structural mode declarations
 - [x] **INFRA-22**: Coverage status for each tracked symbol is derived from test execution evidence (Vitest JSON reporter or equivalent instrumentation), not hand-authored `LIVE_SYMBOLS` map; evidence schema defines how test files map to symbols, how aliases are attributed, and how local-only utilities are excluded; dual-run migration keeps `LIVE_SYMBOLS` and evidence in parallel until evidence matches or exceeds the 202+ symbol count, then removes `LIVE_SYMBOLS`
 
 ### Shopify Fidelity
@@ -160,7 +160,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SLCK-15 | Phase 26 | Complete |
 | SLCK-18 | Phase 26 | Complete |
 | SLCK-19 | Phase 26 | Complete |
-| INFRA-21 | Phase 27 | Pending |
+| INFRA-21 | Phase 27 | Complete |
 | INFRA-22 | Phase 27 | Complete |
 
 **Coverage:**

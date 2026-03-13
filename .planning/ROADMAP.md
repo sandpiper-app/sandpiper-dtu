@@ -320,7 +320,7 @@ Plans:
 | 24. Shopify REST Persistence, Billing State Machine & Rate Limiting | 4/4 | Complete    | 2026-03-13 | - |
 | 25. Slack Method Coverage, Event Signing & State Tables | 4/4 | Complete    | 2026-03-13 | - |
 | 26. Slack Chat Scoping & Scope Enforcement | 3/3 | Complete    | 2026-03-13 | - |
-| 27. Conformance Harness & Coverage Infrastructure | 2/2 | Complete   | 2026-03-13 | - |
+| 27. Conformance Harness & Coverage Infrastructure | 2/2 | Complete    | 2026-03-13 | - |
 
 ## Dependencies
 
