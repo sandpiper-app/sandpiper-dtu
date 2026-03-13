@@ -13,6 +13,7 @@
  * Real Slack Web API accepts GET with query params for read methods in addition to POST.
  */
 
+import { randomUUID } from 'node:crypto';
 import type { FastifyPluginAsync, FastifyRequest } from 'fastify';
 import { extractToken } from '../../services/token-validator.js';
 import type { SlackStateManager } from '../../state/slack-state-manager.js';
@@ -432,7 +433,7 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
     if (!tokenRecord) return;
 
     const params = getParams(request);
-    const { channel } = params;
+    const { channel, users } = params;
     if (!channel) {
       return reply.status(200).send({ ok: false, error: 'channel_not_found' });
     }
@@ -440,6 +441,12 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
     const ch = fastify.slackStateManager.getChannel(channel);
     if (!ch) {
       return reply.status(200).send({ ok: false, error: 'channel_not_found' });
+    }
+
+    // Write invited users to membership table
+    const userList = typeof users === 'string' ? users.split(',') : (Array.isArray(users) ? users : [users]);
+    for (const uid of userList) {
+      if (uid?.trim()) fastify.slackStateManager.addChannelMember(channel, uid.trim());
     }
 
     return { ok: true, channel: formatChannel(ch) };
@@ -453,7 +460,7 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
     if (!tokenRecord) return;
 
     const params = getParams(request);
-    const { channel } = params;
+    const { channel, user } = params;
     if (!channel) {
       return reply.status(200).send({ ok: false, error: 'channel_not_found' });
     }
@@ -462,6 +469,9 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
     if (!ch) {
       return reply.status(200).send({ ok: false, error: 'channel_not_found' });
     }
+
+    // Remove user from membership table
+    if (user) fastify.slackStateManager.removeChannelMember(channel, user);
 
     return { ok: true };
   });
@@ -483,11 +493,32 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
       }
     }
 
-    // If users provided, return a stub DM channel
+    // Build deterministic DM channel ID from sorted user pair
+    const userList: string[] = users
+      ? (typeof users === 'string' ? users.split(',') : users).map((u: string) => u.trim()).filter(Boolean)
+      : [];
+
+    const dmId = userList.length > 0
+      ? `D_${[...userList].sort().join('_')}`
+      : `D_${randomUUID().substring(0, 8)}`;
+
+    let dmChannel = fastify.slackStateManager.getChannel(dmId);
+    let alreadyOpen = false;
+    if (dmChannel) {
+      alreadyOpen = true;
+    } else {
+      dmChannel = fastify.slackStateManager.createChannel({
+        id: dmId,
+        name: dmId,
+        is_channel: false,
+        is_private: true,
+      });
+    }
+
     return {
       ok: true,
-      already_open: false,
-      channel: { id: 'D_TWIN', is_im: true },
+      already_open: alreadyOpen,
+      channel: { id: dmId, is_im: true, is_open: true },
     };
   });
 
@@ -573,9 +604,10 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.status(200).send({ ok: false, error: 'channel_not_found' });
     }
 
+    const members = fastify.slackStateManager.getChannelMembers(channel);
     return {
       ok: true,
-      members: ['U_BOT_TWIN'],
+      members,
       response_metadata: { next_cursor: '' },
     };
   }

@@ -43,27 +43,50 @@ const pinsPlugin: FastifyPluginAsync = async (fastify) => {
     return tokenRecord;
   }
 
-  // POST /api/pins.add
+  // POST /api/pins.add — stateful with deduplication
   fastify.post('/api/pins.add', async (request, reply) => {
-    if (!authCheck(request, reply, 'pins.add')) return;
+    const tokenRecord = authCheck(request, reply, 'pins.add');
+    if (!tokenRecord) return;
+    const { channel, timestamp } = (request.body as any) ?? {};
+    if (!channel || !timestamp) return reply.send({ ok: false, error: 'invalid_arguments' });
+    try {
+      fastify.slackStateManager.addPin(channel, timestamp, tokenRecord.user_id ?? 'U_BOT_TWIN');
+    } catch (e: any) {
+      if (e?.code === 'SQLITE_CONSTRAINT_UNIQUE' || e?.message?.includes('UNIQUE constraint failed')) {
+        return reply.send({ ok: false, error: 'already_pinned' });
+      }
+      throw e;
+    }
     return { ok: true };
   });
 
-  // POST /api/pins.list
-  fastify.post('/api/pins.list', async (request, reply) => {
-    if (!authCheck(request, reply, 'pins.list')) return;
-    return { ok: true, items: [], response_metadata: { next_cursor: '' } };
-  });
+  // POST/GET /api/pins.list — returns real pin items
+  async function handlePinsList(request: any, reply: any) {
+    const tokenRecord = authCheck(request, reply, 'pins.list');
+    if (!tokenRecord) return;
+    const params = request.method === 'GET' ? (request.query as any) : (request.body as any);
+    const { channel } = params ?? {};
+    if (!channel) return reply.send({ ok: false, error: 'invalid_arguments' });
+    const pins = fastify.slackStateManager.listPins(channel);
+    const items = pins.map((p: any) => ({
+      type: 'message',
+      message: { ts: p.timestamp, text: '' },
+      channel: p.channel_id,
+      created: p.created_at,
+      created_by: p.created_by,
+    }));
+    return { ok: true, items, response_metadata: { next_cursor: '' } };
+  }
+  fastify.post('/api/pins.list', handlePinsList);
+  fastify.get('/api/pins.list', handlePinsList);
 
-  // GET /api/pins.list — SDK always uses POST, but register GET for parity
-  fastify.get('/api/pins.list', async (request, reply) => {
-    if (!authCheck(request, reply, 'pins.list')) return;
-    return { ok: true, items: [], response_metadata: { next_cursor: '' } };
-  });
-
-  // POST /api/pins.remove
+  // POST /api/pins.remove — stateful delete
   fastify.post('/api/pins.remove', async (request, reply) => {
-    if (!authCheck(request, reply, 'pins.remove')) return;
+    const tokenRecord = authCheck(request, reply, 'pins.remove');
+    if (!tokenRecord) return;
+    const { channel, timestamp } = (request.body as any) ?? {};
+    if (!channel || !timestamp) return reply.send({ ok: false, error: 'invalid_arguments' });
+    fastify.slackStateManager.removePin(channel, timestamp);
     return { ok: true };
   });
 };

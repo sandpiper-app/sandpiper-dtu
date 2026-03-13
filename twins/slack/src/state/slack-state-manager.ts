@@ -55,6 +55,19 @@ export class SlackStateManager {
 
   private addReactionStmt: Database.Statement | null = null;
   private listReactionsStmt: Database.Statement | null = null;
+  private removeReactionStmt: Database.Statement | null = null;
+
+  private addChannelMemberStmt: Database.Statement | null = null;
+  private removeChannelMemberStmt: Database.Statement | null = null;
+  private getChannelMembersStmt: Database.Statement | null = null;
+
+  private addPinStmt: Database.Statement | null = null;
+  private removePinStmt: Database.Statement | null = null;
+  private listPinsStmt: Database.Statement | null = null;
+
+  private createViewStmt: Database.Statement | null = null;
+  private getViewStmt: Database.Statement | null = null;
+  private updateViewStmt: Database.Statement | null = null;
 
   constructor(options: SlackStateManagerOptions = {}) {
     this.dbPath = options.dbPath ?? ':memory:';
@@ -398,6 +411,82 @@ export class SlackStateManager {
     return this.listReactionsStmt!.all(messageTs);
   }
 
+  removeReaction(messageTs: string, channelId: string, userId: string, reaction: string): void {
+    this.removeReactionStmt!.run(messageTs, channelId, userId, reaction);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Channel Members
+  // ---------------------------------------------------------------------------
+
+  addChannelMember(channelId: string, userId: string): void {
+    const now = Math.floor(Date.now() / 1000);
+    this.addChannelMemberStmt!.run(channelId, userId, now);
+  }
+
+  removeChannelMember(channelId: string, userId: string): void {
+    this.removeChannelMemberStmt!.run(channelId, userId);
+  }
+
+  getChannelMembers(channelId: string): string[] {
+    const rows = this.getChannelMembersStmt!.all(channelId) as { user_id: string }[];
+    return rows.map(r => r.user_id);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Views
+  // ---------------------------------------------------------------------------
+
+  createView(data: { id: string; type?: string; title?: string | null; blocks?: string; callback_id?: string }): any {
+    const now = Math.floor(Date.now() / 1000);
+    this.createViewStmt!.run(
+      data.id,
+      data.type ?? 'modal',
+      data.title ?? null,
+      data.blocks ?? '[]',
+      data.callback_id ?? '',
+      '{"values":{}}',
+      now,
+      now,
+    );
+    return this.getView(data.id);
+  }
+
+  getView(id: string): any | undefined {
+    return this.getViewStmt!.get(id);
+  }
+
+  updateView(id: string, data: { title?: string; blocks?: string; callback_id?: string }): void {
+    const view = this.getView(id);
+    if (!view) return;
+    const now = Math.floor(Date.now() / 1000);
+    this.updateViewStmt!.run(
+      data.title ?? view.title,
+      data.blocks ?? view.blocks,
+      data.callback_id ?? view.callback_id,
+      now,
+      id,
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Pins
+  // ---------------------------------------------------------------------------
+
+  /** Throws on UNIQUE violation; caller catches SQLITE_CONSTRAINT_UNIQUE */
+  addPin(channelId: string, timestamp: string, userId: string): void {
+    const now = Math.floor(Date.now() / 1000);
+    this.addPinStmt!.run(channelId, 'message', timestamp, null, userId, now);
+  }
+
+  removePin(channelId: string, timestamp: string): void {
+    this.removePinStmt!.run(channelId, timestamp);
+  }
+
+  listPins(channelId: string): any[] {
+    return this.listPinsStmt!.all(channelId);
+  }
+
   // ---------------------------------------------------------------------------
   // Private
   // ---------------------------------------------------------------------------
@@ -487,9 +576,43 @@ export class SlackStateManager {
         created_at INTEGER NOT NULL
       );
 
+      CREATE TABLE IF NOT EXISTS slack_channel_members (
+        channel_id TEXT NOT NULL,
+        user_id    TEXT NOT NULL,
+        joined_at  INTEGER NOT NULL,
+        PRIMARY KEY (channel_id, user_id)
+      );
+
+      CREATE TABLE IF NOT EXISTS slack_views (
+        id          TEXT PRIMARY KEY,
+        type        TEXT NOT NULL DEFAULT 'modal',
+        title       TEXT,
+        blocks      TEXT DEFAULT '[]',
+        callback_id TEXT DEFAULT '',
+        state       TEXT DEFAULT '{"values":{}}',
+        created_at  INTEGER NOT NULL,
+        updated_at  INTEGER NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS slack_pins (
+        id         INTEGER PRIMARY KEY AUTOINCREMENT,
+        channel_id TEXT NOT NULL,
+        item_type  TEXT NOT NULL DEFAULT 'message',
+        timestamp  TEXT,
+        file_id    TEXT,
+        created_by TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        UNIQUE (channel_id, timestamp),
+        UNIQUE (channel_id, file_id)
+      );
+
       CREATE INDEX IF NOT EXISTS idx_slack_messages_channel ON slack_messages(channel_id);
       CREATE INDEX IF NOT EXISTS idx_slack_messages_ts ON slack_messages(ts);
       CREATE INDEX IF NOT EXISTS idx_slack_reactions_ts ON slack_reactions(message_ts);
+      CREATE INDEX IF NOT EXISTS idx_channel_members_channel ON slack_channel_members(channel_id);
+      CREATE INDEX IF NOT EXISTS idx_slack_pins_channel ON slack_pins(channel_id);
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_slack_reactions_unique
+        ON slack_reactions(message_ts, channel_id, user_id, reaction);
     `);
   }
 
@@ -557,6 +680,37 @@ export class SlackStateManager {
     this.listReactionsStmt = db.prepare(
       'SELECT * FROM slack_reactions WHERE message_ts = ? ORDER BY created_at ASC'
     );
+    this.removeReactionStmt = db.prepare(
+      'DELETE FROM slack_reactions WHERE message_ts = ? AND channel_id = ? AND user_id = ? AND reaction = ?'
+    );
+
+    this.addChannelMemberStmt = db.prepare(
+      'INSERT OR IGNORE INTO slack_channel_members (channel_id, user_id, joined_at) VALUES (?, ?, ?)'
+    );
+    this.removeChannelMemberStmt = db.prepare(
+      'DELETE FROM slack_channel_members WHERE channel_id = ? AND user_id = ?'
+    );
+    this.getChannelMembersStmt = db.prepare(
+      'SELECT user_id FROM slack_channel_members WHERE channel_id = ? ORDER BY joined_at ASC'
+    );
+
+    this.createViewStmt = db.prepare(
+      'INSERT INTO slack_views (id, type, title, blocks, callback_id, state, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+    );
+    this.getViewStmt = db.prepare('SELECT * FROM slack_views WHERE id = ?');
+    this.updateViewStmt = db.prepare(
+      'UPDATE slack_views SET title = ?, blocks = ?, callback_id = ?, updated_at = ? WHERE id = ?'
+    );
+
+    this.addPinStmt = db.prepare(
+      'INSERT INTO slack_pins (channel_id, item_type, timestamp, file_id, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+    );
+    this.removePinStmt = db.prepare(
+      'DELETE FROM slack_pins WHERE channel_id = ? AND timestamp = ?'
+    );
+    this.listPinsStmt = db.prepare(
+      'SELECT * FROM slack_pins WHERE channel_id = ? ORDER BY created_at ASC'
+    );
   }
 
   private seedDefaults(): void {
@@ -605,5 +759,15 @@ export class SlackStateManager {
     this.clearErrorConfigsStmt = null;
     this.addReactionStmt = null;
     this.listReactionsStmt = null;
+    this.removeReactionStmt = null;
+    this.addChannelMemberStmt = null;
+    this.removeChannelMemberStmt = null;
+    this.getChannelMembersStmt = null;
+    this.createViewStmt = null;
+    this.getViewStmt = null;
+    this.updateViewStmt = null;
+    this.addPinStmt = null;
+    this.removePinStmt = null;
+    this.listPinsStmt = null;
   }
 }

@@ -173,48 +173,51 @@ describe('Slack Twin Smoke Tests', () => {
    */
   describe('XCUT-01: New tables are reset correctly', () => {
     it('slack_channel_members is empty after reset', async () => {
-      const db = app.slackStateManager.database;
-      // Seed a row before reset — will throw "no such table" until Plan 04
-      db.prepare(
+      const dbBefore = app.slackStateManager.database;
+      dbBefore.prepare(
         'INSERT INTO slack_channel_members (channel_id, user_id, joined_at) VALUES (?, ?, ?)'
       ).run('C_GENERAL', 'U_TEST_MEMBER', Math.floor(Date.now() / 1000));
 
       await app.inject({ method: 'POST', url: '/admin/reset' });
 
+      // Re-read database reference after reset — reset() closes and reopens the DB
+      const dbAfter = app.slackStateManager.database;
       const count = (
-        db.prepare('SELECT COUNT(*) as c FROM slack_channel_members').get() as any
+        dbAfter.prepare('SELECT COUNT(*) as c FROM slack_channel_members').get() as any
       ).c;
       expect(count).toBe(0);
     });
 
     it('slack_views is empty after reset', async () => {
-      const db = app.slackStateManager.database;
+      const dbBefore = app.slackStateManager.database;
       const now = Math.floor(Date.now() / 1000);
-      // Will throw "no such table" until Plan 04
-      db.prepare(
+      dbBefore.prepare(
         'INSERT INTO slack_views (id, type, title, blocks, callback_id, state, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
       ).run('V_TEST_VIEW', 'modal', 'Test', '[]', 'test_cb', '{"values":{}}', now, now);
 
       await app.inject({ method: 'POST', url: '/admin/reset' });
 
+      // Re-read database reference after reset
+      const dbAfter = app.slackStateManager.database;
       const count = (
-        db.prepare('SELECT COUNT(*) as c FROM slack_views').get() as any
+        dbAfter.prepare('SELECT COUNT(*) as c FROM slack_views').get() as any
       ).c;
       expect(count).toBe(0);
     });
 
     it('slack_pins is empty after reset', async () => {
-      const db = app.slackStateManager.database;
+      const dbBefore = app.slackStateManager.database;
       const now = Math.floor(Date.now() / 1000);
-      // Will throw "no such table" until Plan 04
-      db.prepare(
+      dbBefore.prepare(
         'INSERT INTO slack_pins (channel_id, item_type, timestamp, created_by, created_at) VALUES (?, ?, ?, ?, ?)'
       ).run('C_GENERAL', 'message', '1700000000.000001', 'U_BOT_TWIN', now);
 
       await app.inject({ method: 'POST', url: '/admin/reset' });
 
+      // Re-read database reference after reset
+      const dbAfter = app.slackStateManager.database;
       const count = (
-        db.prepare('SELECT COUNT(*) as c FROM slack_pins').get() as any
+        dbAfter.prepare('SELECT COUNT(*) as c FROM slack_pins').get() as any
       ).c;
       expect(count).toBe(0);
     });

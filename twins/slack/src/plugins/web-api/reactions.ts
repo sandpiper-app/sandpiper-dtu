@@ -50,7 +50,14 @@ const reactionsPlugin: FastifyPluginAsync = async (fastify) => {
     if (!auth) return;
     const { channel, name, timestamp } = (request.body as any) ?? {};
     if (!channel || !name || !timestamp) return reply.send({ ok: false, error: 'invalid_arguments' });
-    fastify.slackStateManager.addReaction(timestamp, channel, auth.tokenRecord.user_id ?? 'U_BOT_TWIN', name);
+    try {
+      fastify.slackStateManager.addReaction(timestamp, channel, auth.tokenRecord.user_id ?? 'U_BOT_TWIN', name);
+    } catch (e: any) {
+      if (e?.code === 'SQLITE_CONSTRAINT_UNIQUE' || e?.message?.includes('UNIQUE constraint failed')) {
+        return reply.send({ ok: false, error: 'already_reacted' });
+      }
+      throw e;
+    }
     return { ok: true };
   });
 
@@ -86,7 +93,9 @@ const reactionsPlugin: FastifyPluginAsync = async (fastify) => {
   fastify.post('/api/reactions.remove', async (request, reply) => {
     const auth = authCheck(request, reply, 'reactions.remove');
     if (!auth) return;
-    // No removeReaction in state manager — silent no-op for conformance
+    const { channel, name, timestamp } = (request.body as any) ?? {};
+    if (!channel || !name || !timestamp) return reply.send({ ok: false, error: 'invalid_arguments' });
+    fastify.slackStateManager.removeReaction(timestamp, channel, auth.tokenRecord.user_id ?? 'U_BOT_TWIN', name);
     return { ok: true };
   });
 };

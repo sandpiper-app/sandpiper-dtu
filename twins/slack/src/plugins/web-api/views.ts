@@ -59,15 +59,34 @@ const viewsPlugin: FastifyPluginAsync = async (fastify) => {
     };
   }
 
-  // POST /api/views.open — trigger_id + view required
+  function formatStoredView(v: any): any {
+    return {
+      id: v.id,
+      type: v.type,
+      title: v.title ? JSON.parse(v.title) : { type: 'plain_text', text: 'Modal' },
+      blocks: v.blocks ? JSON.parse(v.blocks) : [],
+      callback_id: v.callback_id ?? '',
+      state: v.state ? JSON.parse(v.state) : { values: {} },
+    };
+  }
+
+  // POST /api/views.open — create persistent view
   fastify.post('/api/views.open', async (request, reply) => {
     if (!authCheck(request, reply, 'views.open')) return;
     const { view } = (request.body as any) ?? {};
     if (!view) return reply.send({ ok: false, error: 'invalid_arguments' });
-    return { ok: true, view: buildView(view, 'modal') };
+    const id = generateViewId();
+    const stored = fastify.slackStateManager.createView({
+      id,
+      type: view.type ?? 'modal',
+      title: view.title ? JSON.stringify(view.title) : null,
+      blocks: view.blocks ? JSON.stringify(view.blocks) : '[]',
+      callback_id: view.callback_id ?? '',
+    });
+    return { ok: true, view: formatStoredView(stored) };
   });
 
-  // POST /api/views.publish — user_id + view required
+  // POST /api/views.publish — user_id + view required (home tab, no lifecycle)
   fastify.post('/api/views.publish', async (request, reply) => {
     if (!authCheck(request, reply, 'views.publish')) return;
     const { view } = (request.body as any) ?? {};
@@ -75,20 +94,44 @@ const viewsPlugin: FastifyPluginAsync = async (fastify) => {
     return { ok: true, view: buildView(view, 'home') };
   });
 
-  // POST /api/views.push — trigger_id + view required
+  // POST /api/views.push — same as open (new view on stack)
   fastify.post('/api/views.push', async (request, reply) => {
     if (!authCheck(request, reply, 'views.push')) return;
     const { view } = (request.body as any) ?? {};
     if (!view) return reply.send({ ok: false, error: 'invalid_arguments' });
-    return { ok: true, view: buildView(view, 'modal') };
+    const id = generateViewId();
+    const stored = fastify.slackStateManager.createView({
+      id,
+      type: view.type ?? 'modal',
+      title: view.title ? JSON.stringify(view.title) : null,
+      blocks: view.blocks ? JSON.stringify(view.blocks) : '[]',
+      callback_id: view.callback_id ?? '',
+    });
+    return { ok: true, view: formatStoredView(stored) };
   });
 
-  // POST /api/views.update — view_id or external_id + view required
+  // POST /api/views.update — look up by view_id and update stored record
   fastify.post('/api/views.update', async (request, reply) => {
     if (!authCheck(request, reply, 'views.update')) return;
-    const { view } = (request.body as any) ?? {};
+    const { view_id, view } = (request.body as any) ?? {};
     if (!view) return reply.send({ ok: false, error: 'invalid_arguments' });
-    return { ok: true, view: buildView(view, 'modal') };
+
+    if (view_id) {
+      const storedView = fastify.slackStateManager.getView(view_id);
+      if (storedView) {
+        fastify.slackStateManager.updateView(view_id, {
+          title: view.title ? JSON.stringify(view.title) : undefined,
+          blocks: view.blocks ? JSON.stringify(view.blocks) : undefined,
+          callback_id: view.callback_id,
+        });
+        const updated = fastify.slackStateManager.getView(view_id);
+        return { ok: true, view: formatStoredView(updated) };
+      }
+    }
+
+    // Fallback: view_id not in store — return ok:true with input view shape
+    const fallbackId = view_id ?? generateViewId();
+    return { ok: true, view: { ...buildView(view), id: fallbackId } };
   });
 };
 
