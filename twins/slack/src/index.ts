@@ -29,6 +29,8 @@ import filesPlugin from './plugins/web-api/files.js';
 import reactionsPlugin from './plugins/web-api/reactions.js';
 import pinsPlugin from './plugins/web-api/pins.js';
 import viewsPlugin from './plugins/web-api/views.js';
+import adminWebApiPlugin from './plugins/web-api/admin.js';
+import newFamiliesPlugin from './plugins/web-api/new-families.js';
 import stubsPlugin from './plugins/web-api/stubs.js';
 import eventsApiPlugin from './plugins/events-api.js';
 import interactionsPlugin from './plugins/interactions.js';
@@ -131,6 +133,8 @@ export async function buildApp(options: { logger?: boolean | object; rateLimit?:
   await fastify.register(reactionsPlugin);
   await fastify.register(pinsPlugin);
   await fastify.register(viewsPlugin);
+  await fastify.register(adminWebApiPlugin);
+  await fastify.register(newFamiliesPlugin);
   await fastify.register(stubsPlugin);
   await fastify.register(eventsApiPlugin);
   await fastify.register(interactionsPlugin);
