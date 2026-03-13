@@ -312,6 +312,12 @@ Plans:
 **Goal:** Shopify REST list endpoints implement real cursor pagination with result slicing and cursor advancement, and the API version router rejects unsupported/sunset versions with appropriate error responses.
 **Requirements:** SHOP-23, SHOP-17
 **Gap Closure:** Closes unsatisfied SHOP-23 (fake pagination) and partial SHOP-17 (accepts invalid versions) from audit
+**Plans:** 3 plans
+
+Plans:
+- [ ] 28-01-PLAN.md — Wave 0: migrate pagination.test.ts OAuth seeding to POST /admin/tokens, add failing REST pagination + version policy tests
+- [ ] 28-02-PLAN.md — SHOP-23: paginateList helper + real cursor pagination on Tier 1 list endpoints (products, orders, customers, inventory_items)
+- [ ] 28-03-PLAN.md — SHOP-17: month-range validation + SUNSET_VERSIONS set in api-version.ts, sunset-aware parseVersionHeader in rest.ts + graphql.ts
 
 ### Phase 29: Shopify Billing Transitions & Test Migration
 **Goal:** Shopify billing state machine validates legal state transitions (rejecting PENDING→CANCELLED and double-cancel) and legacy integration tests are migrated from old OAuth pattern to POST /admin/tokens.
@@ -367,7 +373,7 @@ Plans:
 | 25. Slack Method Coverage, Event Signing & State Tables | 4/4 | Complete    | 2026-03-13 | - |
 | 26. Slack Chat Scoping & Scope Enforcement | 3/3 | Complete    | 2026-03-13 | - |
 | 27. Conformance Harness & Coverage Infrastructure | 2/2 | Complete    | 2026-03-13 | - |
-| 28. Shopify REST Pagination & Version Policy | v1.2 | 0/0 | Pending | - |
+| 28. Shopify REST Pagination & Version Policy | v1.2 | 0/3 | Pending | - |
 | 29. Shopify Billing Transitions & Test Migration | v1.2 | 0/2 | Pending | - |
 | 30. Slack Transport & State Fixes | v1.2 | 0/2 | In Progress | - |
 | 31. Slack OAuth & Method Coverage | v1.2 | 0/0 | Pending | - |
