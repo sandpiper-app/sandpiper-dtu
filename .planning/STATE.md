@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: executing
-stopped_at: Completed 24-03-PLAN.md
-last_updated: "2026-03-13T02:44:22.343Z"
-last_activity: "2026-03-13 — Phase 24 Plan 02 complete: persistent POST/GET products and GET orders/:id backed by StateManager prepared statements"
+stopped_at: Completed 24-04-PLAN.md
+last_updated: "2026-03-13T02:50:53.891Z"
+last_activity: "2026-03-13 — Phase 24 Plan 04 complete: persistent app_subscriptions billing state machine (PENDING/ACTIVE/CANCELLED), three wired resolvers, confirm_recurring HTTP route"
 progress:
   total_phases: 15
-  completed_phases: 11
+  completed_phases: 12
   total_plans: 44
-  completed_plans: 43
-  percent: 97
+  completed_plans: 44
+  percent: 99
 ---
 
 # Project State: Sandpiper DTU
@@ -23,14 +23,14 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 24 Plan 03 complete (rate limiter correctness)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 24 Plan 04 complete (billing state machine)
 
 ## Current Position
 
 Phase: 24 of 27 (Shopify REST Persistence, Billing State Machine & Rate Limiting)
-Plan: 3 of 4 complete — ready for Plan 04 (billing state machine)
-Status: Plan 24-03 complete — SHOP-24 rate limiter GREEN (5/5 tests pass), actualQueryCost computed from real items
-Last activity: 2026-03-12 — Phase 24 Plan 03 complete: leaky bucket corrected to 1000 pts with refund() and computeActualCost() making empty-connection queries cost 1 pt
+Plan: 4 of 4 complete — Phase 24 fully complete
+Status: Plan 24-04 complete — SHOP-21 billing state machine GREEN (7/7 tests pass), PENDING → ACTIVE → CANCELLED flow implemented
+Last activity: 2026-03-13 — Phase 24 Plan 04 complete: persistent app_subscriptions table, three state-backed resolvers, confirm_recurring HTTP route
 
 Progress: [██████████] 99% (overall: 43/44 currently planned plans complete)
 
@@ -55,10 +55,17 @@ Progress: [██████████] 99% (overall: 43/44 currently planned
 | 24-01 | 01 | 5min | 3 | 3 |
 | 24-02 | 02 | 4min | 2 | 2 |
 | 24-03 | 03 | 8min | 2 | 5 |
+| Phase 24-04 P04 | 3min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-13 - Phase 24 Plan 04 (Billing state machine):**
+- Two-step GID pattern reused for app_subscriptions: insert with temp UUID gid, then UPDATE gid to gid://shopify/AppSubscription/{rowId} after AUTOINCREMENT resolves
+- SDK billing cancel test updated to realistic flow (Option a): create via billing.request → confirm via GET → cancel using real GID; hardcoded gid://shopify/AppSubscription/1 removed
+- GET /admin/charges/:id/confirm_recurring requires no auth — it is the browser confirmation flow (PENDING → ACTIVE transition + 302 redirect to returnUrl)
+- SHOP-21 requirement fully satisfied: all 7 billing-state-machine.test.ts tests GREEN
 
 **2026-03-12 - Phase 24 Plan 03 (Rate limiter correctness):**
 - Shopify tryConsume allows requests when bucket > 0 (not >= cost) — bucket can go negative, next request throttled at <= 0; this matches real Shopify behavior and eliminates false billing.check throttling
@@ -151,10 +158,10 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 24 Plan 03 — Rate limiter correctness (commits 227f6c6, 95268ce)
-**Work in progress:** Phase 24 Plan 04 (billing state machine)
-**Stopped at:** Completed 24-03-PLAN.md
-**Timestamp:** 2026-03-12
+**Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
+**Work in progress:** None — Phase 24 complete, ready for Phase 25
+**Stopped at:** Completed 24-04-PLAN.md
+**Timestamp:** 2026-03-13
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*
