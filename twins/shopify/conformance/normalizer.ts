@@ -22,4 +22,5 @@ export const shopifyNormalizer: FieldNormalizerConfig = {
     'edges.*.node.createdAt': '<TIMESTAMP>',
     'edges.*.node.updatedAt': '<TIMESTAMP>',
   },
+  compareValueFields: ['ok'],
 };

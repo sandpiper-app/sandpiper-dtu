@@ -341,4 +341,58 @@ describe('compareResponsesStructurally', () => {
     );
     expect(result.passed).toBe(true);
   });
+
+  it('compareValueFields: primitive value mismatch in structural mode is reported', () => {
+    const twin = makeResponse({ body: { ok: false, error: 'twin_error' } });
+    const baseline = makeResponse({ body: { ok: true, error: 'baseline_error' } });
+    const normalizer: FieldNormalizerConfig = {
+      stripFields: [],
+      normalizeFields: {},
+      compareValueFields: ['ok'],
+    };
+    const result = compareResponsesStructurally(
+      'struct-7', 'compareValueFields mismatch', 'test',
+      twin, baseline, [], normalizer
+    );
+    expect(result.passed).toBe(false);
+    const d = result.differences.find(d => d.path.includes('ok'));
+    expect(d).toBeDefined();
+    expect(d!.kind).toBe('changed');
+    expect(d!.lhs).toBe(false);
+    expect(d!.rhs).toBe(true);
+  });
+
+  it('compareValueFields: matching primitive values pass; non-declared differing values are ignored', () => {
+    const twin = makeResponse({ body: { ok: true, ts: '1000.0001' } });
+    const baseline = makeResponse({ body: { ok: true, ts: '9999.9999' } });
+    const normalizer: FieldNormalizerConfig = {
+      stripFields: [],
+      normalizeFields: {},
+      compareValueFields: ['ok'],
+    };
+    const result = compareResponsesStructurally(
+      'struct-8', 'compareValueFields match passes', 'test',
+      twin, baseline, [], normalizer
+    );
+    // ok:true matches; ts differs but NOT in compareValueFields — must pass
+    expect(result.passed).toBe(true);
+  });
+
+  it('compareValueFields: type mismatch already reported by compareStructure is not double-reported', () => {
+    const twin = makeResponse({ body: { ok: 'not-a-boolean', ts: '1000' } });
+    const baseline = makeResponse({ body: { ok: true, ts: '1000' } });
+    const normalizer: FieldNormalizerConfig = {
+      stripFields: [],
+      normalizeFields: {},
+      compareValueFields: ['ok'],
+    };
+    const result = compareResponsesStructurally(
+      'struct-9', 'compareValueFields dedup', 'test',
+      twin, baseline, [], normalizer
+    );
+    expect(result.passed).toBe(false);
+    // compareStructure reports the type mismatch; compareValueFields should NOT add a second diff
+    const okDiffs = result.differences.filter(d => d.path === 'body.ok');
+    expect(okDiffs).toHaveLength(1);
+  });
 });
