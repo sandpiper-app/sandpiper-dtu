@@ -68,6 +68,12 @@ export class StateManager {
   private listVariantsByProductGidStmt: Database.Statement | null = null;
   private deleteVariantsByProductGidStmt: Database.Statement | null = null;
 
+  // AppSubscription prepared statements
+  private createAppSubscriptionStmt: Database.Statement | null = null;
+  private getAppSubscriptionStmt: Database.Statement | null = null;
+  private updateAppSubscriptionStatusStmt: Database.Statement | null = null;
+  private listActiveAppSubscriptionsStmt: Database.Statement | null = null;
+
   constructor(options: StateManagerOptions = {}) {
     this.dbPath = options.dbPath ?? ':memory:';
   }
@@ -137,6 +143,11 @@ export class StateManager {
       this.createVariantStmt = null;
       this.listVariantsByProductGidStmt = null;
       this.deleteVariantsByProductGidStmt = null;
+      // Reset AppSubscription statements
+      this.createAppSubscriptionStmt = null;
+      this.getAppSubscriptionStmt = null;
+      this.updateAppSubscriptionStatusStmt = null;
+      this.listActiveAppSubscriptionsStmt = null;
     }
     this.init();
   }
@@ -192,6 +203,11 @@ export class StateManager {
       this.createVariantStmt = null;
       this.listVariantsByProductGidStmt = null;
       this.deleteVariantsByProductGidStmt = null;
+      // Clear AppSubscription statements
+      this.createAppSubscriptionStmt = null;
+      this.getAppSubscriptionStmt = null;
+      this.updateAppSubscriptionStatusStmt = null;
+      this.listActiveAppSubscriptionsStmt = null;
     }
   }
 
@@ -367,6 +383,20 @@ export class StateManager {
       CREATE INDEX IF NOT EXISTS idx_products_gid ON products(gid);
       CREATE INDEX IF NOT EXISTS idx_customers_gid ON customers(gid);
       CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
+
+      CREATE TABLE IF NOT EXISTS app_subscriptions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        gid TEXT UNIQUE NOT NULL,
+        name TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'PENDING',
+        return_url TEXT,
+        test INTEGER DEFAULT 1,
+        trial_days INTEGER DEFAULT 0,
+        shop_domain TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS idx_app_subscriptions_shop_domain ON app_subscriptions(shop_domain, status);
     `);
 
     try {
@@ -477,6 +507,19 @@ export class StateManager {
     );
     this.deleteVariantsByProductGidStmt = db.prepare(
       'DELETE FROM product_variants WHERE product_gid = ?'
+    );
+
+    // AppSubscription prepared statements
+    this.createAppSubscriptionStmt = db.prepare(
+      `INSERT INTO app_subscriptions (gid, name, status, return_url, test, trial_days, shop_domain, created_at, updated_at)
+       VALUES (?, ?, 'PENDING', ?, ?, ?, ?, ?, ?)`
+    );
+    this.getAppSubscriptionStmt = db.prepare('SELECT * FROM app_subscriptions WHERE id = ?');
+    this.updateAppSubscriptionStatusStmt = db.prepare(
+      'UPDATE app_subscriptions SET status = ?, updated_at = ? WHERE id = ?'
+    );
+    this.listActiveAppSubscriptionsStmt = db.prepare(
+      "SELECT * FROM app_subscriptions WHERE status = 'ACTIVE' AND shop_domain = ?"
     );
   }
 
@@ -907,5 +950,54 @@ export class StateManager {
   deleteVariantsByProductGid(productGid: string): void {
     if (!this.deleteVariantsByProductGidStmt) throw new Error('StateManager not initialized. Call init() first.');
     this.deleteVariantsByProductGidStmt.run(productGid);
+  }
+
+  // AppSubscription methods
+
+  /** Create an app subscription and return its numeric row ID */
+  createAppSubscription(data: {
+    name: string;
+    return_url?: string;
+    test?: boolean;
+    trial_days?: number;
+    shop_domain: string;
+  }): number {
+    if (!this.createAppSubscriptionStmt) throw new Error('StateManager not initialized. Call init() first.');
+    const now = Math.floor(Date.now() / 1000);
+    // Use crypto.randomUUID() to avoid collision when two creates happen in the same second
+    const tempGid = `gid://shopify/AppSubscription/temp-${randomUUID()}`;
+    const result = this.createAppSubscriptionStmt.run(
+      tempGid,
+      data.name,
+      data.return_url ?? null,
+      data.test !== false ? 1 : 0,
+      data.trial_days ?? 0,
+      data.shop_domain,
+      now,
+      now
+    );
+    const rowId = result.lastInsertRowid as number;
+    const finalGid = `gid://shopify/AppSubscription/${rowId}`;
+    this.database.prepare('UPDATE app_subscriptions SET gid = ? WHERE id = ?').run(finalGid, rowId);
+    return rowId;
+  }
+
+  /** Get an app subscription by numeric primary key */
+  getAppSubscription(id: number): any | undefined {
+    if (!this.getAppSubscriptionStmt) throw new Error('StateManager not initialized. Call init() first.');
+    return this.getAppSubscriptionStmt.get(id) as any | undefined;
+  }
+
+  /** Update the status of an app subscription */
+  updateAppSubscriptionStatus(id: number, status: string): void {
+    if (!this.updateAppSubscriptionStatusStmt) throw new Error('StateManager not initialized. Call init() first.');
+    const now = Math.floor(Date.now() / 1000);
+    this.updateAppSubscriptionStatusStmt.run(status, now, id);
+  }
+
+  /** List all ACTIVE app subscriptions for a given shop domain */
+  listActiveAppSubscriptions(shopDomain: string): any[] {
+    if (!this.listActiveAppSubscriptionsStmt) throw new Error('StateManager not initialized. Call init() first.');
+    return this.listActiveAppSubscriptionsStmt.all(shopDomain) as any[];
   }
 }
