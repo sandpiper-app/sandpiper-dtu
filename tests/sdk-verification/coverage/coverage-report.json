@@ -1,8 +1,8 @@
 {
   "$schema": "https://sandpiper.dev/schemas/coverage-report.json",
-  "generatedAt": "2026-03-13T21:06:18.776Z",
-  "phase": "27",
-  "note": "Phase 27: INFRA-22 — coverage derived from Vitest JSON reporter execution evidence. EVIDENCE_MAP replaces hand-authored LIVE_SYMBOLS.",
+  "generatedAt": "2026-03-13T21:56:10.368Z",
+  "phase": "32",
+  "note": "Phase 32: INFRA-21/22 — primitive value comparison in structural mode (compareValueFields); coverage gate raised to 222; integration-test exclusion pattern documented.",
   "packages": {
     "@shopify/admin-api-client@1.1.1": {
       "createAdminApiClient": {
