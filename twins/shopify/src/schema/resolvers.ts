@@ -311,8 +311,19 @@ export const resolvers = {
 
     currentAppInstallation: (_: unknown, _args: unknown, context: Context) => {
       requireAuth(context);
+      const activeSubscriptions = context.stateManager.listActiveAppSubscriptions(context.shopDomain);
       return {
-        activeSubscriptions: [],
+        activeSubscriptions: activeSubscriptions.map((sub: any) => ({
+          id: sub.gid,
+          name: sub.name,
+          status: sub.status,
+          test: sub.test === 1,
+          returnUrl: sub.return_url ?? 'https://example.com',
+          currentPeriodEnd: null,
+          trialDays: sub.trial_days ?? 0,
+          lineItems: [],
+          createdAt: new Date(sub.created_at * 1000).toISOString(),
+        })),
         oneTimePurchases: {
           edges: [],
           pageInfo: { hasNextPage: false, endCursor: null },
@@ -767,21 +778,30 @@ export const resolvers = {
       return { inventoryItem: updated, userErrors: [] };
     },
 
-    appSubscriptionCreate: (_: unknown, _args: unknown, context: Context) => {
+    appSubscriptionCreate: (_: unknown, args: any, context: Context) => {
       requireAuth(context);
+      const id = context.stateManager.createAppSubscription({
+        name: args.name,
+        return_url: args.returnUrl,
+        test: args.test ?? true,
+        trial_days: args.trialDays ?? 0,
+        shop_domain: context.shopDomain,
+      });
+      const subscription = context.stateManager.getAppSubscription(id);
+      const confirmationUrl = `https://dev.myshopify.com/admin/charges/${id}/confirm_recurring`;
       return {
         appSubscription: {
-          id: 'gid://shopify/AppSubscription/1',
-          name: 'Test Plan',
+          id: subscription.gid,
+          name: subscription.name,
           status: 'PENDING',
-          test: true,
-          returnUrl: 'https://test-app.example.com/billing/confirm',
+          test: subscription.test === 1,
+          returnUrl: subscription.return_url ?? 'https://example.com',
           currentPeriodEnd: null,
-          trialDays: 0,
+          trialDays: subscription.trial_days ?? 0,
           lineItems: [],
-          createdAt: new Date().toISOString(),
+          createdAt: new Date(subscription.created_at * 1000).toISOString(),
         },
-        confirmationUrl: 'https://dev.myshopify.com/admin/charges/1/confirm_recurring',
+        confirmationUrl,
         userErrors: [],
       };
     },
@@ -804,17 +824,41 @@ export const resolvers = {
 
     appSubscriptionCancel: (_: unknown, args: { id: string }, context: Context) => {
       requireAuth(context);
+      // Parse numeric ID from GID string: 'gid://shopify/AppSubscription/42' → 42
+      const numericIdMatch = args.id.match(/\/(\d+)$/);
+      if (!numericIdMatch) {
+        return {
+          appSubscription: null,
+          userErrors: [{ field: ['id'], message: 'Invalid subscription ID' }],
+        };
+      }
+      const numericId = parseInt(numericIdMatch[1], 10);
+      const subscription = context.stateManager.getAppSubscription(numericId);
+      if (!subscription) {
+        return {
+          appSubscription: null,
+          userErrors: [{ field: ['id'], message: 'Subscription not found' }],
+        };
+      }
+      if (subscription.shop_domain !== context.shopDomain) {
+        return {
+          appSubscription: null,
+          userErrors: [{ field: ['id'], message: 'Subscription does not belong to this installation' }],
+        };
+      }
+      context.stateManager.updateAppSubscriptionStatus(numericId, 'CANCELLED');
+      const updated = context.stateManager.getAppSubscription(numericId);
       return {
         appSubscription: {
-          id: args.id,
-          name: 'Test Plan',
+          id: updated.gid,
+          name: updated.name,
           status: 'CANCELLED',
-          test: true,
-          returnUrl: 'https://test-app.example.com/billing/confirm',
+          test: updated.test === 1,
+          returnUrl: updated.return_url ?? 'https://example.com',
           currentPeriodEnd: null,
-          trialDays: 0,
+          trialDays: updated.trial_days ?? 0,
           lineItems: [],
-          createdAt: new Date().toISOString(),
+          createdAt: new Date(updated.created_at * 1000).toISOString(),
         },
         userErrors: [],
       };

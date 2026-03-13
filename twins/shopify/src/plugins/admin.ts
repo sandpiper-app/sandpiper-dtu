@@ -233,6 +233,26 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
     );
     return { token };
   });
+
+  // GET /admin/charges/:id/confirm_recurring
+  // Transitions a PENDING app subscription to ACTIVE and redirects to returnUrl.
+  // No auth required — this is the browser confirmation endpoint.
+  fastify.get<{ Params: { id: string } }>('/admin/charges/:id/confirm_recurring', async (req, reply) => {
+    const numericId = parseInt(req.params.id, 10);
+    if (isNaN(numericId)) {
+      return reply.status(400).send({ error: 'Invalid subscription ID' });
+    }
+    const subscription = (fastify as any).stateManager.getAppSubscription(numericId);
+    if (!subscription) {
+      return reply.status(404).send({ error: 'Subscription not found' });
+    }
+    if (subscription.status !== 'PENDING') {
+      return reply.status(400).send({ error: 'Subscription is not in PENDING state' });
+    }
+    (fastify as any).stateManager.updateAppSubscriptionStatus(numericId, 'ACTIVE');
+    const redirectUrl = subscription.return_url ?? 'https://dev.myshopify.com';
+    return reply.redirect(redirectUrl, 302);
+  });
 };
 
 export default adminPlugin;
