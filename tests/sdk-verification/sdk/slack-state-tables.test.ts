@@ -183,18 +183,19 @@ describe('SLCK-17: views.open / views.update persistent lifecycle', () => {
   it('views.update with unknown view_id returns view_not_found error', async () => {
     const client = createSlackClient(token);
 
-    const res = await client.views.update({
-      view_id: 'V_NONEXISTENT',
-      view: {
-        type: 'modal' as const,
-        title: { type: 'plain_text' as const, text: 'Should Fail' },
-        blocks: [],
-      },
-    });
-
-    // This FAILS because current impl always returns ok:true with a fresh view
-    expect(res.ok).toBe(false);
-    expect((res as any).error).toBe('view_not_found');
+    try {
+      await client.views.update({
+        view_id: 'V_NONEXISTENT',
+        view: {
+          type: 'modal' as const,
+          title: { type: 'plain_text' as const, text: 'Should Fail' },
+          blocks: [],
+        },
+      });
+      expect.fail('Should have thrown view_not_found');
+    } catch (e: any) {
+      expect(e.data?.error ?? e.message).toBe('view_not_found');
+    }
   });
 });
 
@@ -225,10 +226,12 @@ describe('SLCK-17: pins.add deduplication (already_pinned)', () => {
     await client.pins.add({ channel: testChannel, timestamp: testTimestamp });
 
     // Second add for same channel+timestamp should fail with already_pinned
-    // This FAILS because pins.add is stateless and returns ok:true every time
-    const dupRes = await client.pins.add({ channel: testChannel, timestamp: testTimestamp });
-    expect(dupRes.ok).toBe(false);
-    expect((dupRes as any).error).toBe('already_pinned');
+    try {
+      await client.pins.add({ channel: testChannel, timestamp: testTimestamp });
+      expect.fail('Should have thrown already_pinned');
+    } catch (e: any) {
+      expect(e.data?.error ?? e.message).toBe('already_pinned');
+    }
   });
 
   it('pins.list returns the added pin', async () => {
@@ -285,10 +288,12 @@ describe('SLCK-17: reactions deduplication and remove', () => {
     await client.reactions.add({ channel: testChannel, timestamp: testTimestamp, name: reaction });
 
     // Second add with same reaction should fail
-    // This FAILS because reactions.add has no UNIQUE constraint
-    const dupRes = await client.reactions.add({ channel: testChannel, timestamp: testTimestamp, name: reaction });
-    expect(dupRes.ok).toBe(false);
-    expect((dupRes as any).error).toBe('already_reacted');
+    try {
+      await client.reactions.add({ channel: testChannel, timestamp: testTimestamp, name: reaction });
+      expect.fail('Should have thrown already_reacted');
+    } catch (e: any) {
+      expect(e.data?.error ?? e.message).toBe('already_reacted');
+    }
   });
 
   it('reactions.remove decrements reaction count', async () => {

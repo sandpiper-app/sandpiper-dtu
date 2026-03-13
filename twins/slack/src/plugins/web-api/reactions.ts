@@ -93,7 +93,33 @@ const reactionsPlugin: FastifyPluginAsync = async (fastify) => {
   fastify.post('/api/reactions.list', async (request, reply) => {
     const auth = authCheck(request, reply, 'reactions.list');
     if (!auth) return;
-    return { ok: true, items: [], response_metadata: { next_cursor: '' } };
+    const userId = auth.tokenRecord.user_id ?? 'U_BOT_TWIN';
+    const rawReactions = fastify.slackStateManager.listReactionsByUser(userId);
+    // Group by (channel_id, message_ts) -> item with reactions array
+    const itemMap = new Map<string, any>();
+    for (const r of rawReactions) {
+      const key = `${r.channel_id}:${r.message_ts}`;
+      if (!itemMap.has(key)) {
+        itemMap.set(key, {
+          type: 'message',
+          channel: r.channel_id,
+          message: { ts: r.message_ts, reactions: [] },
+        });
+      }
+      const item = itemMap.get(key)!;
+      let reactionEntry = item.message.reactions.find((re: any) => re.name === r.reaction);
+      if (!reactionEntry) {
+        reactionEntry = { name: r.reaction, count: 0, users: [] };
+        item.message.reactions.push(reactionEntry);
+      }
+      reactionEntry.count++;
+      reactionEntry.users.push(r.user_id);
+    }
+    return {
+      ok: true,
+      items: Array.from(itemMap.values()),
+      response_metadata: { next_cursor: '' },
+    };
   });
 
   // POST /api/reactions.remove
