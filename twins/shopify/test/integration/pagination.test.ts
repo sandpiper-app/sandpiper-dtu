@@ -10,6 +10,7 @@
  * - Invalid cursor (wrong resource type) returns appropriate error
  */
 
+import { randomUUID } from 'node:crypto';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { buildApp } from '../../src/index.js';
 
@@ -77,13 +78,15 @@ describe('Pagination Integration', () => {
     app = await buildApp({ logger: false });
     await app.ready();
 
-    // Get auth token
-    const oauthResponse = await app.inject({
+    // Seed token directly — POST /admin/tokens bypasses Phase 23 OAuth tightening
+    // (client_id + client_secret required for /admin/oauth/access_token)
+    const t = randomUUID();
+    await app.inject({
       method: 'POST',
-      url: '/admin/oauth/access_token',
-      payload: { code: 'test' },
+      url: '/admin/tokens',
+      payload: { token: t, shopDomain: 'twin.myshopify.com' },
     });
-    token = JSON.parse(oauthResponse.body).access_token;
+    token = t;
   });
 
   afterEach(async () => {

@@ -12,8 +12,24 @@
  * - webhookSubscriptionCreate GraphQL mutation
  */
 
+import { randomUUID } from 'node:crypto';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { buildApp } from '../src/index.js';
+
+/** Seed a token directly without going through OAuth — Phase 23 tightened OAuth to require
+ *  client_id + client_secret; POST /admin/tokens bypasses that for test setup. */
+async function seedToken(
+  app: Awaited<ReturnType<typeof buildApp>>,
+  shopDomain = 'twin.myshopify.com'
+): Promise<string> {
+  const token = randomUUID();
+  await app.inject({
+    method: 'POST',
+    url: '/admin/tokens',
+    payload: { token, shopDomain },
+  });
+  return token;
+}
 
 describe('Shopify Twin Integration', () => {
   let app: Awaited<ReturnType<typeof buildApp>>;
@@ -35,10 +51,20 @@ describe('Shopify Twin Integration', () => {
   // ---------------------------------------------------------------------------
   describe('OAuth', () => {
     it('issues access token for authorization code', async () => {
+      // Step 1: Get a real code from GET /admin/oauth/authorize
+      const authorizeRes = await app.inject({
+        method: 'GET',
+        url: '/admin/oauth/authorize?redirect_uri=http://localhost/callback&client_id=test-api-key&state=test',
+        headers: { host: 'dev.myshopify.com' },
+      });
+      const location = authorizeRes.headers.location as string;
+      const code = new URL(location).searchParams.get('code');
+
+      // Step 2: Exchange with valid credentials
       const response = await app.inject({
         method: 'POST',
         url: '/admin/oauth/access_token',
-        payload: { code: 'test-code' },
+        payload: { client_id: 'test-api-key', client_secret: 'test-api-secret', code },
       });
       expect(response.statusCode).toBe(200);
       const body = JSON.parse(response.body);
@@ -48,19 +74,26 @@ describe('Shopify Twin Integration', () => {
     });
 
     it('issues unique tokens for different codes', async () => {
-      const res1 = await app.inject({
-        method: 'POST',
-        url: '/admin/oauth/access_token',
-        payload: { code: 'code-1' },
-      });
-      const res2 = await app.inject({
-        method: 'POST',
-        url: '/admin/oauth/access_token',
-        payload: { code: 'code-2' },
-      });
-      const body1 = JSON.parse(res1.body);
-      const body2 = JSON.parse(res2.body);
-      expect(body1.access_token).not.toBe(body2.access_token);
+      // Run the full authorize → exchange flow TWICE (each produces a unique code)
+      const getToken = async (): Promise<string> => {
+        const authorizeRes = await app.inject({
+          method: 'GET',
+          url: '/admin/oauth/authorize?redirect_uri=http://localhost/callback&client_id=test-api-key&state=test',
+          headers: { host: 'dev.myshopify.com' },
+        });
+        const location = authorizeRes.headers.location as string;
+        const code = new URL(location).searchParams.get('code');
+        const tokenRes = await app.inject({
+          method: 'POST',
+          url: '/admin/oauth/access_token',
+          payload: { client_id: 'test-api-key', client_secret: 'test-api-secret', code },
+        });
+        return JSON.parse(tokenRes.body).access_token;
+      };
+
+      const token1 = await getToken();
+      const token2 = await getToken();
+      expect(token1).not.toBe(token2);
     });
   });
 
@@ -143,12 +176,7 @@ describe('Shopify Twin Integration', () => {
     let token: string;
 
     beforeEach(async () => {
-      const oauthResponse = await app.inject({
-        method: 'POST',
-        url: '/admin/oauth/access_token',
-        payload: { code: 'test' },
-      });
-      token = JSON.parse(oauthResponse.body).access_token;
+      token = await seedToken(app);
     });
 
     // -- Authentication (SHOP-07) --
@@ -612,12 +640,7 @@ describe('Shopify Twin Integration', () => {
     let token: string;
 
     beforeEach(async () => {
-      const oauthResponse = await app.inject({
-        method: 'POST',
-        url: '/admin/oauth/access_token',
-        payload: { code: 'test' },
-      });
-      token = JSON.parse(oauthResponse.body).access_token;
+      token = await seedToken(app);
     });
 
     it('returns configured 429 THROTTLED error for operation', async () => {
@@ -770,12 +793,7 @@ describe('Shopify Twin Integration', () => {
     let token: string;
 
     beforeEach(async () => {
-      const oauthResponse = await app.inject({
-        method: 'POST',
-        url: '/admin/oauth/access_token',
-        payload: { code: 'test' },
-      });
-      token = JSON.parse(oauthResponse.body).access_token;
+      token = await seedToken(app);
 
       // Subscribe to webhooks via direct stateManager (fast setup)
       app.stateManager.createWebhookSubscription('orders/create', 'http://localhost:9999/webhook');
@@ -1005,12 +1023,7 @@ describe('Shopify Twin Integration', () => {
       // Add something to DLQ first by triggering a webhook failure with compressed timing.
       // Use 127.0.0.1:1 (privileged port, guaranteed ECONNREFUSED) instead of
       // localhost:9999 which may have something listening in dev environments
-      const oauthResponse = await app.inject({
-        method: 'POST',
-        url: '/admin/oauth/access_token',
-        payload: { code: 'dlq-test' },
-      });
-      const token = JSON.parse(oauthResponse.body).access_token;
+      const token = await seedToken(app);
 
       app.stateManager.createWebhookSubscription('orders/create', 'http://127.0.0.1:1/webhook');
 
@@ -1084,12 +1097,7 @@ describe('Shopify Twin Integration', () => {
     let token: string;
 
     beforeEach(async () => {
-      const oauthResponse = await app.inject({
-        method: 'POST',
-        url: '/admin/oauth/access_token',
-        payload: { code: 'version-test' },
-      });
-      token = JSON.parse(oauthResponse.body).access_token;
+      token = await seedToken(app);
     });
 
     it('2024-01 GraphQL route returns 200 with valid GraphQL response', async () => {
@@ -1173,11 +1181,21 @@ describe('Shopify Twin Integration', () => {
   // ---------------------------------------------------------------------------
   describe('API Conformance: OAuth form-urlencoded', () => {
     it('accepts form-urlencoded body for token exchange', async () => {
+      // Step 1: Get a real code from GET /admin/oauth/authorize
+      const authorizeRes = await app.inject({
+        method: 'GET',
+        url: '/admin/oauth/authorize?redirect_uri=http://localhost/callback&client_id=test-api-key&state=test',
+        headers: { host: 'dev.myshopify.com' },
+      });
+      const location = authorizeRes.headers.location as string;
+      const code = new URL(location).searchParams.get('code');
+
+      // Step 2: Exchange with valid credentials in form-urlencoded format
       const res = await app.inject({
         method: 'POST',
         url: '/admin/oauth/access_token',
         headers: { 'content-type': 'application/x-www-form-urlencoded' },
-        payload: 'code=test-auth-code',
+        payload: `client_id=test-api-key&client_secret=test-api-secret&code=${code}`,
       });
       expect(res.statusCode).toBe(200);
       const body = res.json();
@@ -1186,12 +1204,21 @@ describe('Shopify Twin Integration', () => {
     });
 
     it('issues unique token via form-urlencoded and it works for GraphQL auth', async () => {
-      // Get token via form-urlencoded OAuth
+      // Step 1: Get a real code from GET /admin/oauth/authorize
+      const authorizeRes = await app.inject({
+        method: 'GET',
+        url: '/admin/oauth/authorize?redirect_uri=http://localhost/callback&client_id=test-api-key&state=test',
+        headers: { host: 'dev.myshopify.com' },
+      });
+      const location = authorizeRes.headers.location as string;
+      const code = new URL(location).searchParams.get('code');
+
+      // Step 2: Get token via form-urlencoded OAuth with valid credentials
       const oauthRes = await app.inject({
         method: 'POST',
         url: '/admin/oauth/access_token',
         headers: { 'content-type': 'application/x-www-form-urlencoded' },
-        payload: 'code=form-test-code',
+        payload: `client_id=test-api-key&client_secret=test-api-secret&code=${code}`,
       });
       expect(oauthRes.statusCode).toBe(200);
       const { access_token } = oauthRes.json();
