@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 25-04-PLAN.md
-last_updated: "2026-03-13T04:03:10.022Z"
+stopped_at: Completed 25-02-PLAN.md
+last_updated: "2026-03-13T04:03:27.901Z"
 last_activity: "2026-03-13 — Phase 25 Plan 04 complete: 3 new SQLite tables, 8 new StateManager methods, 4 updated plugins, smoke XCUT-01 GREEN (84/84 tests)"
 progress:
   total_phases: 15
@@ -59,10 +59,18 @@ Progress: [██████████] 99% (overall: 43/44 currently planned
 | Phase 25-01 P01 | 6min | 3 tasks | 4 files |
 | Phase 25-03 P03 | 12min | 2 tasks | 7 files |
 | Phase 25 P04 | 18min | 2 tasks | 7 files |
+| Phase 25 P02 | 20min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-12 - Phase 25 Plan 02 (Slack method coverage — SLCK-14):**
+- admin.ts covers 97 routes (plan said 95) — manifest had admin.apps.activities.list and admin.functions.* not in hand-listed plan
+- new-families.ts deduplicates against existing plugins — conversations.acceptSharedInvite/inviteShared/etc already in conversations.ts; apps.manifest.*, oauth.*, team.extended, files.upload in stubs.ts
+- Rule 1 fix: SlackStateManager was missing addChannelMember/removeChannelMember/getChannelMembers, createView/getView/updateView, addPin/removePin/listPins, removeReaction — 25-04 commit message claimed them but code was not applied
+- Rule 1 fix: views.ts duplicate 'id' key { id: fallbackId, ...buildView(view) } -> { ...buildView(view), id: fallbackId }
+- SLCK-14 fully satisfied: slack-method-coverage.test.ts 16/16 GREEN
 
 **2026-03-13 - Phase 25 Plan 04 (SLCK-17 state tables):**
 - SQLITE_CONSTRAINT_UNIQUE catch pattern used in pins.add and reactions.add for already_pinned/already_reacted errors
@@ -175,7 +183,7 @@ None.
 
 **Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
 **Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 25-04-PLAN.md
+**Stopped at:** Completed 25-02-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
