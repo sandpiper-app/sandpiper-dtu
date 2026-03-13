@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 30-02-PLAN.md
-last_updated: "2026-03-13T20:31:28.786Z"
+stopped_at: Completed 29-02-PLAN.md
+last_updated: "2026-03-13T20:33:18.539Z"
 last_activity: "2026-03-13 — Phase 30 Plan 02 complete: reactions.list real state query, views.update view_not_found, SLCK-17 try/catch test fixes, 248/248 GREEN"
 progress:
   total_phases: 21
-  completed_phases: 16
+  completed_phases: 17
   total_plans: 60
-  completed_plans: 56
+  completed_plans: 57
   percent: 96
 ---
 
@@ -32,7 +32,7 @@ Plan: 2 of 2 complete
 Status: Plan 30-02 complete — reactions.list now queries real state via listReactionsByUser; views.update returns view_not_found; SLCK-17 fully GREEN (248/248 tests)
 Last activity: 2026-03-13 — Phase 30 Plan 02 complete: reactions.list real state query, views.update view_not_found, SLCK-17 try/catch test fixes, 248/248 GREEN
 
-Progress: [██████████] 96% (overall: 56/60 plans complete)
+Progress: [██████████] 97% (overall: 57/60 plans complete)
 
 ## Performance Metrics
 
@@ -68,10 +68,18 @@ Progress: [██████████] 96% (overall: 56/60 plans complete)
 | Phase 30 P01 | 1min | 1 tasks | 2 files |
 | Phase 29-01 P01 | 2min | 2 tasks | 2 files |
 | Phase 30-02 P02 | 4min | 2 tasks | 5 files |
+| Phase 29 P02 | 10min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-13 - Phase 29 Plan 02 (integration test OAuth migration — SHOP-21):**
+- OAuth describe blocks use full authorize→exchange flow (GET /admin/oauth/authorize + POST /admin/oauth/access_token with credentials) so OAuth endpoint behavior is genuinely tested
+- All non-OAuth describe blocks use seedToken() via POST /admin/tokens — bypasses Phase 23 credential requirement without losing test coverage
+- API Conformance form-urlencoded tests use full authorize flow with credentials in form-urlencoded format — preserves content-type coverage path
+- rate-limit.test.ts was already migrated in Phase 24-03 (5/5 GREEN, isolation check confirmed skip)
+- SHOP-21 fully satisfied: 50 previously-failing tests now GREEN across all 4 files
 
 **2026-03-13 - Phase 29 Plan 01 (billing transition guards — SHOP-21e/21f):**
 - Cancel guard placed after ownership check, before updateAppSubscriptionStatus — uses already-fetched subscription.status with zero extra DB reads
@@ -237,7 +245,7 @@ None.
 
 **Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
 **Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 30-02-PLAN.md
+**Stopped at:** Completed 29-02-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---

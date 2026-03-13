@@ -53,7 +53,7 @@
 - [x] **Phase 26: Slack Chat Scoping & Scope Enforcement** - Author/channel ownership rules and per-method OAuth scope requirements (completed 2026-03-13)
 - [x] **Phase 27: Conformance Harness & Coverage Infrastructure** - Bidirectional structural comparison and execution-evidence coverage tracking (completed 2026-03-13)
 - [ ] **Phase 28: Shopify REST Pagination & Version Policy** - Real cursor pagination and supported version validation (gap closure)
-- [ ] **Phase 29: Shopify Billing Transitions & Test Migration** - Billing state machine guards and legacy test migration (gap closure)
+- [x] **Phase 29: Shopify Billing Transitions & Test Migration** - Billing state machine guards and legacy test migration (gap closure) (completed 2026-03-13)
 - [x] **Phase 30: Slack Transport & State Fixes** - Provider-aware event delivery and stateful reactions/views (gap closure) (completed 2026-03-13)
 - [ ] **Phase 31: Slack OAuth & Method Coverage** - OAuth exchange validation and comprehensive method smoke tests (gap closure)
 - [ ] **Phase 32: Conformance Harness & Evidence** - Primitive value comparison and real execution evidence (gap closure)
@@ -323,7 +323,7 @@ Plans:
 **Goal:** Shopify billing state machine validates legal state transitions (rejecting PENDING→CANCELLED and double-cancel) and legacy integration tests are migrated from old OAuth pattern to POST /admin/tokens.
 **Requirements:** SHOP-21
 **Gap Closure:** Closes partial SHOP-21 (no transition validation) and integration issue (32+ test failures from Phase 23 OAuth tightening)
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 29-01-PLAN.md — Transition guard tests (SHOP-21e/21f RED) + appSubscriptionCancel status guard in resolvers.ts
@@ -374,7 +374,7 @@ Plans:
 | 26. Slack Chat Scoping & Scope Enforcement | 3/3 | Complete    | 2026-03-13 | - |
 | 27. Conformance Harness & Coverage Infrastructure | 2/2 | Complete    | 2026-03-13 | - |
 | 28. Shopify REST Pagination & Version Policy | v1.2 | 0/3 | Pending | - |
-| 29. Shopify Billing Transitions & Test Migration | 1/2 | In Progress|  | - |
+| 29. Shopify Billing Transitions & Test Migration | 2/2 | Complete   | 2026-03-13 | - |
 | 30. Slack Transport & State Fixes | 2/2 | Complete    | 2026-03-13 | - |
 | 31. Slack OAuth & Method Coverage | v1.2 | 0/0 | Pending | - |
 | 32. Conformance Harness & Evidence | v1.2 | 0/0 | Pending | - |
