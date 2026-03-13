@@ -343,6 +343,11 @@ Plans:
 **Goal:** Slack OAuth exchange validates scope, redirect_uri, and binds codes to authorize requests; method coverage tests prove all 275+ WebClient methods are callable.
 **Requirements:** SLCK-18, SLCK-14
 **Gap Closure:** Closes partial SLCK-18 (OAuth under-validated) and partial SLCK-14 (insufficient method coverage testing); adds Phase 25/26 test files to evidence map
+**Plans:** 2 plans
+
+Plans:
+- [ ] 31-01-PLAN.md — SLCK-14: expand slack-method-coverage.test.ts (slackLists/rtm/entity families) + EVIDENCE_MAP Phase 25/26 additions
+- [ ] 31-02-PLAN.md — SLCK-18: add redirect_uri mismatch + scope tests, tighten oauth.ts with Map binding and scope validation
 
 ### Phase 32: Conformance Harness & Evidence
 **Goal:** Conformance comparator catches primitive value mismatches in structural mode, and coverage attribution is derived from real test execution evidence rather than a hand-authored symbol map.
@@ -376,7 +381,7 @@ Plans:
 | 28. Shopify REST Pagination & Version Policy | 1/3 | In Progress|  | - |
 | 29. Shopify Billing Transitions & Test Migration | 2/2 | Complete    | 2026-03-13 | - |
 | 30. Slack Transport & State Fixes | 2/2 | Complete    | 2026-03-13 | - |
-| 31. Slack OAuth & Method Coverage | v1.2 | 0/0 | Pending | - |
+| 31. Slack OAuth & Method Coverage | v1.2 | 0/2 | Pending | - |
 | 32. Conformance Harness & Evidence | v1.2 | 0/0 | Pending | - |
 | 33. Cross-Cutting Reset Coverage | v1.2 | 0/0 | Pending | - |
 
