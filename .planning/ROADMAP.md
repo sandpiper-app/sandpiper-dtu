@@ -302,7 +302,7 @@ Plans:
 | 21. Test Runner & Seeders | 2/2 | Complete    | 2026-03-12 | - |
 | 22. Shopify Version Routing & Response Headers | 3/3 | Complete    | 2026-03-12 | - |
 | 23. Shopify OAuth & Storefront | 4/4 | Complete    | 2026-03-12 | - |
-| 24. Shopify REST Persistence, Billing State Machine & Rate Limiting | 4/4 | Complete   | 2026-03-13 | - |
+| 24. Shopify REST Persistence, Billing State Machine & Rate Limiting | 4/4 | Complete    | 2026-03-13 | - |
 | 25. Slack Method Coverage, Event Signing & State Tables | v1.2 | 0/TBD | Not started | - |
 | 26. Slack Chat Scoping & Scope Enforcement | v1.2 | 0/TBD | Not started | - |
 | 27. Conformance Harness & Coverage Infrastructure | v1.2 | 0/TBD | Not started | - |
