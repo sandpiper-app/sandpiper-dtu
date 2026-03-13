@@ -149,4 +149,31 @@ describe('SLCK-14: All bound WebClient methods return ok:true', () => {
       client.stars.remove({ channel: 'C_GENERAL', timestamp: '1234567890.000001' })
     ).resolves.toMatchObject({ ok: true });
   });
+
+  // -------------------------------------------------------------------------
+  // slackLists.* family (12 methods) — representative: slackLists.create
+  // -------------------------------------------------------------------------
+
+  it('slackLists.create returns ok:true', async () => {
+    const client = createSlackClient(token);
+    await expect(client.slackLists.create({})).resolves.toMatchObject({ ok: true });
+  });
+
+  // -------------------------------------------------------------------------
+  // rtm.* family (2 methods)
+  // -------------------------------------------------------------------------
+
+  it('rtm.connect returns ok:true', async () => {
+    const client = createSlackClient(token);
+    await expect(client.rtm.connect({})).resolves.toMatchObject({ ok: true });
+  });
+
+  // -------------------------------------------------------------------------
+  // entity.* family (1 method)
+  // -------------------------------------------------------------------------
+
+  it('entity.presentDetails returns ok:true', async () => {
+    const client = createSlackClient(token);
+    await expect(client.entity.presentDetails({})).resolves.toMatchObject({ ok: true });
+  });
 });
