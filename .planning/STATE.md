@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 29-02-PLAN.md
-last_updated: "2026-03-13T20:33:18.539Z"
+stopped_at: Completed 28-01-PLAN.md
+last_updated: "2026-03-13T20:34:32.874Z"
 last_activity: "2026-03-13 — Phase 30 Plan 02 complete: reactions.list real state query, views.update view_not_found, SLCK-17 try/catch test fixes, 248/248 GREEN"
 progress:
   total_phases: 21
   completed_phases: 17
-  total_plans: 60
-  completed_plans: 57
-  percent: 96
+  total_plans: 62
+  completed_plans: 58
+  percent: 97
 ---
 
 # Project State: Sandpiper DTU
@@ -27,10 +27,10 @@ progress:
 
 ## Current Position
 
-Phase: 30 of 33 (Slack Transport & State Fixes) — COMPLETE
-Plan: 2 of 2 complete
-Status: Plan 30-02 complete — reactions.list now queries real state via listReactionsByUser; views.update returns view_not_found; SLCK-17 fully GREEN (248/248 tests)
-Last activity: 2026-03-13 — Phase 30 Plan 02 complete: reactions.list real state query, views.update view_not_found, SLCK-17 try/catch test fixes, 248/248 GREEN
+Phase: 28 of 33 (Shopify REST Pagination & Version Policy) — IN PROGRESS
+Plan: 1 of 3 complete
+Status: Plan 28-01 complete — Wave 0 RED tests written; OAuth seeding migrated to POST /admin/tokens; 6 SHOP-23/SHOP-17 failing tests define contracts for Plans 02 and 03
+Last activity: 2026-03-13 — Phase 28 Plan 01 complete: pagination.test.ts OAuth migration + 6 RED tests, SDK sentinel replacements with real multi-page assertions
 
 Progress: [██████████] 97% (overall: 57/60 plans complete)
 
@@ -69,6 +69,7 @@ Progress: [██████████] 97% (overall: 57/60 plans complete)
 | Phase 29-01 P01 | 2min | 2 tasks | 2 files |
 | Phase 30-02 P02 | 4min | 2 tasks | 5 files |
 | Phase 29 P02 | 10min | 2 tasks | 3 files |
+| Phase 28-01 P01 | 7 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,13 @@ Progress: [██████████] 97% (overall: 57/60 plans complete)
 - API Conformance form-urlencoded tests use full authorize flow with credentials in form-urlencoded format — preserves content-type coverage path
 - rate-limit.test.ts was already migrated in Phase 24-03 (5/5 GREEN, isolation check confirmed skip)
 - SHOP-21 fully satisfied: 50 previously-failing tests now GREEN across all 4 files
+
+**2026-03-13 - Phase 28 Plan 01 (Wave 0 REST pagination + version policy tests):**
+- Sentinel page_info=test tests removed from pagination.test.ts + SDK files; replaced with real multi-page assertions using limit=2 and 3 seeded products
+- OAuth seeding in pagination.test.ts migrated to POST /admin/tokens (bypasses Phase 23 OAuth tightening)
+- 4 RED tests define SHOP-23 REST cursor pagination contract (first page Link header, second page via cursor, invalid cursor 400, orders endpoint)
+- 2 RED tests define SHOP-17 version policy contract (invalid month 2024-99, sunset version 2023-01)
+- shopify-admin-rest-client: headers.get('link') returns null not undefined — use expect(linkHeader).not.toBeNull()
 
 **2026-03-13 - Phase 29 Plan 01 (billing transition guards — SHOP-21e/21f):**
 - Cancel guard placed after ownership check, before updateAppSubscriptionStatus — uses already-fetched subscription.status with zero extra DB reads
@@ -245,7 +253,7 @@ None.
 
 **Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
 **Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 29-02-PLAN.md
+**Stopped at:** Completed 28-01-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
