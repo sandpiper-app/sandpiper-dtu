@@ -221,5 +221,17 @@ describe('Slack Twin Smoke Tests', () => {
       ).c;
       expect(count).toBe(0);
     });
+
+    it('reset completes in under 100ms', async () => {
+      // Warm-up: ensure app is ready and route is resolved before timing
+      const warmup = await app.inject({ method: 'POST', url: '/admin/reset' });
+      expect(warmup.statusCode).toBe(200);
+
+      const start = Date.now();
+      const res = await app.inject({ method: 'POST', url: '/admin/reset' });
+      const elapsed = Date.now() - start;
+      expect(res.statusCode).toBe(200);
+      expect(elapsed).toBeLessThan(100);
+    });
   });
 });
