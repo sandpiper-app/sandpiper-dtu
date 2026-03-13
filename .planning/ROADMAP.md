@@ -51,7 +51,7 @@
 - [x] **Phase 24: Shopify REST Persistence, Billing State Machine & Rate Limiting** - Persistent CRUD with real shapes, billing state machine, and accurate rate limiting (completed 2026-03-13)
 - [x] **Phase 25: Slack Method Coverage, Event Signing & State Tables** - Close 126-method gap, fix event headers, and add membership/view/pin state (completed 2026-03-13)
 - [x] **Phase 26: Slack Chat Scoping & Scope Enforcement** - Author/channel ownership rules and per-method OAuth scope requirements (completed 2026-03-13)
-- [ ] **Phase 27: Conformance Harness & Coverage Infrastructure** - Bidirectional structural comparison and execution-evidence coverage tracking
+- [x] **Phase 27: Conformance Harness & Coverage Infrastructure** - Bidirectional structural comparison and execution-evidence coverage tracking (completed 2026-03-13)
 
 ## Phase Details
 
@@ -296,7 +296,7 @@ Plans:
   2. Primitive value comparison catches behavioral mismatches (not just structural ones) where both responses have the same shape but different values
   3. Coverage status for each tracked symbol is derived from Vitest JSON reporter execution evidence (which test files exercised which endpoints), not the hand-authored `LIVE_SYMBOLS` map
   4. CI gate validates that the 202+ live symbol count is satisfied by execution evidence; `pnpm drift:check` continues passing throughout the `LIVE_SYMBOLS` → evidence transition without a coverage gap
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 27-01-PLAN.md — INFRA-21: bidirectional comparator fix (types, comparator, runner, TwinAdapter, unit tests)
@@ -320,7 +320,7 @@ Plans:
 | 24. Shopify REST Persistence, Billing State Machine & Rate Limiting | 4/4 | Complete    | 2026-03-13 | - |
 | 25. Slack Method Coverage, Event Signing & State Tables | 4/4 | Complete    | 2026-03-13 | - |
 | 26. Slack Chat Scoping & Scope Enforcement | 3/3 | Complete    | 2026-03-13 | - |
-| 27. Conformance Harness & Coverage Infrastructure | 1/2 | In Progress|  | - |
+| 27. Conformance Harness & Coverage Infrastructure | 2/2 | Complete   | 2026-03-13 | - |
 
 ## Dependencies
 

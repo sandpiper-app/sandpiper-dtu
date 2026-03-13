@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 27-02-PLAN.md
-last_updated: "2026-03-13T16:40:53.680Z"
+stopped_at: Completed 27-01-PLAN.md
+last_updated: "2026-03-13T16:41:17.552Z"
 last_activity: "2026-03-13 — Phase 26 Plan 03 complete: checkScope() wired into all 10 plugin files; SLCK-18+19 universally GREEN across entire Slack twin"
 progress:
   total_phases: 15
-  completed_phases: 14
+  completed_phases: 15
   total_plans: 53
-  completed_plans: 52
+  completed_plans: 53
   percent: 100
 ---
 
@@ -23,14 +23,14 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 26 COMPLETE (SLCK-15/18/19 all GREEN); ready for Phase 27 (conformance/coverage)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 27 Plan 01 COMPLETE (conformance comparator fixes + ShopifyTwinAdapter OAuth); Phase 27 complete
 
 ## Current Position
 
-Phase: 26 of 27 (Slack Chat Scoping & Scope Enforcement) — COMPLETE
-Plan: 3 of 3 complete
-Status: Plan 26-03 complete — universal scope enforcement across all 9 remaining web-api plugins; SLCK-18 (5/5) GREEN, SLCK-19 universal; Phase 26 fully closed
-Last activity: 2026-03-13 — Phase 26 Plan 03 complete: checkScope() wired into all 10 plugin files; SLCK-18+19 universally GREEN across entire Slack twin
+Phase: 27 of 27 (Conformance Harness & Coverage Infrastructure) — COMPLETE
+Plan: 1 of 2 complete (Plan 02 completed earlier in session)
+Status: Plan 27-01 complete — bidirectional structural comparator, sortFields normalization, comparisonMode routing, ShopifyTwinAdapter OAuth fix; INFRA-21 GREEN
+Last activity: 2026-03-13 — Phase 27 Plan 01 complete: allKeys comparator, full array traversal, ShopifyTwinAdapter POST /admin/tokens, 18/18 unit tests GREEN
 
 Progress: [██████████] 100% (overall: 51/51 plans complete)
 
@@ -64,10 +64,18 @@ Progress: [██████████] 100% (overall: 51/51 plans complete)
 | Phase 26 P02 | 5min | 2 tasks | 4 files |
 | Phase 26 P03 | 9min | 2 tasks | 10 files |
 | Phase 27 P02 | 3min | 3 tasks | 6 files |
+| Phase 27-01 P01 | 8min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-13 - Phase 27 Plan 01 (conformance comparator fix + ShopifyTwinAdapter OAuth fix):**
+- Union-of-keys (allKeys Set) in compareStructure catches both directions: twin-extra as 'added', baseline-only as 'deleted'
+- Math.max(len) array traversal reports all element mismatches and length differences (not just index 0)
+- sortArrayField helpers sort named arrays in both structural and exact modes before comparison
+- ShopifyTwinAdapter.init() uses randomUUID token seeded via POST /admin/tokens — fixes Phase 23 OAuth tightening (client_id/client_secret required for /admin/oauth/access_token)
+- comparisonMode:'exact' proof-of-concept on products-create-validation (deterministic error response)
 
 **2026-03-13 - Phase 26 Plan 03 (universal scope enforcement — SLCK-18/19 across all 9 remaining plugins):**
 - stub(method, extra?) factory pattern for stubs.ts/admin.ts/new-families.ts: method name as first arg enables checkScope() inside factory without 95+ inline call sites
@@ -208,7 +216,7 @@ None.
 
 **Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
 **Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 27-02-PLAN.md
+**Stopped at:** Completed 27-01-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
