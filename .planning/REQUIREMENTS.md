@@ -65,10 +65,10 @@ Requirements for milestone `v1.2 Behavioral Fidelity`. Fixes 13 adversarial revi
 
 ### Slack Fidelity
 
-- [ ] **SLCK-14**: All bound WebClient methods from the pinned `@slack/web-api` package are registered and callable against the Slack twin, closing the 126-method gap; high-value families (admin.apps, admin.conversations, admin.users, workflows) have semantically correct responses; remaining admin.* and low-traffic families are explicitly marked as stubs with documented limitations
+- [x] **SLCK-14**: All bound WebClient methods from the pinned `@slack/web-api` package are registered and callable against the Slack twin, closing the 126-method gap; high-value families (admin.apps, admin.conversations, admin.users, workflows) have semantically correct responses; remaining admin.* and low-traffic families are explicitly marked as stubs with documented limitations
 - [ ] **SLCK-15**: Slack `chat.update` enforces channel scoping (message must exist in the specified channel) and author ownership (bot tokens can only update messages they posted), returning `{ok: false, error: "cant_update_message"}` on violations; `chat.delete` enforces equivalent rules with `cant_delete_message`; conformance tests exercise the actual `chat.update` and `chat.delete` methods (not substituting `chat.postMessage`)
-- [ ] **SLCK-16**: Slack event delivery uses `X-Slack-Signature` (`v0=` + HMAC-SHA256 hex using signing secret) and `X-Slack-Request-Timestamp` headers instead of Shopify webhook signature headers; interactions route through a dedicated interactivity request URL (not through event subscriptions); `response_url` is an absolute URL (not relative path)
-- [ ] **SLCK-17**: Slack `conversations.invite`/`kick` manage actual channel membership; `conversations.members` returns real member list; `conversations.open` returns a real DM channel (not canned `D_TWIN`); `views.open`/`update`/`push` maintain persistent view lifecycle with stable view IDs; `pins.add`/`remove`/`list` are stateful with deduplication (`already_pinned` error); `reactions.add`/`remove`/`list`/`get` are stateful with deduplication (`already_reacted` error)
+- [x] **SLCK-16**: Slack event delivery uses `X-Slack-Signature` (`v0=` + HMAC-SHA256 hex using signing secret) and `X-Slack-Request-Timestamp` headers instead of Shopify webhook signature headers; interactions route through a dedicated interactivity request URL (not through event subscriptions); `response_url` is an absolute URL (not relative path)
+- [x] **SLCK-17**: Slack `conversations.invite`/`kick` manage actual channel membership; `conversations.members` returns real member list; `conversations.open` returns a real DM channel (not canned `D_TWIN`); `views.open`/`update`/`push` maintain persistent view lifecycle with stable view IDs; `pins.add`/`remove`/`list` are stateful with deduplication (`already_pinned` error); `reactions.add`/`remove`/`list`/`get` are stateful with deduplication (`already_reacted` error)
 - [ ] **SLCK-18**: Slack auth enforces OAuth scope requirements per method, returning `{ok: false, error: "missing_scope", needed: "<scope>", provided: "<scopes>"}` when token lacks the required scope; OAuth token exchange validates `client_id`, `scope`, and `redirect_uri` parameters
 - [ ] **SLCK-19**: Slack API responses include `X-OAuth-Scopes` (token's granted scopes) and `X-Accepted-OAuth-Scopes` (method's required scopes) headers on successful calls
 
@@ -154,9 +154,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SHOP-20 | Phase 24 | Complete |
 | SHOP-21 | Phase 24 | Complete |
 | SHOP-24 | Phase 24 | Complete |
-| SLCK-14 | Phase 25 | Pending |
-| SLCK-16 | Phase 25 | Pending |
-| SLCK-17 | Phase 25 | Pending |
+| SLCK-14 | Phase 25 | Complete |
+| SLCK-16 | Phase 25 | Complete |
+| SLCK-17 | Phase 25 | Complete |
 | SLCK-15 | Phase 26 | Pending |
 | SLCK-18 | Phase 26 | Pending |
 | SLCK-19 | Phase 26 | Pending |

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 24-04-PLAN.md
-last_updated: "2026-03-13T02:56:43.579Z"
+stopped_at: Completed 25-01-PLAN.md
+last_updated: "2026-03-13T03:50:44.752Z"
 last_activity: "2026-03-13 — Phase 24 Plan 04 complete: persistent app_subscriptions table, three state-backed resolvers, confirm_recurring HTTP route"
 progress:
   total_phases: 15
   completed_phases: 12
-  total_plans: 44
-  completed_plans: 44
+  total_plans: 48
+  completed_plans: 45
   percent: 99
 ---
 
@@ -23,14 +23,14 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 24 Plan 04 complete (billing state machine)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 25 Plan 01 complete (Wave 0 failing tests)
 
 ## Current Position
 
-Phase: 24 of 27 (Shopify REST Persistence, Billing State Machine & Rate Limiting)
-Plan: 4 of 4 complete — Phase 24 fully complete
-Status: Plan 24-04 complete — SHOP-21 billing state machine GREEN (7/7 tests pass), PENDING → ACTIVE → CANCELLED flow implemented
-Last activity: 2026-03-13 — Phase 24 Plan 04 complete: persistent app_subscriptions table, three state-backed resolvers, confirm_recurring HTTP route
+Phase: 25 of 27 (Slack Method Coverage, Event Signing & State Tables)
+Plan: 1 of 4 complete
+Status: Plan 25-01 complete — Wave 0 failing tests for SLCK-14 / SLCK-16 / SLCK-17 / XCUT-01 written; all in RED state
+Last activity: 2026-03-13 — Phase 25 Plan 01 complete: three new test files + smoke.test.ts XCUT-01 additions (all Wave 0 RED state)
 
 Progress: [██████████] 99% (overall: 43/44 currently planned plans complete)
 
@@ -56,10 +56,16 @@ Progress: [██████████] 99% (overall: 43/44 currently planned
 | 24-02 | 02 | 4min | 2 | 2 |
 | 24-03 | 03 | 8min | 2 | 5 |
 | Phase 24-04 P04 | 3min | 2 tasks | 4 files |
+| Phase 25-01 P01 | 6min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-13 - Phase 25 Plan 01 (Wave 0 failing tests):**
+- openid.connect.token requires client_id and client_secret per @slack/web-api types — test calls must include both fields
+- slack-signing.test.ts uses Awaited<ReturnType<typeof buildApp>> type (not FastifyInstance import) to avoid bare specifier resolution error in test files
+- XCUT-01 smoke tests seed raw SQL via app.slackStateManager.database before reset, then assert count=0 after — will throw 'no such table' until Plan 04 creates the three new tables
 
 **2026-03-13 - Phase 24 Plan 04 (Billing state machine):**
 - Two-step GID pattern reused for app_subscriptions: insert with temp UUID gid, then UPDATE gid to gid://shopify/AppSubscription/{rowId} after AUTOINCREMENT resolves
@@ -160,7 +166,7 @@ None.
 
 **Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
 **Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 24-04-PLAN.md
+**Stopped at:** Completed 25-01-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
