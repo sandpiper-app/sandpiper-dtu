@@ -322,6 +322,11 @@ Plans:
 **Goal:** Slack event deliveries carry only Slack signature headers (no Shopify headers), and state tables for reactions, views, and pins work correctly with proper error handling.
 **Requirements:** SLCK-16, SLCK-17
 **Gap Closure:** Closes partial SLCK-16 (dual headers) and partial SLCK-17 (stub reactions.list, views JSON parse, views.update unknown ID, test assertion bugs)
+**Plans:** 2 plans
+
+Plans:
+- [ ] 30-01-PLAN.md — SLCK-16: Replace WebhookQueue with direct fetch() in EventDispatcher (Slack-only headers)
+- [ ] 30-02-PLAN.md — SLCK-17: listReactionsByUser, views.update view_not_found, form-encoded parse, test assertion fixes
 
 ### Phase 31: Slack OAuth & Method Coverage
 **Goal:** Slack OAuth exchange validates scope, redirect_uri, and binds codes to authorize requests; method coverage tests prove all 275+ WebClient methods are callable.
@@ -359,7 +364,7 @@ Plans:
 | 27. Conformance Harness & Coverage Infrastructure | 2/2 | Complete    | 2026-03-13 | - |
 | 28. Shopify REST Pagination & Version Policy | v1.2 | 0/0 | Pending | - |
 | 29. Shopify Billing Transitions & Test Migration | v1.2 | 0/0 | Pending | - |
-| 30. Slack Transport & State Fixes | v1.2 | 0/0 | Pending | - |
+| 30. Slack Transport & State Fixes | v1.2 | 0/2 | In Progress | - |
 | 31. Slack OAuth & Method Coverage | v1.2 | 0/0 | Pending | - |
 | 32. Conformance Harness & Evidence | v1.2 | 0/0 | Pending | - |
 | 33. Cross-Cutting Reset Coverage | v1.2 | 0/0 | Pending | - |
