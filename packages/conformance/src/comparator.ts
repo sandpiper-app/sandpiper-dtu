@@ -93,12 +93,19 @@ export function compareResponsesStructurally(
   // Apply strip fields from the normalizer to both sides before structural comparison
   let twinBody = twin.body;
   let baselineBody = baseline.body;
-  if (normalizer && normalizer.stripFields.length > 0) {
+  const needsNormalization =
+    normalizer &&
+    (normalizer.stripFields.length > 0 || (normalizer.sortFields?.length ?? 0) > 0);
+  if (needsNormalization) {
     twinBody = deepClone(twin.body);
     baselineBody = deepClone(baseline.body);
-    for (const fieldPath of normalizer.stripFields) {
+    for (const fieldPath of normalizer!.stripFields) {
       stripField(twinBody as Record<string, unknown>, fieldPath);
       stripField(baselineBody as Record<string, unknown>, fieldPath);
+    }
+    for (const fieldPath of normalizer!.sortFields ?? []) {
+      sortArrayField(twinBody as Record<string, unknown>, fieldPath);
+      sortArrayField(baselineBody as Record<string, unknown>, fieldPath);
     }
   }
 
@@ -151,16 +158,27 @@ function compareStructure(
   if (twinType === 'object') {
     const twinObj = twin as Record<string, unknown>;
     const baselineObj = baseline as Record<string, unknown>;
-
-    for (const key of Object.keys(twinObj)) {
-      if (!(key in baselineObj)) {
+    // Union of keys catches both directions:
+    // - key in twin but not baseline → 'added' (extra twin field)
+    // - key in baseline but not twin → 'deleted' (missing from twin)
+    const allKeys = new Set([...Object.keys(twinObj), ...Object.keys(baselineObj)]);
+    for (const key of allKeys) {
+      const inTwin = key in twinObj;
+      const inBaseline = key in baselineObj;
+      if (inTwin && inBaseline) {
+        compareStructure(twinObj[key], baselineObj[key], `${path}.${key}`, differences);
+      } else if (inTwin && !inBaseline) {
         differences.push({
           path: `${path}.${key}`,
           kind: 'added',
           lhs: `[type: ${getType(twinObj[key])}]`,
         });
       } else {
-        compareStructure(twinObj[key], baselineObj[key], `${path}.${key}`, differences);
+        differences.push({
+          path: `${path}.${key}`,
+          kind: 'deleted',
+          rhs: `[type: ${getType(baselineObj[key])}]`,
+        });
       }
     }
     return;
@@ -169,12 +187,19 @@ function compareStructure(
   if (twinType === 'array') {
     const twinArr = twin as unknown[];
     const baselineArr = baseline as unknown[];
-    if (twinArr.length > 0 && baselineArr.length > 0) {
-      compareStructure(twinArr[0], baselineArr[0], `${path}[0]`, differences);
+    const len = Math.max(twinArr.length, baselineArr.length);
+    for (let i = 0; i < len; i++) {
+      if (i >= twinArr.length) {
+        differences.push({ path: `${path}[${i}]`, kind: 'deleted', rhs: baselineArr[i] });
+      } else if (i >= baselineArr.length) {
+        differences.push({ path: `${path}[${i}]`, kind: 'added', lhs: twinArr[i] });
+      } else {
+        compareStructure(twinArr[i], baselineArr[i], `${path}[${i}]`, differences);
+      }
     }
     return;
   }
-  // Primitives: types already match, values can differ — no difference reported
+  // Primitives: structural mode — types already match above; value differences not reported
 }
 
 /**
@@ -196,6 +221,11 @@ function normalizeResponse(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   for (const fieldPath of normalizer.stripFields) {
     stripField(normalized.body as any, fieldPath);
+  }
+
+  // Sort array fields before comparison (prevents order sensitivity)
+  for (const fieldPath of normalizer.sortFields ?? []) {
+    sortArrayField(normalized.body as Record<string, unknown>, fieldPath);
   }
 
   // Normalize fields in body (replace with placeholders)
@@ -314,5 +344,32 @@ function normalizeFieldRecursive(
     } else {
       normalizeFieldRecursive(next, parts, index + 1, placeholder);
     }
+  }
+}
+
+function sortArrayField(obj: Record<string, unknown>, fieldPath: string): void {
+  if (obj === null || obj === undefined || typeof obj !== 'object') return;
+  const parts = fieldPath.split('.');
+  sortArrayFieldRecursive(obj, parts, 0);
+}
+
+function sortArrayFieldRecursive(obj: unknown, parts: string[], index: number): void {
+  if (obj === null || obj === undefined || typeof obj !== 'object') return;
+  const current = parts[index];
+  const isLast = index === parts.length - 1;
+  if (Array.isArray(obj)) {
+    for (const item of obj) sortArrayFieldRecursive(item, parts, index);
+    return;
+  }
+  const record = obj as Record<string, unknown>;
+  if (isLast) {
+    const val = record[current];
+    if (Array.isArray(val)) {
+      record[current] = [...val].sort((a, b) =>
+        JSON.stringify(a).localeCompare(JSON.stringify(b))
+      );
+    }
+  } else {
+    sortArrayFieldRecursive(record[current], parts, index + 1);
   }
 }
