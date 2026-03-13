@@ -387,7 +387,7 @@ Plans:
 | 29. Shopify Billing Transitions & Test Migration | 2/2 | Complete    | 2026-03-13 | - |
 | 30. Slack Transport & State Fixes | 2/2 | Complete    | 2026-03-13 | - |
 | 31. Slack OAuth & Method Coverage | 2/2 | Complete    | 2026-03-13 | - |
-| 32. Conformance Harness & Evidence | 2/2 | Complete   | 2026-03-13 | - |
+| 32. Conformance Harness & Evidence | 2/2 | Complete    | 2026-03-13 | - |
 | 33. Cross-Cutting Reset Coverage | v1.2 | 0/0 | Pending | - |
 
 ## Dependencies
