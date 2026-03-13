@@ -62,11 +62,11 @@ describe('GraphQL Rate Limiting', () => {
       const cost = body.extensions.cost;
       expect(typeof cost.requestedQueryCost).toBe('number');
       expect(cost.requestedQueryCost).toBeGreaterThan(0);
-      expect(cost.actualQueryCost).toBe(cost.requestedQueryCost);
+      expect(cost.actualQueryCost).toBeLessThanOrEqual(cost.requestedQueryCost);
 
       // throttleStatus must match Shopify format
       expect(cost.throttleStatus).toBeDefined();
-      expect(cost.throttleStatus.maximumAvailable).toBe(2000);
+      expect(cost.throttleStatus.maximumAvailable).toBe(1000);
       expect(typeof cost.throttleStatus.currentlyAvailable).toBe('number');
       expect(cost.throttleStatus.currentlyAvailable).toBeGreaterThanOrEqual(0);
       expect(cost.throttleStatus.restoreRate).toBe(50);
@@ -158,7 +158,7 @@ describe('GraphQL Rate Limiting', () => {
       expect(body.extensions.cost.requestedQueryCost).toBeGreaterThan(0);
       expect(body.extensions.cost.actualQueryCost).toBeNull();
       expect(body.extensions.cost.throttleStatus).toBeDefined();
-      expect(body.extensions.cost.throttleStatus.maximumAvailable).toBe(2000);
+      expect(body.extensions.cost.throttleStatus.maximumAvailable).toBe(1000);
       expect(body.extensions.cost.throttleStatus.restoreRate).toBe(50);
     });
   });
@@ -222,5 +222,47 @@ describe('GraphQL Rate Limiting', () => {
       // extensions.cost.currentlyAvailable should be near max (fresh bucket)
       expect(body.extensions.cost.throttleStatus.currentlyAvailable).toBeGreaterThan(900);
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SHOP-24b: actualQueryCost differs from requestedQueryCost on sparse results
+// ---------------------------------------------------------------------------
+describe('actualQueryCost vs requestedQueryCost', () => {
+  let app: Awaited<ReturnType<typeof buildApp>>;
+  let token: string;
+
+  beforeEach(async () => {
+    process.env.WEBHOOK_TIME_SCALE = '0.001';
+    app = await buildApp({ logger: false });
+    await app.ready();
+
+    const oauthResponse = await app.inject({
+      method: 'POST',
+      url: '/admin/oauth/access_token',
+      payload: { code: 'test-rate-limit' },
+    });
+    token = JSON.parse(oauthResponse.body).access_token;
+  });
+
+  afterEach(async () => {
+    delete process.env.WEBHOOK_TIME_SCALE;
+    await app.close();
+  });
+
+  it('actualQueryCost is less than requestedQueryCost for sparse connection results', async () => {
+    // Query requesting many items but returning fewer (e.g., first: 100 but 0 seeded)
+    // orders(first: 100) will return 0 items from the empty twin state
+    const response = await app.inject({
+      method: 'POST',
+      url: '/admin/api/2024-01/graphql.json',
+      headers: { 'X-Shopify-Access-Token': token },
+      payload: { query: '{ orders(first: 100) { edges { node { id } } } }' },
+    });
+    expect(response.statusCode).toBe(200);
+    const body = JSON.parse(response.body);
+    const cost = body.extensions.cost;
+    expect(cost.requestedQueryCost).toBeGreaterThan(0);
+    expect(cost.actualQueryCost).toBeLessThan(cost.requestedQueryCost);
   });
 });
