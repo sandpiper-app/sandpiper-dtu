@@ -48,7 +48,7 @@
 - [x] **Phase 21: Test Runner & Seeders** - Fix `pnpm test:sdk` ABI mismatch and update seeders before behavioral changes land (completed 2026-03-12)
 - [x] **Phase 22: Shopify Version Routing & Response Headers** - Parameterize API version routes and add conformance response headers (completed 2026-03-12)
 - [x] **Phase 23: Shopify OAuth & Storefront** - Implement real OAuth authorize/callback flow and split Storefront schema (completed 2026-03-12)
-- [ ] **Phase 24: Shopify REST Persistence, Billing State Machine & Rate Limiting** - Persistent CRUD with real shapes, billing state machine, and accurate rate limiting
+- [x] **Phase 24: Shopify REST Persistence, Billing State Machine & Rate Limiting** - Persistent CRUD with real shapes, billing state machine, and accurate rate limiting (completed 2026-03-13)
 - [ ] **Phase 25: Slack Method Coverage, Event Signing & State Tables** - Close 126-method gap, fix event headers, and add membership/view/pin state
 - [ ] **Phase 26: Slack Chat Scoping & Scope Enforcement** - Author/channel ownership rules and per-method OAuth scope requirements
 - [ ] **Phase 27: Conformance Harness & Coverage Infrastructure** - Bidirectional structural comparison and execution-evidence coverage tracking
@@ -244,7 +244,7 @@ Plans:
   3. `appSubscriptionCreate` mutation returns a subscription in PENDING state with a `confirmationUrl`; visiting the URL transitions it to ACTIVE; `currentAppInstallation` returns the active subscription data
   4. `appSubscriptionCancel` validates that the subscription belongs to the requesting installation and transitions it to CANCELLED, returning an error on invalid ownership
   5. GraphQL rate limiting uses bucket size 1000 and restore rate 50; `actualQueryCost` is computed from real query field traversal rather than echoing `requestedQueryCost`
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] 24-01-PLAN.md — Wave 0 test scaffolds: rest-persistence.test.ts, billing-state-machine.test.ts, rate-limit.test.ts updates (SHOP-20, SHOP-21, SHOP-24)
@@ -302,7 +302,7 @@ Plans:
 | 21. Test Runner & Seeders | 2/2 | Complete    | 2026-03-12 | - |
 | 22. Shopify Version Routing & Response Headers | 3/3 | Complete    | 2026-03-12 | - |
 | 23. Shopify OAuth & Storefront | 4/4 | Complete    | 2026-03-12 | - |
-| 24. Shopify REST Persistence, Billing State Machine & Rate Limiting | 3/4 | In Progress|  | - |
+| 24. Shopify REST Persistence, Billing State Machine & Rate Limiting | 4/4 | Complete   | 2026-03-13 | - |
 | 25. Slack Method Coverage, Event Signing & State Tables | v1.2 | 0/TBD | Not started | - |
 | 26. Slack Chat Scoping & Scope Enforcement | v1.2 | 0/TBD | Not started | - |
 | 27. Conformance Harness & Coverage Infrastructure | v1.2 | 0/TBD | Not started | - |
