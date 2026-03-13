@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: in-progress
-stopped_at: Completed 24-01-PLAN.md
-last_updated: "2026-03-13T02:32:14Z"
-last_activity: 2026-03-13 — Phase 24 Plan 01 complete: Wave 0 TDD scaffold with 3 integration test files in RED state (SHOP-20, SHOP-21, SHOP-24)
+stopped_at: Completed 24-02-PLAN.md
+last_updated: "2026-03-13T02:41:00Z"
+last_activity: 2026-03-13 — Phase 24 Plan 02 complete: persistent POST/GET products and GET orders/:id backed by StateManager prepared statements (SHOP-20 GREEN)
 progress:
   total_phases: 15
   completed_phases: 11
   total_plans: 44
-  completed_plans: 41
-  percent: 100
+  completed_plans: 42
+  percent: 97
 ---
 
 # Project State: Sandpiper DTU
@@ -23,16 +23,16 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 24 Plan 01 complete (Wave 0 test scaffold)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 24 Plan 02 complete (REST persistence implementation)
 
 ## Current Position
 
 Phase: 24 of 27 (Shopify REST Persistence, Billing State Machine & Rate Limiting)
-Plan: 1 of 4 complete — ready for Plan 02 (REST persistence implementation)
-Status: Plan 24-01 complete — Wave 0 test scaffold in RED state, ready for implementation plans
-Last activity: 2026-03-13 — Phase 24 Plan 01 complete: Wave 0 TDD scaffold with 3 test files (rest-persistence, billing-state-machine, rate-limit updates)
+Plan: 2 of 4 complete — ready for Plan 03 (billing state machine)
+Status: Plan 24-02 complete — SHOP-20 REST persistence GREEN (5/5 tests pass), ready for billing state machine
+Last activity: 2026-03-13 — Phase 24 Plan 02 complete: persistent POST/GET products and GET orders/:id backed by StateManager prepared statements
 
-Progress: [██████████] 96% (overall: 41/44 currently planned plans complete)
+Progress: [██████████] 97% (overall: 42/44 currently planned plans complete)
 
 ## Performance Metrics
 
@@ -53,10 +53,17 @@ Progress: [██████████] 96% (overall: 41/44 currently planned
 | 23-03 | 03 | 35min | 1 | 2 |
 | 23-04 | 04 | 10min | 1 | 2 |
 | 24-01 | 01 | 5min | 3 | 3 |
+| 24-02 | 02 | 4min | 2 | 2 |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-13 - Phase 24 Plan 02 (REST persistence implementation):**
+- Two-step product insert: createProduct with temp GID, then UPDATE gid to gid://shopify/Product/{rowId} after AUTOINCREMENT resolves — avoids needing to know row id before insert
+- State package dist rebuild required after adding new StateManager methods — twin imports from compiled dist (pnpm -F @dtu/state build); plan 03 must include this step
+- GET /products/:id.json uses getProduct(numericId) directly (integer PK lookup), not GID construction + getProductByGid() — simpler and correct
+- SHOP-20 requirement fully satisfied: all 5 rest-persistence.test.ts tests GREEN
 
 **2026-03-13 - Phase 24 Plan 01 (Wave 0 test scaffold):**
 - Use POST /admin/tokens (not /admin/oauth/access_token) for token seeding in all new Phase 24 integration tests — Phase 23 OAuth tightening broke the code-only pattern used in older tests
@@ -137,9 +144,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 24 Plan 01 — Wave 0 test scaffold (commits dbb131d, 6961094, fc39326)
-**Work in progress:** Phase 24 Plan 02 (REST persistence implementation)
-**Stopped at:** Completed 24-01-PLAN.md
+**Last completed:** Phase 24 Plan 02 — REST persistence implementation (commits d69abec, 3bb830c)
+**Work in progress:** Phase 24 Plan 03 (billing state machine)
+**Stopped at:** Completed 24-02-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
