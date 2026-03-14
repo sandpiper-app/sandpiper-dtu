@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 40-01-PLAN.md — INFRA-23/24/25 requirement definitions and red truthfulness contract
-last_updated: "2026-03-14T19:34:08.155Z"
-last_activity: 2026-03-14 — Phase 39 Plan 04 complete (inventory_levels, custom_collections, collects state; 71 integration tests green)
+stopped_at: Completed 40-02-PLAN.md — runtime symbol evidence and Phase 40 coverage report
+last_updated: "2026-03-14T20:02:11.960Z"
+last_activity: 2026-03-14 — Phase 40 Plan 02 complete (INFRA-23 runtime symbol evidence; 368 SDK tests pass; 222 live symbols from runtime hits)
 progress:
   total_phases: 28
   completed_phases: 27
   total_plans: 86
-  completed_plans: 83
+  completed_plans: 84
   percent: 100
 ---
 
@@ -95,6 +95,7 @@ Progress: [██████████] 100% (overall: Phase 39 complete — 
 | Phase 39 P01 | 523s | 1 tasks | 4 files |
 | Phase 39 P04 | 7min | 3 tasks | 5 files |
 | Phase 40 P01 | 3min | 2 tasks | 2 files |
+| Phase 40 P02 | 24min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -109,6 +110,13 @@ Progress: [██████████] 100% (overall: Phase 39 complete — 
 - Phase 40 added: Verification evidence integrity and conformance truthfulness (re-audit follow-up — remaining evidence/conformance truthfulness gaps)
 
 ### Key Decisions
+
+**2026-03-14 - Phase 40 Plan 02 (runtime symbol evidence and Phase 40 coverage report):**
+- WebClient.prototype.apiCall patch before construction: Slack SDK binds method stubs (admin.users.list, chat.postMessage, etc.) at construction time via `self.apiCall.bind(self, method)`; prototype-level patch required before `new WebClient()` so bound stubs capture the instrumented version; prototype is restored immediately after construction
+- globalThis.__executionEvidenceHits for cross-file persistence: Vitest module isolation re-evaluates modules per test file even in singleFork mode; attaching the hit map to globalThis survives across module re-evaluations in the same process
+- customFetchApi closure for AdminApiClient hits: AdminApiClient methods are non-configurable properties (Proxy get trap violates JS invariants); network-level recording in customFetchApi captures every request/fetch call without touching the client object
+- slack-stubs-smoke.test.ts extended from 10 to 68 tests: EVIDENCE_MAP attributed 57 symbols to this file but only 10 were tested; extended test file to prove all symbols are actually called during SDK verification; this is the truthful mechanism — runtime evidence, not hand-authored attribution
+- Exception set in register-execution-evidence.ts documented in code comments: Bolt App, InstallProvider, and WebClient-base test files construct SDK clients without shared helpers; their symbols recorded explicitly in setupFiles beforeAll keyed by filename pattern
 
 **2026-03-14 - Phase 39 Plan 04 (inventory and collection state persistence):**
 - SQLite UPSERT used for setInventoryLevel (INSERT ... ON CONFLICT DO UPDATE); connectInventoryLevel uses INSERT DO NOTHING to never overwrite existing available quantity
@@ -451,7 +459,7 @@ None.
 
 **Last completed:** Phase 39 — Shopify OAuth, REST state, and ID parity (4/4 plans, SHOP-14..17 verified)
 **Work in progress:** Phase 40 — Verification evidence integrity and conformance truthfulness
-**Stopped at:** Completed 40-01-PLAN.md — INFRA-23/24/25 requirement definitions and red truthfulness contract
+**Stopped at:** Completed 40-02-PLAN.md — runtime symbol evidence and Phase 40 coverage report
 **Timestamp:** 2026-03-14
 
 ---
