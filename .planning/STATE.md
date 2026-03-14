@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 38-01-PLAN.md - Wave 0 requirement realignment and parity tests
-last_updated: "2026-03-14T15:38:17.575Z"
-last_activity: 2026-03-14 — completed 38-01 Wave 0 requirement realignment and parity tests; all Phase 38 defects fixed (287/287 tests pass)
+stopped_at: Completed 39-02-PLAN.md - OAuth grant validation and SHOP-16 smoke
+last_updated: "2026-03-14T17:33:27.546Z"
+last_activity: 2026-03-14 — Phase 38 complete (4/4 plans, verified SLCK-20..23), transitioning to Phase 39
 progress:
   total_phases: 28
   completed_phases: 26
-  total_plans: 78
-  completed_plans: 78
-  percent: 99
+  total_plans: 82
+  completed_plans: 79
+  percent: 96
 ---
 
 # Project State: Sandpiper DTU
@@ -27,12 +27,12 @@ progress:
 
 ## Current Position
 
-Phase: 39 of 40 (next: plan Phase 39)
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-03-14 — Phase 38 complete (4/4 plans, verified SLCK-20..23), transitioning to Phase 39
+Phase: 39 of 40
+Plan: 2 of 4 complete
+Status: In progress
+Last activity: 2026-03-14 — Phase 39 Plan 02 complete (OAuth grant validation + SHOP-16 smoke); 23/23 tests green
 
-Progress: [██████████] 96% (overall: 27/28 phases complete; Phase 39-40 unplanned)
+Progress: [██████████] 97% (overall: Phase 39 in progress — 2/4 plans done)
 
 ## Performance Metrics
 
@@ -90,6 +90,7 @@ Progress: [██████████] 96% (overall: 27/28 phases complete; 
 | Phase 38 P04 | 9min | 2 tasks | 4 files |
 | Phase 38-01 P01 | 14min | 3 tasks | 8 files |
 | Phase 38-slack-auth-scope-and-client-behavior-parity P02 | 40min | 3 tasks | 11 files |
+| Phase 39 P02 | 6min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -104,6 +105,13 @@ Progress: [██████████] 96% (overall: 27/28 phases complete; 
 - Phase 40 added: Verification evidence integrity and conformance truthfulness (re-audit follow-up — remaining evidence/conformance truthfulness gaps)
 
 ### Key Decisions
+
+**2026-03-14 - Phase 39 Plan 02 (OAuth grant validation and SHOP-16 smoke):**
+- Grant-specific validation branches in oauth.ts use `body.grant_type === '...'` directly before the credential gate — four branches: client_credentials, refresh_token, token-exchange, auth-code (fallback)
+- Token-exchange validation order: subject_token presence first, then subject_token_type exact-URN check, then requested_token_type allowlist check — matches RFC 8693 field priority
+- VALID_REQUESTED_TOKEN_TYPES Set defined inline inside the token-exchange branch — not module-level; single call site only
+- SHOP-16 smoke file uses raw fetch() for versioned admin REST (GET /admin/api/2025-01/products.json) and GraphQL (POST /admin/api/2025-01/graphql.json) calls — proves HTTP seam works with actual versioned paths
+- Wave 0 test assertions tightened from expect.any(String) to exact `{ error: 'invalid_request' }` — no functional scope change, precision only
 
 **2026-03-14 - Phase 38 Plan 01 (Wave 0 requirement realignment and parity tests):**
 - SLCK-20..23 defined in REQUIREMENTS.md for Phase 38 auth/scope/client-behavior parity; Enterprise Grid requirement moved from SLCK-20 to SLCK-24; 23 total v1.2 requirements (was 19)
@@ -421,7 +429,7 @@ None.
 
 **Last completed:** Phase 38 — Slack auth, scope, and client-behavior parity (4/4 plans, SLCK-20..23 verified)
 **Work in progress:** Phases 39-40 remain unplanned
-**Stopped at:** Phase 38 complete, ready to plan Phase 39
+**Stopped at:** Completed 39-02-PLAN.md - OAuth grant validation and SHOP-16 smoke
 **Timestamp:** 2026-03-14
 
 ---
