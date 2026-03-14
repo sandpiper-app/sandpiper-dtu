@@ -317,3 +317,109 @@ export function checkScope(method: string, tokenScope: string): ScopeCheckResult
 
   return { error: 'missing_scope', needed: missing, provided: tokenScope };
 }
+
+// ── Dynamic conversation scope helpers (SLCK-21) ────────────────────────────
+//
+// conversations.list/info/history require only the scopes implied by the
+// request `types` parameter or the resolved channel class, not the full union
+// of every family read/history scope.
+
+type ConversationClass = 'public_channel' | 'private_channel' | 'im' | 'mpim';
+
+/** Scope suffix to use for read methods ('read') or history methods ('history'). */
+type ScopeSuffix = 'read' | 'history';
+
+/** Map a conversation class to its read or history scope. */
+function classScopeFor(cls: ConversationClass, suffix: ScopeSuffix): string {
+  switch (cls) {
+    case 'public_channel':  return `channels:${suffix}`;
+    case 'private_channel': return `groups:${suffix}`;
+    case 'im':              return `im:${suffix}`;
+    case 'mpim':            return `mpim:${suffix}`;
+  }
+}
+
+/**
+ * Resolve the minimal required scopes for a conversation reader method.
+ *
+ * - `conversations.list`    → derive from the `types` parameter (e.g. ['public_channel'])
+ * - `conversations.info`    → derive from the resolved channel class
+ * - `conversations.history` → derive from the resolved channel class
+ *
+ * Types that are not one of the four known classes are ignored. If the result
+ * is empty (e.g. no valid types requested), defaults to ['channels:read'] so
+ * the caller always has at least one scope to enforce.
+ *
+ * Ordering: public_channel, private_channel, im, mpim (stable insertion order).
+ */
+export function resolveConversationTypeScopes(
+  method: 'conversations.list' | 'conversations.info' | 'conversations.history',
+  types: string[],
+): string[] {
+  const suffix: ScopeSuffix = method === 'conversations.history' ? 'history' : 'read';
+
+  // Use an ordered set to deduplicate while preserving the canonical order.
+  const ordered: ConversationClass[] = ['public_channel', 'private_channel', 'im', 'mpim'];
+  const seen = new Set<string>();
+  const scopes: string[] = [];
+
+  for (const cls of ordered) {
+    if (types.includes(cls)) {
+      const scope = classScopeFor(cls, suffix);
+      if (!seen.has(scope)) {
+        seen.add(scope);
+        scopes.push(scope);
+      }
+    }
+  }
+
+  // Fall back to channels:read / channels:history if no valid class was requested.
+  if (scopes.length === 0) {
+    scopes.push(`channels:${suffix}`);
+  }
+
+  return scopes;
+}
+
+/**
+ * Infer the conversation class from a channel row's stored properties.
+ *
+ * Classification rules (applied in priority order):
+ *   1. id starts with 'D_'            → im
+ *   2. !is_channel && is_private      → mpim
+ *   3. is_private                     → private_channel
+ *   4. otherwise                      → public_channel
+ */
+export function resolveChannelClass(channel: {
+  id: string;
+  is_channel: number | boolean;
+  is_private: number | boolean;
+}): ConversationClass {
+  if (channel.id.startsWith('D_')) return 'im';
+  if (!channel.is_channel && channel.is_private) return 'mpim';
+  if (channel.is_private) return 'private_channel';
+  return 'public_channel';
+}
+
+/**
+ * Check whether a token's scope string satisfies a resolved (pre-computed) scope array.
+ *
+ * Same behavior as `checkScope()` but works from an explicit scope list instead
+ * of a method-name catalog lookup. Intended for conversations.list/info/history
+ * where the required scopes are determined dynamically.
+ *
+ * Returns null if all required scopes are present or if the array is empty.
+ * Returns a ScopeCheckResult if any required scope is missing.
+ */
+export function checkResolvedScopes(
+  requiredScopes: string[],
+  tokenScope: string,
+): ScopeCheckResult | null {
+  if (requiredScopes.length === 0) return null;
+
+  const granted = new Set(tokenScope.split(',').map(s => s.trim()).filter(Boolean));
+  const missing = requiredScopes.find(s => !granted.has(s));
+  if (!missing) return null;
+
+  return { error: 'missing_scope', needed: missing, provided: tokenScope };
+}
