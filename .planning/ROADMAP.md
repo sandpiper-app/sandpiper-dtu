@@ -399,7 +399,7 @@ Plans:
 | 33. Cross-Cutting Reset Coverage | 1/1 | Complete    | 2026-03-14 | - |
 | 34. Slack Build Fix & Evidence Pipeline | 1/1 | Complete    | 2026-03-14 | - |
 | 35. Slack Behavioral Parity | 1/1 | Complete    | 2026-03-14 | - |
-| 36. Shopify Behavioral Parity | 4/4 | Complete   | 2026-03-14 | - |
+| 36. Shopify Behavioral Parity | 4/4 | Complete    | 2026-03-14 | - |
 | 37. Billing Fidelity & Conformance Rigor | 0/0 | Not planned | - | - |
 
 ## Dependencies

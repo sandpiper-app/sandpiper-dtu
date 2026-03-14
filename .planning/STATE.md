@@ -4,7 +4,7 @@ milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
 stopped_at: Completed 36-04-PLAN.md
-last_updated: "2026-03-14T03:50:39.367Z"
+last_updated: "2026-03-14T03:55:09.342Z"
 last_activity: "2026-03-14 — Phase 36 Plan 04 complete: Location family + InventoryLevel mutations + since_id/ids filters in rest.ts; Finding #8 and #10 GREEN; all 264 tests pass; Phase 36 complete"
 progress:
   total_phases: 25
