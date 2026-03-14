@@ -1,21 +1,27 @@
 /**
- * Phase 25 SLCK-14: new method family stubs
+ * Phase 25/35 SLCK-14 + behavioral parity: new method family stubs
  *
  * Covers all non-admin missing families from @slack/web-api@7.14.1 manifest:
  *   - canvases.* (6 routes)
- *   - openid.connect.* (2 routes)
+ *   - openid.connect.* (2 routes — openid.connect.token is a no-auth code-exchange)
  *   - stars.* (3 routes)
  *   - workflows.* (7 routes — stepCompleted/stepFailed/updateStep + triggers.*)
  *   - slackLists.* (13 routes)
  *   - rtm.* (2 routes)
  *   - entity.* (1 route)
- *   - apps.manifest.* + apps.uninstall + apps.event.authorizations.list (7 routes)
- *   - conversations.* extended methods (7 routes)
- *   - team.* extended methods (3 routes)
- *   - users.* extended methods (1 route)
- *   - oauth.* (3 routes)
- *   - files.upload + files.uploadV2 (2 routes)
+ *   - apps.manifest.* (5 routes)
+ *   - apps.uninstall (1 route)
+ *   - apps.event.authorizations.list (1 route)
+ *   - files.upload + files.uploadV2 legacy stubs (2 routes)
+ *   - oauth.access (no-auth, 1 route)
+ *   - oauth.v2.exchange (no-auth, 1 route)
+ *   - team.billing.info + team.externalTeams.disconnect/list (3 routes)
+ *   - users.discoverableContacts.lookup (1 route)
+ *   - admin.workflows.search (1 route)
  *   - workflows.featured.* (4 routes)
+ *
+ * NOTE: oauth.v2.access is handled in oauth.ts — only METHOD_SCOPES needs its entry.
+ * NOTE: conversations.* extended methods are handled in conversations.ts.
  */
 import type { FastifyPluginAsync } from 'fastify';
 import { extractToken } from '../../services/token-validator.js';
@@ -56,7 +62,26 @@ const newFamiliesPlugin: FastifyPluginAsync = async (fastify) => {
   fastify.post('/api/canvases.sections.lookup', stub('canvases.sections.lookup', { results: [] }));
 
   // ── openid.connect.* ──────────────────────────────────────────────
-  fastify.post('/api/openid.connect.token', stub('openid.connect.token', { access_token: 'oidc-stub', id_token: 'jwt-stub' }));
+  // openid.connect.token: no bearer auth — authenticates via client_id + client_secret
+  // Real Slack exchanges client_id + client_secret + code for OIDC identity tokens.
+  // The WebClient also sends an Authorization header but the handler must NOT require it.
+  fastify.post('/api/openid.connect.token', async (request, reply) => {
+    const body = (request.body as any) ?? {};
+    const { client_id, client_secret, code } = body;
+    if (!client_id || !client_secret) {
+      return reply.send({ ok: false, error: 'invalid_arguments' });
+    }
+    const suffix = code ?? 'anon';
+    return reply.send({
+      ok: true,
+      access_token: `xoxp-oidc-${suffix}`,
+      token_type: 'Bearer',
+      id_token: 'eyJhbGciOiJSUzI1NiJ9.stub.oidc',
+      refresh_token: `xoxe-oidc-${suffix}`,
+      expires_in: 43200,
+      issued_token_type: 'urn:ietf:params:oauth:token-type:access_token',
+    });
+  });
   fastify.post('/api/openid.connect.userInfo', stub('openid.connect.userInfo', { sub: 'U_STUB', email: 'stub@twin.dev' }));
 
   // ── stars.* ───────────────────────────────────────────────────────
@@ -94,10 +119,51 @@ const newFamiliesPlugin: FastifyPluginAsync = async (fastify) => {
   // ── entity.* ──────────────────────────────────────────────────────
   fastify.post('/api/entity.presentDetails', stub('entity.presentDetails', { entity: {} }));
 
-  // ── apps.manifest.*, oauth.*, team.extended, users.extended,
-  //    files.upload, conversations.extended are already registered
-  //    in their respective plugin files (stubs.ts, conversations.ts,
-  //    oauth.ts, etc.) — no duplicates needed here
+  // ── apps.manifest.* (5 routes) ────────────────────────────────────────────
+  fastify.post('/api/apps.manifest.create', stub('apps.manifest.create', { manifest: {} }));
+  fastify.post('/api/apps.manifest.delete', stub('apps.manifest.delete'));
+  fastify.post('/api/apps.manifest.export', stub('apps.manifest.export', { manifest: {} }));
+  fastify.post('/api/apps.manifest.update', stub('apps.manifest.update'));
+  fastify.post('/api/apps.manifest.validate', stub('apps.manifest.validate'));
+
+  // ── apps.uninstall ────────────────────────────────────────────────────────
+  fastify.post('/api/apps.uninstall', stub('apps.uninstall'));
+
+  // ── apps.event.authorizations.list ────────────────────────────────────────
+  fastify.post('/api/apps.event.authorizations.list', stub('apps.event.authorizations.list', { authorizations: [] }));
+
+  // ── files.upload + files.uploadV2 (legacy apiCall stubs only) ─────────────
+  // NOTE: files.upload/uploadV2 here are legacy apiCall stubs only.
+  // The filesUploadV2() convenience method uses the 3-step chain in files.ts.
+  fastify.post('/api/files.upload', stub('files.upload', { file: { id: 'F_STUB', name: 'stub.txt' } }));
+  fastify.post('/api/files.uploadV2', stub('files.uploadV2', { files: [] }));
+
+  // ── oauth.access (legacy, no-auth) ────────────────────────────────────────
+  // No bearer auth — authenticates via client_id/client_secret in body
+  fastify.post('/api/oauth.access', async (request, reply) => {
+    const body = (request.body as any) ?? {};
+    if (!body.client_id) return reply.send({ ok: false, error: 'invalid_arguments' });
+    return reply.send({ ok: true, access_token: `xoxp-legacy-${Date.now()}`, scope: 'read' });
+  });
+
+  // ── oauth.v2.exchange (no-auth) ───────────────────────────────────────────
+  fastify.post('/api/oauth.v2.exchange', async (request, reply) => {
+    const body = (request.body as any) ?? {};
+    if (!body.client_id) return reply.send({ ok: false, error: 'invalid_arguments' });
+    return reply.send({ ok: true, token: `xoxb-exchanged-${Date.now()}`, token_type: 'bot' });
+  });
+
+  // ── team extended ─────────────────────────────────────────────────────────
+  fastify.post('/api/team.billing.info', stub('team.billing.info', { plan: { type: 'free' } }));
+  fastify.post('/api/team.externalTeams.disconnect', stub('team.externalTeams.disconnect'));
+  fastify.post('/api/team.externalTeams.list', stub('team.externalTeams.list', { external_teams: [] }));
+  fastify.get('/api/team.externalTeams.list', stub('team.externalTeams.list', { external_teams: [] }));
+
+  // ── users extended ────────────────────────────────────────────────────────
+  fastify.post('/api/users.discoverableContacts.lookup', stub('users.discoverableContacts.lookup', { users: [] }));
+
+  // ── admin.workflows.search (missing from admin.ts) ────────────────────────
+  fastify.post('/api/admin.workflows.search', stub('admin.workflows.search', { workflows: [], response_metadata: { next_cursor: '' } }));
 };
 
 export default newFamiliesPlugin;
