@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: Milestone reopened
-stopped_at: Completed 38-03-PLAN.md
-last_updated: "2026-03-14T15:21:43.142Z"
-last_activity: 2026-03-14 — executed 38-03: dynamic conversation scope resolution for list/info/history (SLCK-21 GREEN)
+stopped_at: Completed 38-04-PLAN.md — SLCK-22 client-visible behavior parity GREEN
+last_updated: "2026-03-14T15:24:40.865Z"
+last_activity: 2026-03-14 — completed Phase 38 Plan 04 (SLCK-22): filesUploadV2 nested metadata + response_url replace/delete original parity
 progress:
   total_phases: 28
   completed_phases: 25
   total_plans: 78
-  completed_plans: 75
+  completed_plans: 76
   percent: 89
 ---
 
@@ -87,6 +87,7 @@ Progress: [█████████░] 89% (overall: 25/28 phases complete; 
 | Phase 37 P03 | 12min | 2 tasks | 4 files |
 | Phase 37 P02 | 8min | 2 tasks | 4 files |
 | Phase 38 P03 | 12min | 2 tasks | 4 files |
+| Phase 38 P04 | 9min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -101,6 +102,14 @@ Progress: [█████████░] 89% (overall: 25/28 phases complete; 
 - Phase 40 added: Verification evidence integrity and conformance truthfulness (re-audit follow-up — remaining evidence/conformance truthfulness gaps)
 
 ### Key Decisions
+
+**2026-03-14 - Phase 38 Plan 04 (SLCK-22 client-visible behavior parity):**
+- files.completeUploadExternal normalizes files field: if string, JSON.parse; if array, use as-is; else return invalid_arguments — upstream SDK sends form-encoded JSON string; old code assumed array only
+- Slack-shaped completion metadata: id, name (f.title ?? f.name ?? 'uploaded-file.txt'), title, mimetype, filetype, user (tokenRecord.user_id ?? 'U_BOT_TWIN'), url_private, permalink — all derived from tokenRecord and file_id; no state persistence needed
+- delete_original uses database.prepare('DELETE FROM slack_messages WHERE ts = ? AND channel_id = ?').run() directly — plan ruled out new state-manager methods; database getter already public
+- replace_original calls existing updateMessage(entry.messageTs, { text, blocks }) — no new methods needed
+- Binary upload 415 fix: addContentTypeParser for multipart/form-data + application/octet-stream within files plugin scope; body discarded (twin doesn't need file content for conformance)
+- response_url base URL reads process.env.SLACK_API_URL per-call in generateInteractionPayload: globalSetup sets env AFTER twin starts; same per-request pattern as getUploadURLExternal upload_url
 
 **2026-03-14 - Phase 38 Plan 03 (SLCK-21 dynamic conversation scope resolution):**
 - resolveChannelClass uses id.startsWith('D_') to detect DM — D_ prefix is deterministic from conversations.open DM creation (D_${sorted_users}); is_private alone cannot distinguish DM from MPIM
@@ -395,7 +404,7 @@ None.
 
 **Last completed:** Phase 37 — Billing Fidelity & Conformance Rigor
 **Work in progress:** Phase 38 plans are ready; next step is `$gsd-execute-phase 38`
-**Stopped at:** Completed 38-03-PLAN.md
+**Stopped at:** Completed 38-04-PLAN.md — SLCK-22 client-visible behavior parity GREEN
 **Timestamp:** 2026-03-14
 
 ---

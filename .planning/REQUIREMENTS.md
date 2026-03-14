@@ -73,7 +73,7 @@ Requirements for milestone `v1.2 Behavioral Fidelity`. Fixes 13 adversarial revi
 - [x] **SLCK-19**: Slack API responses include `X-OAuth-Scopes` (token's granted scopes) and `X-Accepted-OAuth-Scopes` (method's required scopes) headers on successful calls
 - [ ] **SLCK-20**: `openid.connect.token` persists OIDC access tokens that work with `openid.connect.userInfo`; `oauth.v2.access` validates `client_secret`, echoes the authorize-time granted scope string, and `apps.connections.open` requires an app token with `connections:write`
 - [x] **SLCK-21**: `conversations.list`, `conversations.info`, and `conversations.history` resolve required `channels/groups/im/mpim` read or history scopes from request `types` or the resolved channel class instead of requiring every family scope at once
-- [ ] **SLCK-22**: `filesUploadV2` returns Slack-shaped completed file metadata, and `response_url` honors `replace_original` and `delete_original`
+- [x] **SLCK-22**: `filesUploadV2` returns Slack-shaped completed file metadata, and `response_url` honors `replace_original` and `delete_original`
 - [ ] **SLCK-23**: `auth.test` returns identity fields that match the token class instead of always returning the bot identity
 
 ### Cross-Cutting
@@ -166,7 +166,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SLCK-19 | Phase 26 | Complete |
 | SLCK-20 | Phase 38 | Pending |
 | SLCK-21 | Phase 38 | Complete |
-| SLCK-22 | Phase 38 | Pending |
+| SLCK-22 | Phase 38 | Complete |
 | SLCK-23 | Phase 38 | Pending |
 | INFRA-21 | Phase 27, 32 | Complete |
 | INFRA-22 | Phase 27, 32 | Complete |
