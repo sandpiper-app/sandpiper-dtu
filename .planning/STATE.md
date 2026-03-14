@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
-status: Milestone reopened
-stopped_at: Completed 38-02-PLAN.md (Slack auth/token parity implementation)
-last_updated: "2026-03-14T15:32:59.534Z"
+status: planning
+stopped_at: Completed 38-01-PLAN.md - Wave 0 requirement realignment and parity tests
+last_updated: "2026-03-14T15:38:17.575Z"
 last_activity: 2026-03-14 — completed 38-01 Wave 0 requirement realignment and parity tests; all Phase 38 defects fixed (287/287 tests pass)
 progress:
   total_phases: 28
@@ -17,7 +17,7 @@ progress:
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-14
-**Status:** Milestone reopened
+**Status:** Ready to plan
 
 ## Project Reference
 
