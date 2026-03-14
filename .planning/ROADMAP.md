@@ -515,7 +515,10 @@ Plans:
 **Requirements**: INFRA-23, INFRA-24, INFRA-25
 **Depends on:** Phase 38, Phase 39
 **Findings addressed:** Re-audit #1 (fake evidence derivation), #2 (false live attributions), #10 (conformance/docs/tests overstate parity)
-**Plans:** 0 plans
+**Plans:** 4 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 40 to break down)
+- [ ] 40-01-PLAN.md — REQUIREMENTS traceability repair and red truthfulness contract checks
+- [ ] 40-02-PLAN.md — Runtime symbol execution evidence and provenance-rich coverage report generation
+- [ ] 40-03-PLAN.md — Drift gate hardening for provenance, freshness, and anti-overclaim enforcement
+- [ ] 40-04-PLAN.md — Conformance value-check tightening and historical verification doc realignment
