@@ -2,22 +2,22 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
-status: planning
+status: completed
 stopped_at: Completed 37-02-PLAN.md
-last_updated: "2026-03-14T05:21:51.122Z"
-last_activity: "2026-03-14 — Phase 37 Plan 03 complete: Conformance runner twin mode fixed (second-call structural comparison); Slack adapter broad scope via admin token; chat-update test accurately relabeled; 266/268 tests GREEN (2 expected-RED billing Wave-0 remain)"
+last_updated: "2026-03-14T05:25:12.675Z"
+last_activity: "2026-03-14 — Phase 37 Plan 02 complete: billing fidelity implementation — line_items column migration, one_time_purchases table, real persistence in 3 billing resolvers, CurrencyCode scalar; 268/268 tests pass"
 progress:
   total_phases: 25
   completed_phases: 25
   total_plans: 74
   completed_plans: 74
-  percent: 98
+  percent: 100
 ---
 
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-14
-**Status:** Ready to plan
+**Status:** Milestone complete
 
 ## Project Reference
 
