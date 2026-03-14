@@ -95,6 +95,11 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
     }
 
     // Consume code (one-time use)
+    if (!code) {
+      // Logically unreachable — binding check above proved code was truthy.
+      // Guard required for TypeScript strict-mode type narrowing (TS2345).
+      return { ok: false, error: 'invalid_code' };
+    }
     issuedCodes.delete(code);
 
     request.log.info('OAuth v2 token exchange');
