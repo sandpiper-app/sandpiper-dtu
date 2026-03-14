@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 37-01-PLAN.md
-last_updated: "2026-03-14T05:10:59.726Z"
-last_activity: "2026-03-14 — Phase 36 Plan 04 complete: Location family + InventoryLevel mutations + since_id/ids filters in rest.ts; Finding #8 and #10 GREEN; all 264 tests pass; Phase 36 complete"
+stopped_at: Completed 37-03-PLAN.md
+last_updated: "2026-03-14T05:17:03.333Z"
+last_activity: "2026-03-14 — Phase 37 Plan 03 complete: Conformance runner twin mode fixed (second-call structural comparison); Slack adapter broad scope via admin token; chat-update test accurately relabeled; 266/268 tests GREEN (2 expected-RED billing Wave-0 remain)"
 progress:
   total_phases: 25
   completed_phases: 24
   total_plans: 74
-  completed_plans: 72
-  percent: 98
+  completed_plans: 73
+  percent: 99
 ---
 
 # Project State: Sandpiper DTU
@@ -28,9 +28,9 @@ progress:
 ## Current Position
 
 Phase: 37 of 37 (Billing Fidelity & Conformance Rigor) — IN PROGRESS
-Plan: 1 of 3 complete
-Status: Plan 37-01 complete — Wave 0 RED billing tests for Finding #11: 4 new RED assertions prove lineItems/oneTimePurchases gaps; 3 existing GREEN tests unchanged; Plans 02-03 must turn RED tests GREEN
-Last activity: 2026-03-14 — Phase 37 Plan 01 complete: Wave 0 RED billing tests; 4 failing assertions prove Finding #11 billing fidelity gaps exist; 264/264 non-wave-0 tests still GREEN
+Plan: 3 of 3 complete (conformance rigor done; billing fidelity Plan 02 already complete)
+Status: Plan 37-03 complete — Finding #12 (conformance self-comparison) GREEN; twin mode now calls execute twice structurally; Slack adapter broad scope; 266/268 tests GREEN (2 expected-RED billing Wave-0 remain)
+Last activity: 2026-03-14 — Phase 37 Plan 03 complete: Conformance runner twin mode fixed (second-call structural comparison); Slack adapter broad scope via admin token; chat-update test accurately relabeled; 266/268 tests GREEN (2 expected-RED billing Wave-0 remain)
 
 Progress: [██████████] 98% (overall: 72/74 plans complete)
 
@@ -84,6 +84,7 @@ Progress: [██████████] 98% (overall: 72/74 plans complete)
 | Phase 36 P02 | 6min | 1 tasks | 2 files |
 | Phase 36-04 P04 | 7min | 2 tasks | 2 files |
 | Phase 37-01 P01 | 2min | 1 tasks | 1 files |
+| Phase 37 P03 | 12min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -95,6 +96,13 @@ Progress: [██████████] 98% (overall: 72/74 plans complete)
 - Phase 37 added: Billing Fidelity & Conformance Rigor (second review — findings #11, #12 Medium)
 
 ### Key Decisions
+
+**2026-03-14 - Phase 37 Plan 03 (Finding #12 conformance rigor):**
+- Twin-mode baseline is now second `await this.twin.execute(test.operation)` — validates shape consistency across two independent calls, catches twin non-determinism bugs that self-comparison masks
+- Twin comparison branch split: `comparisonMode === 'exact'` uses `compareResponses` (bit-exact), default uses `compareResponsesStructurally`; offline mode unchanged (exact comparison against fixture)
+- Shopify normalizer strips `extensions.cost`: rate-limit bucket changes between two independent twin-mode calls; all cost fields are call-sequence-dependent
+- Slack adapter uses `app.inject()` not `fetch()` for admin token seeding (in-process pattern); body requires all 6 fields: token/tokenType/teamId/userId/scope/appId; BROAD_SCOPE hardcoded constant avoids coupling conformance to twin internals
+- Finding #12 GREEN: both conformance:twin scripts pass (Shopify 10/10, Slack 20/20)
 
 **2026-03-14 - Phase 37 Plan 01 (Wave 0 RED billing tests for Finding #11):**
 - Wave 0 contract established: 4 RED tests prove billing gaps before implementation — lineItems always [], appPurchaseOneTimeCreate returns hardcoded stub GID (not persistent), currentAppInstallation.oneTimePurchases always edges:[], activeSubscriptions[0].lineItems always []
@@ -361,7 +369,7 @@ None.
 
 **Last completed:** Phase 33 Plan 01 — XCUT-01 reset coverage (commits 7fd3b5a, 280b574)
 **Work in progress:** None — Milestone v1.2 Behavioral Fidelity complete
-**Stopped at:** Completed 37-01-PLAN.md
+**Stopped at:** Completed 37-03-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
