@@ -9,7 +9,7 @@
 
 - ✅ **v1.0 Foundation** - Phases 1-12 (shipped 2026-02-28)
 - ✅ **v1.1 Official SDK Conformance** - Phases 13-20 (shipped 2026-03-10)
-- 🚧 **v1.2 Behavioral Fidelity** - Phases 21-33 (in progress)
+- 🚧 **v1.2 Behavioral Fidelity** - Phases 21-37 (in progress)
 
 ## Phases
 
@@ -43,7 +43,7 @@
 
 ### 🚧 v1.2 Behavioral Fidelity (In Progress)
 
-**Milestone Goal:** Fix 13 adversarial review findings so the twins genuinely behave like the real services — structural comparison is bidirectional, coverage is evidence-based, OAuth flows are real, REST state persists, Slack covers all 275+ methods, and scope enforcement matches real Slack.
+**Milestone Goal:** Fix adversarial review findings so the twins genuinely behave like the real services — builds pass, coverage is truly evidence-based, OAuth flows are real, REST state persists with correct ID round-trips, Slack covers all 275+ methods with correct scope/auth semantics, and conformance proves 1:1 behavior.
 
 - [x] **Phase 21: Test Runner & Seeders** - Fix `pnpm test:sdk` ABI mismatch and update seeders before behavioral changes land (completed 2026-03-12)
 - [x] **Phase 22: Shopify Version Routing & Response Headers** - Parameterize API version routes and add conformance response headers (completed 2026-03-12)
@@ -58,6 +58,10 @@
 - [x] **Phase 31: Slack OAuth & Method Coverage** - OAuth exchange validation and comprehensive method smoke tests (gap closure) (completed 2026-03-13)
 - [x] **Phase 32: Conformance Harness & Evidence** - Primitive value comparison and real execution evidence (gap closure) (completed 2026-03-13)
 - [x] **Phase 33: Cross-Cutting Reset Coverage** - Verify all new SQLite tables in StateManager reset logic (gap closure) (completed 2026-03-14)
+- [ ] **Phase 34: Slack Build Fix & Evidence Pipeline** - Fix Slack twin compile error and rewrite coverage attribution from actual test evidence (second review remediation)
+- [ ] **Phase 35: Slack Behavioral Parity** - OpenID Connect, filesUploadV2, auth/scope semantics, deferred method registration (second review remediation)
+- [ ] **Phase 36: Shopify Behavioral Parity** - OAuth grant types, missing REST routes, ID round-trip, list filter semantics (second review remediation)
+- [ ] **Phase 37: Billing Fidelity & Conformance Rigor** - Persistent billing shapes and conformance harness 1:1 proof (second review remediation)
 
 ## Phase Details
 
@@ -393,6 +397,10 @@ Plans:
 | 31. Slack OAuth & Method Coverage | 2/2 | Complete    | 2026-03-13 | - |
 | 32. Conformance Harness & Evidence | 2/2 | Complete    | 2026-03-13 | - |
 | 33. Cross-Cutting Reset Coverage | 1/1 | Complete    | 2026-03-14 | - |
+| 34. Slack Build Fix & Evidence Pipeline | 0/1 | In progress | - | - |
+| 35. Slack Behavioral Parity | 0/0 | Not planned | - | - |
+| 36. Shopify Behavioral Parity | 0/0 | Not planned | - | - |
+| 37. Billing Fidelity & Conformance Rigor | 0/0 | Not planned | - | - |
 
 ## Dependencies
 
@@ -419,4 +427,51 @@ Phase 21 (Test Runner & Seeders)
   Phase 30 (Slack Transport & State Fixes) ──┤──→ Phase 32 (Conformance & Evidence)
   Phase 31 (Slack OAuth & Method Coverage) ──┘         ↓
                                                 Phase 33 (Cross-Cutting Reset)
+
+  Second Review Remediation (Phases 34-37):
+
+  Phase 33 (Cross-Cutting Reset)
+    ↓
+  Phase 34 (Slack Build Fix & Evidence Pipeline)  [Critical — unblocks everything]
+    ├──→ Phase 35 (Slack Behavioral Parity)       [Findings #3-6]
+    │                    ↘
+    └──→ Phase 36 (Shopify Behavioral Parity)      [Findings #7-10]
+                         ↗
+              Phase 37 (Billing Fidelity & Conformance Rigor) [Findings #11-12]
 ```
+
+### Phase 34: Slack Build Fix & Evidence Pipeline
+**Goal:** Fix the Slack twin compile error so both twins are buildable, then rewrite coverage attribution to derive from actual test execution evidence (vitest-evidence.json) instead of the hand-authored EVIDENCE_MAP, removing all provably false live attributions.
+**Depends on:** Phase 33
+**Findings addressed:** #1 (Critical: Slack twin not buildable — oauth.ts:98 TS2345), #2 (Critical: evidence-based coverage is hand-authored, not execution-derived; provably false live attributions in coverage-report.json)
+**Plans:** 1 plan
+
+Plans:
+- [ ] 34-01-PLAN.md — Fix TS2345 compile error in oauth.ts and regenerate vitest-evidence.json + coverage-report.json
+
+### Phase 35: Slack Behavioral Parity
+**Goal:** Close remaining Slack twin behavioral gaps — register all deferred WebClient methods, implement real OpenID Connect flow with token persistence, fix the filesUploadV2 upload chain to match upstream WebClient behavior, and correct auth/scope semantics for apps.connections.open, conversation methods, and oauth.v2.access.
+**Depends on:** Phase 34
+**Findings addressed:** #3 (High: SLCK-14 overstated — deferred methods not registered), #4 (High: OpenID Connect not implemented as real OAuth flow), #5 (High: filesUploadV2 chain diverges on HTTP verb and files field), #6 (High: auth/scope wrong for apps.connections.open, conversation scope model, oauth.v2.access)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 35 to break down)
+
+### Phase 36: Shopify Behavioral Parity
+**Goal:** Fix Shopify twin OAuth to differentiate grant types with proper response shapes, add missing REST routes (access_scopes, location inventory_levels, inventory_level mutations, inventory_items CRUD), fix GraphQL-to-REST ID round-trip with canonical GID generation, and support list endpoint filter semantics (since_id, ids).
+**Depends on:** Phase 34
+**Findings addressed:** #7 (High: OAuth collapses grant types into one response), #8 (High: missing REST routes confirmed 404 live), #9 (High: GraphQL/REST IDs don't round-trip), #10 (High: list endpoints ignore upstream filters)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 36 to break down)
+
+### Phase 37: Billing Fidelity & Conformance Rigor
+**Goal:** Make billing state persistent with real response shapes (lineItems, oneTimePurchases, subscription data in currentAppInstallation), and fix the conformance harness to prove 1:1 behavior — eliminate twin self-comparison in twin mode, add Slack value opt-in checks, and fix the chat conformance suite labeling.
+**Depends on:** Phase 35, Phase 36
+**Findings addressed:** #11 (Medium: billing/install fidelity shallow), #12 (Medium: conformance harness doesn't prove 1:1 behavior)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 37 to break down)
