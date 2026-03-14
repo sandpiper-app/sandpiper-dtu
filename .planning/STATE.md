@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
-status: planning
+status: completed
 stopped_at: "Completed 40-03-PLAN.md — INFRA-25 provenance validators and hardened drift:check"
-last_updated: "2026-03-14T20:12:16.225Z"
+last_updated: "2026-03-14T20:17:40.230Z"
 last_activity: 2026-03-14 — Phase 39 Plan 04 complete (inventory_levels, custom_collections, collects state; 71 integration tests green)
 progress:
   total_phases: 28
@@ -17,7 +17,7 @@ progress:
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-14
-**Status:** Ready to plan
+**Status:** Milestone complete
 
 ## Project Reference
 
