@@ -149,8 +149,14 @@ describe('shopify.clients.Rest — SHOP-14 (live twin)', () => {
   it('put() returns body.product with id', async () => {
     const RestClient = shopify.clients.Rest;
     const client = new RestClient({ session });
+    // Create a product first so PUT has a real row to update (PUT is now state-backed)
+    const created = await client.post<{ product: { id: string } }>({
+      path: 'products',
+      data: { product: { title: 'Original' } },
+    });
+    const productId = created.body.product.id;
     const result = await client.put<{ product: { id: string } }>({
-      path: 'products/1',
+      path: `products/${productId}`,
       data: { product: { title: 'U' } },
     });
     expect(result.body.product).toBeDefined();

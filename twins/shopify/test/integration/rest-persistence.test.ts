@@ -197,4 +197,200 @@ describe('REST Resource Persistence', () => {
       expect(body.errors).toBeDefined();
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // SHOP-15: PUT /products/:id.json — state-backed product update
+  // ---------------------------------------------------------------------------
+  describe('PUT /admin/api/2024-01/products/:id.json persists update', () => {
+    it('updates product title and returns persisted data', async () => {
+      // Create a product first
+      const createResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/products.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: { product: { title: 'Before Update' } },
+      });
+      expect(createResponse.statusCode).toBe(201);
+      const created = JSON.parse(createResponse.body);
+      const id = created.product.id;
+
+      // Update via PUT
+      const putResponse = await app.inject({
+        method: 'PUT',
+        url: `/admin/api/2024-01/products/${id}.json`,
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: { product: { title: 'After Update' } },
+      });
+      expect(putResponse.statusCode).toBe(200);
+      const putBody = JSON.parse(putResponse.body);
+      expect(putBody.product.id).toBe(id);
+      expect(putBody.product.title).toBe('After Update');
+      expect(putBody.product.admin_graphql_api_id).toBe(`gid://shopify/Product/${id}`);
+
+      // GET confirms persistence
+      const getResponse = await app.inject({
+        method: 'GET',
+        url: `/admin/api/2024-01/products/${id}.json`,
+        headers: { 'X-Shopify-Access-Token': token },
+      });
+      expect(getResponse.statusCode).toBe(200);
+      const getBody = JSON.parse(getResponse.body);
+      expect(getBody.product.title).toBe('After Update');
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // POST /customers.json and PUT /customers/:id.json — state-backed
+  // ---------------------------------------------------------------------------
+  describe('POST /admin/api/2024-01/customers.json creates customer', () => {
+    it('returns 201 with numeric id, admin_graphql_api_id, and customer data', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/customers.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: { customer: { email: 'persist@example.com', first_name: 'Per', last_name: 'Sist' } },
+      });
+
+      expect(response.statusCode).toBe(201);
+      const body = JSON.parse(response.body);
+      expect(body.customer).toBeDefined();
+      expect(typeof body.customer.id).toBe('number');
+      expect(body.customer.id).toBeGreaterThan(0);
+      expect(body.customer.admin_graphql_api_id).toBe(`gid://shopify/Customer/${body.customer.id}`);
+      expect(body.customer.email).toBe('persist@example.com');
+      expect(body.customer.first_name).toBe('Per');
+      expect(body.customer.last_name).toBe('Sist');
+    });
+
+    it('returns 422 when customer key is missing', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/customers.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: { email: 'nope@example.com' },
+      });
+      expect(response.statusCode).toBe(422);
+      const body = JSON.parse(response.body);
+      expect(body.errors).toBe('customer is required');
+    });
+  });
+
+  describe('PUT /admin/api/2024-01/customers/:id.json persists update', () => {
+    it('updates customer first_name and last_name', async () => {
+      // Create customer first
+      const createResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/customers.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: { customer: { email: 'update@example.com', first_name: 'Before', last_name: 'Change' } },
+      });
+      expect(createResponse.statusCode).toBe(201);
+      const created = JSON.parse(createResponse.body);
+      const id = created.customer.id;
+
+      // Update via PUT
+      const putResponse = await app.inject({
+        method: 'PUT',
+        url: `/admin/api/2024-01/customers/${id}.json`,
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: { customer: { first_name: 'After', last_name: 'Updated' } },
+      });
+      expect(putResponse.statusCode).toBe(200);
+      const putBody = JSON.parse(putResponse.body);
+      expect(putBody.customer.first_name).toBe('After');
+      expect(putBody.customer.last_name).toBe('Updated');
+
+      // GET confirms persistence
+      const getResponse = await app.inject({
+        method: 'GET',
+        url: `/admin/api/2024-01/customers/${id}.json`,
+        headers: { 'X-Shopify-Access-Token': token },
+      });
+      expect(getResponse.statusCode).toBe(200);
+      const getBody = JSON.parse(getResponse.body);
+      expect(getBody.customer.first_name).toBe('After');
+      expect(getBody.customer.last_name).toBe('Updated');
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // POST /orders.json and PUT /orders/:id.json — state-backed
+  // ---------------------------------------------------------------------------
+  describe('POST /admin/api/2024-01/orders.json creates order', () => {
+    it('returns 201 with numeric id and admin_graphql_api_id', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/orders.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: { order: { name: '#5001', total_price: '120.00', currency_code: 'USD' } },
+      });
+
+      expect(response.statusCode).toBe(201);
+      const body = JSON.parse(response.body);
+      expect(body.order).toBeDefined();
+      expect(typeof body.order.id).toBe('number');
+      expect(body.order.id).toBeGreaterThan(0);
+      expect(body.order.admin_graphql_api_id).toBe(`gid://shopify/Order/${body.order.id}`);
+      expect(body.order.name).toBe('#5001');
+      expect(body.order.total_price).toBe('120.00');
+    });
+
+    it('returns 422 when order key is missing', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/orders.json',
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: { name: '#bad' },
+      });
+      expect(response.statusCode).toBe(422);
+      const body = JSON.parse(response.body);
+      expect(body.errors).toBe('order is required');
+    });
+  });
+
+  describe('PUT /admin/api/2024-01/orders/:id.json persists update', () => {
+    it('updates order name and total_price', async () => {
+      // Create order first via fixture
+      const fixtureResponse = await app.inject({
+        method: 'POST',
+        url: '/admin/fixtures/load',
+        payload: { orders: [{ name: '#6001', total_price: '30.00', currency_code: 'USD' }] },
+      });
+      expect(fixtureResponse.statusCode).toBe(200);
+
+      // List to get id
+      const listResponse = await app.inject({
+        method: 'GET',
+        url: '/admin/api/2024-01/orders.json',
+        headers: { 'X-Shopify-Access-Token': token },
+      });
+      const listBody = JSON.parse(listResponse.body);
+      const order = listBody.orders.find((o: any) => o.name === '#6001');
+      expect(order).toBeDefined();
+      const id = order.id;
+
+      // PUT update
+      const putResponse = await app.inject({
+        method: 'PUT',
+        url: `/admin/api/2024-01/orders/${id}.json`,
+        headers: { 'X-Shopify-Access-Token': token },
+        payload: { order: { name: '#6001-updated', total_price: '60.00' } },
+      });
+      expect(putResponse.statusCode).toBe(200);
+      const putBody = JSON.parse(putResponse.body);
+      expect(putBody.order.name).toBe('#6001-updated');
+      expect(putBody.order.total_price).toBe('60.00');
+
+      // GET confirms persistence
+      const getResponse = await app.inject({
+        method: 'GET',
+        url: `/admin/api/2024-01/orders/${id}.json`,
+        headers: { 'X-Shopify-Access-Token': token },
+      });
+      expect(getResponse.statusCode).toBe(200);
+      const getBody = JSON.parse(getResponse.body);
+      expect(getBody.order.name).toBe('#6001-updated');
+      expect(getBody.order.total_price).toBe('60.00');
+    });
+  });
 });

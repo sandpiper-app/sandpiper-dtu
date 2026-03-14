@@ -222,7 +222,15 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
 
     const { items, linkHeader } = paginateList(all, 'Product', version, '/products.json', limit, afterId);
     if (linkHeader) reply.header('Link', linkHeader);
-    return { products: items };
+    return {
+      products: items.map((p: any) => ({
+        id: p.id,
+        admin_graphql_api_id: p.gid,
+        title: p.title,
+        created_at: new Date(p.created_at * 1000).toISOString(),
+        updated_at: new Date(p.updated_at * 1000).toISOString(),
+      })),
+    };
   });
 
   // POST /admin/api/:version/products.json
@@ -283,9 +291,28 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
     const version = parseVersionHeader(req, reply);
     if (version === null) return;
     if (!await requireToken(req, reply)) return;
-    // Strip .json suffix from params.id (Fastify captures without .json in :id when route ends in .json)
-    const id = (req.params.id as string).replace(/\.json$/, '');
-    return { product: { id: `gid://shopify/Product/${id}`, title: 'Updated Product' } };
+    const numericId = parseInt((req.params.id as string).replace(/\.json$/, ''), 10);
+    const input = (req.body as any)?.product ?? {};
+    (fastify as any).stateManager.updateProduct(numericId, {
+      title: input.title,
+      description: input.description,
+      vendor: input.vendor,
+      product_type: input.product_type,
+      price: input.price,
+    });
+    const product = (fastify as any).stateManager.getProduct(numericId);
+    if (!product) {
+      return reply.status(404).send({ errors: 'Not Found' });
+    }
+    return {
+      product: {
+        id: product.id,
+        admin_graphql_api_id: product.gid,
+        title: product.title,
+        created_at: new Date(product.created_at * 1000).toISOString(),
+        updated_at: new Date(product.updated_at * 1000).toISOString(),
+      },
+    };
   });
 
   // DELETE /admin/api/:version/products/:id.json
@@ -320,13 +347,69 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
     }
 
     const sinceId = parseInt(String(req.query?.since_id ?? '0'), 10);
+    const idsParam = req.query?.ids as string | undefined;
     let all = (fastify as any).stateManager.listCustomers();
     if (!isNaN(sinceId) && sinceId > 0) {
       all = all.filter((item: any) => item.id > sinceId);
     }
+    // Apply ids filter (comma-separated numeric IDs)
+    if (idsParam) {
+      const idSet = new Set(
+        idsParam.split(',')
+          .map((s: string) => parseInt(s.trim(), 10))
+          .filter((n: number) => !isNaN(n))
+      );
+      all = all.filter((item: any) => idSet.has(item.id));
+    }
     const { items, linkHeader } = paginateList(all, 'Customer', version, '/customers.json', limit, afterId);
     if (linkHeader) reply.header('Link', linkHeader);
-    return { customers: items };
+    return {
+      customers: items.map((c: any) => ({
+        id: c.id,
+        admin_graphql_api_id: c.gid,
+        email: c.email,
+        first_name: c.first_name,
+        last_name: c.last_name,
+        created_at: new Date(c.created_at * 1000).toISOString(),
+        updated_at: new Date(c.updated_at * 1000).toISOString(),
+      })),
+    };
+  });
+
+  // POST /admin/api/:version/customers.json
+  fastify.post(adminPath('/customers.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    if (!(req.body as any)?.customer) {
+      return reply.status(422).send({ errors: 'customer is required' });
+    }
+    const input = (req.body as any).customer;
+    // Two-step insert: use temp GID, get row id, update GID to use actual row id
+    const tempGid = `gid://shopify/Customer/temp-${Date.now()}`;
+    const rowId = (fastify as any).stateManager.createCustomer({
+      gid: tempGid,
+      email: input.email ?? null,
+      first_name: input.first_name ?? null,
+      last_name: input.last_name ?? null,
+    });
+    const finalGid = `gid://shopify/Customer/${rowId}`;
+    (fastify as any).stateManager.database
+      .prepare('UPDATE customers SET gid = ? WHERE id = ?')
+      .run(finalGid, rowId);
+    const customer = (fastify as any).stateManager.getCustomer(rowId);
+    reply.status(201);
+    return {
+      customer: {
+        id: customer.id,
+        admin_graphql_api_id: customer.gid,
+        email: customer.email,
+        first_name: customer.first_name,
+        last_name: customer.last_name,
+        created_at: new Date(customer.created_at * 1000).toISOString(),
+        updated_at: new Date(customer.updated_at * 1000).toISOString(),
+      },
+    };
   });
 
   // GET /admin/api/:version/customers/:id.json
@@ -334,9 +417,54 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
     const version = parseVersionHeader(req, reply);
     if (version === null) return;
     if (!await requireToken(req, reply)) return;
-    const id = (req.params.id as string).replace(/\.json$/, '');
-    const customer = (fastify as any).stateManager.getCustomerByGid(`gid://shopify/Customer/${id}`) ?? null;
-    return { customer };
+    const numericId = parseInt((req.params.id as string).replace(/\.json$/, ''), 10);
+    const customer = (fastify as any).stateManager.getCustomer(numericId);
+    if (!customer) {
+      return reply.status(404).send({ errors: 'Not Found' });
+    }
+    return {
+      customer: {
+        id: customer.id,
+        admin_graphql_api_id: customer.gid,
+        email: customer.email,
+        first_name: customer.first_name,
+        last_name: customer.last_name,
+        created_at: new Date(customer.created_at * 1000).toISOString(),
+        updated_at: new Date(customer.updated_at * 1000).toISOString(),
+      },
+    };
+  });
+
+  // PUT /admin/api/:version/customers/:id.json
+  fastify.put(adminPath('/customers/:id.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    if (!(req.body as any)?.customer) {
+      return reply.status(422).send({ errors: 'customer is required' });
+    }
+    const numericId = parseInt((req.params.id as string).replace(/\.json$/, ''), 10);
+    const input = (req.body as any).customer;
+    (fastify as any).stateManager.updateCustomer(numericId, {
+      email: input.email,
+      first_name: input.first_name,
+      last_name: input.last_name,
+    });
+    const customer = (fastify as any).stateManager.getCustomer(numericId);
+    if (!customer) {
+      return reply.status(404).send({ errors: 'Not Found' });
+    }
+    return {
+      customer: {
+        id: customer.id,
+        admin_graphql_api_id: customer.gid,
+        email: customer.email,
+        first_name: customer.first_name,
+        last_name: customer.last_name,
+        created_at: new Date(customer.created_at * 1000).toISOString(),
+        updated_at: new Date(customer.updated_at * 1000).toISOString(),
+      },
+    };
   });
 
   // ---------------------------------------------------------------------------
@@ -363,13 +491,78 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
     }
 
     const sinceId = parseInt(String(req.query?.since_id ?? '0'), 10);
+    const idsParamOrders = req.query?.ids as string | undefined;
     let all = (fastify as any).stateManager.listOrders();
     if (!isNaN(sinceId) && sinceId > 0) {
       all = all.filter((item: any) => item.id > sinceId);
     }
+    // Apply ids filter (comma-separated numeric IDs)
+    if (idsParamOrders) {
+      const idSet = new Set(
+        idsParamOrders.split(',')
+          .map((s: string) => parseInt(s.trim(), 10))
+          .filter((n: number) => !isNaN(n))
+      );
+      all = all.filter((item: any) => idSet.has(item.id));
+    }
     const { items, linkHeader } = paginateList(all, 'Order', version, '/orders.json', limit, afterId);
     if (linkHeader) reply.header('Link', linkHeader);
-    return { orders: items };
+    return {
+      orders: items.map((o: any) => ({
+        id: o.id,
+        admin_graphql_api_id: o.gid,
+        name: o.name,
+        total_price: o.total_price,
+        currency_code: o.currency_code,
+        display_fulfillment_status: o.display_fulfillment_status,
+        display_financial_status: o.display_financial_status,
+        line_items: (() => { try { return JSON.parse(o.line_items || '[]'); } catch { return []; } })(),
+        created_at: new Date(o.created_at * 1000).toISOString(),
+        updated_at: new Date(o.updated_at * 1000).toISOString(),
+      })),
+    };
+  });
+
+  // POST /admin/api/:version/orders.json
+  fastify.post(adminPath('/orders.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    if (!(req.body as any)?.order) {
+      return reply.status(422).send({ errors: 'order is required' });
+    }
+    const input = (req.body as any).order;
+    // Two-step insert: use temp GID, get row id, update GID to use actual row id
+    const tempGid = `gid://shopify/Order/temp-${Date.now()}`;
+    const rowId = (fastify as any).stateManager.createOrder({
+      gid: tempGid,
+      name: input.name ?? null,
+      total_price: input.total_price ?? null,
+      currency_code: input.currency_code ?? null,
+      customer_gid: input.customer_gid ?? null,
+      line_items: input.line_items ?? null,
+      financial_status: input.financial_status ?? 'PENDING',
+    });
+    const finalGid = `gid://shopify/Order/${rowId}`;
+    (fastify as any).stateManager.database
+      .prepare('UPDATE orders SET gid = ? WHERE id = ?')
+      .run(finalGid, rowId);
+    const order = (fastify as any).stateManager.getOrderById(rowId);
+    reply.status(201);
+    return {
+      order: {
+        id: order.id,
+        admin_graphql_api_id: order.gid,
+        name: order.name,
+        total_price: order.total_price,
+        currency_code: order.currency_code,
+        display_fulfillment_status: order.display_fulfillment_status,
+        display_financial_status: order.display_financial_status,
+        line_items: (() => { try { return JSON.parse(order.line_items || '[]'); } catch { return []; } })(),
+        created_at: new Date(order.created_at * 1000).toISOString(),
+        updated_at: new Date(order.updated_at * 1000).toISOString(),
+      },
+    };
   });
 
   // GET /admin/api/:version/orders/:id.json — state-backed by id
@@ -391,6 +584,44 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
         currency_code: order.currency_code,
         display_fulfillment_status: order.display_fulfillment_status,
         display_financial_status: order.display_financial_status,
+        line_items: (() => { try { return JSON.parse(order.line_items || '[]'); } catch { return []; } })(),
+        created_at: new Date(order.created_at * 1000).toISOString(),
+        updated_at: new Date(order.updated_at * 1000).toISOString(),
+      },
+    };
+  });
+
+  // PUT /admin/api/:version/orders/:id.json
+  fastify.put(adminPath('/orders/:id.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    if (!(req.body as any)?.order) {
+      return reply.status(422).send({ errors: 'order is required' });
+    }
+    const numericId = parseInt((req.params.id as string).replace(/\.json$/, ''), 10);
+    const input = (req.body as any).order;
+    (fastify as any).stateManager.updateOrder(numericId, {
+      name: input.name,
+      total_price: input.total_price,
+      currency_code: input.currency_code,
+      customer_gid: input.customer_gid,
+      line_items: input.line_items,
+    });
+    const order = (fastify as any).stateManager.getOrderById(numericId);
+    if (!order) {
+      return reply.status(404).send({ errors: 'Not Found' });
+    }
+    return {
+      order: {
+        id: order.id,
+        admin_graphql_api_id: order.gid,
+        name: order.name,
+        total_price: order.total_price,
+        currency_code: order.currency_code,
+        display_fulfillment_status: order.display_fulfillment_status,
+        display_financial_status: order.display_financial_status,
+        line_items: (() => { try { return JSON.parse(order.line_items || '[]'); } catch { return []; } })(),
         created_at: new Date(order.created_at * 1000).toISOString(),
         updated_at: new Date(order.updated_at * 1000).toISOString(),
       },
