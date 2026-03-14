@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 36-04-PLAN.md
-last_updated: "2026-03-14T03:55:09.342Z"
+stopped_at: Completed 37-01-PLAN.md
+last_updated: "2026-03-14T05:10:59.726Z"
 last_activity: "2026-03-14 — Phase 36 Plan 04 complete: Location family + InventoryLevel mutations + since_id/ids filters in rest.ts; Finding #8 and #10 GREEN; all 264 tests pass; Phase 36 complete"
 progress:
   total_phases: 25
   completed_phases: 24
-  total_plans: 71
-  completed_plans: 71
+  total_plans: 74
+  completed_plans: 72
   percent: 98
 ---
 
@@ -27,12 +27,12 @@ progress:
 
 ## Current Position
 
-Phase: 36 of 37 (Shopify Behavioral Parity) — COMPLETE
-Plan: 4 of 4 complete
-Status: Plan 36-04 complete — Finding #8 and #10 GREEN: Location family routes + InventoryLevel mutations + InventoryItem single-item routes + since_id/ids list filters; 264/264 tests pass
-Last activity: 2026-03-14 — Phase 36 Plan 04 complete: Location family + InventoryLevel mutations + since_id/ids filters in rest.ts; Finding #8 and #10 GREEN; all 264 tests pass; Phase 36 complete
+Phase: 37 of 37 (Billing Fidelity & Conformance Rigor) — IN PROGRESS
+Plan: 1 of 3 complete
+Status: Plan 37-01 complete — Wave 0 RED billing tests for Finding #11: 4 new RED assertions prove lineItems/oneTimePurchases gaps; 3 existing GREEN tests unchanged; Plans 02-03 must turn RED tests GREEN
+Last activity: 2026-03-14 — Phase 37 Plan 01 complete: Wave 0 RED billing tests; 4 failing assertions prove Finding #11 billing fidelity gaps exist; 264/264 non-wave-0 tests still GREEN
 
-Progress: [██████████] 98% (overall: 70/71 plans complete)
+Progress: [██████████] 98% (overall: 72/74 plans complete)
 
 ## Performance Metrics
 
@@ -83,6 +83,7 @@ Progress: [██████████] 98% (overall: 70/71 plans complete)
 | Phase 36 P03 | 3min | 2 tasks | 2 files |
 | Phase 36 P02 | 6min | 1 tasks | 2 files |
 | Phase 36-04 P04 | 7min | 2 tasks | 2 files |
+| Phase 37-01 P01 | 2min | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -94,6 +95,12 @@ Progress: [██████████] 98% (overall: 70/71 plans complete)
 - Phase 37 added: Billing Fidelity & Conformance Rigor (second review — findings #11, #12 Medium)
 
 ### Key Decisions
+
+**2026-03-14 - Phase 37 Plan 01 (Wave 0 RED billing tests for Finding #11):**
+- Wave 0 contract established: 4 RED tests prove billing gaps before implementation — lineItems always [], appPurchaseOneTimeCreate returns hardcoded stub GID (not persistent), currentAppInstallation.oneTimePurchases always edges:[], activeSubscriptions[0].lineItems always []
+- Direct fetch() to twin's GraphQL endpoint used for appPurchaseOneTimeCreate and currentAppInstallation queries — billing SDK helper does not expose oneTimePurchase methods
+- STATE.md sandbox blocker note was outdated — pnpm test:sdk ran successfully against live twin; tests fail at runtime (not compile time) confirming gaps are real
+- Plans 02-03 must turn these 4 RED tests GREEN without regressions to existing 264 GREEN tests
 
 **2026-03-14 - Phase 36 Plan 04 (Finding #8 + #10 REST routes + filters):**
 - SDK REST client's parseJsonWithLosslessNumbers converts all id/.*_id JSON fields to strings — Location.find(id=1) returns instance.id === "1" not 1; test assertions must use Number(instance.id) to compare
@@ -354,7 +361,7 @@ None.
 
 **Last completed:** Phase 33 Plan 01 — XCUT-01 reset coverage (commits 7fd3b5a, 280b574)
 **Work in progress:** None — Milestone v1.2 Behavioral Fidelity complete
-**Stopped at:** Completed 36-04-PLAN.md
+**Stopped at:** Completed 37-01-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
