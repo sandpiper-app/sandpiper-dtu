@@ -153,7 +153,67 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
       });
     }
 
-    if (!PASSTHROUGH_GRANT_TYPES.has(body.grant_type ?? '')) {
+    // Grant-specific validation — branch before credential check
+    if (body.grant_type === 'client_credentials') {
+      // client_credentials: requires client_id and client_secret only
+      if (!isNonEmptyString(body.client_id) || !isNonEmptyString(body.client_secret)) {
+        return reply.status(400).send({
+          error: 'invalid_request',
+          error_description: 'client_id and client_secret are required for client_credentials grant',
+        });
+      }
+    } else if (body.grant_type === 'refresh_token') {
+      // refresh_token: requires client_id, client_secret, and non-empty refresh_token
+      if (!isNonEmptyString(body.client_id) || !isNonEmptyString(body.client_secret)) {
+        return reply.status(400).send({
+          error: 'invalid_request',
+          error_description: 'client_id and client_secret are required for refresh_token grant',
+        });
+      }
+      if (!isNonEmptyString(body.refresh_token)) {
+        return reply.status(400).send({
+          error: 'invalid_request',
+          error_description: 'refresh_token is required for refresh_token grant',
+        });
+      }
+    } else if (body.grant_type === 'urn:ietf:params:oauth:grant-type:token-exchange') {
+      // token-exchange: requires client_id, client_secret, subject_token, subject_token_type, requested_token_type
+      if (!isNonEmptyString(body.client_id) || !isNonEmptyString(body.client_secret)) {
+        return reply.status(400).send({
+          error: 'invalid_request',
+          error_description: 'client_id and client_secret are required for token-exchange grant',
+        });
+      }
+      if (!isNonEmptyString(body.subject_token)) {
+        return reply.status(400).send({
+          error: 'invalid_request',
+          error_description: 'subject_token is required for token-exchange grant',
+        });
+      }
+      if (body.subject_token_type !== 'urn:ietf:params:oauth:token-type:id_token') {
+        return reply.status(400).send({
+          error: 'invalid_request',
+          error_description: 'subject_token_type must be urn:ietf:params:oauth:token-type:id_token',
+        });
+      }
+      const VALID_REQUESTED_TOKEN_TYPES = new Set([
+        'urn:shopify:params:oauth:token-type:online-access-token',
+        'urn:shopify:params:oauth:token-type:offline-access-token',
+      ]);
+      if (!isNonEmptyString(body.requested_token_type)) {
+        return reply.status(400).send({
+          error: 'invalid_request',
+          error_description: 'requested_token_type must be urn:shopify:params:oauth:token-type:online-access-token or urn:shopify:params:oauth:token-type:offline-access-token',
+        });
+      }
+      if (!VALID_REQUESTED_TOKEN_TYPES.has(body.requested_token_type)) {
+        return reply.status(400).send({
+          error: 'invalid_request',
+          error_description: 'requested_token_type must be urn:shopify:params:oauth:token-type:online-access-token or urn:shopify:params:oauth:token-type:offline-access-token',
+        });
+      }
+    } else {
+      // Auth-code exchange: no grant_type or an unrecognized grant_type
       if (
         !isNonEmptyString(body.client_id) ||
         !isNonEmptyString(body.client_secret) ||

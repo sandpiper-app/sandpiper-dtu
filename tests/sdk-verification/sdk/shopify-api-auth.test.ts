@@ -423,6 +423,110 @@ describe('POST /admin/oauth/access_token — SHOP-18 validation', () => {
 });
 
 // ---------------------------------------------------------------------------
+// Phase 39: grant-specific OAuth validation — SHOP-14/SHOP-15 (live twin)
+// ---------------------------------------------------------------------------
+//
+// Wave 0 RED tests: these verify that the twin currently returns 200 when it
+// should return 400, proving the grant-specific validation gap.
+// Plans 39-02+ will turn these tests GREEN by adding per-grant field checks
+// inside the oauth.ts plugin's /admin/oauth/access_token handler.
+
+describe('Phase 39: grant-specific OAuth validation', () => {
+  beforeEach(async () => {
+    await resetShopify();
+  });
+
+  it('returns 400 for client_credentials grant when client_secret is missing', async () => {
+    const response = await postAccessToken({
+      client_id: 'test-api-key',
+      grant_type: 'client_credentials',
+      // client_secret intentionally omitted
+    });
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({ error: 'invalid_request' });
+  });
+
+  it('returns 400 for refresh_token grant when refresh_token is missing', async () => {
+    const response = await postAccessToken({
+      client_id: 'test-api-key',
+      client_secret: 'test-api-secret',
+      grant_type: 'refresh_token',
+      // refresh_token intentionally omitted
+    });
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({ error: 'invalid_request' });
+  });
+
+  it('returns 400 for token exchange grant when subject_token is missing', async () => {
+    const response = await postAccessToken({
+      client_id: 'test-api-key',
+      client_secret: 'test-api-secret',
+      grant_type: 'urn:ietf:params:oauth:grant-type:token-exchange',
+      subject_token_type: 'urn:ietf:params:oauth:token-type:id_token',
+      requested_token_type: 'urn:shopify:params:oauth:token-type:offline-access-token',
+      // subject_token intentionally omitted
+    });
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({ error: 'invalid_request' });
+  });
+
+  it('returns 400 for token exchange grant when subject_token_type is missing', async () => {
+    const sessionToken = await mintSessionToken(
+      shopify.config.apiKey,
+      shopify.config.apiSecretKey,
+    );
+    const response = await postAccessToken({
+      client_id: 'test-api-key',
+      client_secret: 'test-api-secret',
+      grant_type: 'urn:ietf:params:oauth:grant-type:token-exchange',
+      subject_token: sessionToken,
+      requested_token_type: 'urn:shopify:params:oauth:token-type:offline-access-token',
+      // subject_token_type intentionally omitted
+    });
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({ error: 'invalid_request' });
+  });
+
+  it('returns 400 for token exchange grant when requested_token_type is missing', async () => {
+    const sessionToken = await mintSessionToken(
+      shopify.config.apiKey,
+      shopify.config.apiSecretKey,
+    );
+    const response = await postAccessToken({
+      client_id: 'test-api-key',
+      client_secret: 'test-api-secret',
+      grant_type: 'urn:ietf:params:oauth:grant-type:token-exchange',
+      subject_token: sessionToken,
+      subject_token_type: 'urn:ietf:params:oauth:token-type:id_token',
+      // requested_token_type intentionally omitted
+    });
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({ error: 'invalid_request' });
+  });
+
+  it('returns 400 for token exchange grant when requested_token_type is unsupported', async () => {
+    const sessionToken = await mintSessionToken(
+      shopify.config.apiKey,
+      shopify.config.apiSecretKey,
+    );
+    const response = await postAccessToken({
+      client_id: 'test-api-key',
+      client_secret: 'test-api-secret',
+      grant_type: 'urn:ietf:params:oauth:grant-type:token-exchange',
+      subject_token: sessionToken,
+      subject_token_type: 'urn:ietf:params:oauth:token-type:id_token',
+      requested_token_type: 'urn:shopify:params:oauth:token-type:bogus',
+    });
+    expect(response.status).toBe(400);
+    const json = await response.json() as { error: string; error_description: string };
+    expect(json.error).toBe('invalid_request');
+    expect(json.error_description).toBe(
+      'requested_token_type must be urn:shopify:params:oauth:token-type:online-access-token or urn:shopify:params:oauth:token-type:offline-access-token'
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
 // shopify.auth — embedded URL helpers — SHOP-10 (pure)
 // ---------------------------------------------------------------------------
 
