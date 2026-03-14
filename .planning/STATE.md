@@ -23,16 +23,16 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity reopened — Phases 38-40 added from adversarial re-audit (10 findings: 1 Critical, 8 High, 1 Medium)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 38 complete (Slack auth/scope/client parity), Phases 39-40 remain
 
 ## Current Position
 
-Phase: 38 of 40 complete (next: execute remaining Phase 38 plans 02-04 if needed, then Phase 39)
-Plan: Phase 38 has 4 plans; 38-01 complete; prior sessions ran 38-02/03/04 implementations
-Status: Phase 38 plans 38-01 through 38-04 all have SUMMARYs; all 287 tests pass
-Last activity: 2026-03-14 — completed 38-01 Wave 0 requirement realignment and parity tests; all Phase 38 defects fixed (287/287 tests pass)
+Phase: 39 of 40 (next: plan Phase 39)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-03-14 — Phase 38 complete (4/4 plans, verified SLCK-20..23), transitioning to Phase 39
 
-Progress: [██████████] 99% (overall: 26/28 phases complete; Phase 38 complete, Phases 39-40 unplanned)
+Progress: [██████████] 96% (overall: 27/28 phases complete; Phase 39-40 unplanned)
 
 ## Performance Metrics
 
@@ -419,9 +419,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 38 — Slack auth, scope, and client-behavior parity (all 4 plans complete)
-**Work in progress:** Phases 39-40 remain unplanned; all Phase 38 defects resolved
-**Stopped at:** Completed 38-01-PLAN.md - Wave 0 requirement realignment and parity tests
+**Last completed:** Phase 38 — Slack auth, scope, and client-behavior parity (4/4 plans, SLCK-20..23 verified)
+**Work in progress:** Phases 39-40 remain unplanned
+**Stopped at:** Phase 38 complete, ready to plan Phase 39
 **Timestamp:** 2026-03-14
 
 ---
