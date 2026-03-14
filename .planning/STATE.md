@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 35-01-PLAN.md
-last_updated: "2026-03-14T02:30:56.776Z"
-last_activity: "2026-03-14 — Phase 35 Plan 01 complete: Slack twin behavioral parity restored, all High-severity findings #3-#6 closed"
+stopped_at: Completed 36-01-PLAN.md
+last_updated: "2026-03-14T03:33:38.360Z"
+last_activity: "2026-03-14 — Phase 36 Plan 01 complete: Wave 0 RED tests for Shopify findings #7-#10 written; 9 failing tests establish TDD contract for Plans 02-04"
 progress:
   total_phases: 25
   completed_phases: 23
-  total_plans: 67
-  completed_plans: 67
+  total_plans: 71
+  completed_plans: 68
   percent: 100
 ---
 
@@ -27,12 +27,12 @@ progress:
 
 ## Current Position
 
-Phase: 35 of 37 (Slack Behavioral Parity) — Complete
-Plan: 1 of 1 complete
-Status: Plan 35-01 complete — 16 missing WebClient routes registered; openid.connect.token fixed to no-auth code-exchange; PUT→POST for binary upload; apps.connections.open/oauth.v2.access/admin.workflows.search added to METHOD_SCOPES; 253/253 tests green
-Last activity: 2026-03-14 — Phase 35 Plan 01 complete: Slack twin behavioral parity restored, all High-severity findings #3-#6 closed
+Phase: 36 of 37 (Shopify Behavioral Parity) — In Progress
+Plan: 1 of 4 complete
+Status: Plan 36-01 complete — Wave 0 RED tests for Findings #7-#10 written; 9 failing tests establish TDD contract; 2 regression guards pass; 264 total tests (255 green, 9 RED)
+Last activity: 2026-03-14 — Phase 36 Plan 01 complete: Wave 0 RED tests for Shopify findings #7-#10 written; 9 failing tests establish TDD contract for Plans 02-04
 
-Progress: [██████████] 100% (overall: 66/66 plans complete)
+Progress: [██████████] 97% (overall: 68/71 plans complete)
 
 ## Performance Metrics
 
@@ -79,6 +79,7 @@ Progress: [██████████] 100% (overall: 66/66 plans complete)
 | Phase 33 P01 | 5min | 2 tasks | 2 files |
 | Phase 34 P01 | 2min | 2 tasks | 3 files |
 | Phase 35-01 P01 | 3min | 3 tasks | 3 files |
+| Phase 36 P01 | 4min | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -90,6 +91,12 @@ Progress: [██████████] 100% (overall: 66/66 plans complete)
 - Phase 37 added: Billing Fidelity & Conformance Rigor (second review — findings #11, #12 Medium)
 
 ### Key Decisions
+
+**2026-03-14 - Phase 36 Plan 01 (Wave 0 RED tests for Shopify findings #7-#10):**
+- Import individual REST resource classes via `restResources` bundle, not individual path exports — `@shopify/shopify-api/rest/admin/2024-01` index only re-exports the bundled `restResources` object; individual class exports cause `loadRestResources` TypeError
+- Wave 0 contract: 9 RED tests prove bugs exist before implementation; Plans 02-04 must turn them green without regressions; 2 regression guards pass immediately and correctly
+- InventoryLevel.adjust() tested via raw fetch (not SDK REST resource) to avoid SDK class quirks with the adjust sub-path
+- InventoryItem ids=99999 passes immediately after reset (empty DB) — correct behavior; remains valid guard once items are seeded by implementation plans
 
 **2026-03-14 - Phase 35 Plan 01 (Slack behavioral parity — findings #3-#6):**
 - openid.connect.token handler validates client_id + client_secret in POST body without requiring a bearer token — WebClient sends Authorization header incidentally but handler ignores it; existing tests continue to pass
@@ -324,7 +331,7 @@ None.
 
 **Last completed:** Phase 33 Plan 01 — XCUT-01 reset coverage (commits 7fd3b5a, 280b574)
 **Work in progress:** None — Milestone v1.2 Behavioral Fidelity complete
-**Stopped at:** Completed 35-01-PLAN.md
+**Stopped at:** Completed 36-01-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
