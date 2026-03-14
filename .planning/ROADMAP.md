@@ -59,7 +59,7 @@
 - [x] **Phase 32: Conformance Harness & Evidence** - Primitive value comparison and real execution evidence (gap closure) (completed 2026-03-13)
 - [x] **Phase 33: Cross-Cutting Reset Coverage** - Verify all new SQLite tables in StateManager reset logic (gap closure) (completed 2026-03-14)
 - [x] **Phase 34: Slack Build Fix & Evidence Pipeline** - Fix Slack twin compile error and rewrite coverage attribution from actual test evidence (second review remediation) (completed 2026-03-14)
-- [ ] **Phase 35: Slack Behavioral Parity** - OpenID Connect, filesUploadV2, auth/scope semantics, deferred method registration (second review remediation)
+- [x] **Phase 35: Slack Behavioral Parity** - OpenID Connect, filesUploadV2, auth/scope semantics, deferred method registration (second review remediation) (completed 2026-03-14)
 - [ ] **Phase 36: Shopify Behavioral Parity** - OAuth grant types, missing REST routes, ID round-trip, list filter semantics (second review remediation)
 - [ ] **Phase 37: Billing Fidelity & Conformance Rigor** - Persistent billing shapes and conformance harness 1:1 proof (second review remediation)
 
@@ -398,7 +398,7 @@ Plans:
 | 32. Conformance Harness & Evidence | 2/2 | Complete    | 2026-03-13 | - |
 | 33. Cross-Cutting Reset Coverage | 1/1 | Complete    | 2026-03-14 | - |
 | 34. Slack Build Fix & Evidence Pipeline | 1/1 | Complete    | 2026-03-14 | - |
-| 35. Slack Behavioral Parity | 0/1 | In progress | - | - |
+| 35. Slack Behavioral Parity | 1/1 | Complete   | 2026-03-14 | - |
 | 36. Shopify Behavioral Parity | 0/0 | Not planned | - | - |
 | 37. Billing Fidelity & Conformance Rigor | 0/0 | Not planned | - | - |
 
@@ -453,7 +453,7 @@ Plans:
 **Goal:** Close remaining Slack twin behavioral gaps — register all deferred WebClient methods, implement real OpenID Connect flow with token persistence, fix the filesUploadV2 upload chain to match upstream WebClient behavior, and correct auth/scope semantics for apps.connections.open, conversation methods, and oauth.v2.access.
 **Depends on:** Phase 34
 **Findings addressed:** #3 (High: SLCK-14 overstated — deferred methods not registered), #4 (High: OpenID Connect not implemented as real OAuth flow), #5 (High: filesUploadV2 chain diverges on HTTP verb and files field), #6 (High: auth/scope wrong for apps.connections.open, conversation scope model, oauth.v2.access)
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 35-01-PLAN.md — Register 16 missing stub routes, fix openid.connect.token no-auth, correct POST upload verb, add METHOD_SCOPES entries

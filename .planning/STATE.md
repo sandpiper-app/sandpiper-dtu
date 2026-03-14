@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 34-01-PLAN.md
-last_updated: "2026-03-14T01:42:34.091Z"
+stopped_at: Completed 35-01-PLAN.md
+last_updated: "2026-03-14T02:26:09.387Z"
 last_activity: "2026-03-14 — Phase 34 Plan 01 complete: Slack twin builds cleanly, evidence pipeline operational"
 progress:
   total_phases: 25
-  completed_phases: 22
-  total_plans: 66
-  completed_plans: 66
+  completed_phases: 23
+  total_plans: 67
+  completed_plans: 67
   percent: 100
 ---
 
@@ -27,10 +27,10 @@ progress:
 
 ## Current Position
 
-Phase: 34 of 37 (Slack Build Fix & Evidence Pipeline) — Complete
+Phase: 35 of 37 (Slack Behavioral Parity) — Complete
 Plan: 1 of 1 complete
-Status: Plan 34-01 complete — TS2345 compile error fixed in oauth.ts; vitest-evidence.json regenerated (86 suites, 253 tests, exit 0); coverage-report.json rebuilt at 222 live; pnpm drift:check exits 0
-Last activity: 2026-03-14 — Phase 34 Plan 01 complete: Slack twin builds cleanly, evidence pipeline operational
+Status: Plan 35-01 complete — 16 missing WebClient routes registered; openid.connect.token fixed to no-auth code-exchange; PUT→POST for binary upload; apps.connections.open/oauth.v2.access/admin.workflows.search added to METHOD_SCOPES; 253/253 tests green
+Last activity: 2026-03-14 — Phase 35 Plan 01 complete: Slack twin behavioral parity restored, all High-severity findings #3-#6 closed
 
 Progress: [██████████] 100% (overall: 66/66 plans complete)
 
@@ -78,6 +78,7 @@ Progress: [██████████] 100% (overall: 66/66 plans complete)
 | Phase 32-01 P01 | 2min | 2 tasks | 4 files |
 | Phase 33 P01 | 5min | 2 tasks | 2 files |
 | Phase 34 P01 | 2min | 2 tasks | 3 files |
+| Phase 35-01 P01 | 3min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,15 @@ Progress: [██████████] 100% (overall: 66/66 plans complete)
 - Phase 37 added: Billing Fidelity & Conformance Rigor (second review — findings #11, #12 Medium)
 
 ### Key Decisions
+
+**2026-03-14 - Phase 35 Plan 01 (Slack behavioral parity — findings #3-#6):**
+- openid.connect.token handler validates client_id + client_secret in POST body without requiring a bearer token — WebClient sends Authorization header incidentally but handler ignores it; existing tests continue to pass
+- 16 missing WebClient method routes added to new-families.ts (not a new plugin file); plugin is the established catch-all for extended families; false "already registered" comment removed
+- oauth.v2.access kept in oauth.ts (existing no-auth handler correct) — only METHOD_SCOPES entry added for catalog completeness; stub() factory not used for no-auth endpoints
+- connections:write added to METHOD_SCOPES for apps.connections.open — auto-propagates to seedSlackBotToken() via allScopesString(), no seeder changes needed
+- openid.connect.token METHOD_SCOPES entry changed from ['openid'] to [] — consistent with its new no-auth status; METHOD_SCOPES scope list for this entry is now accurate
+- filesUploadV2 3-step chain: POST verb confirmed from upstream WebClient.ts line 722 (axios.post()); PUT → POST fix eliminates 404 on binary upload step
+- All 253 tests green after all three changes (31 test files, exit 0); pnpm -F @dtu/twin-slack build exits 0
 
 **2026-03-14 - Phase 34 Plan 01 (Slack compile fix + evidence pipeline refresh):**
 - TS2345 fix pattern: `if (!code)` guard before `issuedCodes.delete(code)` preferred over `code!` non-null assertion — guard participates in TypeScript control-flow analysis and is logically unreachable (binding check above proved code truthy)
@@ -314,7 +324,7 @@ None.
 
 **Last completed:** Phase 33 Plan 01 — XCUT-01 reset coverage (commits 7fd3b5a, 280b574)
 **Work in progress:** None — Milestone v1.2 Behavioral Fidelity complete
-**Stopped at:** Completed 34-01-PLAN.md
+**Stopped at:** Completed 35-01-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
