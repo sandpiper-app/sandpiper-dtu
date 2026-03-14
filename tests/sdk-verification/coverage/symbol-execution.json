@@ -1,5 +1,2814 @@
 {
-  "generatedAt": "2026-03-14T19:59:06.283Z",
-  "hitCount": 0,
-  "hits": []
+  "generatedAt": "2026-03-14T20:10:12.029Z",
+  "hitCount": 351,
+  "hits": [
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/AdminApiClient",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-admin-graphql-client.test.ts",
+      "testName": "fetch() with version 2025-01 returns x-shopify-api-version: 2025-01",
+      "hitCount": 9
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/AdminApiClient",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-client-wire.test.ts",
+      "testName": "does not contact https://dev.myshopify.com (rewrite succeeds)",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/AdminApiClient.fetch",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-admin-graphql-client.test.ts",
+      "testName": "fetch() with version 2025-01 returns x-shopify-api-version: 2025-01",
+      "hitCount": 6
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/AdminApiClient.fetch",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-client-wire.test.ts",
+      "testName": "does not contact https://dev.myshopify.com (rewrite succeeds)",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/AdminApiClient.getApiUrl",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-admin-graphql-client.test.ts",
+      "testName": "fetch() with version 2025-01 returns x-shopify-api-version: 2025-01",
+      "hitCount": 9
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/AdminApiClient.getApiUrl",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-client-wire.test.ts",
+      "testName": "does not contact https://dev.myshopify.com (rewrite succeeds)",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/AdminApiClient.getHeaders",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-admin-graphql-client.test.ts",
+      "testName": "fetch() with version 2025-01 returns x-shopify-api-version: 2025-01",
+      "hitCount": 9
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/AdminApiClient.getHeaders",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-client-wire.test.ts",
+      "testName": "does not contact https://dev.myshopify.com (rewrite succeeds)",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/AdminApiClient.request",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-admin-graphql-client.test.ts",
+      "testName": "fetch() with version 2025-01 returns x-shopify-api-version: 2025-01",
+      "hitCount": 6
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/AdminApiClient.request",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-client-wire.test.ts",
+      "testName": "does not contact https://dev.myshopify.com (rewrite succeeds)",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/AdminRestApiClient",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-admin-rest-client.test.ts",
+      "testName": "get() with limit=2 and 3 seeded products returns Link header with page_info cursor (RED until Plan 02)",
+      "hitCount": 11
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/AdminRestApiClient.delete",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-admin-rest-client.test.ts",
+      "testName": "delete() returns ok with empty body",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/AdminRestApiClient.get",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-admin-rest-client.test.ts",
+      "testName": "get() with limit=2 and 3 seeded products returns Link header with page_info cursor (RED until Plan 02)",
+      "hitCount": 9
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/AdminRestApiClient.post",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-admin-rest-client.test.ts",
+      "testName": "delete() returns ok with empty body",
+      "hitCount": 3
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/AdminRestApiClient.put",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-admin-rest-client.test.ts",
+      "testName": "put() returns ok with updated product body",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/createAdminApiClient",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-admin-graphql-client.test.ts",
+      "testName": "fetch() with version 2025-01 returns x-shopify-api-version: 2025-01",
+      "hitCount": 9
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/createAdminApiClient",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-client-wire.test.ts",
+      "testName": "does not contact https://dev.myshopify.com (rewrite succeeds)",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/admin-api-client@1.1.1/createAdminRestApiClient",
+      "packageName": "@shopify/admin-api-client",
+      "version": "1.1.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-admin-rest-client.test.ts",
+      "testName": "get() with limit=2 and 3 seeded products returns Link header with page_info cursor (RED until Plan 02)",
+      "hitCount": 11
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/GraphqlClient",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
+      "testName": "GraphqlClient with non-default version — twin echoes x-shopify-api-version",
+      "hitCount": 6
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/GraphqlClient.query",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
+      "testName": "query() deprecated compat — throws FeatureDeprecatedError in SDK >= v12",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/GraphqlClient.request",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
+      "testName": "GraphqlClient with non-default version — twin echoes x-shopify-api-version",
+      "hitCount": 5
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/GraphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-auth.test.ts",
+      "testName": "sdk/shopify-api-auth.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/GraphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-billing.test.ts",
+      "testName": "sdk/shopify-api-billing.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/GraphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
+      "testName": "sdk/shopify-api-graphql-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/GraphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "sdk/shopify-api-rest-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/GraphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-session.test.ts",
+      "testName": "sdk/shopify-api-session.test.ts",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/GraphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
+      "testName": "sdk/shopify-api-storefront-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/GraphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
+      "testName": "sdk/shopify-api-webhooks.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/GraphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
+      "testName": "sdk/shopify-app-framework-auth-smoke.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/GraphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-behavioral-parity.test.ts",
+      "testName": "sdk/shopify-behavioral-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/GraphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts",
+      "testName": "sdk/shopify-rest-state-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/RestClient",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "retries on 429 via test-retry endpoint",
+      "hitCount": 9
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/RestClient.delete",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "delete() resolves without throwing",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/RestClient.get",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "retries on 429 via test-retry endpoint",
+      "hitCount": 7
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/RestClient.post",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "put() returns body.product with id",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/RestClient.put",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "put() returns body.product with id",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-auth.test.ts",
+      "testName": "sdk/shopify-api-auth.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-billing.test.ts",
+      "testName": "sdk/shopify-api-billing.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
+      "testName": "sdk/shopify-api-graphql-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "sdk/shopify-api-rest-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-session.test.ts",
+      "testName": "sdk/shopify-api-session.test.ts",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
+      "testName": "sdk/shopify-api-storefront-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
+      "testName": "sdk/shopify-api-webhooks.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
+      "testName": "sdk/shopify-app-framework-auth-smoke.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-behavioral-parity.test.ts",
+      "testName": "sdk/shopify-behavioral-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts",
+      "testName": "sdk/shopify-rest-state-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.auth",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-auth.test.ts",
+      "testName": "sdk/shopify-api-auth.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.auth",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-billing.test.ts",
+      "testName": "sdk/shopify-api-billing.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.auth",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
+      "testName": "sdk/shopify-api-graphql-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.auth",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "sdk/shopify-api-rest-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.auth",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-session.test.ts",
+      "testName": "sdk/shopify-api-session.test.ts",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.auth",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
+      "testName": "sdk/shopify-api-storefront-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.auth",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
+      "testName": "sdk/shopify-api-webhooks.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.auth",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
+      "testName": "sdk/shopify-app-framework-auth-smoke.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.auth",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-behavioral-parity.test.ts",
+      "testName": "sdk/shopify-behavioral-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.auth",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts",
+      "testName": "sdk/shopify-rest-state-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.billing",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-billing.test.ts",
+      "testName": "currentAppInstallation.activeSubscriptions includes lineItems after subscription confirmed",
+      "hitCount": 6
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.clients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-auth.test.ts",
+      "testName": "sdk/shopify-api-auth.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.clients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-billing.test.ts",
+      "testName": "sdk/shopify-api-billing.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.clients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
+      "testName": "sdk/shopify-api-graphql-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.clients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "sdk/shopify-api-rest-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.clients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-session.test.ts",
+      "testName": "sdk/shopify-api-session.test.ts",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.clients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
+      "testName": "sdk/shopify-api-storefront-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.clients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
+      "testName": "sdk/shopify-api-webhooks.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.clients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
+      "testName": "sdk/shopify-app-framework-auth-smoke.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.clients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-behavioral-parity.test.ts",
+      "testName": "sdk/shopify-behavioral-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.clients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts",
+      "testName": "sdk/shopify-rest-state-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.config",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-auth.test.ts",
+      "testName": "sdk/shopify-api-auth.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.config",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-billing.test.ts",
+      "testName": "sdk/shopify-api-billing.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.config",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
+      "testName": "sdk/shopify-api-graphql-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.config",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "sdk/shopify-api-rest-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.config",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-session.test.ts",
+      "testName": "sdk/shopify-api-session.test.ts",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.config",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
+      "testName": "sdk/shopify-api-storefront-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.config",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
+      "testName": "sdk/shopify-api-webhooks.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.config",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
+      "testName": "sdk/shopify-app-framework-auth-smoke.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.config",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-behavioral-parity.test.ts",
+      "testName": "sdk/shopify-behavioral-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.config",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts",
+      "testName": "sdk/shopify-rest-state-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.flow",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
+      "testName": "returns { valid: false } for a bad HMAC string",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.fulfillmentService",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
+      "testName": "returns { valid: false } for a bad HMAC string",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-auth.test.ts",
+      "testName": "sdk/shopify-api-auth.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-billing.test.ts",
+      "testName": "sdk/shopify-api-billing.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
+      "testName": "sdk/shopify-api-graphql-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "sdk/shopify-api-rest-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-session.test.ts",
+      "testName": "sdk/shopify-api-session.test.ts",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
+      "testName": "sdk/shopify-api-storefront-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
+      "testName": "sdk/shopify-api-webhooks.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
+      "testName": "sdk/shopify-app-framework-auth-smoke.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-behavioral-parity.test.ts",
+      "testName": "sdk/shopify-behavioral-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts",
+      "testName": "sdk/shopify-rest-state-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.session",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-session.test.ts",
+      "testName": "extracts session ID from a Bearer token in Authorization header",
+      "hitCount": 7
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/Shopify.webhooks",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
+      "testName": "returns { valid: false } when x-shopify-topic header is missing",
+      "hitCount": 3
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/shopifyApi",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-auth.test.ts",
+      "testName": "sdk/shopify-api-auth.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/shopifyApi",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-billing.test.ts",
+      "testName": "sdk/shopify-api-billing.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/shopifyApi",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
+      "testName": "sdk/shopify-api-graphql-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/shopifyApi",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "sdk/shopify-api-rest-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/shopifyApi",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-session.test.ts",
+      "testName": "sdk/shopify-api-session.test.ts",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/shopifyApi",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
+      "testName": "sdk/shopify-api-storefront-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/shopifyApi",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
+      "testName": "sdk/shopify-api-webhooks.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/shopifyApi",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
+      "testName": "sdk/shopify-app-framework-auth-smoke.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/shopifyApi",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-behavioral-parity.test.ts",
+      "testName": "sdk/shopify-behavioral-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/shopifyApi",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts",
+      "testName": "sdk/shopify-rest-state-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-auth.test.ts",
+      "testName": "sdk/shopify-api-auth.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-billing.test.ts",
+      "testName": "sdk/shopify-api-billing.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
+      "testName": "sdk/shopify-api-graphql-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "sdk/shopify-api-rest-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-session.test.ts",
+      "testName": "sdk/shopify-api-session.test.ts",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
+      "testName": "sdk/shopify-api-storefront-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
+      "testName": "sdk/shopify-api-webhooks.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
+      "testName": "sdk/shopify-app-framework-auth-smoke.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-behavioral-parity.test.ts",
+      "testName": "sdk/shopify-behavioral-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts",
+      "testName": "sdk/shopify-rest-state-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Graphql",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-auth.test.ts",
+      "testName": "sdk/shopify-api-auth.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Graphql",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-billing.test.ts",
+      "testName": "sdk/shopify-api-billing.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Graphql",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
+      "testName": "sdk/shopify-api-graphql-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Graphql",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "sdk/shopify-api-rest-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Graphql",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-session.test.ts",
+      "testName": "sdk/shopify-api-session.test.ts",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Graphql",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
+      "testName": "sdk/shopify-api-storefront-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Graphql",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
+      "testName": "sdk/shopify-api-webhooks.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Graphql",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
+      "testName": "sdk/shopify-app-framework-auth-smoke.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Graphql",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-behavioral-parity.test.ts",
+      "testName": "sdk/shopify-behavioral-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Graphql",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts",
+      "testName": "sdk/shopify-rest-state-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.graphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-auth.test.ts",
+      "testName": "sdk/shopify-api-auth.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.graphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-billing.test.ts",
+      "testName": "sdk/shopify-api-billing.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.graphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
+      "testName": "sdk/shopify-api-graphql-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.graphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "sdk/shopify-api-rest-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.graphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-session.test.ts",
+      "testName": "sdk/shopify-api-session.test.ts",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.graphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
+      "testName": "sdk/shopify-api-storefront-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.graphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
+      "testName": "sdk/shopify-api-webhooks.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.graphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
+      "testName": "sdk/shopify-app-framework-auth-smoke.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.graphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-behavioral-parity.test.ts",
+      "testName": "sdk/shopify-behavioral-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.graphqlProxy",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts",
+      "testName": "sdk/shopify-rest-state-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-auth.test.ts",
+      "testName": "sdk/shopify-api-auth.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-billing.test.ts",
+      "testName": "sdk/shopify-api-billing.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
+      "testName": "sdk/shopify-api-graphql-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "sdk/shopify-api-rest-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-session.test.ts",
+      "testName": "sdk/shopify-api-session.test.ts",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
+      "testName": "sdk/shopify-api-storefront-client.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
+      "testName": "sdk/shopify-api-webhooks.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
+      "testName": "sdk/shopify-app-framework-auth-smoke.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-behavioral-parity.test.ts",
+      "testName": "sdk/shopify-behavioral-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Rest",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts",
+      "testName": "sdk/shopify-rest-state-parity.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/ShopifyClients.Storefront",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
+      "testName": "request with non-default version echoes x-shopify-api-version: 2025-01",
+      "hitCount": 10
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/App",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-app-listeners.test.ts",
+      "testName": "sdk/slack-bolt-app-listeners.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/App.action",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-app-listeners.test.ts",
+      "testName": "sdk/slack-bolt-app-listeners.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/App.assistant",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-app-listeners.test.ts",
+      "testName": "sdk/slack-bolt-app-listeners.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/App.command",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-app-listeners.test.ts",
+      "testName": "sdk/slack-bolt-app-listeners.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/App.event",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-app-listeners.test.ts",
+      "testName": "sdk/slack-bolt-app-listeners.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/App.function",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-app-listeners.test.ts",
+      "testName": "sdk/slack-bolt-app-listeners.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/App.init",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-app-listeners.test.ts",
+      "testName": "sdk/slack-bolt-app-listeners.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/App.message",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-app-listeners.test.ts",
+      "testName": "sdk/slack-bolt-app-listeners.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/App.options",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-app-listeners.test.ts",
+      "testName": "sdk/slack-bolt-app-listeners.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/App.processEvent",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-app-listeners.test.ts",
+      "testName": "sdk/slack-bolt-app-listeners.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/App.shortcut",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-app-listeners.test.ts",
+      "testName": "sdk/slack-bolt-app-listeners.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/App.start",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-http-receivers.test.ts",
+      "testName": "sdk/slack-bolt-http-receivers.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/App.stop",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-http-receivers.test.ts",
+      "testName": "sdk/slack-bolt-http-receivers.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/App.view",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-app-listeners.test.ts",
+      "testName": "sdk/slack-bolt-app-listeners.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/AwsLambdaReceiver",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-aws-lambda-receiver.test.ts",
+      "testName": "sdk/slack-bolt-aws-lambda-receiver.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/AwsLambdaReceiver.init",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-aws-lambda-receiver.test.ts",
+      "testName": "sdk/slack-bolt-aws-lambda-receiver.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/AwsLambdaReceiver.start",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-aws-lambda-receiver.test.ts",
+      "testName": "sdk/slack-bolt-aws-lambda-receiver.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/AwsLambdaReceiver.stop",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-aws-lambda-receiver.test.ts",
+      "testName": "sdk/slack-bolt-aws-lambda-receiver.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/AwsLambdaReceiver.toHandler",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-aws-lambda-receiver.test.ts",
+      "testName": "sdk/slack-bolt-aws-lambda-receiver.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/ExpressReceiver",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-http-receivers.test.ts",
+      "testName": "sdk/slack-bolt-http-receivers.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/HTTPReceiver",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-http-receivers.test.ts",
+      "testName": "sdk/slack-bolt-http-receivers.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/SocketModeReceiver",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-socket-mode-receiver.test.ts",
+      "testName": "sdk/slack-bolt-socket-mode-receiver.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/SocketModeReceiver.init",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-socket-mode-receiver.test.ts",
+      "testName": "sdk/slack-bolt-socket-mode-receiver.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/SocketModeReceiver.start",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-socket-mode-receiver.test.ts",
+      "testName": "sdk/slack-bolt-socket-mode-receiver.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/bolt@4.6.0/SocketModeReceiver.stop",
+      "packageName": "@slack/bolt",
+      "version": "4.6.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-bolt-socket-mode-receiver.test.ts",
+      "testName": "sdk/slack-bolt-socket-mode-receiver.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/oauth@3.0.4/InstallProvider",
+      "packageName": "@slack/oauth",
+      "version": "3.0.4",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-oauth-install-provider.test.ts",
+      "testName": "sdk/slack-oauth-install-provider.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/oauth@3.0.4/InstallProvider.authorize",
+      "packageName": "@slack/oauth",
+      "version": "3.0.4",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-oauth-install-provider.test.ts",
+      "testName": "sdk/slack-oauth-install-provider.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/oauth@3.0.4/InstallProvider.generateInstallUrl",
+      "packageName": "@slack/oauth",
+      "version": "3.0.4",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-oauth-install-provider.test.ts",
+      "testName": "sdk/slack-oauth-install-provider.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/oauth@3.0.4/InstallProvider.handleCallback",
+      "packageName": "@slack/oauth",
+      "version": "3.0.4",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-oauth-install-provider.test.ts",
+      "testName": "sdk/slack-oauth-install-provider.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/oauth@3.0.4/InstallProvider.handleInstallPath",
+      "packageName": "@slack/oauth",
+      "version": "3.0.4",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-oauth-install-provider.test.ts",
+      "testName": "sdk/slack-oauth-install-provider.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/oauth@3.0.4/InstallProvider.installationStore.fetchInstallation",
+      "packageName": "@slack/oauth",
+      "version": "3.0.4",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-oauth-install-provider.test.ts",
+      "testName": "sdk/slack-oauth-install-provider.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/oauth@3.0.4/InstallProvider.installationStore.storeInstallation",
+      "packageName": "@slack/oauth",
+      "version": "3.0.4",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-oauth-install-provider.test.ts",
+      "testName": "sdk/slack-oauth-install-provider.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/oauth@3.0.4/InstallProvider.stateStore.generateStateParam",
+      "packageName": "@slack/oauth",
+      "version": "3.0.4",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-oauth-install-provider.test.ts",
+      "testName": "sdk/slack-oauth-install-provider.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/oauth@3.0.4/InstallProvider.stateStore.verifyStateParam",
+      "packageName": "@slack/oauth",
+      "version": "3.0.4",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-oauth-install-provider.test.ts",
+      "testName": "sdk/slack-oauth-install-provider.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/oauth@3.0.4/MemoryInstallationStore",
+      "packageName": "@slack/oauth",
+      "version": "3.0.4",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-oauth-install-provider.test.ts",
+      "testName": "sdk/slack-oauth-install-provider.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/ChatStreamer",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-webclient-base.test.ts",
+      "testName": "sdk/slack-webclient-base.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/ChatStreamer.append",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-webclient-base.test.ts",
+      "testName": "sdk/slack-webclient-base.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/ChatStreamer.stop",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-webclient-base.test.ts",
+      "testName": "sdk/slack-webclient-base.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.admin.apps.approved.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "admin.apps.approved.list returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.admin.conversations.create",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "admin.conversations.create returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.admin.conversations.search",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "admin.conversations.search returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.admin.teams.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "admin.teams.list returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.admin.users.invite",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "admin.users.invite returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.admin.users.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "admin.users.list returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.api.test",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-auth-gateway.test.ts",
+      "testName": "returns ok: true with empty args when no params sent",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.apiCall",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-webclient-base.test.ts",
+      "testName": "sdk/slack-webclient-base.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.assistant.threads.setStatus",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "assistant.threads.setStatus returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.assistant.threads.setSuggestedPrompts",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "assistant.threads.setSuggestedPrompts returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.assistant.threads.setTitle",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "assistant.threads.setTitle returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.auth.revoke",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "auth.revoke returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.auth.teams.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "auth.teams.list returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.auth.test",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-auth-gateway.test.ts",
+      "testName": "returns expected team and user identifiers",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.bookmarks.add",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "bookmarks.add returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.bookmarks.edit",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "bookmarks.edit returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.bookmarks.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "bookmarks.list returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.bookmarks.remove",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "bookmarks.remove returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.bots.info",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "bots.info returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.calls.add",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "calls.add returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.calls.end",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "calls.end returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.calls.info",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "calls.info returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.calls.participants.add",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "calls.participants.add returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.calls.participants.remove",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "calls.participants.remove returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.calls.update",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "calls.update returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.canvases.create",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "canvases.create returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.canvases.delete",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "canvases.delete returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.appendStream",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "chat.appendStream returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.delete",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-chat.test.ts",
+      "testName": "chat.delete returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.delete",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-scope-enforcement.test.ts",
+      "testName": "SLCK-15d: chat.delete by different userId returns cant_delete_message",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.deleteScheduledMessage",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-chat.test.ts",
+      "testName": "chat.deleteScheduledMessage returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.getPermalink",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-chat.test.ts",
+      "testName": "chat.getPermalink returns ok:true and permalink",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.meMessage",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-chat.test.ts",
+      "testName": "chat.meMessage returns ok:true and ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.postEphemeral",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-chat.test.ts",
+      "testName": "chat.postEphemeral returns ok:true and message_ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.postMessage",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-chat.test.ts",
+      "testName": "chat.unfurl returns ok:true",
+      "hitCount": 5
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.postMessage",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-pins.test.ts",
+      "testName": "pins.remove returns ok:true",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.postMessage",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-reactions.test.ts",
+      "testName": "reactions.remove returns ok:true",
+      "hitCount": 3
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.postMessage",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-scope-enforcement.test.ts",
+      "testName": "SLCK-18c: broad-scope token calling chat.postMessage succeeds (regression guard)",
+      "hitCount": 6
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.scheduledMessages.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-chat.test.ts",
+      "testName": "chat.scheduledMessages.list returns ok:true and empty array",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.scheduleMessage",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-chat.test.ts",
+      "testName": "chat.scheduleMessage returns ok:true and scheduled_message_id",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.startStream",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-chat.test.ts",
+      "testName": "ChatStreamer append and stop sequence completes",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.startStream",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-webclient-base.test.ts",
+      "testName": "ChatStreamer append/stop sequence completes",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.stopStream",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "chat.stopStream returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.unfurl",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-chat.test.ts",
+      "testName": "chat.unfurl returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.update",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-chat.test.ts",
+      "testName": "chat.update returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chat.update",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-scope-enforcement.test.ts",
+      "testName": "SLCK-15e: owner update on correct channel succeeds (regression guard)",
+      "hitCount": 3
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.chatStream",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-webclient-base.test.ts",
+      "testName": "sdk/slack-webclient-base.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.acceptSharedInvite",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.acceptSharedInvite returns ok: true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.approveSharedInvite",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.approveSharedInvite returns ok: true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.archive",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.unarchive unarchives a channel",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.canvases.create",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "conversations.canvases.create returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.close",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.close closes a channel",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.create",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.rename renames a channel",
+      "hitCount": 4
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.declineSharedInvite",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.declineSharedInvite returns ok: true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.externalInvitePermissions.set",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "conversations.externalInvitePermissions.set returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.history",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.history returns messages array",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.info",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.info returns channel for C_GENERAL",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.invite",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.invite invites a user to a channel",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.invite",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-state-tables.test.ts",
+      "testName": "kicked user no longer appears in conversations.members",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.inviteShared",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.inviteShared returns ok: true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.join",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.join returns ok and channel",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.kick",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.kick removes a user from a channel",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.kick",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-state-tables.test.ts",
+      "testName": "kicked user no longer appears in conversations.members",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.leave",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.leave returns ok",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.list returns channels array",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.listConnectInvites",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.listConnectInvites returns ok: true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.mark",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.mark marks the read position",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.members",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.members returns members array",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.members",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-state-tables.test.ts",
+      "testName": "kicked user no longer appears in conversations.members",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.open",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.open opens a DM channel",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.open",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-state-tables.test.ts",
+      "testName": "opening the same DM twice returns already_open:true with consistent channel ID",
+      "hitCount": 3
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.rename",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.rename renames a channel",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.replies",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.replies returns thread messages",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.requestSharedInvite.approve",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "conversations.requestSharedInvite.approve returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.requestSharedInvite.deny",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "conversations.requestSharedInvite.deny returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.requestSharedInvite.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.requestSharedInvite.list returns ok: true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.setPurpose",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.setPurpose sets channel purpose",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.setTopic",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.setTopic sets channel topic",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.conversations.unarchive",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-conversations.test.ts",
+      "testName": "conversations.unarchive unarchives a channel",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.dialog.open",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "dialog.open returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.dnd.endDnd",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "dnd.endDnd returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.dnd.endSnooze",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "dnd.endSnooze returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.dnd.info",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "dnd.info returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.dnd.setSnooze",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "dnd.setSnooze returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.dnd.teamInfo",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "dnd.teamInfo returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.emoji.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "emoji.list returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.entity.presentDetails",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "entity.presentDetails returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.files.comments.delete",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "files.comments.delete returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.files.completeUploadExternal",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-client-behavior-parity.test.ts",
+      "testName": "filesUploadV2 returns nested completed metadata with id, name, and permalink",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.files.completeUploadExternal",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-webclient-base.test.ts",
+      "testName": "sdk/slack-webclient-base.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.files.delete",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "files.delete returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.files.getUploadURLExternal",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-client-behavior-parity.test.ts",
+      "testName": "filesUploadV2 returns nested completed metadata with id, name, and permalink",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.files.getUploadURLExternal",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-webclient-base.test.ts",
+      "testName": "sdk/slack-webclient-base.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.files.info",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "files.info returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.files.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "files.list returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.files.remote.add",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "files.remote.add returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.files.remote.info",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "files.remote.info returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.files.remote.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "files.remote.list returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.files.remote.remove",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "files.remote.remove returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.files.remote.share",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "files.remote.share returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.files.remote.update",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "files.remote.update returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.files.revokePublicURL",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "files.revokePublicURL returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.files.sharedPublicURL",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "files.sharedPublicURL returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.filesUploadV2",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-webclient-base.test.ts",
+      "testName": "sdk/slack-webclient-base.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.functions.completeError",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "functions.completeError returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.functions.completeSuccess",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "functions.completeSuccess returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.migration.exchange",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "migration.exchange returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.oauth.v2.access",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "oauth.v2.access via WebClient records symbol hit (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.openid.connect.token",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-auth-parity.test.ts",
+      "testName": "openid.connect.token round-trips into openid.connect.userInfo using the returned access_token",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.openid.connect.token",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "openid.connect.token returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.openid.connect.userInfo",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "openid.connect.userInfo returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.paginate",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-webclient-base.test.ts",
+      "testName": "sdk/slack-webclient-base.test.ts",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.pins.add",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-pins.test.ts",
+      "testName": "pins.add returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.pins.add",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-state-tables.test.ts",
+      "testName": "pins.list returns the added pin",
+      "hitCount": 4
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.pins.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-pins.test.ts",
+      "testName": "pins.list returns ok:true and items array",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.pins.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-state-tables.test.ts",
+      "testName": "pins.list returns the added pin",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.pins.remove",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-pins.test.ts",
+      "testName": "pins.remove returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.reactions.add",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-reactions.test.ts",
+      "testName": "reactions.remove returns ok:true",
+      "hitCount": 3
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.reactions.add",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-state-tables.test.ts",
+      "testName": "reactions.add after remove succeeds (no phantom dedup)",
+      "hitCount": 6
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.reactions.get",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-reactions.test.ts",
+      "testName": "reactions.get returns message with reactions grouped by name",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.reactions.get",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-state-tables.test.ts",
+      "testName": "reactions.remove decrements reaction count",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.reactions.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-reactions.test.ts",
+      "testName": "reactions.list returns ok:true and items array",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.reactions.remove",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-reactions.test.ts",
+      "testName": "reactions.remove returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.reactions.remove",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-state-tables.test.ts",
+      "testName": "reactions.add after remove succeeds (no phantom dedup)",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.reminders.add",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "reminders.add returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.reminders.complete",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "reminders.complete returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.reminders.delete",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "reminders.delete returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.reminders.info",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "reminders.info returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.reminders.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "reminders.list returns ok:true and empty array (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.rtm.connect",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "rtm.connect returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.search.all",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "search.all returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.search.files",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "search.files returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.search.messages",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "search.messages returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.slackLists.create",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "slackLists.create returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.stars.add",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "stars.add returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.stars.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "stars.list returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.stars.remove",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "stars.remove returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.team.accessLogs",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "team.accessLogs returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.team.billableInfo",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "team.billableInfo returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.team.info",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "team.info returns ok:true and team id (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.team.integrationLogs",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "team.integrationLogs returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.team.preferences.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "team.preferences.list returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.team.profile.get",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "team.profile.get returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.tooling.tokens.rotate",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "tooling.tokens.rotate returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.usergroups.create",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "usergroups.create returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.usergroups.disable",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "usergroups.disable returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.usergroups.enable",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "usergroups.enable returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.usergroups.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "usergroups.list returns ok:true and empty array (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.usergroups.update",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "usergroups.update returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.usergroups.users.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "usergroups.users.list returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.usergroups.users.update",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "usergroups.users.update returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.users.conversations",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-users.test.ts",
+      "testName": "users.conversations returns channels array",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.users.deletePhoto",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-users.test.ts",
+      "testName": "users.deletePhoto returns ok: true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.users.getPresence",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-users.test.ts",
+      "testName": "users.getPresence returns presence: active",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.users.identity",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-users.test.ts",
+      "testName": "users.identity returns user and team",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.users.info",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-users.test.ts",
+      "testName": "users.info returns user for U_BOT_TWIN",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.users.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-users.test.ts",
+      "testName": "users.list returns members array",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.users.lookupByEmail",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-users.test.ts",
+      "testName": "users.lookupByEmail returns user_not_found for unknown email",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.users.profile.get",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-users.test.ts",
+      "testName": "users.profile.get returns profile for U_BOT_TWIN",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.users.profile.set",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-users.test.ts",
+      "testName": "users.profile.set returns ok: true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.users.setPhoto",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-stubs-smoke.test.ts",
+      "testName": "users.setPhoto returns ok:true (stub)",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.users.setPresence",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-users.test.ts",
+      "testName": "users.setPresence returns ok: true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.views.open",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-state-tables.test.ts",
+      "testName": "views.update with returned view_id updates the stored view title",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.views.open",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-views.test.ts",
+      "testName": "views.update returns ok:true and a view object",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.views.publish",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-views.test.ts",
+      "testName": "views.publish returns ok:true with a home view",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.views.push",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-views.test.ts",
+      "testName": "views.push returns ok:true and a view object",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.views.update",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-state-tables.test.ts",
+      "testName": "views.update with unknown view_id returns view_not_found error",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.views.update",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-views.test.ts",
+      "testName": "views.update returns ok:true and a view object",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.workflows.stepCompleted",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "workflows.stepCompleted returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.workflows.stepFailed",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "workflows.stepFailed returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.workflows.updateStep",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "workflows.updateStep returns ok:true",
+      "hitCount": 1
+    }
+  ]
 }

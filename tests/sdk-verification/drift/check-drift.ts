@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * SDK drift detection (Phase 20)
+ * SDK drift detection (Phase 20+)
  *
  * Run: npx tsx tests/sdk-verification/drift/check-drift.ts
  *
@@ -9,6 +9,15 @@
  *   2. Coverage null-tier gate: coverage-report.json must have no null-tier symbols (hard fail, INFRA-12)
  *      Every symbol must declare 'live' or 'deferred' — null means the generator missed it.
  *      'deferred' is acceptable in Phase 14. The gate tightens in Phase 18+.
+ *   2a. Coverage provenance truthfulness gate (INFRA-25, Phase 40):
+ *      Validates report provenance before applying the live-count floor.
+ *      Fails when provenance.evidenceSource !== "runtime-symbol-execution",
+ *      when artifact paths are missing, when generatedAt is older than
+ *      symbol-execution.json.generatedAt or vitest-evidence.json.startTime,
+ *      or when any symbol entry contains a legacy top-level testFile field.
+ *      A passing provenance gate proves both freshness and runtime-symbol-execution
+ *      provenance, not just a live-count floor.
+ *   2b. Evidence-based live count gate (INFRA-22): live count must be >= 222.
  *   3. Submodule ref check: pinned commit SHAs vs current submodule HEAD (hard fail)
  *   4. Manifest staleness: manifest generatedAt vs submodule last commit timestamp (hard fail, Phase 20)
  *      STALE means a submodule has commits newer than the manifest — run pnpm coverage:generate.
@@ -16,6 +25,7 @@
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateCoverageReportTruthfulness } from './report-provenance.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '../../..');
@@ -116,6 +126,42 @@ try {
     console.error('  FAIL  coverage-report.json not found. Run: pnpm coverage:generate');
   } else {
     console.error(`  FAIL  Error reading coverage-report.json: ${err.message}`);
+  }
+  hasError = true;
+}
+
+// ─── 2a. Coverage provenance truthfulness gate (INFRA-25) ────────────────────
+console.log('\n=== Coverage Provenance Truthfulness Gate (INFRA-25) ===\n');
+console.log('Report must declare runtime-symbol-execution provenance and be fresher than its source artifacts.\n');
+
+try {
+  const coveragePath = join(root, 'tests/sdk-verification/coverage/coverage-report.json');
+  const symbolExecPath = join(root, 'tests/sdk-verification/coverage/symbol-execution.json');
+  const vitestEvidencePath = join(root, 'tests/sdk-verification/coverage/vitest-evidence.json');
+
+  const report = JSON.parse(readFileSync(coveragePath, 'utf8')) as Record<string, unknown>;
+  const symbolExec = JSON.parse(readFileSync(symbolExecPath, 'utf8')) as Record<string, unknown>;
+  const vitestEvidence = JSON.parse(readFileSync(vitestEvidencePath, 'utf8')) as Record<string, unknown>;
+
+  const provenanceResult = validateCoverageReportTruthfulness(report, symbolExec, vitestEvidence);
+
+  if (provenanceResult.ok) {
+    console.log(`  OK  Provenance: runtime-symbol-execution confirmed.`);
+    console.log(`  OK  Freshness: coverage-report.json is newer than source artifacts.`);
+    console.log(`  OK  No legacy testFile fields found in symbol entries.`);
+  } else {
+    // Name the failing rule explicitly so Phase 40 regressions are obvious in CI logs.
+    console.error(`  FAIL  Provenance rule violated: [${provenanceResult.rule}]`);
+    console.error(`        ${provenanceResult.message}`);
+    console.error('        Run: pnpm test:sdk --reporter=verbose --reporter=json --outputFile.json=tests/sdk-verification/coverage/vitest-evidence.json && pnpm coverage:generate');
+    hasError = true;
+  }
+} catch (err: any) {
+  if (err.code === 'ENOENT') {
+    console.error(`  FAIL  Provenance check: required artifact not found — ${err.path ?? err.message}`);
+    console.error('        Run: pnpm test:sdk --reporter=verbose --reporter=json --outputFile.json=tests/sdk-verification/coverage/vitest-evidence.json && pnpm coverage:generate');
+  } else {
+    console.error(`  FAIL  Provenance check error: ${err.message}`);
   }
   hasError = true;
 }
