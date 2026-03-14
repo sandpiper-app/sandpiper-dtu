@@ -2,8 +2,7 @@
  * Chat conformance suite
  *
  * Tests Slack Web API chat methods:
- * - chat.postMessage — post message (JSON body, blocks, form-urlencoded)
- * - chat.update     — update an existing message
+ * - chat.postMessage — post message (JSON body, blocks, form-urlencoded, second message)
  * - Error handling  — missing channel, missing text
  *
  * Runs against the twin (in-process via inject()) or a live Slack workspace.
@@ -12,18 +11,9 @@
 import type { ConformanceSuite } from '@dtu/conformance';
 import { slackNormalizer } from '../normalizer.js';
 
-/** Setup: post a message and capture its ts for chat.update tests */
-const postMessageForUpdate = {
-  name: 'post-message-for-update',
-  description: 'Post a message to C_GENERAL to get a ts for chat.update',
-  method: 'POST' as const,
-  path: '/api/chat.postMessage',
-  body: { channel: 'C_GENERAL', text: 'Message to update' },
-};
-
 export const chatSuite: ConformanceSuite = {
   name: 'Slack Chat',
-  description: 'Validates chat.postMessage and chat.update against Slack Web API',
+  description: 'Validates chat.postMessage (and error cases) against Slack Web API',
   normalizer: {
     ...slackNormalizer,
     normalizeFields: {
@@ -87,17 +77,16 @@ export const chatSuite: ConformanceSuite = {
     },
 
     {
-      id: 'chat-update',
-      name: 'POST chat.update modifies an existing message',
+      id: 'chat-postMessage-second',
+      name: 'POST chat.postMessage (second message in channel)',
       category: 'chat',
       requirements: ['SLCK-01'],
-      setup: [postMessageForUpdate],
       operation: {
-        name: 'chat.update-basic',
-        description: 'POST chat.update requires ts from prior message; twin reuses known ts format',
+        name: 'chat.postMessage-second',
+        description: 'POST chat.postMessage with text to C_GENERAL — second message in channel',
         method: 'POST',
         path: '/api/chat.postMessage',
-        body: { channel: 'C_GENERAL', text: 'Another message (update tested separately)' },
+        body: { channel: 'C_GENERAL', text: 'Another message in channel' },
       },
     },
 

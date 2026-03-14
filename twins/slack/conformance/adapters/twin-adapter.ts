@@ -20,27 +20,45 @@ export class SlackTwinAdapter implements ConformanceAdapter {
     this.app = await buildApp({ logger: false });
     await this.app.ready();
 
-    // Get an authorization code via the authorize endpoint
-    const authzResponse = await this.app.inject({
-      method: 'GET',
-      url: '/oauth/v2/authorize?client_id=test&scope=chat:write&redirect_uri=https://localhost/callback&state=test',
-    });
-    // Extract code from redirect Location header
-    const location = authzResponse.headers.location as string;
-    const code = new URL(location).searchParams.get('code');
-    if (!code) throw new Error('No code in authorize redirect');
+    // Seed a broad-scope token directly — bypasses OAuth flow which hardcodes botScopes
+    // and requires client_id/client_secret in exchange (Phase 31 tightening).
+    // Pattern: same as seedSlackBotToken() in tests/sdk-verification/setup/seeders.ts
+    const BROAD_SCOPE = [
+      'chat:write',
+      'channels:read',
+      'channels:history',
+      'groups:read',
+      'groups:history',
+      'im:read',
+      'im:history',
+      'mpim:read',
+      'mpim:history',
+      'users:read',
+      'reactions:read',
+      'reactions:write',
+      'pins:read',
+      'pins:write',
+      'files:read',
+      'files:write',
+    ].join(',');
 
-    // Exchange code for bot token
-    const oauthResponse = await this.app.inject({
+    const seedRes = await this.app.inject({
       method: 'POST',
-      url: '/api/oauth.v2.access',
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      payload: `code=${code}`,
+      url: '/admin/tokens',
+      headers: { 'content-type': 'application/json' },
+      payload: {
+        token: 'xoxb-conformance-token',
+        tokenType: 'bot',
+        teamId: 'T_TEST',
+        userId: 'U_BOT',
+        scope: BROAD_SCOPE,
+        appId: 'A_CONFORMANCE',
+      },
     });
-
-    const body = JSON.parse(oauthResponse.body);
-    if (!body.ok) throw new Error(`OAuth failed: ${JSON.stringify(body)}`);
-    this.botToken = body.access_token;
+    if (seedRes.statusCode !== 200) {
+      throw new Error(`Token seed failed: ${seedRes.statusCode} ${seedRes.body}`);
+    }
+    this.botToken = 'xoxb-conformance-token';
   }
 
   async execute(op: ConformanceOperation): Promise<ConformanceResponse> {

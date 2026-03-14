@@ -14,6 +14,10 @@ export const shopifyNormalizer: FieldNormalizerConfig = {
     'createdAt',
     'updatedAt',
     'admin_graphql_api_id',
+    // Rate-limit cost/throttle data changes between two independent calls (twin-mode second
+    // execute). extensions.cost contains requestedQueryCost, actualQueryCost, and
+    // throttleStatus.currentlyAvailable — all non-deterministic across calls.
+    'extensions.cost',
   ],
   normalizeFields: {
     'id': '<ID>',
