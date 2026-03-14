@@ -2,37 +2,37 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
-status: completed
-stopped_at: Completed 37-02-PLAN.md
-last_updated: "2026-03-14T05:25:12.675Z"
-last_activity: "2026-03-14 — Phase 37 Plan 02 complete: billing fidelity implementation — line_items column migration, one_time_purchases table, real persistence in 3 billing resolvers, CurrencyCode scalar; 268/268 tests pass"
+status: Milestone reopened
+stopped_at: Completed 38-03-PLAN.md
+last_updated: "2026-03-14T15:21:43.142Z"
+last_activity: 2026-03-14 — executed 38-03: dynamic conversation scope resolution for list/info/history (SLCK-21 GREEN)
 progress:
-  total_phases: 25
+  total_phases: 28
   completed_phases: 25
-  total_plans: 74
-  completed_plans: 74
-  percent: 100
+  total_plans: 78
+  completed_plans: 75
+  percent: 89
 ---
 
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-14
-**Status:** Milestone complete
+**Status:** Milestone reopened
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phases 34-37 added from senior coworker second review (12 findings: 2 Critical, 8 High, 2 Medium)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity reopened — Phases 38-40 added from adversarial re-audit (10 findings: 1 Critical, 8 High, 1 Medium)
 
 ## Current Position
 
-Phase: 37 of 37 (Billing Fidelity & Conformance Rigor) — COMPLETE
-Plan: 3 of 3 complete
-Status: Plan 37-02 complete — Finding #11 GREEN; lineItems + oneTimePurchases now persistent; CurrencyCode scalar added; 268/268 tests GREEN; Milestone v1.2 Behavioral Fidelity complete
-Last activity: 2026-03-14 — Phase 37 Plan 02 complete: billing fidelity implementation — line_items column migration, one_time_purchases table, real persistence in 3 billing resolvers, CurrencyCode scalar; 268/268 tests pass
+Phase: 37 of 40 complete (next: execute Phase 38)
+Plan: 4 plans ready for Phase 38
+Status: Phase 38 is now planned; Phases 39-40 remain unplanned follow-up work from the re-audit
+Last activity: 2026-03-14 — planned Phase 38 into four executable plans covering Slack auth/token parity, dynamic conversation scopes, and client-visible behavior
 
-Progress: [██████████] 100% (overall: 74/74 plans complete)
+Progress: [█████████░] 89% (overall: 25/28 phases complete; 74 completed plans, 1 planned phase ready to execute, 2 phases still unplanned)
 
 ## Performance Metrics
 
@@ -86,6 +86,7 @@ Progress: [██████████] 100% (overall: 74/74 plans complete)
 | Phase 37-01 P01 | 2min | 1 tasks | 1 files |
 | Phase 37 P03 | 12min | 2 tasks | 4 files |
 | Phase 37 P02 | 8min | 2 tasks | 4 files |
+| Phase 38 P03 | 12min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -95,8 +96,20 @@ Progress: [██████████] 100% (overall: 74/74 plans complete)
 - Phase 35 added: Slack Behavioral Parity (second review — findings #3, #4, #5, #6 High)
 - Phase 36 added: Shopify Behavioral Parity (second review — findings #7, #8, #9, #10 High)
 - Phase 37 added: Billing Fidelity & Conformance Rigor (second review — findings #11, #12 Medium)
+- Phase 38 added: Slack auth, scope, and client-behavior parity (re-audit follow-up — remaining Slack auth/client fidelity gaps)
+- Phase 39 added: Shopify OAuth, REST state, and ID parity (re-audit follow-up — remaining Shopify OAuth/REST/ID gaps)
+- Phase 40 added: Verification evidence integrity and conformance truthfulness (re-audit follow-up — remaining evidence/conformance truthfulness gaps)
 
 ### Key Decisions
+
+**2026-03-14 - Phase 38 Plan 03 (SLCK-21 dynamic conversation scope resolution):**
+- resolveChannelClass uses id.startsWith('D_') to detect DM — D_ prefix is deterministic from conversations.open DM creation (D_${sorted_users}); is_private alone cannot distinguish DM from MPIM
+- conversations.info and conversations.history move scope enforcement AFTER channel lookup — scope depends on channel class which requires loading the channel row; rate-limit check stays before channel lookup (ratelimited takes priority over channel_not_found)
+- conversations.list parses types param before scope enforcement (no channel row needed); params variable extracted early to enable type parsing before rate-limit check
+- METHOD_SCOPES catalog entries for conversations.* left unchanged — allScopesString() seeder still unions all catalog scopes; only reader handlers switch to dynamic resolver
+- Default types value is 'public_channel' — missing types param → channels:read only (not all four family scopes); matches real Slack default behavior
+- slack-conversation-scope-parity.test.ts created as part of this plan (dependency from 38-01 which was not executed before 38-03)
+- SLCK-21 fully resolved: 9/9 parity tests GREEN, 24/24 conversations regression tests GREEN
 
 **2026-03-14 - Phase 37 Plan 03 (Finding #12 conformance rigor):**
 - Twin-mode baseline is now second `await this.twin.execute(test.operation)` — validates shape consistency across two independent calls, catches twin non-determinism bugs that self-comparison masks
@@ -116,6 +129,12 @@ Progress: [██████████] 100% (overall: 74/74 plans complete)
 - Direct fetch() to twin's GraphQL endpoint used for appPurchaseOneTimeCreate and currentAppInstallation queries — billing SDK helper does not expose oneTimePurchase methods
 - STATE.md sandbox blocker note was outdated — pnpm test:sdk ran successfully against live twin; tests fail at runtime (not compile time) confirming gaps are real
 - Plans 02-03 must turn these 4 RED tests GREEN without regressions to existing 264 GREEN tests
+
+**2026-03-14 - Phases 38-40 added (adversarial re-audit follow-up):**
+- Subsequent adversarial re-audit disproved the milestone-complete claim from the Phase 34-37 remediation
+- Phase 38 added: Slack auth, scope, and client-behavior parity
+- Phase 39 added: Shopify OAuth, REST state, and ID parity
+- Phase 40 added: Verification evidence integrity and conformance truthfulness
 
 **2026-03-14 - Phase 36 Plan 04 (Finding #8 + #10 REST routes + filters):**
 - SDK REST client's parseJsonWithLosslessNumbers converts all id/.*_id JSON fields to strings — Location.find(id=1) returns instance.id === "1" not 1; test assertions must use Number(instance.id) to compare
@@ -374,10 +393,10 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 33 Plan 01 — XCUT-01 reset coverage (commits 7fd3b5a, 280b574)
-**Work in progress:** None — Milestone v1.2 Behavioral Fidelity complete
-**Stopped at:** Completed 37-02-PLAN.md
-**Timestamp:** 2026-03-13
+**Last completed:** Phase 37 — Billing Fidelity & Conformance Rigor
+**Work in progress:** Phase 38 plans are ready; next step is `$gsd-execute-phase 38`
+**Stopped at:** Completed 38-03-PLAN.md
+**Timestamp:** 2026-03-14
 
 ---
 *State tracking for Sandpiper DTU project - updated by GSD agents*

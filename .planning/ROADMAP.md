@@ -480,3 +480,39 @@ Plans:
 - [ ] 37-01-PLAN.md — Wave 0: extend shopify-api-billing.test.ts with RED assertions for lineItems and oneTimePurchases round-trip
 - [ ] 37-02-PLAN.md — Finding #11: StateManager line_items column + one_time_purchases table + billing resolver fixes
 - [ ] 37-03-PLAN.md — Finding #12: conformance runner twin-mode second-call comparison + Slack adapter broad scope + chat suite labeling
+
+### Phase 38: Slack auth, scope, and client-behavior parity
+
+**Goal:** Close the remaining Slack fidelity gaps: make OpenID Connect and OAuth exchanges stateful and credential-validating, enforce app-token and conversation-type scope semantics, fix token-class-specific identity behavior, and make client-visible flows like `filesUploadV2` and `response_url` match upstream Slack behavior.
+**Requirements**: SLCK-20, SLCK-21, SLCK-22, SLCK-23
+**Depends on:** Phase 37
+**Findings addressed:** Re-audit #3 (Slack auth/OIDC drift), #4 (token-class and scope semantics drift), #5 (false-green client behavior in filesUploadV2, response_url, auth.test)
+**Plans:** 1/4 plans executed
+
+Plans:
+- [ ] 38-01-PLAN.md — Wave 0 requirement-ID realignment plus RED parity tests for auth, conversation scopes, and client-visible Slack behavior
+- [ ] 38-02-PLAN.md — OIDC and oauth.v2.access token-state fixes, app-token enforcement, and token-class-aware auth.test identity
+- [ ] 38-03-PLAN.md — Dynamic `conversations.list/info/history` scope resolution by request type and channel class
+- [ ] 38-04-PLAN.md — `filesUploadV2` completion payload parity and `response_url` replace/delete-original behavior
+
+### Phase 39: Shopify OAuth, REST state, and ID parity
+
+**Goal:** Close the remaining Shopify fidelity gaps: enforce grant-specific OAuth validation, fix order/customer GraphQL-to-REST ID round-tripping, make product/customer/order/inventory REST writes and filters persist correctly, and remove inventory-level stub drift.
+**Requirements**: SHOP-14, SHOP-15, SHOP-16, SHOP-17
+**Depends on:** Phase 37
+**Findings addressed:** Re-audit #6 (OAuth grant validation drift), #7 (order/customer ID parity drift), #8 (non-persistent REST writes), #9 (collection filter and inventory-level state drift)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 39 to break down)
+
+### Phase 40: Verification evidence integrity and conformance truthfulness
+
+**Goal:** Make the verification story truthful: replace hand-authored symbol attribution with real execution evidence, eliminate false live coverage claims, tighten conformance/value checks where parity is still under-verified, and align docs and gates with what is actually proven.
+**Requirements**: INFRA-23, INFRA-24, INFRA-25
+**Depends on:** Phase 38, Phase 39
+**Findings addressed:** Re-audit #1 (fake evidence derivation), #2 (false live attributions), #10 (conformance/docs/tests overstate parity)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 40 to break down)
