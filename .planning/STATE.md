@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 32-01-PLAN.md
-last_updated: "2026-03-13T22:02:03.449Z"
-last_activity: "2026-03-13 — Phase 32 Plan 02 complete: REQUIRED_LIVE_COUNT 202→222, INFRA-22 exclusion pattern documented, coverage-report.json regenerated"
+stopped_at: Completed 33-01-PLAN.md
+last_updated: "2026-03-13T23:59:57.710Z"
+last_activity: "2026-03-13 — Phase 33 Plan 01 complete: XCUT-01 closed with 7 reset-coverage proofs, milestone v1.2 Behavioral Fidelity complete"
 progress:
   total_phases: 21
-  completed_phases: 20
-  total_plans: 64
-  completed_plans: 64
-  percent: 99
+  completed_phases: 21
+  total_plans: 65
+  completed_plans: 65
+  percent: 100
 ---
 
 # Project State: Sandpiper DTU
@@ -23,16 +23,16 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 32 Plan 01 COMPLETE (INFRA-21: compareValueFields in structural mode, 3 unit tests GREEN, shopifyNormalizer proof-of-concept)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 33 Plan 01 COMPLETE (XCUT-01: 7 reset-coverage proofs across Shopify and Slack twins, all v1.2 requirements satisfied)
 
 ## Current Position
 
-Phase: 32 of 33 (Conformance Harness Evidence) — In Progress
-Plan: 2 of 2 complete
-Status: Plan 32-02 complete — REQUIRED_LIVE_COUNT 202→222; INTEGRATION-TEST EXCLUSIONS block documenting slack-signing.test.ts and slack-state-tables.test.ts; coverage-report.json regenerated with phase '32' and live 222
-Last activity: 2026-03-13 — Phase 32 Plan 02 complete: REQUIRED_LIVE_COUNT 202→222, INFRA-22 exclusion pattern documented, coverage-report.json regenerated
+Phase: 33 of 33 (Cross-Cutting Reset Coverage) — Complete
+Plan: 1 of 1 complete
+Status: Plan 33-01 complete — XCUT-01 closed with 7 test proofs: app_subscriptions cleared, product_variants cleared, Shopify reset <100ms, Slack reset <100ms, slack_channel_members cleared, slack_views cleared, slack_pins cleared
+Last activity: 2026-03-13 — Phase 33 Plan 01 complete: XCUT-01 satisfied, milestone v1.2 Behavioral Fidelity complete
 
-Progress: [██████████] 99% (overall: 92/93 plans complete)
+Progress: [██████████] 100% (overall: 65/65 plans complete)
 
 ## Performance Metrics
 
@@ -76,10 +76,18 @@ Progress: [██████████] 99% (overall: 92/93 plans complete)
 | Phase 31-slack-oauth-method-coverage P02 | 2min | 2 tasks | 2 files |
 | Phase 32 P02 | 1min | 2 tasks | 3 files |
 | Phase 32-01 P01 | 2min | 2 tasks | 4 files |
+| Phase 33 P01 | 5min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
 ### Key Decisions
+
+**2026-03-13 - Phase 33 Plan 01 (reset coverage — XCUT-01):**
+- XCUT-01 closure via test-only additions: reset mechanism correct by design (:memory: SQLite close/reopen atomically destroys all data); 7 test proofs added (3 Shopify + 4 Slack)
+- dbBefore/dbAfter pattern required: must re-read app.stateManager.database after reset — in-memory SQLite close/reopen invalidates old reference
+- Warm-up reset call before timing assertion prevents Fastify route resolution from inflating measured elapsed time
+- Pre-existing flakiness noted out of scope: rate-limit throttling test (Shopify, parallel-run only) and oauth.v2.access tests (Slack) — confirmed pre-date this plan
+- Milestone v1.2 Behavioral Fidelity: all 18 adversarial review requirements (SHOP-xx, SLCK-xx, INFRA-xx, XCUT-01) now satisfied
 
 **2026-03-13 - Phase 32 Plan 01 (compareValueFields — INFRA-21):**
 - compareValueFields loop deduplicates via reportedPaths Set so type-mismatch from compareStructure is not double-reported as value mismatch
@@ -290,9 +298,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 24 Plan 04 — Billing state machine (commits e6320cb, 18ff247)
-**Work in progress:** None — Phase 24 complete, ready for Phase 25
-**Stopped at:** Completed 32-01-PLAN.md
+**Last completed:** Phase 33 Plan 01 — XCUT-01 reset coverage (commits 7fd3b5a, 280b574)
+**Work in progress:** None — Milestone v1.2 Behavioral Fidelity complete
+**Stopped at:** Completed 33-01-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---

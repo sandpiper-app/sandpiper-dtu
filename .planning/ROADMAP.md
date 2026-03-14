@@ -57,7 +57,7 @@
 - [x] **Phase 30: Slack Transport & State Fixes** - Provider-aware event delivery and stateful reactions/views (gap closure) (completed 2026-03-13)
 - [x] **Phase 31: Slack OAuth & Method Coverage** - OAuth exchange validation and comprehensive method smoke tests (gap closure) (completed 2026-03-13)
 - [x] **Phase 32: Conformance Harness & Evidence** - Primitive value comparison and real execution evidence (gap closure) (completed 2026-03-13)
-- [ ] **Phase 33: Cross-Cutting Reset Coverage** - Verify all new SQLite tables in StateManager reset logic (gap closure)
+- [x] **Phase 33: Cross-Cutting Reset Coverage** - Verify all new SQLite tables in StateManager reset logic (gap closure) (completed 2026-03-14)
 
 ## Phase Details
 
@@ -363,7 +363,7 @@ Plans:
 **Goal:** Every new SQLite table added in v1.2 is included in StateManager/SlackStateManager reset() logic, verified by a reset coverage test, within sub-100ms performance target.
 **Requirements:** XCUT-01
 **Gap Closure:** Closes orphaned XCUT-01 (reset coverage not formally tracked)
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 33-01-PLAN.md — XCUT-01: Shopify v1.2 table reset coverage + sub-100ms performance tests
@@ -392,7 +392,7 @@ Plans:
 | 30. Slack Transport & State Fixes | 2/2 | Complete    | 2026-03-13 | - |
 | 31. Slack OAuth & Method Coverage | 2/2 | Complete    | 2026-03-13 | - |
 | 32. Conformance Harness & Evidence | 2/2 | Complete    | 2026-03-13 | - |
-| 33. Cross-Cutting Reset Coverage | v1.2 | 0/1 | In Progress | - |
+| 33. Cross-Cutting Reset Coverage | 1/1 | Complete   | 2026-03-14 | - |
 
 ## Dependencies
 

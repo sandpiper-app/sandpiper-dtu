@@ -74,7 +74,7 @@ Requirements for milestone `v1.2 Behavioral Fidelity`. Fixes 13 adversarial revi
 
 ### Cross-Cutting
 
-- [ ] **XCUT-01**: Every new SQLite table added in v1.2 is included in the corresponding StateManager/SlackStateManager `reset()` logic, verified by a reset coverage test, and keeps reset performance within the existing sub-100ms target
+- [x] **XCUT-01**: Every new SQLite table added in v1.2 is included in the corresponding StateManager/SlackStateManager `reset()` logic, verified by a reset coverage test, and keeps reset performance within the existing sub-100ms target
 
 ## v2 Requirements
 
@@ -162,7 +162,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SLCK-19 | Phase 26 | Complete |
 | INFRA-21 | Phase 27, 32 | Complete |
 | INFRA-22 | Phase 27, 32 | Complete |
-| XCUT-01 | Phase 33 | Pending |
+| XCUT-01 | Phase 33 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 22 total (all complete)
