@@ -8,6 +8,7 @@ export default defineConfig({
   test: {
     name: 'sdk-verification',
     globalSetup: [resolve(__dirname, 'setup/global-setup.ts')],
+    setupFiles: [resolve(__dirname, 'setup/register-execution-evidence.ts')],
     testTimeout: 30_000,
     hookTimeout: 30_000,
     environment: 'node',

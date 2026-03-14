@@ -11,15 +11,32 @@
  *
  * process.env mutations made here propagate to all Vitest worker threads.
  * ctx.provide() is used in addition for maximum compatibility with inject().
+ *
+ * Phase 40, INFRA-23:
+ *   Removes stale symbol-execution.json before each full project run so
+ *   accumulated hits always reflect the current execution, not a prior run.
  */
 
 import type { GlobalSetupContext } from 'vitest/node';
+import { existsSync, unlinkSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const symbolExecutionPath = join(__dirname, '../coverage/symbol-execution.json');
 
 // Module-level app references for teardown (set only when booted in-process)
 let shopifyApp: Awaited<ReturnType<typeof import('../../../twins/shopify/src/index.js').buildApp>> | null = null;
 let slackApp: Awaited<ReturnType<typeof import('../../../twins/slack/src/index.js').buildApp>> | null = null;
 
 export async function setup(ctx: GlobalSetupContext): Promise<void> {
+  // Remove stale symbol-execution.json so the fresh run starts clean.
+  // This prevents prior execution evidence from contaminating the current run.
+  if (existsSync(symbolExecutionPath)) {
+    unlinkSync(symbolExecutionPath);
+  }
+
   // --- Shopify twin ---
   const shopifyEnvUrl = process.env.SHOPIFY_API_URL;
   let shopifyBaseUrl: string;

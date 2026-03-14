@@ -10,6 +10,12 @@
  *   1. @shopify/shopify-api/adapters/node  — sets abstractFetch + abstractConvertRequest
  *   2. @shopify/shopify-api/runtime        — exports setAbstractFetchFunc for override
  *   3. @shopify/shopify-api               — main factory
+ *
+ * Helper-seam capture (Phase 40, INFRA-23):
+ *   The returned shopify instance exposes shopify.clients.Rest. Tests that call
+ *   `new RestClient({ session })` get an instance whose HTTP methods (get/post/put/delete)
+ *   are instrumented to emit runtime symbol hits. The Proxy wrapper covers new
+ *   RestClient instances created after createShopifyApiClient() returns.
  */
 
 // 1. MUST be first: sets abstractFetch to globalThis.fetch and registers nodeConvertRequest
@@ -29,6 +35,9 @@ import { createHmac } from 'node:crypto';
 
 // Billing config type
 import type { BillingConfig, ShopifyRestResources } from '@shopify/shopify-api';
+
+// Phase 40: runtime evidence recorder
+import { recordSymbolHit } from '../setup/execution-evidence-runtime.js';
 
 /**
  * Create a @shopify/shopify-api instance wired to the local Shopify twin.
@@ -68,7 +77,7 @@ export function createShopifyApiClient<Resources extends ShopifyRestResources = 
     return fetch(hostRewritten, init);
   });
 
-  return shopifyApi({
+  const shopify = shopifyApi({
     apiKey: 'test-api-key',
     apiSecretKey: 'test-api-secret',
     hostName: 'test-app.example.com',
@@ -85,6 +94,39 @@ export function createShopifyApiClient<Resources extends ShopifyRestResources = 
     ...(options?.scopes && { scopes: options.scopes }),
     ...(options?.restResources && { restResources: options.restResources }),
   });
+
+  // Phase 40, INFRA-23: Instrument shopify.clients.Rest constructor so that
+  // any RestClient instance created by tests emits runtime symbol hits for
+  // get/post/put/delete calls. We wrap the class so every `new RestClient()`
+  // returns an instance with instrumented methods.
+  const OriginalRestClient = shopify.clients.Rest;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const InstrumentedRestClient = new Proxy(OriginalRestClient as any, {
+    construct(Target, args) {
+      // Record that RestClient was constructed
+      recordSymbolHit('@shopify/shopify-api@12.3.0/RestClient');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const instance: any = new Target(...args);
+
+      // Wrap each HTTP method to emit a per-method hit
+      for (const method of ['get', 'post', 'put', 'delete'] as const) {
+        const original = instance[method].bind(instance);
+        instance[method] = (...methodArgs: unknown[]) => {
+          recordSymbolHit(`@shopify/shopify-api@12.3.0/RestClient.${method}`);
+          return original(...methodArgs);
+        };
+      }
+
+      return instance;
+    },
+  });
+
+  // Replace the Rest constructor reference on the clients namespace
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (shopify.clients as any).Rest = InstrumentedRestClient;
+
+  return shopify;
 }
 
 /**

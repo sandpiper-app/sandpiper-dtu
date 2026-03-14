@@ -1,0 +1,198 @@
+{
+  "generatedAt": "2026-03-14T19:41:50.128Z",
+  "hitCount": 24,
+  "hits": [
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/RestClient",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "retries on 429 via test-retry endpoint",
+      "hitCount": 9
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/RestClient.delete",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "delete() resolves without throwing",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/RestClient.get",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "retries on 429 via test-retry endpoint",
+      "hitCount": 7
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/RestClient.post",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "put() returns body.product with id",
+      "hitCount": 2
+    },
+    {
+      "symbol": "@shopify/shopify-api@12.3.0/RestClient.put",
+      "packageName": "@shopify/shopify-api",
+      "version": "12.3.0",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
+      "testName": "put() returns body.product with id",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.admin.apps.approved.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "admin.apps.approved.list returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.admin.conversations.create",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "admin.conversations.create returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.admin.conversations.search",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "admin.conversations.search returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.admin.teams.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "admin.teams.list returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.admin.users.invite",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "admin.users.invite returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.admin.users.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "admin.users.list returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.canvases.create",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "canvases.create returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.canvases.delete",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "canvases.delete returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.entity.presentDetails",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "entity.presentDetails returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.openid.connect.token",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "openid.connect.token returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.openid.connect.userInfo",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "openid.connect.userInfo returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.rtm.connect",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "rtm.connect returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.slackLists.create",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "slackLists.create returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.stars.add",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "stars.add returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.stars.list",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "stars.list returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.stars.remove",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "stars.remove returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.workflows.stepCompleted",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "workflows.stepCompleted returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.workflows.stepFailed",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "workflows.stepFailed returns ok:true",
+      "hitCount": 1
+    },
+    {
+      "symbol": "@slack/web-api@7.14.1/WebClient.workflows.updateStep",
+      "packageName": "@slack/web-api",
+      "version": "7.14.1",
+      "testFile": "/Users/futur/projects/sandpiper-dtu/tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+      "testName": "workflows.updateStep returns ok:true",
+      "hitCount": 1
+    }
+  ]
+}
