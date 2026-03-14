@@ -59,7 +59,9 @@ export class InteractionHandler {
       expiresAt: Date.now() + 30 * 60 * 1000, // 30 minutes
     });
 
-    const responseUrl = `${this.baseUrl}/response-url/${responseUrlId}`;
+    // Read SLACK_API_URL per-call (set by globalSetup AFTER twin boots in test env)
+    const effectiveBaseUrl = (process.env.SLACK_API_URL ?? this.baseUrl).replace(/\/api\/?$/, '');
+    const responseUrl = `${effectiveBaseUrl}/response-url/${responseUrlId}`;
 
     // Build block_actions payload matching Slack's format
     const payload = {
@@ -132,7 +134,22 @@ export class InteractionHandler {
     // Decrement uses
     entry.usesRemaining--;
 
-    // Post the body content as a message in the original channel
+    if (body.delete_original === true) {
+      // Remove the original message from conversation history
+      this.slackStateManager.database
+        .prepare('DELETE FROM slack_messages WHERE ts = ? AND channel_id = ?')
+        .run(entry.messageTs, entry.channelId);
+      return { ok: true };
+    } else if (body.replace_original === true) {
+      // Mutate the original message in place instead of appending a new one
+      this.slackStateManager.updateMessage(entry.messageTs, {
+        text: body.text ?? '',
+        blocks: body.blocks ? JSON.stringify(body.blocks) : '',
+      });
+      return { ok: true };
+    }
+
+    // Default: append a new follow-up message in the original channel
     const ts = generateMessageTs();
     this.slackStateManager.createMessage({
       channel_id: entry.channelId,

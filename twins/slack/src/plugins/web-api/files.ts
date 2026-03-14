@@ -22,6 +22,13 @@ declare module 'fastify' {
 }
 
 const filesPlugin: FastifyPluginAsync = async (fastify) => {
+  // Accept multipart/form-data and application/octet-stream for the binary upload step.
+  // The SDK posts the file data directly using axios with one of these content types.
+  // We do not need the body content — just accept and discard it.
+  for (const mimeType of ['multipart/form-data', 'application/octet-stream']) {
+    fastify.addContentTypeParser(mimeType, (_request, _payload, done) => done(null, null));
+  }
+
   // POST /api/files.getUploadURLExternal — step 1 of filesUploadV2 chain
   fastify.post('/api/files.getUploadURLExternal', async (request, reply) => {
     const token = extractToken(request);
