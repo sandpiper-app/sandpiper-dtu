@@ -190,6 +190,7 @@ export const METHOD_SCOPES: Record<string, string[]> = {
   'admin.workflows.collaborators.remove':     ['admin.workflows:write'],
   'admin.workflows.permissions.lookup':       ['admin.workflows:read'],
   'admin.workflows.unpublish':                ['admin.workflows:write'],
+  'admin.workflows.search':                   ['admin.workflows:read'],
 
   // ── admin.analytics.* ─────────────────────────────────────────────
   'admin.analytics.getFile':                  ['admin.analytics:read'],
@@ -203,7 +204,8 @@ export const METHOD_SCOPES: Record<string, string[]> = {
   'canvases.sections.lookup':                 ['canvases:read'],
 
   // ── openid.connect.* ──────────────────────────────────────────────
-  'openid.connect.token':                     ['openid'],
+  // openid.connect.token is a no-auth endpoint (code-exchange via client_id + client_secret)
+  'openid.connect.token':                     [],
   'openid.connect.userInfo':                  ['openid'],
 
   // ── stars.* ───────────────────────────────────────────────────────
@@ -249,6 +251,8 @@ export const METHOD_SCOPES: Record<string, string[]> = {
   'apps.manifest.validate':                   ['apps.manifest:read'],
   'apps.uninstall':                           [],
   'apps.event.authorizations.list':           ['authorizations:read'],
+  // Socket Mode app-level scope — confirmed in AppManifestLevelScopes type (manifest.ts)
+  'apps.connections.open':                    ['connections:write'],
 
   // ── conversations.* extended ──────────────────────────────────────
   'conversations.acceptSharedInvite':         ['channels:manage'],
@@ -272,6 +276,8 @@ export const METHOD_SCOPES: Record<string, string[]> = {
   // ── oauth.* ───────────────────────────────────────────────────────
   'oauth.access':                             [],
   'oauth.v2.exchange':                        [],
+  // oauth.v2.access is handled in oauth.ts as a no-auth endpoint; [] for catalog completeness
+  'oauth.v2.access':                          [],
 
   // ── files.* legacy ────────────────────────────────────────────────
   'files.upload':                             ['files:write'],
