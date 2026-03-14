@@ -400,7 +400,7 @@ Plans:
 | 34. Slack Build Fix & Evidence Pipeline | 1/1 | Complete    | 2026-03-14 | - |
 | 35. Slack Behavioral Parity | 1/1 | Complete    | 2026-03-14 | - |
 | 36. Shopify Behavioral Parity | 4/4 | Complete    | 2026-03-14 | - |
-| 37. Billing Fidelity & Conformance Rigor | 0/0 | Not planned | - | - |
+| 37. Billing Fidelity & Conformance Rigor | 0/3 | In progress | - | - |
 
 ## Dependencies
 
@@ -474,7 +474,9 @@ Plans:
 **Goal:** Make billing state persistent with real response shapes (lineItems, oneTimePurchases, subscription data in currentAppInstallation), and fix the conformance harness to prove 1:1 behavior — eliminate twin self-comparison in twin mode, add Slack value opt-in checks, and fix the chat conformance suite labeling.
 **Depends on:** Phase 35, Phase 36
 **Findings addressed:** #11 (Medium: billing/install fidelity shallow), #12 (Medium: conformance harness doesn't prove 1:1 behavior)
-**Plans:** 0 plans
+**Plans:** 3 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 37 to break down)
+- [ ] 37-01-PLAN.md — Wave 0: extend shopify-api-billing.test.ts with RED assertions for lineItems and oneTimePurchases round-trip
+- [ ] 37-02-PLAN.md — Finding #11: StateManager line_items column + one_time_purchases table + billing resolver fixes
+- [ ] 37-03-PLAN.md — Finding #12: conformance runner twin-mode second-call comparison + Slack adapter broad scope + chat suite labeling
