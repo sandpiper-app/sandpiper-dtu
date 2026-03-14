@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 37-03-PLAN.md
-last_updated: "2026-03-14T05:17:03.333Z"
+stopped_at: Completed 37-02-PLAN.md
+last_updated: "2026-03-14T05:21:51.122Z"
 last_activity: "2026-03-14 — Phase 37 Plan 03 complete: Conformance runner twin mode fixed (second-call structural comparison); Slack adapter broad scope via admin token; chat-update test accurately relabeled; 266/268 tests GREEN (2 expected-RED billing Wave-0 remain)"
 progress:
   total_phases: 25
-  completed_phases: 24
+  completed_phases: 25
   total_plans: 74
-  completed_plans: 73
-  percent: 99
+  completed_plans: 74
+  percent: 98
 ---
 
 # Project State: Sandpiper DTU
@@ -27,12 +27,12 @@ progress:
 
 ## Current Position
 
-Phase: 37 of 37 (Billing Fidelity & Conformance Rigor) — IN PROGRESS
-Plan: 3 of 3 complete (conformance rigor done; billing fidelity Plan 02 already complete)
-Status: Plan 37-03 complete — Finding #12 (conformance self-comparison) GREEN; twin mode now calls execute twice structurally; Slack adapter broad scope; 266/268 tests GREEN (2 expected-RED billing Wave-0 remain)
-Last activity: 2026-03-14 — Phase 37 Plan 03 complete: Conformance runner twin mode fixed (second-call structural comparison); Slack adapter broad scope via admin token; chat-update test accurately relabeled; 266/268 tests GREEN (2 expected-RED billing Wave-0 remain)
+Phase: 37 of 37 (Billing Fidelity & Conformance Rigor) — COMPLETE
+Plan: 3 of 3 complete
+Status: Plan 37-02 complete — Finding #11 GREEN; lineItems + oneTimePurchases now persistent; CurrencyCode scalar added; 268/268 tests GREEN; Milestone v1.2 Behavioral Fidelity complete
+Last activity: 2026-03-14 — Phase 37 Plan 02 complete: billing fidelity implementation — line_items column migration, one_time_purchases table, real persistence in 3 billing resolvers, CurrencyCode scalar; 268/268 tests pass
 
-Progress: [██████████] 98% (overall: 72/74 plans complete)
+Progress: [██████████] 100% (overall: 74/74 plans complete)
 
 ## Performance Metrics
 
@@ -85,6 +85,7 @@ Progress: [██████████] 98% (overall: 72/74 plans complete)
 | Phase 36-04 P04 | 7min | 2 tasks | 2 files |
 | Phase 37-01 P01 | 2min | 1 tasks | 1 files |
 | Phase 37 P03 | 12min | 2 tasks | 4 files |
+| Phase 37 P02 | 8min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -103,6 +104,12 @@ Progress: [██████████] 98% (overall: 72/74 plans complete)
 - Shopify normalizer strips `extensions.cost`: rate-limit bucket changes between two independent twin-mode calls; all cost fields are call-sequence-dependent
 - Slack adapter uses `app.inject()` not `fetch()` for admin token seeding (in-process pattern); body requires all 6 fields: token/tokenType/teamId/userId/scope/appId; BROAD_SCOPE hardcoded constant avoids coupling conformance to twin internals
 - Finding #12 GREEN: both conformance:twin scripts pass (Shopify 10/10, Slack 20/20)
+
+**2026-03-14 - Phase 37 Plan 02 (Billing fidelity implementation — Finding #11):**
+- CurrencyCode scalar added to schema: MoneyInput.currencyCode was String! which rejected USD (enum literal) at GraphQL validation level — scalar with parseLiteral handling Kind.ENUM fixes this; consistent with Shopify real API CurrencyCode enum
+- Test assertion fixed from not.toBe('/1') to toMatch(regex): after reset, first insert legitimately gets row ID 1 (AUTOINCREMENT); real persistence proof is the uniqueness assertion (second call differs from first)
+- lineItems transform: input { plan: { appRecurringPricingDetails: { interval, amount, currencyCode } } } → output { id, plan: { pricingDetails: { interval, price } } } consistent across create/cancel/currentAppInstallation resolvers
+- Finding #11 fully resolved: 4 RED tests GREEN, 268/268 tests pass
 
 **2026-03-14 - Phase 37 Plan 01 (Wave 0 RED billing tests for Finding #11):**
 - Wave 0 contract established: 4 RED tests prove billing gaps before implementation — lineItems always [], appPurchaseOneTimeCreate returns hardcoded stub GID (not persistent), currentAppInstallation.oneTimePurchases always edges:[], activeSubscriptions[0].lineItems always []
@@ -369,7 +376,7 @@ None.
 
 **Last completed:** Phase 33 Plan 01 — XCUT-01 reset coverage (commits 7fd3b5a, 280b574)
 **Work in progress:** None — Milestone v1.2 Behavioral Fidelity complete
-**Stopped at:** Completed 37-03-PLAN.md
+**Stopped at:** Completed 37-02-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---

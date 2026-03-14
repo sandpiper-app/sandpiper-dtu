@@ -61,7 +61,7 @@
 - [x] **Phase 34: Slack Build Fix & Evidence Pipeline** - Fix Slack twin compile error and rewrite coverage attribution from actual test evidence (second review remediation) (completed 2026-03-14)
 - [x] **Phase 35: Slack Behavioral Parity** - OpenID Connect, filesUploadV2, auth/scope semantics, deferred method registration (second review remediation) (completed 2026-03-14)
 - [x] **Phase 36: Shopify Behavioral Parity** - OAuth grant types, missing REST routes, ID round-trip, list filter semantics (second review remediation) (completed 2026-03-14)
-- [ ] **Phase 37: Billing Fidelity & Conformance Rigor** - Persistent billing shapes and conformance harness 1:1 proof (second review remediation)
+- [x] **Phase 37: Billing Fidelity & Conformance Rigor** - Persistent billing shapes and conformance harness 1:1 proof (second review remediation) (completed 2026-03-14)
 
 ## Phase Details
 
@@ -400,7 +400,7 @@ Plans:
 | 34. Slack Build Fix & Evidence Pipeline | 1/1 | Complete    | 2026-03-14 | - |
 | 35. Slack Behavioral Parity | 1/1 | Complete    | 2026-03-14 | - |
 | 36. Shopify Behavioral Parity | 4/4 | Complete    | 2026-03-14 | - |
-| 37. Billing Fidelity & Conformance Rigor | 2/3 | In Progress|  | - |
+| 37. Billing Fidelity & Conformance Rigor | 3/3 | Complete   | 2026-03-14 | - |
 
 ## Dependencies
 
@@ -474,7 +474,7 @@ Plans:
 **Goal:** Make billing state persistent with real response shapes (lineItems, oneTimePurchases, subscription data in currentAppInstallation), and fix the conformance harness to prove 1:1 behavior — eliminate twin self-comparison in twin mode, add Slack value opt-in checks, and fix the chat conformance suite labeling.
 **Depends on:** Phase 35, Phase 36
 **Findings addressed:** #11 (Medium: billing/install fidelity shallow), #12 (Medium: conformance harness doesn't prove 1:1 behavior)
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [ ] 37-01-PLAN.md — Wave 0: extend shopify-api-billing.test.ts with RED assertions for lineItems and oneTimePurchases round-trip
