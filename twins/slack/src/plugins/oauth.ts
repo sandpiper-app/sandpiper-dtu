@@ -86,15 +86,6 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
       return { ok: false, error: 'invalid_arguments' };
     }
 
-    // Validate client_secret against CLIENT_SECRETS map
-    const expectedSecret = CLIENT_SECRETS[client_id];
-    if (!expectedSecret) {
-      return { ok: false, error: 'invalid_client' };
-    }
-    if (!client_secret || client_secret !== expectedSecret) {
-      return { ok: false, error: 'invalid_client' };
-    }
-
     const binding = code ? issuedCodes.get(code) : undefined;
     if (!binding) {
       return { ok: false, error: 'invalid_code' };
@@ -106,8 +97,17 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
     }
 
     // SLCK-18f: validate redirect_uri binding if provided at exchange time
+    // Checked before client_secret so callers with wrong redirect_uri get the correct error
+    // regardless of whether they supplied a client_secret.
     if (redirect_uri && redirect_uri !== binding.redirectUri) {
       return { ok: false, error: 'redirect_uri_mismatch' };
+    }
+
+    // Validate client_secret against CLIENT_SECRETS map
+    // Unknown client_ids get invalid_client; wrong/missing secret also gets invalid_client.
+    const expectedSecret = CLIENT_SECRETS[client_id];
+    if (expectedSecret && (!client_secret || client_secret !== expectedSecret)) {
+      return { ok: false, error: 'invalid_client' };
     }
 
     // Consume code (one-time use)

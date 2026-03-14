@@ -71,7 +71,7 @@ Each task was committed atomically:
 1. **Task 1: Normalize files.completeUploadExternal input and return Slack-shaped file metadata** - `14c45f7` (feat)
 2. **Task 2: Honor replace_original and delete_original in response_url handling** - `102c627` (feat)
 
-**Plan metadata:** _this commit_ (docs: complete plan)
+**Plan metadata:** `a71cd5d` (docs: complete plan)
 
 ## Files Created/Modified
 - `tests/sdk-verification/sdk/slack-client-behavior-parity.test.ts` - Wave 0 SLCK-22 parity tests: filesUploadV2 nested metadata, completeUploadExternal JSON-string, replace_original, delete_original

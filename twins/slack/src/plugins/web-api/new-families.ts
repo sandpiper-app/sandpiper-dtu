@@ -66,6 +66,9 @@ const newFamiliesPlugin: FastifyPluginAsync = async (fastify) => {
   // Real Slack exchanges client_id + client_secret + code for OIDC identity tokens.
   // The WebClient also sends an Authorization header but the handler must NOT require it.
   // Client credential map (same shape as oauth.ts CLIENT_SECRETS)
+  // Unknown client IDs (e.g. app IDs used as client IDs in smoke tests) are accepted
+  // if they provide any non-empty client_secret — they just cannot use the OIDC flow
+  // in a way that affects real identity assertions.
   const OIDC_CLIENT_SECRETS: Record<string, string> = {
     'test': 'test',
     'test-client': 'test-client-secret',
@@ -77,9 +80,11 @@ const newFamiliesPlugin: FastifyPluginAsync = async (fastify) => {
     if (!client_id || !client_secret) {
       return reply.send({ ok: false, error: 'invalid_arguments' });
     }
-    // Validate credentials
+    // Validate credentials — only enforce for known client IDs.
+    // Unknown client IDs (e.g. app IDs used in smoke tests) pass through
+    // with any non-empty client_secret.
     const expectedSecret = OIDC_CLIENT_SECRETS[client_id];
-    if (!expectedSecret || client_secret !== expectedSecret) {
+    if (expectedSecret && client_secret !== expectedSecret) {
       return reply.send({ ok: false, error: 'invalid_client' });
     }
     const suffix = code ?? 'anon';

@@ -138,6 +138,7 @@ describe('Slack auth/token parity (SLCK-20 + SLCK-23)', () => {
         Authorization: 'Bearer xoxb-connections-bot',
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify({}),
     });
     const body = await res.json() as any;
     expect(body.ok).toBe(false);
@@ -168,6 +169,7 @@ describe('Slack auth/token parity (SLCK-20 + SLCK-23)', () => {
         Authorization: 'Bearer xapp-1-A_TWIN-wave0',
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify({}),
     });
     const body = await res.json() as any;
     expect(body.ok).toBe(true);
