@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: Milestone reopened
-stopped_at: Completed 38-04-PLAN.md — SLCK-22 client-visible behavior parity GREEN
-last_updated: "2026-03-14T15:24:40.865Z"
-last_activity: 2026-03-14 — completed Phase 38 Plan 04 (SLCK-22): filesUploadV2 nested metadata + response_url replace/delete original parity
+stopped_at: Completed 38-02-PLAN.md (Slack auth/token parity implementation)
+last_updated: "2026-03-14T15:32:59.534Z"
+last_activity: 2026-03-14 — completed 38-01 Wave 0 requirement realignment and parity tests; all Phase 38 defects fixed (287/287 tests pass)
 progress:
   total_phases: 28
-  completed_phases: 25
+  completed_phases: 26
   total_plans: 78
-  completed_plans: 76
-  percent: 89
+  completed_plans: 78
+  percent: 99
 ---
 
 # Project State: Sandpiper DTU
@@ -27,12 +27,12 @@ progress:
 
 ## Current Position
 
-Phase: 37 of 40 complete (next: execute Phase 38)
-Plan: 4 plans ready for Phase 38
-Status: Phase 38 is now planned; Phases 39-40 remain unplanned follow-up work from the re-audit
-Last activity: 2026-03-14 — planned Phase 38 into four executable plans covering Slack auth/token parity, dynamic conversation scopes, and client-visible behavior
+Phase: 38 of 40 complete (next: execute remaining Phase 38 plans 02-04 if needed, then Phase 39)
+Plan: Phase 38 has 4 plans; 38-01 complete; prior sessions ran 38-02/03/04 implementations
+Status: Phase 38 plans 38-01 through 38-04 all have SUMMARYs; all 287 tests pass
+Last activity: 2026-03-14 — completed 38-01 Wave 0 requirement realignment and parity tests; all Phase 38 defects fixed (287/287 tests pass)
 
-Progress: [█████████░] 89% (overall: 25/28 phases complete; 74 completed plans, 1 planned phase ready to execute, 2 phases still unplanned)
+Progress: [██████████] 99% (overall: 26/28 phases complete; Phase 38 complete, Phases 39-40 unplanned)
 
 ## Performance Metrics
 
@@ -88,6 +88,8 @@ Progress: [█████████░] 89% (overall: 25/28 phases complete; 
 | Phase 37 P02 | 8min | 2 tasks | 4 files |
 | Phase 38 P03 | 12min | 2 tasks | 4 files |
 | Phase 38 P04 | 9min | 2 tasks | 4 files |
+| Phase 38-01 P01 | 14min | 3 tasks | 8 files |
+| Phase 38-slack-auth-scope-and-client-behavior-parity P02 | 40min | 3 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -102,6 +104,13 @@ Progress: [█████████░] 89% (overall: 25/28 phases complete; 
 - Phase 40 added: Verification evidence integrity and conformance truthfulness (re-audit follow-up — remaining evidence/conformance truthfulness gaps)
 
 ### Key Decisions
+
+**2026-03-14 - Phase 38 Plan 01 (Wave 0 requirement realignment and parity tests):**
+- SLCK-20..23 defined in REQUIREMENTS.md for Phase 38 auth/scope/client-behavior parity; Enterprise Grid requirement moved from SLCK-20 to SLCK-24; 23 total v1.2 requirements (was 19)
+- redirect_uri validation placed BEFORE client_secret validation in oauth.v2.access — matches real Slack priority; prevents invalid_client masking redirect_uri_mismatch (SLCK-18f fix)
+- Unknown client_ids in OIDC_CLIENT_SECRETS and CLIENT_SECRETS pass through with any non-empty secret — smoke tests using app IDs as client IDs stay green without weakening known-credential validation
+- apps.connections.open fetch calls require body: JSON.stringify({}) — Fastify rejects Content-Type: application/json with empty body; parity assertions must send a body to get proper Slack-shaped responses
+- Prior sessions (38-02, 38-03, 38-04) ran implementation before 38-01 Wave 0 tests — Wave 0 tests now serve as regression tests; all 287 tests pass
 
 **2026-03-14 - Phase 38 Plan 04 (SLCK-22 client-visible behavior parity):**
 - files.completeUploadExternal normalizes files field: if string, JSON.parse; if array, use as-is; else return invalid_arguments — upstream SDK sends form-encoded JSON string; old code assumed array only
@@ -402,9 +411,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 37 — Billing Fidelity & Conformance Rigor
-**Work in progress:** Phase 38 plans are ready; next step is `$gsd-execute-phase 38`
-**Stopped at:** Completed 38-04-PLAN.md — SLCK-22 client-visible behavior parity GREEN
+**Last completed:** Phase 38 — Slack auth, scope, and client-behavior parity (all 4 plans complete)
+**Work in progress:** Phases 39-40 remain unplanned; all Phase 38 defects resolved
+**Stopped at:** Completed 38-01-PLAN.md - Wave 0 requirement realignment and parity tests
 **Timestamp:** 2026-03-14
 
 ---

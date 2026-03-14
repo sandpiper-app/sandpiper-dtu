@@ -487,7 +487,7 @@ Plans:
 **Requirements**: SLCK-20, SLCK-21, SLCK-22, SLCK-23
 **Depends on:** Phase 37
 **Findings addressed:** Re-audit #3 (Slack auth/OIDC drift), #4 (token-class and scope semantics drift), #5 (false-green client behavior in filesUploadV2, response_url, auth.test)
-**Plans:** 2/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] 38-01-PLAN.md — Wave 0 requirement-ID realignment plus RED parity tests for auth, conversation scopes, and client-visible Slack behavior
