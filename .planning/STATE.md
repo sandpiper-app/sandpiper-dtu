@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 36-01-PLAN.md
-last_updated: "2026-03-14T03:33:38.360Z"
+stopped_at: Completed 36-03-PLAN.md
+last_updated: "2026-03-14T03:36:56.151Z"
 last_activity: "2026-03-14 — Phase 36 Plan 01 complete: Wave 0 RED tests for Shopify findings #7-#10 written; 9 failing tests establish TDD contract for Plans 02-04"
 progress:
   total_phases: 25
   completed_phases: 23
   total_plans: 71
-  completed_plans: 68
-  percent: 100
+  completed_plans: 69
+  percent: 97
 ---
 
 # Project State: Sandpiper DTU
@@ -28,11 +28,11 @@ progress:
 ## Current Position
 
 Phase: 36 of 37 (Shopify Behavioral Parity) — In Progress
-Plan: 1 of 4 complete
-Status: Plan 36-01 complete — Wave 0 RED tests for Findings #7-#10 written; 9 failing tests establish TDD contract; 2 regression guards pass; 264 total tests (255 green, 9 RED)
-Last activity: 2026-03-14 — Phase 36 Plan 01 complete: Wave 0 RED tests for Shopify findings #7-#10 written; 9 failing tests establish TDD contract for Plans 02-04
+Plan: 3 of 4 complete
+Status: Plan 36-03 complete — Finding #9 GREEN: productCreate via GraphQL findable via REST numeric ID; two-step GID applied to resolvers.ts + admin.ts; 257 green, 7 expected-RED (Findings #8/#10)
+Last activity: 2026-03-13 — Phase 36 Plan 03 complete: canonical two-step GID in productCreate resolver and fixture loader; Finding #9 GID round-trip turns GREEN
 
-Progress: [██████████] 97% (overall: 68/71 plans complete)
+Progress: [██████████] 98% (overall: 70/71 plans complete)
 
 ## Performance Metrics
 
@@ -80,6 +80,7 @@ Progress: [██████████] 97% (overall: 68/71 plans complete)
 | Phase 34 P01 | 2min | 2 tasks | 3 files |
 | Phase 35-01 P01 | 3min | 3 tasks | 3 files |
 | Phase 36 P01 | 4min | 1 tasks | 1 files |
+| Phase 36 P03 | 3min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,12 @@ Progress: [██████████] 97% (overall: 68/71 plans complete)
 - Phase 37 added: Billing Fidelity & Conformance Rigor (second review — findings #11, #12 Medium)
 
 ### Key Decisions
+
+**2026-03-13 - Phase 36 Plan 03 (Finding #9 GID round-trip fix):**
+- Two-step GID pattern extended to resolvers.ts (productCreate mutation) and admin.ts (fixture loader) — same UPDATE products SET gid = ? WHERE id = ? SQL as rest.ts; no new pattern invented
+- Variant product_gid in fixture loader updated to reference finalProductGid (canonical) not temp GID — critical for variant-product FK integrity
+- Finding #9 GREEN: productCreate via GraphQL now findable via REST numeric ID; 257/264 tests pass; 7 expected-RED (Findings #8/#10) until Plan 36-04
+- createGID('Product', productId) used in resolver (helper already imported); consistent with codebase convention
 
 **2026-03-14 - Phase 36 Plan 01 (Wave 0 RED tests for Shopify findings #7-#10):**
 - Import individual REST resource classes via `restResources` bundle, not individual path exports — `@shopify/shopify-api/rest/admin/2024-01` index only re-exports the bundled `restResources` object; individual class exports cause `loadRestResources` TypeError
@@ -331,7 +338,7 @@ None.
 
 **Last completed:** Phase 33 Plan 01 — XCUT-01 reset coverage (commits 7fd3b5a, 280b574)
 **Work in progress:** None — Milestone v1.2 Behavioral Fidelity complete
-**Stopped at:** Completed 36-01-PLAN.md
+**Stopped at:** Completed 36-03-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
