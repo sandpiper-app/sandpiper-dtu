@@ -3,7 +3,7 @@
  *
  * Implements the 3-endpoint chain required by WebClient.filesUploadV2:
  *   1. POST /api/files.getUploadURLExternal  — step 1: get an absolute upload URL
- *   2. PUT  /api/_upload/:file_id            — step 2: binary upload (no auth)
+ *   2. POST /api/_upload/:file_id            — step 2: binary upload (no auth)
  *   3. POST /api/files.completeUploadExternal — step 3: commit the upload
  *
  * CRITICAL: upload_url in step 1 MUST be an absolute URL. The SDK calls it
@@ -42,9 +42,10 @@ const filesPlugin: FastifyPluginAsync = async (fastify) => {
     return { ok: true, file_id, upload_url };
   });
 
-  // PUT /api/_upload/:file_id — step 2 of filesUploadV2 chain (binary upload)
-  // No auth required — SDK calls upload_url directly using axios, not through WebClient auth
-  fastify.put('/api/_upload/:file_id', async () => {
+  // POST /api/_upload/:file_id — step 2 of filesUploadV2 chain (binary upload)
+  // No auth required — SDK calls upload_url directly using axios.post(), not through WebClient auth
+  // CRITICAL: Must be POST — WebClient.postFileUploadsToExternalURL() calls axios.post(url, body, config)
+  fastify.post('/api/_upload/:file_id', async () => {
     // Accept upload, return 200. No state storage needed for conformance.
     return {};
   });
