@@ -436,10 +436,10 @@ export const resolvers = {
         currencyCode = currencyCode ?? 'USD';
       }
 
-      // Create order with pre-generated GID (DB uses numeric ID; GID returned via type resolver)
-      const tempId = Date.now() + Math.floor(Math.random() * 100000);
+      // Two-step GID pattern: insert with temp GID, get row ID, UPDATE to canonical GID
+      const tempOrderGid = `gid://shopify/Order/temp-${Date.now()}`;
       const orderId = context.stateManager.createOrder({
-        gid: createGID('Order', tempId),
+        gid: tempOrderGid,
         name: `#${Math.floor(1000 + Math.random() * 9000)}`, // Generate order name
         total_price: totalPrice,
         currency_code: currencyCode,
@@ -447,6 +447,10 @@ export const resolvers = {
         line_items: input.lineItems,
         financial_status: input.financialStatus ?? 'PENDING',
       });
+      const canonicalOrderGid = createGID('Order', orderId);
+      context.stateManager.database
+        .prepare('UPDATE orders SET gid = ? WHERE id = ?')
+        .run(canonicalOrderGid, orderId);
 
       const order = context.stateManager.getOrder(orderId);
 
@@ -773,13 +777,18 @@ export const resolvers = {
         return { customer: null, userErrors: errors };
       }
 
-      const customerTempId = Date.now() + Math.floor(Math.random() * 100000);
+      // Two-step GID pattern: insert with temp GID, get row ID, UPDATE to canonical GID
+      const tempCustomerGid = `gid://shopify/Customer/temp-${Date.now()}`;
       const customerId = context.stateManager.createCustomer({
-        gid: createGID('Customer', customerTempId),
+        gid: tempCustomerGid,
         email: input.email,
         first_name: input.firstName ?? null,
         last_name: input.lastName ?? null,
       });
+      const canonicalCustomerGid = createGID('Customer', customerId);
+      context.stateManager.database
+        .prepare('UPDATE customers SET gid = ? WHERE id = ?')
+        .run(canonicalCustomerGid, customerId);
 
       const customer = context.stateManager.getCustomer(customerId);
 

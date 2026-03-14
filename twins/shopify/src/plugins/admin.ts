@@ -78,11 +78,14 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
       'Loading fixtures'
     );
 
-    // Load orders — generate GIDs before insertion (StateManager requires data.gid, DB enforces NOT NULL)
+    // Load orders — canonical two-step GID (insert with temp, then UPDATE to rowId-based GID)
     for (const order of orders) {
-      const orderId = Date.now() + Math.floor(Math.random() * 100000);
-      const orderGid = createGID('Order', orderId);
-      fastify.stateManager.createOrder({ ...order, gid: orderGid });
+      const tempOrderGid = `gid://shopify/Order/temp-${Date.now()}`;
+      const rowId = fastify.stateManager.createOrder({ ...order, gid: tempOrderGid });
+      const finalOrderGid = createGID('Order', rowId);
+      fastify.stateManager.database
+        .prepare('UPDATE orders SET gid = ? WHERE id = ?')
+        .run(finalOrderGid, rowId);
     }
 
     // Load products — canonical two-step GID (insert with temp, then UPDATE to rowId-based GID)
@@ -107,18 +110,24 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
       }
     }
 
-    // Load customers — generate GIDs before insertion
+    // Load customers — canonical two-step GID (insert with temp, then UPDATE to rowId-based GID)
     for (const customer of customers) {
-      const customerId = Date.now() + Math.floor(Math.random() * 100000);
-      const customerGid = createGID('Customer', customerId);
-      fastify.stateManager.createCustomer({ ...customer, gid: customerGid });
+      const tempCustomerGid = `gid://shopify/Customer/temp-${Date.now()}`;
+      const rowId = fastify.stateManager.createCustomer({ ...customer, gid: tempCustomerGid });
+      const finalCustomerGid = createGID('Customer', rowId);
+      fastify.stateManager.database
+        .prepare('UPDATE customers SET gid = ? WHERE id = ?')
+        .run(finalCustomerGid, rowId);
     }
 
-    // Load inventory items — generate GIDs before insertion
+    // Load inventory items — canonical two-step GID (insert with temp, then UPDATE to rowId-based GID)
     for (const item of inventoryItems) {
-      const itemId = Date.now() + Math.floor(Math.random() * 100000);
-      const itemGid = createGID('InventoryItem', itemId);
-      fastify.stateManager.createInventoryItem({ ...item, gid: itemGid });
+      const tempItemGid = `gid://shopify/InventoryItem/temp-${Date.now()}`;
+      const rowId = fastify.stateManager.createInventoryItem({ ...item, gid: tempItemGid });
+      const finalItemGid = createGID('InventoryItem', rowId);
+      fastify.stateManager.database
+        .prepare('UPDATE inventory_items SET gid = ? WHERE id = ?')
+        .run(finalItemGid, rowId);
     }
 
     return {
