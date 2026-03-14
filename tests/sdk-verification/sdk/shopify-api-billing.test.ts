@@ -123,4 +123,157 @@ describe('shopify.billing — SHOP-13 (live twin)', () => {
     expect(cancelled.status).toBe('CANCELLED');
     expect(cancelled.id).toBe(subscriptionGid);
   });
+
+  // ---------------------------------------------------------------------------
+  // Wave 0 RED tests — Finding #11 (billing fidelity gaps)
+  // Plans 02-03 must turn these GREEN without regressions.
+  // ---------------------------------------------------------------------------
+
+  it('request with returnObject:true returns lineItems from the plan', async () => {
+    // billing.request with returnObject:true returns { confirmationUrl, appSubscription }
+    const result = await shopify.billing.request({
+      session,
+      plan: 'Test Plan',
+      isTest: true,
+      returnObject: true,
+    });
+    // result.appSubscription (NOT result directly) contains the subscription
+    expect(result).toBeDefined();
+    const sub = (result as any).appSubscription;
+    expect(sub).toBeDefined();
+    expect(Array.isArray(sub.lineItems)).toBe(true);
+    expect(sub.lineItems.length).toBeGreaterThan(0);
+    // Verify the line item has real pricing details (not empty stubs)
+    expect(sub.lineItems[0].plan).toBeDefined();
+    expect(sub.lineItems[0].plan.pricingDetails).toBeDefined();
+  });
+
+  it('billing.check oneTimePurchases reflects persistent appPurchaseOneTimeCreate', async () => {
+    // Use direct GraphQL to create a one-time purchase (billing SDK doesn't have a direct one-time request helper)
+    const twinBaseUrl = process.env.SHOPIFY_API_URL ?? 'http://127.0.0.1:9999';
+    const token = session.accessToken;
+    const mutation = `
+      mutation {
+        appPurchaseOneTimeCreate(
+          name: "One Time Plan"
+          price: { amount: "5.00", currencyCode: USD }
+          returnUrl: "https://example.com"
+          test: true
+        ) {
+          appPurchaseOneTime { id name status }
+          userErrors { field message }
+        }
+      }
+    `;
+    const res = await fetch(`${twinBaseUrl}/admin/api/2024-01/graphql.json`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Access-Token': token!,
+      },
+      body: JSON.stringify({ query: mutation }),
+    });
+    const { data } = await res.json() as any;
+    expect(data.appPurchaseOneTimeCreate.appPurchaseOneTime.id).not.toBe('gid://shopify/AppPurchaseOneTime/1');
+    // Second call should get a different GID (persistence, not hardcoded stub)
+    const res2 = await fetch(`${twinBaseUrl}/admin/api/2024-01/graphql.json`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Access-Token': token!,
+      },
+      body: JSON.stringify({ query: mutation }),
+    });
+    const { data: data2 } = await res2.json() as any;
+    // Two separate one-time purchases must have different GIDs
+    expect(data2.appPurchaseOneTimeCreate.appPurchaseOneTime.id).not.toBe(
+      data.appPurchaseOneTimeCreate.appPurchaseOneTime.id
+    );
+  });
+
+  it('currentAppInstallation.oneTimePurchases returns created one-time purchases', async () => {
+    const twinBaseUrl = process.env.SHOPIFY_API_URL ?? 'http://127.0.0.1:9999';
+    const token = session.accessToken;
+    // Create a one-time purchase
+    const createMutation = `
+      mutation {
+        appPurchaseOneTimeCreate(
+          name: "Persistent Plan"
+          price: { amount: "9.99", currencyCode: USD }
+          returnUrl: "https://example.com"
+          test: true
+        ) {
+          appPurchaseOneTime { id }
+        }
+      }
+    `;
+    await fetch(`${twinBaseUrl}/admin/api/2024-01/graphql.json`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Shopify-Access-Token': token! },
+      body: JSON.stringify({ query: createMutation }),
+    });
+    // Now query currentAppInstallation.oneTimePurchases
+    const query = `
+      query {
+        currentAppInstallation {
+          oneTimePurchases(first: 10) {
+            edges { node { id name status } }
+          }
+        }
+      }
+    `;
+    const res = await fetch(`${twinBaseUrl}/admin/api/2024-01/graphql.json`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Shopify-Access-Token': token! },
+      body: JSON.stringify({ query }),
+    });
+    const { data } = await res.json() as any;
+    expect(data.currentAppInstallation.oneTimePurchases.edges.length).toBeGreaterThan(0);
+    expect(data.currentAppInstallation.oneTimePurchases.edges[0].node.name).toBe('Persistent Plan');
+  });
+
+  it('currentAppInstallation.activeSubscriptions includes lineItems after subscription confirmed', async () => {
+    const twinBaseUrl = process.env.SHOPIFY_API_URL ?? 'http://127.0.0.1:9999';
+    const token = session.accessToken;
+    // Create a subscription with lineItems via billing.request
+    const result = await shopify.billing.request({
+      session,
+      plan: 'Test Plan',
+      isTest: true,
+      returnObject: true,
+    });
+    // Confirm the subscription via the confirmationUrl
+    const confirmUrl = (result as any).confirmationUrl;
+    if (confirmUrl) {
+      const confirmPath = new URL(confirmUrl).pathname;
+      await fetch(`${twinBaseUrl}${confirmPath}`, { redirect: 'manual' });
+    }
+    // Query currentAppInstallation for activeSubscriptions
+    const query = `
+      query {
+        currentAppInstallation {
+          activeSubscriptions {
+            id
+            name
+            status
+            lineItems {
+              id
+              plan { pricingDetails { ... on AppRecurringPricing { interval price { amount currencyCode } } } }
+            }
+          }
+        }
+      }
+    `;
+    const res = await fetch(`${twinBaseUrl}/admin/api/2024-01/graphql.json`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Shopify-Access-Token': token! },
+      body: JSON.stringify({ query }),
+    });
+    const { data } = await res.json() as any;
+    const activeSubs = data.currentAppInstallation.activeSubscriptions;
+    expect(activeSubs.length).toBeGreaterThan(0);
+    const firstSub = activeSubs[0];
+    expect(firstSub.lineItems.length).toBeGreaterThan(0);
+    expect(firstSub.lineItems[0].plan.pricingDetails.interval).toBeDefined();
+  });
 });
