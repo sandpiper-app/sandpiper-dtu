@@ -1,4 +1,5 @@
 import { createAdminRestApiClient } from '@shopify/admin-api-client';
+import { recordSymbolHit } from '../setup/execution-evidence-runtime.js';
 
 /**
  * Create a Shopify admin-api-client REST client wired to the local Shopify twin.
@@ -16,10 +17,19 @@ import { createAdminRestApiClient } from '@shopify/admin-api-client';
  * (version-parameterized routes added in Phase 22). No version normalization is needed.
  *
  * CRITICAL: Use seedShopifyAccessToken() to get a valid token.
+ *
+ * Helper-seam capture (Phase 40, INFRA-23):
+ *   Records createAdminRestApiClient and AdminRestApiClient method hits at the helper seam.
+ *   Because AdminRestApiClient's methods are non-configurable, per-method hits are recorded
+ *   in the customFetchApi closure keyed on the HTTP verb from the request init.
  */
 export function createRestClient(options: { accessToken: string; apiVersion?: string }) {
   const twinBaseUrl = process.env.SHOPIFY_API_URL!;
   const twinUrl = new URL(twinBaseUrl);
+
+  // Record factory-level and class-level hits at construction time
+  recordSymbolHit('@shopify/admin-api-client@1.1.1/createAdminRestApiClient');
+  recordSymbolHit('@shopify/admin-api-client@1.1.1/AdminRestApiClient');
 
   const customFetchApi: typeof fetch = async (input, init) => {
     const rawUrl = typeof input === 'string' ? input : input.toString();
@@ -29,6 +39,14 @@ export function createRestClient(options: { accessToken: string; apiVersion?: st
       /https?:\/\/dev\.myshopify\.com/,
       `${twinUrl.protocol}//${twinUrl.host}`
     );
+
+    // Record per-HTTP-method symbol hit based on the request's HTTP verb.
+    // AdminRestApiClient.get/post/put/delete each dispatch through customFetchApi.
+    const verb = (init?.method ?? 'GET').toLowerCase();
+    if (verb === 'get' || verb === 'post' || verb === 'put' || verb === 'delete') {
+      recordSymbolHit(`@shopify/admin-api-client@1.1.1/AdminRestApiClient.${verb}`);
+    }
+
     return fetch(hostRewritten, init);
   };
 

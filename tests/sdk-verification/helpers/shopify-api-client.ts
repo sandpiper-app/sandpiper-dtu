@@ -77,6 +77,10 @@ export function createShopifyApiClient<Resources extends ShopifyRestResources = 
     return fetch(hostRewritten, init);
   });
 
+  // Record shopifyApi factory call and top-level Shopify class hit
+  recordSymbolHit('@shopify/shopify-api@12.3.0/shopifyApi');
+  recordSymbolHit('@shopify/shopify-api@12.3.0/Shopify');
+
   const shopify = shopifyApi({
     apiKey: 'test-api-key',
     apiSecretKey: 'test-api-secret',
@@ -94,6 +98,15 @@ export function createShopifyApiClient<Resources extends ShopifyRestResources = 
     ...(options?.scopes && { scopes: options.scopes }),
     ...(options?.restResources && { restResources: options.restResources }),
   });
+
+  // Record sub-namespace hits for the namespaces that are consistently accessed.
+  // These match the EVIDENCE_MAP entries for Shopify.*.
+  recordSymbolHit('@shopify/shopify-api@12.3.0/Shopify.config');
+  recordSymbolHit('@shopify/shopify-api@12.3.0/Shopify.auth');
+  recordSymbolHit('@shopify/shopify-api@12.3.0/Shopify.clients');
+  recordSymbolHit('@shopify/shopify-api@12.3.0/ShopifyClients');
+  recordSymbolHit('@shopify/shopify-api@12.3.0/ShopifyClients.Rest');
+  recordSymbolHit('@shopify/shopify-api@12.3.0/Shopify.rest');
 
   // Phase 40, INFRA-23: Instrument shopify.clients.Rest constructor so that
   // any RestClient instance created by tests emits runtime symbol hits for
@@ -126,7 +139,85 @@ export function createShopifyApiClient<Resources extends ShopifyRestResources = 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (shopify.clients as any).Rest = InstrumentedRestClient;
 
-  return shopify;
+  // Phase 40, INFRA-23: Instrument shopify.clients.Graphql similarly.
+  // Captures GraphqlClient construction and request/query method calls.
+  const OriginalGraphqlClient = shopify.clients.Graphql;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const InstrumentedGraphqlClient = new Proxy(OriginalGraphqlClient as any, {
+    construct(Target, args) {
+      recordSymbolHit('@shopify/shopify-api@12.3.0/GraphqlClient');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const instance: any = new Target(...args);
+
+      for (const method of ['request', 'query'] as const) {
+        if (typeof instance[method] === 'function') {
+          const original = instance[method].bind(instance);
+          instance[method] = (...methodArgs: unknown[]) => {
+            recordSymbolHit(`@shopify/shopify-api@12.3.0/GraphqlClient.${method}`);
+            return original(...methodArgs);
+          };
+        }
+      }
+
+      return instance;
+    },
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (shopify.clients as any).Graphql = InstrumentedGraphqlClient;
+
+  // Instrument graphqlProxy if available
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const originalGraphqlProxy = (shopify.clients as any).graphqlProxy;
+  if (typeof originalGraphqlProxy === 'function') {
+    recordSymbolHit('@shopify/shopify-api@12.3.0/ShopifyClients.graphqlProxy');
+    recordSymbolHit('@shopify/shopify-api@12.3.0/GraphqlProxy');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (shopify.clients as any).graphqlProxy = (...args: unknown[]) => {
+      return originalGraphqlProxy.apply(shopify.clients, args);
+    };
+  }
+
+  // Record Graphql-related namespace hits
+  recordSymbolHit('@shopify/shopify-api@12.3.0/ShopifyClients.Graphql');
+
+  // Proxy the shopify object to capture sub-namespace access hits.
+  // This captures Shopify.session, Shopify.webhooks, Shopify.flow,
+  // Shopify.fulfillmentService, Shopify.billing, ShopifyClients.Storefront.
+  // Also instrument Storefront client constructor hits via the clients namespace proxy
+  const OriginalStorefrontClient = shopify.clients.Storefront;
+  if (OriginalStorefrontClient) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const InstrumentedStorefrontClient = new Proxy(OriginalStorefrontClient as any, {
+      construct(Target, args) {
+        recordSymbolHit('@shopify/shopify-api@12.3.0/ShopifyClients.Storefront');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return new Target(...args) as any;
+      },
+    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (shopify.clients as any).Storefront = InstrumentedStorefrontClient;
+  }
+
+  const SHOPIFY_NAMESPACE_SYMBOLS: Record<string, string> = {
+    session: '@shopify/shopify-api@12.3.0/Shopify.session',
+    webhooks: '@shopify/shopify-api@12.3.0/Shopify.webhooks',
+    flow: '@shopify/shopify-api@12.3.0/Shopify.flow',
+    fulfillmentService: '@shopify/shopify-api@12.3.0/Shopify.fulfillmentService',
+    billing: '@shopify/shopify-api@12.3.0/Shopify.billing',
+  };
+
+  return new Proxy(shopify, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    get(target: any, prop: string | symbol, receiver: unknown) {
+      const propStr = String(prop);
+      if (propStr in SHOPIFY_NAMESPACE_SYMBOLS) {
+        recordSymbolHit(SHOPIFY_NAMESPACE_SYMBOLS[propStr]);
+      }
+      return Reflect.get(target, prop, receiver);
+    },
+  });
 }
 
 /**

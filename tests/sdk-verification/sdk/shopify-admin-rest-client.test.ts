@@ -45,7 +45,13 @@ describe('AdminRestApiClient methods (SHOP-09)', () => {
 
   it('put() returns ok with updated product body', async () => {
     const client = createRestClient({ accessToken });
-    const response = await client.put('products/1', { data: { product: { title: 'Updated' } } });
+    // Create a product first — PUT is state-backed; products/1 does not exist after reset
+    const created = await client.post('products', { data: { product: { title: 'Original' } } });
+    expect(created.ok).toBe(true);
+    const createdBody = await created.json() as { product: { id: string | number } };
+    const productId = createdBody.product.id;
+    // Now PUT to the created product's real ID
+    const response = await client.put(`products/${productId}`, { data: { product: { title: 'Updated' } } });
     expect(response.ok).toBe(true);
     const body = await response.json() as { product: unknown };
     expect(body.product).toBeDefined();
@@ -53,7 +59,11 @@ describe('AdminRestApiClient methods (SHOP-09)', () => {
 
   it('delete() returns ok with empty body', async () => {
     const client = createRestClient({ accessToken });
-    const response = await client.delete('products/1');
+    // Create a product first so delete has a real row to remove
+    const created = await client.post('products', { data: { product: { title: 'ToDelete' } } });
+    const createdBody = await created.json() as { product: { id: string | number } };
+    const productId = createdBody.product.id;
+    const response = await client.delete(`products/${productId}`);
     expect(response.ok).toBe(true);
   });
 
