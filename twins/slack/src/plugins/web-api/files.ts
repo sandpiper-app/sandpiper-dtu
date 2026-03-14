@@ -62,9 +62,41 @@ const filesPlugin: FastifyPluginAsync = async (fastify) => {
     // SLCK-19: scope headers
     reply.header('X-OAuth-Scopes', tokenRecord.scope);
     reply.header('X-Accepted-OAuth-Scopes', METHOD_SCOPES['files.completeUploadExternal']?.join(',') ?? '');
-    const { files } = (request.body as any) ?? {};
-    const completed = (files ?? []).map((f: any) => ({ id: f.id, title: f.title ?? 'Uploaded file' }));
-    return { ok: true, files: completed };
+
+    // Normalize files field: upstream SDK serializes it as a JSON string
+    const rawFiles = (request.body as any)?.files;
+    let filesArray: any[];
+    if (typeof rawFiles === 'string') {
+      try {
+        filesArray = JSON.parse(rawFiles);
+      } catch {
+        return reply.send({ ok: false, error: 'invalid_arguments' });
+      }
+    } else if (Array.isArray(rawFiles)) {
+      filesArray = rawFiles;
+    } else {
+      return reply.send({ ok: false, error: 'invalid_arguments' });
+    }
+    if (!Array.isArray(filesArray)) {
+      return reply.send({ ok: false, error: 'invalid_arguments' });
+    }
+
+    const userId = tokenRecord.user_id ?? 'U_BOT_TWIN';
+    const completed = filesArray.map((f: any) => {
+      const name = f.title ?? f.name ?? 'uploaded-file.txt';
+      return {
+        id: f.id,
+        name,
+        title: name,
+        mimetype: 'text/plain',
+        filetype: 'text',
+        user: userId,
+        url_private: `https://twin-workspace.slack.com/files/${userId}/${f.id}/${encodeURIComponent(name)}`,
+        permalink: `https://twin-workspace.slack.com/files/${userId}/${f.id}/${encodeURIComponent(name)}`,
+      };
+    });
+
+    return { ok: true, files: completed, response_metadata: {} };
   });
 };
 
