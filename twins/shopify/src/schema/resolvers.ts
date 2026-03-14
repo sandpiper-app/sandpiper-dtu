@@ -549,14 +549,17 @@ export const resolvers = {
         return { product: null, userErrors: errors };
       }
 
-      const productTempId = Date.now() + Math.floor(Math.random() * 100000);
       const productId = context.stateManager.createProduct({
-        gid: createGID('Product', productTempId),
+        gid: `gid://shopify/Product/temp-${Date.now()}`,
         title: input.title,
         description: input.description ?? null,
         vendor: input.vendor ?? null,
         product_type: input.productType ?? null,
       });
+      const finalGid = createGID('Product', productId);
+      context.stateManager.database
+        .prepare('UPDATE products SET gid = ? WHERE id = ?')
+        .run(finalGid, productId);
 
       const product = context.stateManager.getProduct(productId);
 
