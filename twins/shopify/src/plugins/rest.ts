@@ -416,6 +416,176 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
   });
 
   // ---------------------------------------------------------------------------
+  // Location family — Tier 2 stubs (hardcoded minimal valid shapes)
+  // ---------------------------------------------------------------------------
+
+  // GET /admin/api/:version/locations.json
+  fastify.get(adminPath('/locations.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    return {
+      locations: [{
+        id: 1,
+        name: 'Default Location',
+        active: true,
+        address1: '1 Twin St',
+        city: 'Dev City',
+        country: 'US',
+        country_code: 'US',
+        admin_graphql_api_id: 'gid://shopify/Location/1',
+      }],
+    };
+  });
+
+  // GET /admin/api/:version/locations/count.json — MUST come before /:id.json
+  fastify.get(adminPath('/locations/count.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    return { count: 1 };
+  });
+
+  // GET /admin/api/:version/locations/:id.json
+  fastify.get(adminPath('/locations/:id.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    const numericId = parseInt((req.params.id as string).replace(/\.json$/, ''), 10);
+    return {
+      location: {
+        id: numericId,
+        name: 'Default Location',
+        active: true,
+        address1: '1 Twin St',
+        city: 'Dev City',
+        country: 'US',
+        country_code: 'US',
+        admin_graphql_api_id: `gid://shopify/Location/${numericId}`,
+      },
+    };
+  });
+
+  // GET /admin/api/:version/locations/:id/inventory_levels.json
+  fastify.get(adminPath('/locations/:id/inventory_levels.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    return { inventory_levels: [] };
+  });
+
+  // ---------------------------------------------------------------------------
+  // InventoryLevel mutations — Tier 2 stubs
+  // Register sub-paths BEFORE DELETE /inventory_levels.json
+  // ---------------------------------------------------------------------------
+
+  // POST /admin/api/:version/inventory_levels/adjust.json
+  fastify.post(adminPath('/inventory_levels/adjust.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    const body = (req.body as any) ?? {};
+    return {
+      inventory_level: {
+        inventory_item_id: body.inventory_item_id ?? 1,
+        location_id: body.location_id ?? 1,
+        available: body.available_adjustment ?? 0,
+      },
+    };
+  });
+
+  // POST /admin/api/:version/inventory_levels/connect.json
+  fastify.post(adminPath('/inventory_levels/connect.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    const body = (req.body as any) ?? {};
+    return {
+      inventory_level: {
+        inventory_item_id: body.inventory_item_id ?? 1,
+        location_id: body.location_id ?? 1,
+        available: 0,
+      },
+    };
+  });
+
+  // POST /admin/api/:version/inventory_levels/set.json
+  fastify.post(adminPath('/inventory_levels/set.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    const body = (req.body as any) ?? {};
+    return {
+      inventory_level: {
+        inventory_item_id: body.inventory_item_id ?? 1,
+        location_id: body.location_id ?? 1,
+        available: body.available ?? 0,
+      },
+    };
+  });
+
+  // DELETE /admin/api/:version/inventory_levels.json
+  fastify.delete(adminPath('/inventory_levels.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    return {};
+  });
+
+  // ---------------------------------------------------------------------------
+  // InventoryItem — single-item GET/PUT (list GET already exists above)
+  // ---------------------------------------------------------------------------
+
+  // GET /admin/api/:version/inventory_items/:id.json
+  fastify.get(adminPath('/inventory_items/:id.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    const numericId = parseInt((req.params.id as string).replace(/\.json$/, ''), 10);
+    const all = (fastify as any).stateManager.listInventoryItems() as Array<{ id: number; [k: string]: unknown }>;
+    const item = all.find((i) => i.id === numericId);
+    if (item) {
+      return { inventory_item: item };
+    }
+    // Fallback stub — item not in state
+    return {
+      inventory_item: {
+        id: numericId,
+        sku: 'STUB-SKU',
+        tracked: false,
+        admin_graphql_api_id: `gid://shopify/InventoryItem/${numericId}`,
+      },
+    };
+  });
+
+  // PUT /admin/api/:version/inventory_items/:id.json — state-backed update
+  fastify.put(adminPath('/inventory_items/:id.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    const numericId = parseInt((req.params.id as string).replace(/\.json$/, ''), 10);
+    const body = (req.body as any) ?? {};
+    const updates = body.inventory_item ?? {};
+    // Persist the update if stateManager supports it
+    if ((fastify as any).stateManager.updateInventoryItem) {
+      (fastify as any).stateManager.updateInventoryItem(numericId, updates);
+    }
+    // Re-read from state to return persisted data
+    const all = (fastify as any).stateManager.listInventoryItems() as Array<{ id: number; [k: string]: unknown }>;
+    const item = all.find((i) => i.id === numericId);
+    if (item) {
+      return { inventory_item: { ...item, ...updates } };
+    }
+    return {
+      inventory_item: {
+        id: numericId,
+        ...updates,
+        admin_graphql_api_id: `gid://shopify/InventoryItem/${numericId}`,
+      },
+    };
+  });
+
+  // ---------------------------------------------------------------------------
   // Tier 2 stub routes — hardcoded minimal valid shapes, no state
   // ---------------------------------------------------------------------------
 
