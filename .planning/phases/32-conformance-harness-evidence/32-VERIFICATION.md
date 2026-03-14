@@ -8,6 +8,11 @@ re_verification: false
 
 # Phase 32: Conformance Harness & Evidence Verification Report
 
+> **Phase 40 Qualification Note:** Superseded by Phase 40 — the truthfulness rules introduced in Phase 40
+> establish that execution proof is separate from parity proof. The verification evidence below reflects
+> structural smoke, value-field checks, and EVIDENCE_MAP attribution captured at the time of the Phase 32 run.
+> It does not constitute runtime-symbol execution proof as defined by INFRA-23.
+
 **Phase Goal:** Conformance comparator catches primitive value mismatches in structural mode, and coverage attribution is derived from real test execution evidence rather than a hand-authored symbol map.
 **Verified:** 2026-03-13T18:01:00Z
 **Status:** passed

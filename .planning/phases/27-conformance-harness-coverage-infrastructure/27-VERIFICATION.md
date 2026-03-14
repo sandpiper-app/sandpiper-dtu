@@ -8,6 +8,11 @@ re_verification: false
 
 # Phase 27: Conformance Harness + Coverage Infrastructure Verification Report
 
+> **Phase 40 Qualification Note:** Superseded by Phase 40 — the truthfulness rules introduced in Phase 40
+> establish that execution proof is separate from parity proof. The verification evidence below reflects
+> structural smoke and file-pass evidence captured at the time of the Phase 27 run. It does not constitute
+> live-parity proof or exact-value conformance proof as defined by INFRA-24 and INFRA-25.
+
 **Phase Goal:** Conformance harness performs real twin-vs-live structural comparison (not twin-vs-self), and coverage status is derived from test execution evidence rather than hand-authored metadata — establishing a trustworthy fidelity baseline going into v2.
 **Verified:** 2026-03-13
 **Status:** PASSED

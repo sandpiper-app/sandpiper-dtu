@@ -8,6 +8,12 @@ re_verification: false
 
 # Phase 34: Slack Build Fix & Evidence Pipeline Verification Report
 
+> **Phase 40 Qualification Note:** Superseded by Phase 40 — the truthfulness rules introduced in Phase 40
+> establish that execution proof is separate from parity proof. The verification evidence below reflects
+> the EVIDENCE_MAP file-pass attribution pipeline captured at the time of the Phase 34 run. It does not
+> constitute runtime-symbol execution proof as defined by INFRA-23; that attribution model was replaced by
+> Phase 40 Plan 02.
+
 **Phase Goal:** Fix the Slack twin compile error so both twins are buildable, then rewrite coverage attribution to derive from actual test execution evidence (vitest-evidence.json) instead of the hand-authored EVIDENCE_MAP, removing all provably false live attributions.
 **Verified:** 2026-03-13
 **Status:** passed
