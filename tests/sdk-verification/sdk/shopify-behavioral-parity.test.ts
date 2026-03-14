@@ -95,9 +95,12 @@ describe('Finding #8: Missing REST routes', () => {
     // This test MUST FAIL before implementation (currently 404 — the route
     // /admin/oauth/access_scopes.json does not exist in the twin yet).
     const session = await getSession();
-    const { body } = await shopify.rest.AccessScope.all({ session } as any);
-    expect(Array.isArray((body as any).access_scopes)).toBe(true);
-    expect((body as any).access_scopes.length).toBeGreaterThan(0);
+    // AccessScope.all() returns { data: AccessScope[], headers, pageInfo } — not { body }.
+    // Each AccessScope instance has a `handle` field populated from { access_scopes: [...] }.
+    const { data } = await shopify.rest.AccessScope.all({ session } as any);
+    expect(Array.isArray(data)).toBe(true);
+    expect(data.length).toBeGreaterThan(0);
+    expect((data[0] as any).handle).toBeTruthy();
   });
 
   it('Location.all() returns locations array', async () => {

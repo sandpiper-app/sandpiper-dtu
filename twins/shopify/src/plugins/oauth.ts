@@ -6,6 +6,7 @@
 import type { FastifyPluginAsync } from 'fastify';
 import { createHmac, randomUUID } from 'node:crypto';
 import type { StateManager } from '@dtu/state';
+import { validateAccessToken } from '../services/token-validator.js';
 
 interface OAuthAuthorizeQuery {
   redirect_uri?: string;
@@ -21,6 +22,24 @@ interface OAuthTokenRequestBody {
   expiring?: string;
   subject_token?: string;
   refresh_token?: string;
+  requested_token_type?: string;
+}
+
+interface OAuthOnlineTokenResponse {
+  access_token: string;
+  scope: string;
+  expires_in: number;
+  associated_user_scope: string;
+  associated_user: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    email_verified: boolean;
+    account_owner: boolean;
+    locale: string;
+    collaborator: boolean;
+  };
 }
 
 interface OAuthTokenResponse {
@@ -118,7 +137,7 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
 
   fastify.post<{
     Body: OAuthTokenRequestBody;
-    Reply: OAuthTokenResponse | OAuthErrorResponse;
+    Reply: OAuthTokenResponse | OAuthOnlineTokenResponse | OAuthErrorResponse;
   }>('/admin/oauth/access_token', async (request, reply) => {
     const body = request.body;
 
@@ -154,15 +173,6 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
       });
     }
 
-    const issueAccessToken = (): OAuthTokenResponse => {
-      const token = randomUUID();
-      fastify.stateManager.createToken(token, TWIN_SHOP_DOMAIN, ADMIN_SCOPES, 'admin');
-      return {
-        access_token: token,
-        scope: ADMIN_SCOPES,
-      };
-    };
-
     if (!PASSTHROUGH_GRANT_TYPES.has(body.grant_type ?? '')) {
       const { code } = body;
       if (!isNonEmptyString(code)) {
@@ -180,8 +190,46 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
       }
     }
 
+    const isOnlineTokenExchange =
+      body.grant_type === 'urn:ietf:params:oauth:grant-type:token-exchange' &&
+      body.requested_token_type === 'urn:shopify:params:oauth:token-type:online-access-token';
+
+    const accessToken = randomUUID();
+    fastify.stateManager.createToken(accessToken, TWIN_SHOP_DOMAIN, ADMIN_SCOPES, 'admin');
+
+    if (isOnlineTokenExchange) {
+      return reply.send({
+        access_token: accessToken,
+        scope: ADMIN_SCOPES,
+        expires_in: 86400,
+        associated_user_scope: ADMIN_SCOPES,
+        associated_user: {
+          id: 1,
+          first_name: 'Dev',
+          last_name: 'Twin',
+          email: 'twin@dev.myshopify.com',
+          email_verified: true,
+          account_owner: true,
+          locale: 'en',
+          collaborator: false,
+        },
+      });
+    }
+
+    return reply.send({ access_token: accessToken, scope: ADMIN_SCOPES });
+  });
+
+  fastify.get('/admin/oauth/access_scopes.json', async (request: any, reply) => {
+    const token = request.headers['x-shopify-access-token'] as string | undefined;
+    if (!token) {
+      return reply.status(401).send({ errors: '[API] Invalid API key or access token.' });
+    }
+    const result = await validateAccessToken(token, (fastify as any).stateManager);
+    if (!result.valid) {
+      return reply.status(401).send({ errors: '[API] Invalid API key or access token.' });
+    }
     return {
-      ...issueAccessToken(),
+      access_scopes: ADMIN_SCOPES.split(',').map((s) => ({ handle: s.trim() })),
     };
   });
 };
