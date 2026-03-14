@@ -127,4 +127,4 @@ Sandpiper's integration tests can run against twins that behave identically to r
 | v1.2 fixes behavioral fidelity gaps before expanding scope | External adversarial review found 13 issues (2 Critical, 8 High); must fix before v2 | — Pending |
 
 ---
-*Last updated: 2026-03-14 after Phase 38*
+*Last updated: 2026-03-14 after Phase 39*

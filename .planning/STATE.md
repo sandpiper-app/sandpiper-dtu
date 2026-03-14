@@ -23,7 +23,7 @@ progress:
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 38 complete (Slack auth/scope/client parity), Phases 39-40 remain
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 39 complete (Shopify OAuth/REST/ID parity), Phase 40 remains
 
 ## Current Position
 
@@ -449,8 +449,8 @@ None.
 ## Session Continuity
 
 **Last completed:** Phase 39 — Shopify OAuth, REST state, and ID parity (4/4 plans, SHOP-14..17 verified)
-**Work in progress:** Phase 40 remains
-**Stopped at:** Completed 39-04-PLAN.md — Inventory and collection state persistence
+**Work in progress:** Phase 40 — Verification evidence integrity and conformance truthfulness
+**Stopped at:** Phase 39 complete, transitioning to Phase 40
 **Timestamp:** 2026-03-14
 
 ---
