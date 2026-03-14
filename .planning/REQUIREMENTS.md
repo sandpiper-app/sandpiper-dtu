@@ -71,6 +71,10 @@ Requirements for milestone `v1.2 Behavioral Fidelity`. Fixes 13 adversarial revi
 - [x] **SLCK-17**: Slack `conversations.invite`/`kick` manage actual channel membership; `conversations.members` returns real member list; `conversations.open` returns a real DM channel (not canned `D_TWIN`); `views.open`/`update`/`push` maintain persistent view lifecycle with stable view IDs; `pins.add`/`remove`/`list` are stateful with deduplication (`already_pinned` error); `reactions.add`/`remove`/`list`/`get` are stateful with deduplication (`already_reacted` error)
 - [x] **SLCK-18**: Slack auth enforces OAuth scope requirements per method, returning `{ok: false, error: "missing_scope", needed: "<scope>", provided: "<scopes>"}` when token lacks the required scope; OAuth token exchange validates `client_id`, `scope`, and `redirect_uri` parameters
 - [x] **SLCK-19**: Slack API responses include `X-OAuth-Scopes` (token's granted scopes) and `X-Accepted-OAuth-Scopes` (method's required scopes) headers on successful calls
+- [ ] **SLCK-20**: `openid.connect.token` persists OIDC access tokens that work with `openid.connect.userInfo`; `oauth.v2.access` validates `client_secret`, echoes the authorize-time granted scope string, and `apps.connections.open` requires an app token with `connections:write`
+- [ ] **SLCK-21**: `conversations.list`, `conversations.info`, and `conversations.history` resolve required `channels/groups/im/mpim` read or history scopes from request `types` or the resolved channel class instead of requiring every family scope at once
+- [ ] **SLCK-22**: `filesUploadV2` returns Slack-shaped completed file metadata, and `response_url` honors `replace_original` and `delete_original`
+- [ ] **SLCK-23**: `auth.test` returns identity fields that match the token class instead of always returning the bot identity
 
 ### Cross-Cutting
 
@@ -93,7 +97,7 @@ Deferred after the `v1.2` behavioral fidelity baseline exists.
 ### Extended Fidelity
 
 - **SHOP-25**: Shopify twin supports multiple API version schemas (not just parameterized routes with one schema)
-- **SLCK-20**: Slack `admin.*` methods implement full Enterprise Grid simulation beyond basic stubs
+- **SLCK-24**: Slack `admin.*` methods implement full Enterprise Grid simulation beyond basic stubs
 - **SHOP-26**: Shopify Storefront cart/checkout mutations implemented for e-commerce testing workflows
 
 ## Out of Scope
@@ -160,14 +164,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SLCK-15 | Phase 26 | Complete |
 | SLCK-18 | Phase 26, 31 | Complete |
 | SLCK-19 | Phase 26 | Complete |
+| SLCK-20 | Phase 38 | Pending |
+| SLCK-21 | Phase 38 | Pending |
+| SLCK-22 | Phase 38 | Pending |
+| SLCK-23 | Phase 38 | Pending |
 | INFRA-21 | Phase 27, 32 | Complete |
 | INFRA-22 | Phase 27, 32 | Complete |
 | XCUT-01 | Phase 33 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 22 total (all complete)
-- v1.2 requirements: 19 total (9 complete, 10 pending gap closure)
-- Mapped to phases: 19
+- v1.2 requirements: 23 total (9 complete, 14 pending gap closure)
+- Mapped to phases: 23
 - Unmapped: 0
 
 ---
