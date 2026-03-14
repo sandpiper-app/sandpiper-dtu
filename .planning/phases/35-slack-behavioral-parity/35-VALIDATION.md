@@ -2,7 +2,7 @@
 phase: 35
 slug: slack-behavioral-parity
 status: draft
-nyquist_compliant: false
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-03-13
 ---
@@ -40,8 +40,7 @@ created: 2026-03-13
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
 | 35-01-01 | 01 | 1 | Finding #3: 17 routes | integration | `pnpm test:sdk --reporter=verbose 2>&1 \| grep -E 'SLCK-14\|method-coverage'` | ✅ slack-method-coverage.test.ts | ⬜ pending |
 | 35-01-02 | 01 | 1 | Finding #6: METHOD_SCOPES | integration | `pnpm test:sdk --reporter=verbose 2>&1 \| grep -E 'socket-mode\|scope'` | ✅ slack-bolt-socket-mode-receiver.test.ts | ⬜ pending |
-| 35-02-01 | 02 | 2 | Finding #4: openid no-auth | integration | `pnpm test:sdk --reporter=verbose 2>&1 \| grep openid` | ✅ slack-method-coverage.test.ts | ⬜ pending |
-| 35-02-02 | 02 | 2 | Finding #5: POST upload verb | integration | `pnpm test:sdk --reporter=verbose 2>&1 \| grep filesUploadV2` | ✅ slack-webclient-base.test.ts | ⬜ pending |
+| 35-01-03 | 01 | 1 | Finding #4: openid no-auth + Finding #5: POST upload verb | integration | `pnpm test:sdk --reporter=verbose 2>&1 \| grep -E 'openid\|filesUploadV2'` | ✅ slack-method-coverage.test.ts, slack-webclient-base.test.ts | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
