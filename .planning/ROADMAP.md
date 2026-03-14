@@ -399,7 +399,7 @@ Plans:
 | 33. Cross-Cutting Reset Coverage | 1/1 | Complete    | 2026-03-14 | - |
 | 34. Slack Build Fix & Evidence Pipeline | 1/1 | Complete    | 2026-03-14 | - |
 | 35. Slack Behavioral Parity | 1/1 | Complete    | 2026-03-14 | - |
-| 36. Shopify Behavioral Parity | 2/4 | In Progress|  | - |
+| 36. Shopify Behavioral Parity | 3/4 | In Progress|  | - |
 | 37. Billing Fidelity & Conformance Rigor | 0/0 | Not planned | - | - |
 
 ## Dependencies
@@ -462,7 +462,7 @@ Plans:
 **Goal:** Fix Shopify twin OAuth to differentiate grant types with proper response shapes, add missing REST routes (access_scopes, location inventory_levels, inventory_level mutations, inventory_items CRUD), fix GraphQL-to-REST ID round-trip with canonical GID generation, and support list endpoint filter semantics (since_id, ids).
 **Depends on:** Phase 34
 **Findings addressed:** #7 (High: OAuth collapses grant types into one response), #8 (High: missing REST routes confirmed 404 live), #9 (High: GraphQL/REST IDs don't round-trip), #10 (High: list endpoints ignore upstream filters)
-**Plans:** 2/4 plans executed
+**Plans:** 3/4 plans executed
 
 Plans:
 - [ ] 36-01-PLAN.md — Wave 0: shopify-behavioral-parity.test.ts with 11 RED tests for Findings #7-#10

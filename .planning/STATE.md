@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 36-03-PLAN.md
-last_updated: "2026-03-14T03:36:56.151Z"
-last_activity: "2026-03-14 — Phase 36 Plan 01 complete: Wave 0 RED tests for Shopify findings #7-#10 written; 9 failing tests establish TDD contract for Plans 02-04"
+stopped_at: Completed 36-02-PLAN.md
+last_updated: "2026-03-14T03:41:13.765Z"
+last_activity: "2026-03-13 — Phase 36 Plan 03 complete: canonical two-step GID in productCreate resolver and fixture loader; Finding #9 GID round-trip turns GREEN"
 progress:
   total_phases: 25
   completed_phases: 23
   total_plans: 71
-  completed_plans: 69
-  percent: 97
+  completed_plans: 70
+  percent: 98
 ---
 
 # Project State: Sandpiper DTU
@@ -81,6 +81,7 @@ Progress: [██████████] 98% (overall: 70/71 plans complete)
 | Phase 35-01 P01 | 3min | 3 tasks | 3 files |
 | Phase 36 P01 | 4min | 1 tasks | 1 files |
 | Phase 36 P03 | 3min | 2 tasks | 2 files |
+| Phase 36 P02 | 6min | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -98,6 +99,12 @@ Progress: [██████████] 98% (overall: 70/71 plans complete)
 - Variant product_gid in fixture loader updated to reference finalProductGid (canonical) not temp GID — critical for variant-product FK integrity
 - Finding #9 GREEN: productCreate via GraphQL now findable via REST numeric ID; 257/264 tests pass; 7 expected-RED (Findings #8/#10) until Plan 36-04
 - createGID('Product', productId) used in resolver (helper already imported); consistent with codebase convention
+
+**2026-03-14 - Phase 36 Plan 02 (OAuth online token + access_scopes route):**
+- Route /admin/oauth/access_scopes.json is the correct path: admin-api-client's generateApiUrlFormatter only prepends admin/api/:version/ when path does NOT start with 'admin'; AccessScope.customPrefix='/admin/oauth' already starts with 'admin' so version prefix is skipped
+- AccessScope.all() returns { data: AccessScope[] } not { body } — SDK baseFind wraps response through createInstancesFromResponse; tests must destructure data not body
+- Online token branch: isOnlineTokenExchange checks grant_type === token-exchange URN AND requested_token_type === online URN; adds associated_user block so session.isOnline === true
+- validateAccessToken reused from services/token-validator.js for access_scopes auth check, consistent with rest.ts pattern
 
 **2026-03-14 - Phase 36 Plan 01 (Wave 0 RED tests for Shopify findings #7-#10):**
 - Import individual REST resource classes via `restResources` bundle, not individual path exports — `@shopify/shopify-api/rest/admin/2024-01` index only re-exports the bundled `restResources` object; individual class exports cause `loadRestResources` TypeError
@@ -338,7 +345,7 @@ None.
 
 **Last completed:** Phase 33 Plan 01 — XCUT-01 reset coverage (commits 7fd3b5a, 280b574)
 **Work in progress:** None — Milestone v1.2 Behavioral Fidelity complete
-**Stopped at:** Completed 36-03-PLAN.md
+**Stopped at:** Completed 36-02-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
