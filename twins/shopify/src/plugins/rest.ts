@@ -200,7 +200,26 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
       }
     }
 
-    const all = (fastify as any).stateManager.listProducts();
+    const sinceId = parseInt(String(req.query?.since_id ?? '0'), 10);
+    const idsParam = req.query?.ids as string | undefined;
+
+    let all = (fastify as any).stateManager.listProducts();
+
+    // Apply since_id filter (id strictly greater than since_id)
+    if (!isNaN(sinceId) && sinceId > 0) {
+      all = all.filter((item: any) => item.id > sinceId);
+    }
+
+    // Apply ids filter (comma-separated numeric IDs)
+    if (idsParam) {
+      const idSet = new Set(
+        idsParam.split(',')
+          .map((s: string) => parseInt(s.trim(), 10))
+          .filter((n: number) => !isNaN(n))
+      );
+      all = all.filter((item: any) => idSet.has(item.id));
+    }
+
     const { items, linkHeader } = paginateList(all, 'Product', version, '/products.json', limit, afterId);
     if (linkHeader) reply.header('Link', linkHeader);
     return { products: items };
@@ -300,7 +319,11 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
       }
     }
 
-    const all = (fastify as any).stateManager.listCustomers();
+    const sinceId = parseInt(String(req.query?.since_id ?? '0'), 10);
+    let all = (fastify as any).stateManager.listCustomers();
+    if (!isNaN(sinceId) && sinceId > 0) {
+      all = all.filter((item: any) => item.id > sinceId);
+    }
     const { items, linkHeader } = paginateList(all, 'Customer', version, '/customers.json', limit, afterId);
     if (linkHeader) reply.header('Link', linkHeader);
     return { customers: items };
@@ -339,7 +362,11 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
       }
     }
 
-    const all = (fastify as any).stateManager.listOrders();
+    const sinceId = parseInt(String(req.query?.since_id ?? '0'), 10);
+    let all = (fastify as any).stateManager.listOrders();
+    if (!isNaN(sinceId) && sinceId > 0) {
+      all = all.filter((item: any) => item.id > sinceId);
+    }
     const { items, linkHeader } = paginateList(all, 'Order', version, '/orders.json', limit, afterId);
     if (linkHeader) reply.header('Link', linkHeader);
     return { orders: items };
@@ -401,7 +428,16 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
       }
     }
 
-    const all = (fastify as any).stateManager.listInventoryItems();
+    const idsParam = req.query?.ids as string | undefined;
+    let all = (fastify as any).stateManager.listInventoryItems();
+    if (idsParam) {
+      const idSet = new Set(
+        idsParam.split(',')
+          .map((s: string) => parseInt(s.trim(), 10))
+          .filter((n: number) => !isNaN(n))
+      );
+      all = all.filter((item: any) => idSet.has(item.id));
+    }
     const { items, linkHeader } = paginateList(all, 'InventoryItem', version, '/inventory_items.json', limit, afterId);
     if (linkHeader) reply.header('Link', linkHeader);
     return { inventory_items: items };

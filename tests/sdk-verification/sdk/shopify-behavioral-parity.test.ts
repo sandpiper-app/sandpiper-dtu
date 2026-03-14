@@ -106,18 +106,23 @@ describe('Finding #8: Missing REST routes', () => {
   it('Location.all() returns locations array', async () => {
     // This test MUST FAIL before implementation (currently 404 — the route
     // /admin/api/:version/locations.json does not exist in the twin yet).
+    // Location.all() returns { data: Location[], headers, pageInfo } — use data not body.
     const session = await getSession();
-    const { body } = await shopify.rest.Location.all({ session } as any);
-    expect(Array.isArray((body as any).locations)).toBe(true);
+    const { data } = await shopify.rest.Location.all({ session } as any);
+    expect(Array.isArray(data)).toBe(true);
+    expect(data.length).toBeGreaterThan(0);
   });
 
   it('Location.find(id=1) returns location object', async () => {
     // This test MUST FAIL before implementation (currently 404 — the route
     // /admin/api/:version/locations/:id.json does not exist in the twin yet).
+    // Location.find() returns the Location instance directly (not { body }) —
+    // access fields via instance.id, instance.name, etc.
     const session = await getSession();
-    const { body } = await shopify.rest.Location.find({ session, id: 1 } as any);
-    expect((body as any).location).toBeDefined();
-    expect((body as any).location.id).toBe(1);
+    const location = await shopify.rest.Location.find({ session, id: 1 } as any);
+    expect(location).toBeDefined();
+    // SDK REST client converts numeric id fields to strings (lossless-json behavior)
+    expect(Number((location as any).id)).toBe(1);
   });
 
   it('InventoryLevel.adjust() returns inventory_level', async () => {
