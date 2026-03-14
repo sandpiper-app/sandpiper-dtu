@@ -398,7 +398,7 @@ Plans:
 | 32. Conformance Harness & Evidence | 2/2 | Complete    | 2026-03-13 | - |
 | 33. Cross-Cutting Reset Coverage | 1/1 | Complete    | 2026-03-14 | - |
 | 34. Slack Build Fix & Evidence Pipeline | 1/1 | Complete    | 2026-03-14 | - |
-| 35. Slack Behavioral Parity | 0/0 | Not planned | - | - |
+| 35. Slack Behavioral Parity | 0/1 | In progress | - | - |
 | 36. Shopify Behavioral Parity | 0/0 | Not planned | - | - |
 | 37. Billing Fidelity & Conformance Rigor | 0/0 | Not planned | - | - |
 
@@ -453,10 +453,10 @@ Plans:
 **Goal:** Close remaining Slack twin behavioral gaps — register all deferred WebClient methods, implement real OpenID Connect flow with token persistence, fix the filesUploadV2 upload chain to match upstream WebClient behavior, and correct auth/scope semantics for apps.connections.open, conversation methods, and oauth.v2.access.
 **Depends on:** Phase 34
 **Findings addressed:** #3 (High: SLCK-14 overstated — deferred methods not registered), #4 (High: OpenID Connect not implemented as real OAuth flow), #5 (High: filesUploadV2 chain diverges on HTTP verb and files field), #6 (High: auth/scope wrong for apps.connections.open, conversation scope model, oauth.v2.access)
-**Plans:** 0 plans
+**Plans:** 1 plan
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 35 to break down)
+- [ ] 35-01-PLAN.md — Register 16 missing stub routes, fix openid.connect.token no-auth, correct POST upload verb, add METHOD_SCOPES entries
 
 ### Phase 36: Shopify Behavioral Parity
 **Goal:** Fix Shopify twin OAuth to differentiate grant types with proper response shapes, add missing REST routes (access_scopes, location inventory_levels, inventory_level mutations, inventory_items CRUD), fix GraphQL-to-REST ID round-trip with canonical GID generation, and support list endpoint filter semantics (since_id, ids).
