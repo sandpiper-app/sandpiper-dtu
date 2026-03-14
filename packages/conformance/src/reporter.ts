@@ -30,9 +30,22 @@ export class ConformanceReporter {
       return;
     }
 
+    // Map the serialized mode value to a human-readable proof-scope label.
+    // The underlying report.mode field in JSON output is NOT renamed here —
+    // only the console label changes so it names the actual proof class:
+    //   live     → live parity       (twin compared against real API responses)
+    //   offline  → offline fixture   (twin compared against stored fixture responses)
+    //   twin     → twin consistency  (twin compared against itself, structural smoke)
+    const proofScopeLabel: Record<typeof report.mode, string> = {
+      live: 'live parity',
+      offline: 'offline fixture',
+      twin: 'twin consistency',
+    };
+    const displayMode = proofScopeLabel[report.mode] ?? report.mode;
+
     // Header
     console.log('');
-    console.log(`Conformance: ${report.suiteName} (${report.mode} mode)`);
+    console.log(`Conformance: ${report.suiteName} (${displayMode})`);
     console.log('='.repeat(60));
     console.log(
       `Total: ${report.total} | Passed: ${report.passed} | Failed: ${report.failed}`
