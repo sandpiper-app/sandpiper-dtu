@@ -14,7 +14,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { App, SocketModeReceiver } from '@slack/bolt';
 import { WebSocketServer } from 'ws';
 import type { AddressInfo } from 'node:net';
-import { resetSlack, seedSlackBotToken } from '../setup/seeders.js';
+import { resetSlack, seedSlackAppToken, seedSlackBotToken } from '../setup/seeders.js';
 
 const SLACK_API_URL = process.env.SLACK_API_URL!;
 const APP_TOKEN = 'xapp-1-slck12-app-level-token';
@@ -26,7 +26,7 @@ let wsPort: number;
 beforeAll(async () => {
   await resetSlack();
   TOKEN = await seedSlackBotToken('xoxb-slck12-sm-bot-token');
-  await seedSlackBotToken(APP_TOKEN);
+  await seedSlackAppToken(APP_TOKEN);
 
   // Boot broker on OS-assigned port
   await new Promise<void>((resolve) => {

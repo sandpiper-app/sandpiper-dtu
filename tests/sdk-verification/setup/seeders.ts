@@ -81,6 +81,37 @@ export async function seedSlackChannel(name: string): Promise<string> {
  * slackStateManager.createToken() is the underlying call — any admin endpoint that
  * invokes it with a deterministic token string is acceptable.
  */
+/**
+ * Seed a known app-level token (xapp-) in the Slack twin for Socket Mode tests.
+ *
+ * Uses POST /admin/tokens with tokenType: 'app' so the token passes the
+ * apps.connections.open app-token gate added in Phase 38. This helper exists
+ * so tests stop encoding app-token semantics through a bot token record.
+ */
+export async function seedSlackAppToken(token = 'xapp-test-token'): Promise<string> {
+  const slackUrl = process.env.SLACK_API_URL!;
+  const res = await fetch(slackUrl + '/admin/tokens', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      token,
+      tokenType: 'app',
+      teamId: 'T_TWIN',
+      userId: 'U_APP_TWIN',
+      scope: 'connections:write',
+      appId: 'A_TWIN',
+    }),
+  });
+  if (!res.ok) {
+    throw new Error(
+      `seedSlackAppToken: POST /admin/tokens failed with ${res.status}. ` +
+      `The Slack twin must expose a POST /admin/tokens endpoint that calls ` +
+      `slackStateManager.createToken() with tokenType 'app'.`
+    );
+  }
+  return token;
+}
+
 export async function seedSlackBotToken(token = 'xoxb-test-token'): Promise<string> {
   const slackUrl = process.env.SLACK_API_URL!;
   const res = await fetch(slackUrl + '/admin/tokens', {

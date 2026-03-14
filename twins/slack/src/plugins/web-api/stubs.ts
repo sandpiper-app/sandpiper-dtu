@@ -147,11 +147,17 @@ const stubsPlugin: FastifyPluginAsync = async (fastify) => {
   // ── Socket Mode ───────────────────────────────────────────────────
   // apps.connections.open returns a dynamic wss URL seeded via POST /admin/set-wss-url.
   // Cannot use the generic stub() helper because the response body is dynamic.
+  // Only xapp- app tokens are accepted — bot and user tokens return invalid_auth even
+  // if they have connections:write scope.
   fastify.post('/api/apps.connections.open', async (request, reply) => {
     const token = extractToken(request);
     if (!token) return reply.send({ ok: false, error: 'not_authed' });
     const tokenRecord = fastify.slackStateManager.getToken(token);
     if (!tokenRecord) return reply.send({ ok: false, error: 'invalid_auth' });
+    // Require app token: must be stored with token_type === 'app' AND prefixed with xapp-
+    if (tokenRecord.token_type !== 'app' || !token.startsWith('xapp-')) {
+      return reply.send({ ok: false, error: 'invalid_auth' });
+    }
     // SLCK-18: scope enforcement
     const scopeCheck = checkScope('apps.connections.open', tokenRecord.scope);
     if (scopeCheck) return reply.status(200).send({ ok: false, ...scopeCheck });

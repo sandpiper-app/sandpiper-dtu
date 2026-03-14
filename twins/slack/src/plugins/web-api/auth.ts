@@ -82,7 +82,36 @@ const authPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.status(statusCode).send(errorBody);
     }
 
-    // 5. Return Slack-shaped identity response
+    // 5. Return Slack-shaped identity response — branch on token class
+    if (tokenRecord.token_type === 'user') {
+      // OAuth-issued user token: return the authed user's identity, not the bot
+      const user = fastify.slackStateManager.getUser(tokenRecord.user_id);
+      return reply.status(200).send({
+        ok: true,
+        url: 'https://twin-workspace.slack.com/',
+        team: 'Twin Workspace',
+        user: user?.name ?? 'authed-user',
+        team_id: tokenRecord.team_id,
+        user_id: tokenRecord.user_id,
+        is_enterprise_install: false,
+      });
+    }
+
+    if (tokenRecord.token_type === 'app') {
+      // App-level token: return app identity
+      return reply.status(200).send({
+        ok: true,
+        url: 'https://twin-workspace.slack.com/',
+        team: 'Twin Workspace',
+        user: 'app',
+        team_id: tokenRecord.team_id,
+        user_id: tokenRecord.user_id,
+        app_id: tokenRecord.app_id,
+        is_enterprise_install: false,
+      });
+    }
+
+    // Default: bot token — preserve existing bot identity response
     return reply.status(200).send({
       ok: true,
       url: 'https://twin-workspace.slack.com/',
