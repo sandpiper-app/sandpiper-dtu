@@ -174,7 +174,8 @@ describe('shopify.billing — SHOP-13 (live twin)', () => {
       body: JSON.stringify({ query: mutation }),
     });
     const { data } = await res.json() as any;
-    expect(data.appPurchaseOneTimeCreate.appPurchaseOneTime.id).not.toBe('gid://shopify/AppPurchaseOneTime/1');
+    // Verify the GID is a valid persistent format (not a hardcoded string value)
+    expect(data.appPurchaseOneTimeCreate.appPurchaseOneTime.id).toMatch(/^gid:\/\/shopify\/AppPurchaseOneTime\/\d+$/);
     // Second call should get a different GID (persistence, not hardcoded stub)
     const res2 = await fetch(`${twinBaseUrl}/admin/api/2024-01/graphql.json`, {
       method: 'POST',

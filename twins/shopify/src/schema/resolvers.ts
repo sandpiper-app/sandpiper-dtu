@@ -220,10 +220,31 @@ const URLScalar = new GraphQLScalarType({
   },
 });
 
+// CurrencyCode scalar — accepts both string literals ("USD") and enum literals (USD)
+// Shopify uses CurrencyCode as an enum; the twin accepts both forms for compatibility.
+const CurrencyCodeScalar = new GraphQLScalarType({
+  name: 'CurrencyCode',
+  description: 'ISO 4217 currency code (e.g. USD, EUR). Accepts both string and enum-literal syntax.',
+  serialize(value: unknown): string {
+    if (typeof value === 'string') return value;
+    throw new Error('CurrencyCode must be a string');
+  },
+  parseValue(value: unknown): string {
+    if (typeof value === 'string') return value;
+    throw new Error('CurrencyCode input must be a string');
+  },
+  parseLiteral(ast): string {
+    if (ast.kind === Kind.STRING) return ast.value;
+    if (ast.kind === Kind.ENUM) return ast.value;
+    throw new Error('CurrencyCode literal must be a string or enum value');
+  },
+});
+
 export const resolvers = {
   DateTime: DateTimeScalar,
   URL: URLScalar,
   Decimal: DecimalScalar,
+  CurrencyCode: CurrencyCodeScalar,
 
   // Query resolvers
   QueryRoot: {
@@ -313,21 +334,48 @@ export const resolvers = {
       requireAuth(context);
       const activeSubscriptions = context.stateManager.listActiveAppSubscriptions(context.shopDomain);
       return {
-        activeSubscriptions: activeSubscriptions.map((sub: any) => ({
-          id: sub.gid,
-          name: sub.name,
-          status: sub.status,
-          test: sub.test === 1,
-          returnUrl: sub.return_url ?? 'https://example.com',
-          currentPeriodEnd: null,
-          trialDays: sub.trial_days ?? 0,
-          lineItems: [],
-          createdAt: new Date(sub.created_at * 1000).toISOString(),
-        })),
-        oneTimePurchases: {
-          edges: [],
-          pageInfo: { hasNextPage: false, endCursor: null },
-        },
+        activeSubscriptions: activeSubscriptions.map((sub: any) => {
+          const subItems: any[] = sub.line_items ? JSON.parse(sub.line_items) : [];
+          const lineItems = subItems.map((item: any, idx: number) => ({
+            id: `gid://shopify/AppSubscriptionLineItem/${idx + 1}`,
+            plan: {
+              pricingDetails: item.plan?.appRecurringPricingDetails
+                ? {
+                    interval: item.plan.appRecurringPricingDetails.interval,
+                    price: item.plan.appRecurringPricingDetails.price
+                      ?? { amount: String(item.plan.appRecurringPricingDetails.amount ?? '0.00'), currencyCode: item.plan.appRecurringPricingDetails.currencyCode ?? 'USD' },
+                  }
+                : { interval: 'EVERY_30_DAYS', price: { amount: '0.00', currencyCode: 'USD' } },
+            },
+          }));
+          return {
+            id: sub.gid,
+            name: sub.name,
+            status: sub.status,
+            test: sub.test === 1,
+            returnUrl: sub.return_url ?? 'https://example.com',
+            currentPeriodEnd: null,
+            trialDays: sub.trial_days ?? 0,
+            lineItems,
+            createdAt: new Date(sub.created_at * 1000).toISOString(),
+          };
+        }),
+        oneTimePurchases: (() => {
+          const purchases = context.stateManager.listOneTimePurchasesByShop(context.shopDomain);
+          return {
+            edges: purchases.map((p: any) => ({
+              node: {
+                id: p.gid,
+                name: p.name,
+                status: p.status,
+                test: p.test === 1,
+                price: { amount: p.price_amount, currencyCode: p.price_currency_code },
+                createdAt: new Date(p.created_at * 1000).toISOString(),
+              },
+            })),
+            pageInfo: { hasNextPage: false, endCursor: null },
+          };
+        })(),
       };
     },
 
@@ -789,9 +837,25 @@ export const resolvers = {
         test: args.test ?? true,
         trial_days: args.trialDays ?? 0,
         shop_domain: context.shopDomain,
+        line_items: args.lineItems,
       });
       const subscription = context.stateManager.getAppSubscription(id);
       const confirmationUrl = `https://dev.myshopify.com/admin/charges/${id}/confirm_recurring`;
+      const storedItems: any[] = subscription.line_items
+        ? JSON.parse(subscription.line_items)
+        : [];
+      const lineItems = storedItems.map((item: any, idx: number) => ({
+        id: `gid://shopify/AppSubscriptionLineItem/${idx + 1}`,
+        plan: {
+          pricingDetails: item.plan?.appRecurringPricingDetails
+            ? {
+                interval: item.plan.appRecurringPricingDetails.interval,
+                price: item.plan.appRecurringPricingDetails.price
+                  ?? { amount: String(item.plan.appRecurringPricingDetails.amount ?? '0.00'), currencyCode: item.plan.appRecurringPricingDetails.currencyCode ?? 'USD' },
+              }
+            : { interval: 'EVERY_30_DAYS', price: { amount: '0.00', currencyCode: 'USD' } },
+        },
+      }));
       return {
         appSubscription: {
           id: subscription.gid,
@@ -801,7 +865,7 @@ export const resolvers = {
           returnUrl: subscription.return_url ?? 'https://example.com',
           currentPeriodEnd: null,
           trialDays: subscription.trial_days ?? 0,
-          lineItems: [],
+          lineItems,
           createdAt: new Date(subscription.created_at * 1000).toISOString(),
         },
         confirmationUrl,
@@ -809,18 +873,32 @@ export const resolvers = {
       };
     },
 
-    appPurchaseOneTimeCreate: (_: unknown, _args: unknown, context: Context) => {
+    appPurchaseOneTimeCreate: (_: unknown, args: any, context: Context) => {
       requireAuth(context);
+      const rowId = context.stateManager.createOneTimePurchase({
+        name: args.name,
+        return_url: args.returnUrl,
+        test: args.test ?? true,
+        price_amount: args.price?.amount ?? '0.00',
+        price_currency_code: args.price?.currencyCode ?? 'USD',
+        shop_domain: context.shopDomain,
+      });
+      const numericId = rowId;
+      const gid = `gid://shopify/AppPurchaseOneTime/${numericId}`;
+      const confirmationUrl = `https://dev.myshopify.com/admin/charges/${numericId}/confirm`;
       return {
         appPurchaseOneTime: {
-          id: 'gid://shopify/AppPurchaseOneTime/1',
-          name: 'One Time Purchase',
+          id: gid,
+          name: args.name ?? 'One Time Purchase',
           status: 'PENDING',
-          test: true,
-          price: { amount: '10.00', currencyCode: 'USD' },
+          test: args.test !== false,
+          price: {
+            amount: args.price?.amount ?? '0.00',
+            currencyCode: args.price?.currencyCode ?? 'USD',
+          },
           createdAt: new Date().toISOString(),
         },
-        confirmationUrl: 'https://dev.myshopify.com/admin/charges/1/confirm',
+        confirmationUrl,
         userErrors: [],
       };
     },
@@ -860,6 +938,21 @@ export const resolvers = {
       }
       context.stateManager.updateAppSubscriptionStatus(numericId, 'CANCELLED');
       const updated = context.stateManager.getAppSubscription(numericId);
+      const cancelledItems: any[] = updated.line_items
+        ? JSON.parse(updated.line_items)
+        : [];
+      const cancelledLineItems = cancelledItems.map((item: any, idx: number) => ({
+        id: `gid://shopify/AppSubscriptionLineItem/${idx + 1}`,
+        plan: {
+          pricingDetails: item.plan?.appRecurringPricingDetails
+            ? {
+                interval: item.plan.appRecurringPricingDetails.interval,
+                price: item.plan.appRecurringPricingDetails.price
+                  ?? { amount: String(item.plan.appRecurringPricingDetails.amount ?? '0.00'), currencyCode: item.plan.appRecurringPricingDetails.currencyCode ?? 'USD' },
+              }
+            : { interval: 'EVERY_30_DAYS', price: { amount: '0.00', currencyCode: 'USD' } },
+        },
+      }));
       return {
         appSubscription: {
           id: updated.gid,
@@ -869,7 +962,7 @@ export const resolvers = {
           returnUrl: updated.return_url ?? 'https://example.com',
           currentPeriodEnd: null,
           trialDays: updated.trial_days ?? 0,
-          lineItems: [],
+          lineItems: cancelledLineItems,
           createdAt: new Date(updated.created_at * 1000).toISOString(),
         },
         userErrors: [],

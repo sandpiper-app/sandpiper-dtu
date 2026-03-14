@@ -4,6 +4,7 @@
 scalar DateTime
 scalar URL
 scalar Decimal
+scalar CurrencyCode
 
 # Billing enums
 enum AppSubscriptionReplacementBehavior { APPLY_IMMEDIATELY APPLY_ON_NEXT_BILLING_CYCLE STANDARD }
@@ -18,7 +19,7 @@ enum CustomerSortKeys { CREATED_AT ID LAST_ORDER_DATE LOCATION NAME ORDER_COUNT 
 # Money types matching Shopify's structure
 type MoneyV2 {
   amount: String!
-  currencyCode: String!
+  currencyCode: CurrencyCode!
 }
 
 type MoneySet {
@@ -355,7 +356,7 @@ input AppSubscriptionDiscountValueInput {
 }
 input MoneyInput {
   amount: Decimal!
-  currencyCode: String!
+  currencyCode: CurrencyCode!
 }
 
 input MoneyBagInput {
