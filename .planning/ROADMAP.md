@@ -501,10 +501,13 @@ Plans:
 **Requirements**: SHOP-14, SHOP-15, SHOP-16, SHOP-17
 **Depends on:** Phase 37
 **Findings addressed:** Re-audit #6 (OAuth grant validation drift), #7 (order/customer ID parity drift), #8 (non-persistent REST writes), #9 (collection filter and inventory-level state drift)
-**Plans:** 0 plans
+**Plans:** 4 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 39 to break down)
+- [ ] 39-01-PLAN.md — Wave 0 RED tests for grant-specific OAuth validation, REST state parity, inventory/collection state, and smoke-only SHOP-16 readiness
+- [ ] 39-02-PLAN.md — Grant-specific `/admin/oauth/access_token` validation plus green auth/admin framework-readiness smoke
+- [ ] 39-03-PLAN.md — Canonical order/customer IDs and state-backed product/customer/order REST writes and ids filters
+- [ ] 39-04-PLAN.md — Schema-backed inventory levels and collection membership plus version-routing and reset regressions
 
 ### Phase 40: Verification evidence integrity and conformance truthfulness
 
