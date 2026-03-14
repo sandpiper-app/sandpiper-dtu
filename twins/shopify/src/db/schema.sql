@@ -95,3 +95,35 @@ CREATE TABLE IF NOT EXISTS error_configs (
   delay_ms INTEGER,                     -- Delay before response (for timeout simulation)
   enabled BOOLEAN DEFAULT 1             -- Whether error simulation is enabled
 );
+
+-- Inventory Levels (Phase 39-04)
+CREATE TABLE IF NOT EXISTS inventory_levels (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  inventory_item_id INTEGER NOT NULL,  -- Reference to inventory_items.id
+  location_id INTEGER NOT NULL,        -- Reference to location id (1 = Default Location)
+  available INTEGER NOT NULL DEFAULT 0, -- Current available quantity
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL,
+  UNIQUE(inventory_item_id, location_id) -- One row per item+location pair
+);
+
+-- Custom Collections (Phase 39-04)
+CREATE TABLE IF NOT EXISTS custom_collections (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  gid TEXT UNIQUE NOT NULL,            -- Shopify GID: gid://shopify/Collection/{id}
+  title TEXT,                           -- Collection title
+  handle TEXT,                          -- URL handle (slug)
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL
+);
+
+-- Collects — product-collection membership (Phase 39-04)
+CREATE TABLE IF NOT EXISTS collects (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  collection_id INTEGER NOT NULL,      -- Reference to custom_collections.id
+  product_id INTEGER NOT NULL,         -- Reference to products.id
+  position INTEGER DEFAULT 1,          -- Sort position within collection
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL,
+  UNIQUE(collection_id, product_id)    -- One collect per product+collection pair
+);

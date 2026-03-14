@@ -220,6 +220,17 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
       all = all.filter((item: any) => idSet.has(item.id));
     }
 
+    // Apply collection_id filter — only return products linked via collects table
+    const collectionIdParam = req.query?.collection_id as string | undefined;
+    if (collectionIdParam) {
+      const collectionId = parseInt(collectionIdParam, 10);
+      if (!isNaN(collectionId)) {
+        const collectionProducts = (fastify as any).stateManager.listProductsByCollectionId(collectionId);
+        const collectionProductIds = new Set(collectionProducts.map((p: any) => p.id));
+        all = all.filter((item: any) => collectionProductIds.has(item.id));
+      }
+    }
+
     const { items, linkHeader } = paginateList(all, 'Product', version, '/products.json', limit, afterId);
     if (linkHeader) reply.header('Link', linkHeader);
     return {
@@ -674,12 +685,33 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
     return { inventory_items: items };
   });
 
-  // GET /admin/api/:version/inventory_levels.json — stub (no state)
+  // GET /admin/api/:version/inventory_levels.json — state-backed
   fastify.get(adminPath('/inventory_levels.json'), async (req: any, reply) => {
     const version = parseVersionHeader(req, reply);
     if (version === null) return;
     if (!await requireToken(req, reply)) return;
-    return { inventory_levels: [] };
+
+    const inventoryItemIdsParam = req.query?.inventory_item_ids as string | undefined;
+    const locationIdsParam = req.query?.location_ids as string | undefined;
+
+    const inventoryItemIds = inventoryItemIdsParam
+      ? inventoryItemIdsParam.split(',').map((s: string) => parseInt(s.trim(), 10)).filter((n: number) => !isNaN(n))
+      : undefined;
+    const locationIds = locationIdsParam
+      ? locationIdsParam.split(',').map((s: string) => parseInt(s.trim(), 10)).filter((n: number) => !isNaN(n))
+      : undefined;
+
+    const rows = (fastify as any).stateManager.listInventoryLevels({ inventoryItemIds, locationIds });
+    return {
+      inventory_levels: rows.map((r: any) => ({
+        inventory_item_id: r.inventory_item_id,
+        location_id: r.location_id,
+        available: r.available,
+        created_at: new Date(r.created_at * 1000).toISOString(),
+        updated_at: new Date(r.updated_at * 1000).toISOString(),
+        admin_graphql_api_id: `gid://shopify/InventoryLevel/${r.location_id}?inventory_item_id=${r.inventory_item_id}`,
+      })),
+    };
   });
 
   // ---------------------------------------------------------------------------
@@ -733,33 +765,29 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
     };
   });
 
-  // GET /admin/api/:version/locations/:id/inventory_levels.json
+  // GET /admin/api/:version/locations/:id/inventory_levels.json — state-backed
   fastify.get(adminPath('/locations/:id/inventory_levels.json'), async (req: any, reply) => {
     const version = parseVersionHeader(req, reply);
     if (version === null) return;
     if (!await requireToken(req, reply)) return;
-    return { inventory_levels: [] };
-  });
-
-  // ---------------------------------------------------------------------------
-  // InventoryLevel mutations — Tier 2 stubs
-  // Register sub-paths BEFORE DELETE /inventory_levels.json
-  // ---------------------------------------------------------------------------
-
-  // POST /admin/api/:version/inventory_levels/adjust.json
-  fastify.post(adminPath('/inventory_levels/adjust.json'), async (req: any, reply) => {
-    const version = parseVersionHeader(req, reply);
-    if (version === null) return;
-    if (!await requireToken(req, reply)) return;
-    const body = (req.body as any) ?? {};
+    const locationId = parseInt((req.params.id as string).replace(/\.json$/, ''), 10);
+    const rows = (fastify as any).stateManager.listInventoryLevels({ locationIds: [locationId] });
     return {
-      inventory_level: {
-        inventory_item_id: body.inventory_item_id ?? 1,
-        location_id: body.location_id ?? 1,
-        available: body.available_adjustment ?? 0,
-      },
+      inventory_levels: rows.map((r: any) => ({
+        inventory_item_id: r.inventory_item_id,
+        location_id: r.location_id,
+        available: r.available,
+        created_at: new Date(r.created_at * 1000).toISOString(),
+        updated_at: new Date(r.updated_at * 1000).toISOString(),
+        admin_graphql_api_id: `gid://shopify/InventoryLevel/${r.location_id}?inventory_item_id=${r.inventory_item_id}`,
+      })),
     };
   });
+
+  // ---------------------------------------------------------------------------
+  // InventoryLevel mutations — state-backed
+  // Register sub-paths BEFORE DELETE /inventory_levels.json
+  // ---------------------------------------------------------------------------
 
   // POST /admin/api/:version/inventory_levels/connect.json
   fastify.post(adminPath('/inventory_levels/connect.json'), async (req: any, reply) => {
@@ -767,11 +795,42 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
     if (version === null) return;
     if (!await requireToken(req, reply)) return;
     const body = (req.body as any) ?? {};
+    const inventoryItemId = Number(body.inventory_item_id ?? 1);
+    const locationId = Number(body.location_id ?? 1);
+    const row = (fastify as any).stateManager.connectInventoryLevel(inventoryItemId, locationId);
     return {
       inventory_level: {
-        inventory_item_id: body.inventory_item_id ?? 1,
-        location_id: body.location_id ?? 1,
-        available: 0,
+        inventory_item_id: row.inventory_item_id,
+        location_id: row.location_id,
+        available: row.available,
+        created_at: new Date(row.created_at * 1000).toISOString(),
+        updated_at: new Date(row.updated_at * 1000).toISOString(),
+        admin_graphql_api_id: `gid://shopify/InventoryLevel/${row.location_id}?inventory_item_id=${row.inventory_item_id}`,
+      },
+    };
+  });
+
+  // POST /admin/api/:version/inventory_levels/adjust.json
+  fastify.post(adminPath('/inventory_levels/adjust.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    const body = (req.body as any) ?? {};
+    const inventoryItemId = Number(body.inventory_item_id ?? 1);
+    const locationId = Number(body.location_id ?? 1);
+    const availableAdjustment = Number(body.available_adjustment ?? 0);
+    const row = (fastify as any).stateManager.adjustInventoryLevel(inventoryItemId, locationId, availableAdjustment);
+    if (row === null) {
+      return reply.status(404).send({ errors: 'Not Found' });
+    }
+    return {
+      inventory_level: {
+        inventory_item_id: row.inventory_item_id,
+        location_id: row.location_id,
+        available: row.available,
+        created_at: new Date(row.created_at * 1000).toISOString(),
+        updated_at: new Date(row.updated_at * 1000).toISOString(),
+        admin_graphql_api_id: `gid://shopify/InventoryLevel/${row.location_id}?inventory_item_id=${row.inventory_item_id}`,
       },
     };
   });
@@ -782,11 +841,18 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
     if (version === null) return;
     if (!await requireToken(req, reply)) return;
     const body = (req.body as any) ?? {};
+    const inventoryItemId = Number(body.inventory_item_id ?? 1);
+    const locationId = Number(body.location_id ?? 1);
+    const available = Number(body.available ?? 0);
+    const row = (fastify as any).stateManager.setInventoryLevel(inventoryItemId, locationId, available);
     return {
       inventory_level: {
-        inventory_item_id: body.inventory_item_id ?? 1,
-        location_id: body.location_id ?? 1,
-        available: body.available ?? 0,
+        inventory_item_id: row.inventory_item_id,
+        location_id: row.location_id,
+        available: row.available,
+        created_at: new Date(row.created_at * 1000).toISOString(),
+        updated_at: new Date(row.updated_at * 1000).toISOString(),
+        admin_graphql_api_id: `gid://shopify/InventoryLevel/${row.location_id}?inventory_item_id=${row.inventory_item_id}`,
       },
     };
   });
@@ -796,6 +862,12 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
     const version = parseVersionHeader(req, reply);
     if (version === null) return;
     if (!await requireToken(req, reply)) return;
+    const inventoryItemId = Number(req.query?.inventory_item_id ?? 0);
+    const locationId = Number(req.query?.location_id ?? 0);
+    const deleted = (fastify as any).stateManager.deleteInventoryLevel(inventoryItemId, locationId);
+    if (!deleted) {
+      return reply.status(404).send({ errors: 'Not Found' });
+    }
     return {};
   });
 
@@ -853,7 +925,7 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
   });
 
   // ---------------------------------------------------------------------------
-  // Tier 2 stub routes — hardcoded minimal valid shapes, no state
+  // CustomCollection — state-backed
   // ---------------------------------------------------------------------------
 
   // GET /admin/api/:version/custom_collections.json
@@ -861,7 +933,140 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
     const version = parseVersionHeader(req, reply);
     if (version === null) return;
     if (!await requireToken(req, reply)) return;
-    return { custom_collections: [] };
+    const rows = (fastify as any).stateManager.listCustomCollections();
+    return {
+      custom_collections: rows.map((c: any) => ({
+        id: c.id,
+        admin_graphql_api_id: c.gid,
+        title: c.title,
+        handle: c.handle,
+        created_at: new Date(c.created_at * 1000).toISOString(),
+        updated_at: new Date(c.updated_at * 1000).toISOString(),
+      })),
+    };
+  });
+
+  // POST /admin/api/:version/custom_collections.json
+  fastify.post(adminPath('/custom_collections.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    const input = (req.body as any)?.custom_collection ?? {};
+    const tempGid = `gid://shopify/Collection/temp-${Date.now()}`;
+    const rowId = (fastify as any).stateManager.createCustomCollection({
+      gid: tempGid,
+      title: input.title ?? null,
+      handle: input.handle ?? null,
+    });
+    const finalGid = `gid://shopify/Collection/${rowId}`;
+    (fastify as any).stateManager.database
+      .prepare('UPDATE custom_collections SET gid = ? WHERE id = ?')
+      .run(finalGid, rowId);
+    const coll = (fastify as any).stateManager.getCustomCollection(rowId);
+    reply.status(201);
+    return {
+      custom_collection: {
+        id: coll.id,
+        admin_graphql_api_id: coll.gid,
+        title: coll.title,
+        handle: coll.handle,
+        created_at: new Date(coll.created_at * 1000).toISOString(),
+        updated_at: new Date(coll.updated_at * 1000).toISOString(),
+      },
+    };
+  });
+
+  // GET /admin/api/:version/custom_collections/:id.json
+  fastify.get(adminPath('/custom_collections/:id.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    const numericId = parseInt((req.params.id as string).replace(/\.json$/, ''), 10);
+    const coll = (fastify as any).stateManager.getCustomCollection(numericId);
+    if (!coll) {
+      return reply.status(404).send({ errors: 'Not Found' });
+    }
+    return {
+      custom_collection: {
+        id: coll.id,
+        admin_graphql_api_id: coll.gid,
+        title: coll.title,
+        handle: coll.handle,
+        created_at: new Date(coll.created_at * 1000).toISOString(),
+        updated_at: new Date(coll.updated_at * 1000).toISOString(),
+      },
+    };
+  });
+
+  // ---------------------------------------------------------------------------
+  // Collects — state-backed
+  // ---------------------------------------------------------------------------
+
+  // GET /admin/api/:version/collects.json
+  fastify.get(adminPath('/collects.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    const collectionIdParam = req.query?.collection_id as string | undefined;
+    const opts = collectionIdParam ? { collectionId: parseInt(collectionIdParam, 10) } : {};
+    const rows = (fastify as any).stateManager.listCollects(opts);
+    return {
+      collects: rows.map((c: any) => ({
+        id: c.id,
+        collection_id: c.collection_id,
+        product_id: c.product_id,
+        position: c.position,
+        created_at: new Date(c.created_at * 1000).toISOString(),
+        updated_at: new Date(c.updated_at * 1000).toISOString(),
+      })),
+    };
+  });
+
+  // POST /admin/api/:version/collects.json
+  fastify.post(adminPath('/collects.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    const input = (req.body as any)?.collect ?? {};
+    const rowId = (fastify as any).stateManager.createCollect({
+      collection_id: Number(input.collection_id),
+      product_id: Number(input.product_id),
+      position: input.position ?? 1,
+    });
+    const collect = (fastify as any).stateManager.getCollect(rowId);
+    reply.status(201);
+    return {
+      collect: {
+        id: collect.id,
+        collection_id: collect.collection_id,
+        product_id: collect.product_id,
+        position: collect.position,
+        created_at: new Date(collect.created_at * 1000).toISOString(),
+        updated_at: new Date(collect.updated_at * 1000).toISOString(),
+      },
+    };
+  });
+
+  // GET /admin/api/:version/collects/:id.json
+  fastify.get(adminPath('/collects/:id.json'), async (req: any, reply) => {
+    const version = parseVersionHeader(req, reply);
+    if (version === null) return;
+    if (!await requireToken(req, reply)) return;
+    const numericId = parseInt((req.params.id as string).replace(/\.json$/, ''), 10);
+    const collect = (fastify as any).stateManager.getCollect(numericId);
+    if (!collect) {
+      return reply.status(404).send({ errors: 'Not Found' });
+    }
+    return {
+      collect: {
+        id: collect.id,
+        collection_id: collect.collection_id,
+        product_id: collect.product_id,
+        position: collect.position,
+        created_at: new Date(collect.created_at * 1000).toISOString(),
+        updated_at: new Date(collect.updated_at * 1000).toISOString(),
+      },
+    };
   });
 
   // GET /admin/api/:version/metafields.json

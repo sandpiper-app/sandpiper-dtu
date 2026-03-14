@@ -78,6 +78,26 @@ export class StateManager {
   private createOneTimePurchaseStmt: Database.Statement | null = null;
   private listOneTimePurchasesByShopStmt: Database.Statement | null = null;
 
+  // InventoryLevel prepared statements
+  private connectInventoryLevelStmt: Database.Statement | null = null;
+  private adjustInventoryLevelStmt: Database.Statement | null = null;
+  private setInventoryLevelStmt: Database.Statement | null = null;
+  private deleteInventoryLevelStmt: Database.Statement | null = null;
+  private listInventoryLevelsStmt: Database.Statement | null = null;
+  private getInventoryLevelByPairStmt: Database.Statement | null = null;
+
+  // CustomCollection prepared statements
+  private createCustomCollectionStmt: Database.Statement | null = null;
+  private getCustomCollectionStmt: Database.Statement | null = null;
+  private listCustomCollectionsStmt: Database.Statement | null = null;
+
+  // Collect prepared statements
+  private createCollectStmt: Database.Statement | null = null;
+  private getCollectStmt: Database.Statement | null = null;
+  private listCollectsStmt: Database.Statement | null = null;
+  private listCollectsByCollectionStmt: Database.Statement | null = null;
+  private listProductsByCollectionIdStmt: Database.Statement | null = null;
+
   constructor(options: StateManagerOptions = {}) {
     this.dbPath = options.dbPath ?? ':memory:';
   }
@@ -155,6 +175,23 @@ export class StateManager {
       // Reset OneTimePurchase statements
       this.createOneTimePurchaseStmt = null;
       this.listOneTimePurchasesByShopStmt = null;
+      // Reset InventoryLevel statements
+      this.connectInventoryLevelStmt = null;
+      this.adjustInventoryLevelStmt = null;
+      this.setInventoryLevelStmt = null;
+      this.deleteInventoryLevelStmt = null;
+      this.listInventoryLevelsStmt = null;
+      this.getInventoryLevelByPairStmt = null;
+      // Reset CustomCollection statements
+      this.createCustomCollectionStmt = null;
+      this.getCustomCollectionStmt = null;
+      this.listCustomCollectionsStmt = null;
+      // Reset Collect statements
+      this.createCollectStmt = null;
+      this.getCollectStmt = null;
+      this.listCollectsStmt = null;
+      this.listCollectsByCollectionStmt = null;
+      this.listProductsByCollectionIdStmt = null;
     }
     this.init();
   }
@@ -218,6 +255,23 @@ export class StateManager {
       // Clear OneTimePurchase statements
       this.createOneTimePurchaseStmt = null;
       this.listOneTimePurchasesByShopStmt = null;
+      // Clear InventoryLevel statements
+      this.connectInventoryLevelStmt = null;
+      this.adjustInventoryLevelStmt = null;
+      this.setInventoryLevelStmt = null;
+      this.deleteInventoryLevelStmt = null;
+      this.listInventoryLevelsStmt = null;
+      this.getInventoryLevelByPairStmt = null;
+      // Clear CustomCollection statements
+      this.createCustomCollectionStmt = null;
+      this.getCustomCollectionStmt = null;
+      this.listCustomCollectionsStmt = null;
+      // Clear Collect statements
+      this.createCollectStmt = null;
+      this.getCollectStmt = null;
+      this.listCollectsStmt = null;
+      this.listCollectsByCollectionStmt = null;
+      this.listProductsByCollectionIdStmt = null;
     }
   }
 
@@ -422,6 +476,35 @@ export class StateManager {
         updated_at INTEGER NOT NULL
       );
       CREATE INDEX IF NOT EXISTS idx_one_time_purchases_shop_domain ON one_time_purchases(shop_domain);
+
+      CREATE TABLE IF NOT EXISTS inventory_levels (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        inventory_item_id INTEGER NOT NULL,
+        location_id INTEGER NOT NULL,
+        available INTEGER NOT NULL DEFAULT 0,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL,
+        UNIQUE(inventory_item_id, location_id)
+      );
+
+      CREATE TABLE IF NOT EXISTS custom_collections (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        gid TEXT UNIQUE NOT NULL,
+        title TEXT,
+        handle TEXT,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS collects (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        collection_id INTEGER NOT NULL,
+        product_id INTEGER NOT NULL,
+        position INTEGER DEFAULT 1,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL,
+        UNIQUE(collection_id, product_id)
+      );
     `);
 
     try {
@@ -562,6 +645,64 @@ export class StateManager {
     );
     this.listOneTimePurchasesByShopStmt = db.prepare(
       "SELECT * FROM one_time_purchases WHERE shop_domain = ? ORDER BY created_at DESC"
+    );
+
+    // InventoryLevel prepared statements
+    this.connectInventoryLevelStmt = db.prepare(
+      `INSERT INTO inventory_levels (inventory_item_id, location_id, available, created_at, updated_at)
+       VALUES (?, ?, 0, ?, ?)
+       ON CONFLICT(inventory_item_id, location_id) DO NOTHING`
+    );
+    this.adjustInventoryLevelStmt = db.prepare(
+      `UPDATE inventory_levels SET available = available + ?, updated_at = ?
+       WHERE inventory_item_id = ? AND location_id = ?`
+    );
+    this.setInventoryLevelStmt = db.prepare(
+      `INSERT INTO inventory_levels (inventory_item_id, location_id, available, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?)
+       ON CONFLICT(inventory_item_id, location_id) DO UPDATE SET available = excluded.available, updated_at = excluded.updated_at`
+    );
+    this.deleteInventoryLevelStmt = db.prepare(
+      `DELETE FROM inventory_levels WHERE inventory_item_id = ? AND location_id = ?`
+    );
+    this.listInventoryLevelsStmt = db.prepare(
+      `SELECT * FROM inventory_levels ORDER BY id ASC`
+    );
+    this.getInventoryLevelByPairStmt = db.prepare(
+      `SELECT * FROM inventory_levels WHERE inventory_item_id = ? AND location_id = ?`
+    );
+
+    // CustomCollection prepared statements
+    this.createCustomCollectionStmt = db.prepare(
+      `INSERT INTO custom_collections (gid, title, handle, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`
+    );
+    this.getCustomCollectionStmt = db.prepare(
+      `SELECT * FROM custom_collections WHERE id = ?`
+    );
+    this.listCustomCollectionsStmt = db.prepare(
+      `SELECT * FROM custom_collections ORDER BY id ASC`
+    );
+
+    // Collect prepared statements
+    this.createCollectStmt = db.prepare(
+      `INSERT INTO collects (collection_id, product_id, position, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?)
+       ON CONFLICT(collection_id, product_id) DO NOTHING`
+    );
+    this.getCollectStmt = db.prepare(
+      `SELECT * FROM collects WHERE id = ?`
+    );
+    this.listCollectsStmt = db.prepare(
+      `SELECT * FROM collects ORDER BY id ASC`
+    );
+    this.listCollectsByCollectionStmt = db.prepare(
+      `SELECT * FROM collects WHERE collection_id = ? ORDER BY position ASC, id ASC`
+    );
+    this.listProductsByCollectionIdStmt = db.prepare(
+      `SELECT p.* FROM products p
+       INNER JOIN collects c ON c.product_id = p.id
+       WHERE c.collection_id = ?
+       ORDER BY c.position ASC, p.id ASC`
     );
   }
 
@@ -1081,5 +1222,124 @@ export class StateManager {
   listOneTimePurchasesByShop(shopDomain: string): any[] {
     if (!this.listOneTimePurchasesByShopStmt) throw new Error('StateManager not initialized. Call init() first.');
     return this.listOneTimePurchasesByShopStmt.all(shopDomain) as any[];
+  }
+
+  // InventoryLevel methods
+
+  /** Connect an inventory item to a location (creates row with available=0 if not exists) */
+  connectInventoryLevel(inventoryItemId: number, locationId: number): any {
+    if (!this.connectInventoryLevelStmt) throw new Error('StateManager not initialized. Call init() first.');
+    const now = Math.floor(Date.now() / 1000);
+    this.connectInventoryLevelStmt.run(inventoryItemId, locationId, now, now);
+    return this.getInventoryLevelByPairStmt!.get(inventoryItemId, locationId);
+  }
+
+  /** Adjust inventory level by a delta. Returns null if the row doesn't exist. */
+  adjustInventoryLevel(inventoryItemId: number, locationId: number, availableAdjustment: number): any | null {
+    if (!this.adjustInventoryLevelStmt) throw new Error('StateManager not initialized. Call init() first.');
+    const now = Math.floor(Date.now() / 1000);
+    const result = this.adjustInventoryLevelStmt.run(availableAdjustment, now, inventoryItemId, locationId);
+    if (result.changes === 0) return null;
+    return this.getInventoryLevelByPairStmt!.get(inventoryItemId, locationId);
+  }
+
+  /** Set inventory level to an exact value (upsert). */
+  setInventoryLevel(inventoryItemId: number, locationId: number, available: number): any {
+    if (!this.setInventoryLevelStmt) throw new Error('StateManager not initialized. Call init() first.');
+    const now = Math.floor(Date.now() / 1000);
+    this.setInventoryLevelStmt.run(inventoryItemId, locationId, available, now, now);
+    return this.getInventoryLevelByPairStmt!.get(inventoryItemId, locationId);
+  }
+
+  /** Delete an inventory level row. Returns true if deleted, false if not found. */
+  deleteInventoryLevel(inventoryItemId: number, locationId: number): boolean {
+    if (!this.deleteInventoryLevelStmt) throw new Error('StateManager not initialized. Call init() first.');
+    const result = this.deleteInventoryLevelStmt.run(inventoryItemId, locationId);
+    return result.changes > 0;
+  }
+
+  /** List inventory levels, optionally filtered by inventory_item_ids and/or location_ids. */
+  listInventoryLevels(opts: { inventoryItemIds?: number[]; locationIds?: number[] } = {}): any[] {
+    if (!this.listInventoryLevelsStmt) throw new Error('StateManager not initialized. Call init() first.');
+    let rows = this.listInventoryLevelsStmt.all() as any[];
+    if (opts.inventoryItemIds && opts.inventoryItemIds.length > 0) {
+      const set = new Set(opts.inventoryItemIds);
+      rows = rows.filter((r: any) => set.has(r.inventory_item_id));
+    }
+    if (opts.locationIds && opts.locationIds.length > 0) {
+      const set = new Set(opts.locationIds);
+      rows = rows.filter((r: any) => set.has(r.location_id));
+    }
+    return rows;
+  }
+
+  // CustomCollection methods
+
+  /** Create a custom collection and return its row ID */
+  createCustomCollection(data: { gid: string; title?: string; handle?: string }): number {
+    if (!this.createCustomCollectionStmt) throw new Error('StateManager not initialized. Call init() first.');
+    const now = Math.floor(Date.now() / 1000);
+    const result = this.createCustomCollectionStmt.run(
+      data.gid,
+      data.title ?? null,
+      data.handle ?? null,
+      now,
+      now
+    );
+    return result.lastInsertRowid as number;
+  }
+
+  /** Get a custom collection by numeric id */
+  getCustomCollection(id: number): any | undefined {
+    if (!this.getCustomCollectionStmt) throw new Error('StateManager not initialized. Call init() first.');
+    return this.getCustomCollectionStmt.get(id) as any | undefined;
+  }
+
+  /** List all custom collections */
+  listCustomCollections(): any[] {
+    if (!this.listCustomCollectionsStmt) throw new Error('StateManager not initialized. Call init() first.');
+    return this.listCustomCollectionsStmt.all() as any[];
+  }
+
+  // Collect methods
+
+  /** Create a collect (link a product to a collection). Returns the row ID or existing ID. */
+  createCollect(data: { collection_id: number; product_id: number; position?: number }): number {
+    if (!this.createCollectStmt) throw new Error('StateManager not initialized. Call init() first.');
+    const now = Math.floor(Date.now() / 1000);
+    const result = this.createCollectStmt.run(
+      data.collection_id,
+      data.product_id,
+      data.position ?? 1,
+      now,
+      now
+    );
+    if (result.lastInsertRowid) return result.lastInsertRowid as number;
+    // Row already existed (ON CONFLICT DO NOTHING) — look it up
+    const existing = this.database
+      .prepare('SELECT id FROM collects WHERE collection_id = ? AND product_id = ?')
+      .get(data.collection_id, data.product_id) as { id: number } | undefined;
+    return existing?.id ?? 0;
+  }
+
+  /** Get a collect by numeric id */
+  getCollect(id: number): any | undefined {
+    if (!this.getCollectStmt) throw new Error('StateManager not initialized. Call init() first.');
+    return this.getCollectStmt.get(id) as any | undefined;
+  }
+
+  /** List all collects, optionally filtered by collection_id */
+  listCollects(opts: { collectionId?: number } = {}): any[] {
+    if (!this.listCollectsStmt || !this.listCollectsByCollectionStmt) throw new Error('StateManager not initialized. Call init() first.');
+    if (opts.collectionId !== undefined) {
+      return this.listCollectsByCollectionStmt.all(opts.collectionId) as any[];
+    }
+    return this.listCollectsStmt.all() as any[];
+  }
+
+  /** List products linked to a collection via collects table */
+  listProductsByCollectionId(collectionId: number): any[] {
+    if (!this.listProductsByCollectionIdStmt) throw new Error('StateManager not initialized. Call init() first.');
+    return this.listProductsByCollectionIdStmt.all(collectionId) as any[];
   }
 }
