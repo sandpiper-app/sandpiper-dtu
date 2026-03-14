@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 39-01-PLAN.md - Wave 0 OAuth, REST-state, and framework-readiness contracts
-last_updated: "2026-03-14T17:34:59.544Z"
-last_activity: 2026-03-14 — Phase 39 Plan 03 complete (REST state + ID parity); 36 tests green (12 integration, 11 behavioral, 13 REST client)
+stopped_at: Completed 39-04-PLAN.md — Inventory and collection state persistence
+last_updated: "2026-03-14T17:46:09.149Z"
+last_activity: 2026-03-14 — Phase 39 Plan 04 complete (inventory_levels, custom_collections, collects state; 71 integration tests green)
 progress:
   total_phases: 28
-  completed_phases: 26
+  completed_phases: 27
   total_plans: 82
-  completed_plans: 81
-  percent: 97
+  completed_plans: 82
+  percent: 100
 ---
 
 # Project State: Sandpiper DTU
@@ -28,11 +28,11 @@ progress:
 ## Current Position
 
 Phase: 39 of 40
-Plan: 2 of 4 complete
-Status: In progress
-Last activity: 2026-03-14 — Phase 39 Plan 02 complete (OAuth grant validation + SHOP-16 smoke); 23/23 tests green
+Plan: 4 of 4 complete
+Status: Complete
+Last activity: 2026-03-14 — Phase 39 Plan 04 complete (inventory_levels, custom_collections, collects state; 71 integration tests green)
 
-Progress: [██████████] 97% (overall: Phase 39 in progress — 2/4 plans done)
+Progress: [██████████] 100% (overall: Phase 39 complete — 4/4 plans done)
 
 ## Performance Metrics
 
@@ -93,6 +93,7 @@ Progress: [██████████] 97% (overall: Phase 39 in progress �
 | Phase 39 P02 | 6min | 2 tasks | 3 files |
 | Phase 39 P03 | 25min | 2 tasks | 6 files |
 | Phase 39 P01 | 523s | 1 tasks | 4 files |
+| Phase 39 P04 | 7min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -107,6 +108,15 @@ Progress: [██████████] 97% (overall: Phase 39 in progress �
 - Phase 40 added: Verification evidence integrity and conformance truthfulness (re-audit follow-up — remaining evidence/conformance truthfulness gaps)
 
 ### Key Decisions
+
+**2026-03-14 - Phase 39 Plan 04 (inventory and collection state persistence):**
+- SQLite UPSERT used for setInventoryLevel (INSERT ... ON CONFLICT DO UPDATE); connectInventoryLevel uses INSERT DO NOTHING to never overwrite existing available quantity
+- adjustInventoryLevel returns null when the (inventory_item_id, location_id) row doesn't exist; REST layer maps null to 404 {errors: 'Not Found'}
+- Custom collection GID follows two-step pattern: temp GID insert → createCustomCollection() → UPDATE SET gid = gid://shopify/Collection/{rowId} — same pattern as products/orders/customers/appSubscriptions
+- listProductsByCollectionId uses JOIN between products and collects tables — no denormalization, all reads from stored rows
+- collection_id filter in GET /products.json applied after since_id and ids filters using a Set of product IDs for O(1) membership testing
+- Three new reset coverage tests added to XCUT-01 describe block using dbBefore/dbAfter pattern
+- Version-routing regression in pagination.test.ts proves collection_id filter works consistently across 2025-01 and 2024-01, with correct x-shopify-api-version echo
 
 **2026-03-14 - Phase 39 Plan 03 (REST state and ID parity):**
 - Two-step GID pattern extended to orderCreate and customerCreate mutations: temp GID insert → createOrder/createCustomer() → UPDATE orders/customers SET gid = canonical GID; same pattern applied to fixture loading for orders, customers, inventoryItems
@@ -438,9 +448,9 @@ None.
 
 ## Session Continuity
 
-**Last completed:** Phase 38 — Slack auth, scope, and client-behavior parity (4/4 plans, SLCK-20..23 verified)
-**Work in progress:** Phases 39-40 remain unplanned
-**Stopped at:** Completed 39-01-PLAN.md - Wave 0 OAuth, REST-state, and framework-readiness contracts
+**Last completed:** Phase 39 — Shopify OAuth, REST state, and ID parity (4/4 plans, SHOP-14..17 verified)
+**Work in progress:** Phase 40 remains
+**Stopped at:** Completed 39-04-PLAN.md — Inventory and collection state persistence
 **Timestamp:** 2026-03-14
 
 ---
