@@ -75,7 +75,9 @@ console.log(`Evidence: ${passedFiles.size} test files passed.`);
 //                                    All WebClient methods already attributed to their
 //                                    primary test files.
 
-// EVIDENCE_MAP: copy of LIVE_SYMBOLS from generate-report.ts
+// EVIDENCE_MAP: symbol-to-test-file attribution. Symbols are only counted as
+// 'live' if their mapped test file appears in vitest-evidence.json passedFiles.
+// Phase 31 added Phase 25/26 entries. See integration-test exclusion block above.
 // Key format: "{packageName}@{version}/{symbolPath}"
 // Value: relative test file path (relative to tests/sdk-verification/)
 const EVIDENCE_MAP: Record<string, string> = {
@@ -369,8 +371,8 @@ for (const file of manifestFiles) {
 const report = {
   $schema: 'https://sandpiper.dev/schemas/coverage-report.json',
   generatedAt: new Date().toISOString(),
-  phase: '32',
-  note: 'Phase 32: INFRA-21/22 — primitive value comparison in structural mode (compareValueFields); coverage gate raised to 222; integration-test exclusion pattern documented.',
+  phase: '34',
+  note: 'Phase 34: Slack twin compile fix (TS2345 oauth.ts guard) and evidence pipeline refresh — vitest-evidence.json regenerated from fresh test execution.',
   packages,
   summary: { live: totalLive, stub: 0, deferred: totalDeferred },
 };

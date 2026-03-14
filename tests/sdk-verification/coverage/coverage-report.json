@@ -1,8 +1,8 @@
 {
   "$schema": "https://sandpiper.dev/schemas/coverage-report.json",
-  "generatedAt": "2026-03-13T21:56:10.368Z",
-  "phase": "32",
-  "note": "Phase 32: INFRA-21/22 — primitive value comparison in structural mode (compareValueFields); coverage gate raised to 222; integration-test exclusion pattern documented.",
+  "generatedAt": "2026-03-14T01:36:38.876Z",
+  "phase": "34",
+  "note": "Phase 34: Slack twin compile fix (TS2345 oauth.ts guard) and evidence pipeline refresh — vitest-evidence.json regenerated from fresh test execution.",
   "packages": {
     "@shopify/admin-api-client@1.1.1": {
       "createAdminApiClient": {
