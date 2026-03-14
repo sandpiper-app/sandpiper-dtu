@@ -60,7 +60,7 @@
 - [x] **Phase 33: Cross-Cutting Reset Coverage** - Verify all new SQLite tables in StateManager reset logic (gap closure) (completed 2026-03-14)
 - [x] **Phase 34: Slack Build Fix & Evidence Pipeline** - Fix Slack twin compile error and rewrite coverage attribution from actual test evidence (second review remediation) (completed 2026-03-14)
 - [x] **Phase 35: Slack Behavioral Parity** - OpenID Connect, filesUploadV2, auth/scope semantics, deferred method registration (second review remediation) (completed 2026-03-14)
-- [ ] **Phase 36: Shopify Behavioral Parity** - OAuth grant types, missing REST routes, ID round-trip, list filter semantics (second review remediation)
+- [x] **Phase 36: Shopify Behavioral Parity** - OAuth grant types, missing REST routes, ID round-trip, list filter semantics (second review remediation) (completed 2026-03-14)
 - [ ] **Phase 37: Billing Fidelity & Conformance Rigor** - Persistent billing shapes and conformance harness 1:1 proof (second review remediation)
 
 ## Phase Details
@@ -399,7 +399,7 @@ Plans:
 | 33. Cross-Cutting Reset Coverage | 1/1 | Complete    | 2026-03-14 | - |
 | 34. Slack Build Fix & Evidence Pipeline | 1/1 | Complete    | 2026-03-14 | - |
 | 35. Slack Behavioral Parity | 1/1 | Complete    | 2026-03-14 | - |
-| 36. Shopify Behavioral Parity | 3/4 | In Progress|  | - |
+| 36. Shopify Behavioral Parity | 4/4 | Complete   | 2026-03-14 | - |
 | 37. Billing Fidelity & Conformance Rigor | 0/0 | Not planned | - | - |
 
 ## Dependencies
@@ -462,7 +462,7 @@ Plans:
 **Goal:** Fix Shopify twin OAuth to differentiate grant types with proper response shapes, add missing REST routes (access_scopes, location inventory_levels, inventory_level mutations, inventory_items CRUD), fix GraphQL-to-REST ID round-trip with canonical GID generation, and support list endpoint filter semantics (since_id, ids).
 **Depends on:** Phase 34
 **Findings addressed:** #7 (High: OAuth collapses grant types into one response), #8 (High: missing REST routes confirmed 404 live), #9 (High: GraphQL/REST IDs don't round-trip), #10 (High: list endpoints ignore upstream filters)
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] 36-01-PLAN.md — Wave 0: shopify-behavioral-parity.test.ts with 11 RED tests for Findings #7-#10

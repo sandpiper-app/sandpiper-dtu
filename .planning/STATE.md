@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 36-02-PLAN.md
-last_updated: "2026-03-14T03:41:13.765Z"
-last_activity: "2026-03-13 — Phase 36 Plan 03 complete: canonical two-step GID in productCreate resolver and fixture loader; Finding #9 GID round-trip turns GREEN"
+stopped_at: Completed 36-04-PLAN.md
+last_updated: "2026-03-14T03:50:39.367Z"
+last_activity: "2026-03-14 — Phase 36 Plan 04 complete: Location family + InventoryLevel mutations + since_id/ids filters in rest.ts; Finding #8 and #10 GREEN; all 264 tests pass; Phase 36 complete"
 progress:
   total_phases: 25
-  completed_phases: 23
+  completed_phases: 24
   total_plans: 71
-  completed_plans: 70
+  completed_plans: 71
   percent: 98
 ---
 
@@ -27,10 +27,10 @@ progress:
 
 ## Current Position
 
-Phase: 36 of 37 (Shopify Behavioral Parity) — In Progress
-Plan: 3 of 4 complete
-Status: Plan 36-03 complete — Finding #9 GREEN: productCreate via GraphQL findable via REST numeric ID; two-step GID applied to resolvers.ts + admin.ts; 257 green, 7 expected-RED (Findings #8/#10)
-Last activity: 2026-03-13 — Phase 36 Plan 03 complete: canonical two-step GID in productCreate resolver and fixture loader; Finding #9 GID round-trip turns GREEN
+Phase: 36 of 37 (Shopify Behavioral Parity) — COMPLETE
+Plan: 4 of 4 complete
+Status: Plan 36-04 complete — Finding #8 and #10 GREEN: Location family routes + InventoryLevel mutations + InventoryItem single-item routes + since_id/ids list filters; 264/264 tests pass
+Last activity: 2026-03-14 — Phase 36 Plan 04 complete: Location family + InventoryLevel mutations + since_id/ids filters in rest.ts; Finding #8 and #10 GREEN; all 264 tests pass; Phase 36 complete
 
 Progress: [██████████] 98% (overall: 70/71 plans complete)
 
@@ -82,6 +82,7 @@ Progress: [██████████] 98% (overall: 70/71 plans complete)
 | Phase 36 P01 | 4min | 1 tasks | 1 files |
 | Phase 36 P03 | 3min | 2 tasks | 2 files |
 | Phase 36 P02 | 6min | 1 tasks | 2 files |
+| Phase 36-04 P04 | 7min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,14 @@ Progress: [██████████] 98% (overall: 70/71 plans complete)
 - Phase 37 added: Billing Fidelity & Conformance Rigor (second review — findings #11, #12 Medium)
 
 ### Key Decisions
+
+**2026-03-14 - Phase 36 Plan 04 (Finding #8 + #10 REST routes + filters):**
+- SDK REST client's parseJsonWithLosslessNumbers converts all id/.*_id JSON fields to strings — Location.find(id=1) returns instance.id === "1" not 1; test assertions must use Number(instance.id) to compare
+- Location.all() returns { data, headers, pageInfo } from baseFind (not { body }); Wave 0 tests incorrectly used `const { body }` — fixed to `const { data }`
+- Location.find() returns the resource instance directly (result.data[0]) not a { body } wrapper — fixed test from destructuring body to accessing location instance properties
+- since_id filter: all.filter(item => item.id > sinceId) before paginateList; const all → let all on four list handlers
+- Fastify route ordering enforced: count.json before :id.json, adjust/connect/set before DELETE base inventory_levels.json
+- Finding #8 and #10 closed; all 264 SDK tests GREEN; Phase 36 Shopify Behavioral Parity complete
 
 **2026-03-13 - Phase 36 Plan 03 (Finding #9 GID round-trip fix):**
 - Two-step GID pattern extended to resolvers.ts (productCreate mutation) and admin.ts (fixture loader) — same UPDATE products SET gid = ? WHERE id = ? SQL as rest.ts; no new pattern invented
@@ -345,7 +354,7 @@ None.
 
 **Last completed:** Phase 33 Plan 01 — XCUT-01 reset coverage (commits 7fd3b5a, 280b574)
 **Work in progress:** None — Milestone v1.2 Behavioral Fidelity complete
-**Stopped at:** Completed 36-02-PLAN.md
+**Stopped at:** Completed 36-04-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---
