@@ -51,6 +51,9 @@ Requirements for milestone `v1.2 Behavioral Fidelity`. Fixes 13 adversarial revi
 
 - [x] **INFRA-21**: Conformance harness performs bidirectional structural comparison in live mode — twin response must contain all baseline fields AND baseline response must contain all twin fields — with full array traversal (not just first element) and primitive value comparison; includes a normalizer contract with declared ignore lists for non-deterministic fields (timestamps, cursor IDs, signed URLs), ordering rules, and per-endpoint exact-vs-structural mode declarations
 - [x] **INFRA-22**: Coverage status for each tracked symbol is derived from test execution evidence (Vitest JSON reporter or equivalent instrumentation), not hand-authored `LIVE_SYMBOLS` map; evidence schema defines how test files map to symbols, how aliases are attributed, and how local-only utilities are excluded; dual-run migration keeps `LIVE_SYMBOLS` and evidence in parallel until evidence matches or exceeds the 202+ symbol count, then removes `LIVE_SYMBOLS`
+- [ ] **INFRA-23**: SDK coverage status is derived from per-symbol execution evidence emitted during the SDK test run, not a hand-authored symbol map; each symbol in the coverage report is marked live only when runtime instrumentation at the shared helper seam confirms that symbol was actually called during a passing test
+- [ ] **INFRA-24**: Conformance suites and reporters only claim parity where deterministic value checks or exact comparisons actually prove it; structural-only suites are reported as structural smoke, not 1:1 parity proof
+- [ ] **INFRA-25**: Generated coverage reports, drift gates, and checked-in verification docs carry provenance metadata and reject stale or misleading "live" or "complete" claims; evidence freshness is enforced at the gate level, not assumed from checked-in artifacts
 
 ### Shopify Fidelity
 
@@ -171,11 +174,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFRA-21 | Phase 27, 32 | Complete |
 | INFRA-22 | Phase 27, 32 | Complete |
 | XCUT-01 | Phase 33 | Complete |
+| INFRA-23 | Phase 40 | Pending |
+| INFRA-24 | Phase 40 | Pending |
+| INFRA-25 | Phase 40 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 22 total (all complete)
-- v1.2 requirements: 23 total (9 complete, 14 pending gap closure)
-- Mapped to phases: 23
+- v1.2 requirements: 26 total (23 complete, 3 pending)
+- Mapped to phases: 26
 - Unmapped: 0
 
 ---
