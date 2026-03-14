@@ -1273,6 +1273,54 @@ describe('Shopify Twin Integration', () => {
       expect(count).toBe(0);
     });
 
+    it('inventory_levels is empty after reset', async () => {
+      const dbBefore = app.stateManager.database;
+      const now = Math.floor(Date.now() / 1000);
+      dbBefore.prepare(
+        `INSERT INTO inventory_levels (inventory_item_id, location_id, available, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?)`
+      ).run(1, 1, 42, now, now);
+
+      const res = await app.inject({ method: 'POST', url: '/admin/reset' });
+      expect(res.statusCode).toBe(200);
+
+      const dbAfter = app.stateManager.database;
+      const count = (dbAfter.prepare('SELECT COUNT(*) as count FROM inventory_levels').get() as any).count;
+      expect(count).toBe(0);
+    });
+
+    it('custom_collections is empty after reset', async () => {
+      const dbBefore = app.stateManager.database;
+      const now = Math.floor(Date.now() / 1000);
+      dbBefore.prepare(
+        `INSERT INTO custom_collections (gid, title, created_at, updated_at)
+         VALUES (?, ?, ?, ?)`
+      ).run('gid://shopify/Collection/test-1', 'Test Collection', now, now);
+
+      const res = await app.inject({ method: 'POST', url: '/admin/reset' });
+      expect(res.statusCode).toBe(200);
+
+      const dbAfter = app.stateManager.database;
+      const count = (dbAfter.prepare('SELECT COUNT(*) as count FROM custom_collections').get() as any).count;
+      expect(count).toBe(0);
+    });
+
+    it('collects is empty after reset', async () => {
+      const dbBefore = app.stateManager.database;
+      const now = Math.floor(Date.now() / 1000);
+      dbBefore.prepare(
+        `INSERT INTO collects (collection_id, product_id, position, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?)`
+      ).run(1, 1, 1, now, now);
+
+      const res = await app.inject({ method: 'POST', url: '/admin/reset' });
+      expect(res.statusCode).toBe(200);
+
+      const dbAfter = app.stateManager.database;
+      const count = (dbAfter.prepare('SELECT COUNT(*) as count FROM collects').get() as any).count;
+      expect(count).toBe(0);
+    });
+
     it('reset completes in under 100ms', async () => {
       // Warm-up: ensure app is ready and route is resolved before timing
       const warmup = await app.inject({ method: 'POST', url: '/admin/reset' });

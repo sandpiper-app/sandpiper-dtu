@@ -435,6 +435,69 @@ describe('Pagination Integration', () => {
   });
 
   // ---------------------------------------------------------------------------
+  // Collection-filter version routing regression (Phase 39-04)
+  // ---------------------------------------------------------------------------
+  describe('Collection-filter version-routing regression (Phase 39-04)', () => {
+    it('collection_id filter returns same products for 2025-01 and 2024-01 and echoes x-shopify-api-version', async () => {
+      // Create a product
+      const productRes = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2025-01/products.json',
+        headers: { 'X-Shopify-Access-Token': token, 'content-type': 'application/json' },
+        payload: { product: { title: 'Version Parity Product' } },
+      });
+      expect(productRes.statusCode).toBe(201);
+      const productBody = JSON.parse(productRes.body) as { product: { id: number } };
+      const productId = productBody.product.id;
+
+      // Create a custom collection via 2025-01
+      const collRes = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2025-01/custom_collections.json',
+        headers: { 'X-Shopify-Access-Token': token, 'content-type': 'application/json' },
+        payload: { custom_collection: { title: 'Version Regression Collection' } },
+      });
+      expect(collRes.statusCode).toBe(201);
+      const collBody = JSON.parse(collRes.body) as { custom_collection: { id: number } };
+      const collectionId = collBody.custom_collection.id;
+
+      // Create a collect via 2024-01
+      const collectRes = await app.inject({
+        method: 'POST',
+        url: '/admin/api/2024-01/collects.json',
+        headers: { 'X-Shopify-Access-Token': token, 'content-type': 'application/json' },
+        payload: { collect: { product_id: productId, collection_id: collectionId } },
+      });
+      expect(collectRes.statusCode).toBe(201);
+
+      // GET /admin/api/2025-01/products.json?collection_id=<id>
+      const res2501 = await restRequest(
+        app, token,
+        `/admin/api/2025-01/products.json?collection_id=${collectionId}`
+      );
+      expect(res2501.statusCode).toBe(200);
+      const body2501 = JSON.parse(res2501.body) as { products: Array<{ id: number }> };
+      const ids2501 = body2501.products.map((p: any) => p.id);
+
+      // GET /admin/api/2024-01/products.json?collection_id=<id>
+      const res2401 = await restRequest(
+        app, token,
+        `/admin/api/2024-01/products.json?collection_id=${collectionId}`
+      );
+      expect(res2401.statusCode).toBe(200);
+      const body2401 = JSON.parse(res2401.body) as { products: Array<{ id: number }> };
+      const ids2401 = body2401.products.map((p: any) => p.id);
+
+      // Both versions must return the same product IDs
+      expect(ids2501.sort()).toEqual(ids2401.sort());
+      expect(ids2501).toContain(productId);
+
+      // 2025-01 response must echo x-shopify-api-version: 2025-01
+      expect(res2501.headers['x-shopify-api-version']).toBe('2025-01');
+    });
+  });
+
+  // ---------------------------------------------------------------------------
   // Version policy (SHOP-17) — RED until Plan 03
   // ---------------------------------------------------------------------------
   describe('Version policy (SHOP-17)', () => {
