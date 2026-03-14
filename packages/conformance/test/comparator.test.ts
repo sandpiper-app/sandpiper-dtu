@@ -395,4 +395,27 @@ describe('compareResponsesStructurally', () => {
     const okDiffs = result.differences.filter(d => d.path === 'body.ok');
     expect(okDiffs).toHaveLength(1);
   });
+
+  it('compareValueFields: error string mismatch in structural mode is reported (Slack deterministic seam)', () => {
+    // Covers the slackNormalizer compareValueFields: ['ok', 'error'] case.
+    // Even though structural mode allows primitive values to differ in general,
+    // a declared compareValueFields entry must fail when the error string differs.
+    const twin = makeResponse({ body: { ok: false, error: 'invalid_code' } });
+    const baseline = makeResponse({ body: { ok: false, error: 'invalid_auth' } });
+    const normalizer: FieldNormalizerConfig = {
+      stripFields: [],
+      normalizeFields: {},
+      compareValueFields: ['ok', 'error'],
+    };
+    const result = compareResponsesStructurally(
+      'struct-10', 'compareValueFields error mismatch', 'test',
+      twin, baseline, [], normalizer
+    );
+    expect(result.passed).toBe(false);
+    const d = result.differences.find(d => d.path.includes('error'));
+    expect(d).toBeDefined();
+    expect(d!.kind).toBe('changed');
+    expect(d!.lhs).toBe('invalid_code');
+    expect(d!.rhs).toBe('invalid_auth');
+  });
 });

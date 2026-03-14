@@ -32,7 +32,7 @@ export { slackNormalizer } from './normalizer.js';
 export const slackConformanceSuite: ConformanceSuite = {
   name: 'Slack Full',
   description:
-    'Complete Slack Web API conformance suite covering conversations, chat, users, and OAuth',
+    'Slack conformance subset covering conversations, chat, users, and OAuth',
   normalizer: slackNormalizer,
   tests: [
     ...conversationsSuite.tests,

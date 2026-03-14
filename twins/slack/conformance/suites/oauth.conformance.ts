@@ -22,6 +22,9 @@ export const oauthSuite: ConformanceSuite = {
       name: 'POST oauth.v2.access with invalid code returns invalid_code error',
       category: 'oauth',
       requirements: ['SLCK-03'],
+      // Deterministic error response — both ok and error values are fixed;
+      // exact mode proves the twin returns the same error string, not just the same shape.
+      comparisonMode: 'exact',
       operation: {
         name: 'oauth.v2.access-invalid',
         description: 'POST oauth.v2.access with a fake code → { ok: false, error: invalid_code }',

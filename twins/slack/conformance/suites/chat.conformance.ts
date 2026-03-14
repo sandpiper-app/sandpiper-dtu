@@ -95,6 +95,9 @@ export const chatSuite: ConformanceSuite = {
       name: 'POST chat.postMessage without channel returns channel_not_found',
       category: 'chat',
       requirements: ['SLCK-01'],
+      // Deterministic error response — both ok and error values are fixed;
+      // exact mode proves the twin returns the same error string, not just the same shape.
+      comparisonMode: 'exact',
       operation: {
         name: 'chat.postMessage-no-channel',
         description: 'POST chat.postMessage with { text } only → { ok: false, error: channel_not_found }',

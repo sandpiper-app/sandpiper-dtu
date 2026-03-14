@@ -28,4 +28,8 @@ export const slackNormalizer: FieldNormalizerConfig = {
     'authed_user.access_token': '<TOKEN>',
     'bot_user_id': '<BOT_USER_ID>',
   },
+  // `ok` and `error` are deterministic on Slack API error responses — the
+  // twin and live API must agree on both values exactly.  Success-path `ts`
+  // and ID fields remain non-deterministic and are excluded here.
+  compareValueFields: ['ok', 'error'],
 };
