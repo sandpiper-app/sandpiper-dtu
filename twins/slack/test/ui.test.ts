@@ -57,15 +57,16 @@ describe('Slack Twin UI', () => {
 
     it('POST /ui/channels channel visible through API conversations.list', async () => {
       // First get a token via OAuth (must use a real code from /oauth/v2/authorize)
+      // Request channels:read scope so conversations.list succeeds
       const authzRes = await app.inject({
         method: 'GET',
-        url: '/oauth/v2/authorize?client_id=test&scope=chat:write&redirect_uri=https://localhost/callback&state=test',
+        url: '/oauth/v2/authorize?client_id=test&scope=chat:write,channels:read&redirect_uri=https://localhost/callback&state=test',
       });
       const authCode = new URL(authzRes.headers.location as string).searchParams.get('code');
       const oauthRes = await app.inject({
         method: 'POST',
         url: '/api/oauth.v2.access',
-        payload: { code: authCode },
+        payload: { code: authCode, client_id: 'test', client_secret: 'test' },
       });
       const { access_token } = JSON.parse(oauthRes.body);
 

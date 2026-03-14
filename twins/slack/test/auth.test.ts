@@ -26,7 +26,7 @@ describe('Slack Auth Web API', () => {
     const oauthRes = await app.inject({
       method: 'POST',
       url: '/api/oauth.v2.access',
-      payload: { code },
+      payload: { code, client_id: 'test', client_secret: 'test' },
     });
     botToken = JSON.parse(oauthRes.body).access_token;
   });

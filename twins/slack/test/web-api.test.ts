@@ -15,15 +15,16 @@ describe('Slack Web API', () => {
     app = await buildApp({ logger: false });
 
     // Get a valid bot token via OAuth (must first get a real code from /oauth/v2/authorize)
+    // Request broad scope to cover all methods exercised in this test file
     const authzRes = await app.inject({
       method: 'GET',
-      url: '/oauth/v2/authorize?client_id=test&scope=chat:write&redirect_uri=https://localhost/callback&state=test',
+      url: '/oauth/v2/authorize?client_id=test&scope=chat:write,channels:read,channels:history,users:read&redirect_uri=https://localhost/callback&state=test',
     });
     const code = new URL(authzRes.headers.location as string).searchParams.get('code');
     const oauthRes = await app.inject({
       method: 'POST',
       url: '/api/oauth.v2.access',
-      payload: { code },
+      payload: { code, client_id: 'test', client_secret: 'test' },
     });
     botToken = JSON.parse(oauthRes.body).access_token;
   });
@@ -413,7 +414,7 @@ describe('Slack Web API', () => {
         method: 'POST',
         url: '/api/oauth.v2.access',
         headers: { 'content-type': 'application/x-www-form-urlencoded' },
-        payload: `code=${formCode}`,
+        payload: `client_id=test&client_secret=test&code=${formCode}`,
       });
       expect(res.statusCode).toBe(200);
       const body = JSON.parse(res.body);

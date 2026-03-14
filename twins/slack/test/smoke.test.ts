@@ -110,7 +110,7 @@ describe('Slack Twin Smoke Tests', () => {
       const res = await app.inject({
         method: 'POST',
         url: '/api/oauth.v2.access',
-        payload: { code: await getAuthCode() },
+        payload: { code: await getAuthCode(), client_id: 'test', client_secret: 'test' },
       });
       expect(res.statusCode).toBe(200);
       const body = JSON.parse(res.body);
@@ -128,7 +128,7 @@ describe('Slack Twin Smoke Tests', () => {
       await app.inject({
         method: 'POST',
         url: '/api/oauth.v2.access',
-        payload: { code: await getAuthCode() },
+        payload: { code: await getAuthCode(), client_id: 'test', client_secret: 'test' },
       });
       const state = await app.inject({ method: 'GET', url: '/admin/state' });
       const body = JSON.parse(state.body);
