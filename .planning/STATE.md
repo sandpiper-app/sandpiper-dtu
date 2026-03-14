@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 39-02-PLAN.md - OAuth grant validation and SHOP-16 smoke
-last_updated: "2026-03-14T17:33:27.546Z"
-last_activity: 2026-03-14 — Phase 38 complete (4/4 plans, verified SLCK-20..23), transitioning to Phase 39
+stopped_at: Completed 39-01-PLAN.md - Wave 0 OAuth, REST-state, and framework-readiness contracts
+last_updated: "2026-03-14T17:34:59.544Z"
+last_activity: 2026-03-14 — Phase 39 Plan 03 complete (REST state + ID parity); 36 tests green (12 integration, 11 behavioral, 13 REST client)
 progress:
   total_phases: 28
   completed_phases: 26
   total_plans: 82
-  completed_plans: 79
-  percent: 96
+  completed_plans: 81
+  percent: 97
 ---
 
 # Project State: Sandpiper DTU
@@ -91,6 +91,8 @@ Progress: [██████████] 97% (overall: Phase 39 in progress �
 | Phase 38-01 P01 | 14min | 3 tasks | 8 files |
 | Phase 38-slack-auth-scope-and-client-behavior-parity P02 | 40min | 3 tasks | 11 files |
 | Phase 39 P02 | 6min | 2 tasks | 3 files |
+| Phase 39 P03 | 25min | 2 tasks | 6 files |
+| Phase 39 P01 | 523s | 1 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -105,6 +107,15 @@ Progress: [██████████] 97% (overall: Phase 39 in progress �
 - Phase 40 added: Verification evidence integrity and conformance truthfulness (re-audit follow-up — remaining evidence/conformance truthfulness gaps)
 
 ### Key Decisions
+
+**2026-03-14 - Phase 39 Plan 03 (REST state and ID parity):**
+- Two-step GID pattern extended to orderCreate and customerCreate mutations: temp GID insert → createOrder/createCustomer() → UPDATE orders/customers SET gid = canonical GID; same pattern applied to fixture loading for orders, customers, inventoryItems
+- GET /customers/:id.json fixed from getCustomerByGid (GID-based, broken) to getCustomer(numericId) — root cause of customer REST lookup failures
+- PUT /products/:id.json now calls updateProduct() + getProduct(); returns 404 for missing IDs instead of stub
+- POST+PUT /customers.json and /orders.json added with two-step create, 422 for missing body key, 404 for missing row on PUT
+- ids filter added to /customers.json and /orders.json list endpoints (same comma-separated numeric pattern as /products.json)
+- All product/customer/order REST responses normalized: no raw DB columns (gid, serialized line_items); all include admin_graphql_api_id + ISO timestamps
+- shopify-api-rest-client.test.ts put() test fixed to create product first — PUT is now state-backed, products/1 doesn't exist after reset
 
 **2026-03-14 - Phase 39 Plan 02 (OAuth grant validation and SHOP-16 smoke):**
 - Grant-specific validation branches in oauth.ts use `body.grant_type === '...'` directly before the credential gate — four branches: client_credentials, refresh_token, token-exchange, auth-code (fallback)
@@ -429,7 +440,7 @@ None.
 
 **Last completed:** Phase 38 — Slack auth, scope, and client-behavior parity (4/4 plans, SLCK-20..23 verified)
 **Work in progress:** Phases 39-40 remain unplanned
-**Stopped at:** Completed 39-02-PLAN.md - OAuth grant validation and SHOP-16 smoke
+**Stopped at:** Completed 39-01-PLAN.md - Wave 0 OAuth, REST-state, and framework-readiness contracts
 **Timestamp:** 2026-03-14
 
 ---

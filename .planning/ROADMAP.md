@@ -501,7 +501,7 @@ Plans:
 **Requirements**: SHOP-14, SHOP-15, SHOP-16, SHOP-17
 **Depends on:** Phase 37
 **Findings addressed:** Re-audit #6 (OAuth grant validation drift), #7 (order/customer ID parity drift), #8 (non-persistent REST writes), #9 (collection filter and inventory-level state drift)
-**Plans:** 1/4 plans executed
+**Plans:** 3/4 plans executed
 
 Plans:
 - [ ] 39-01-PLAN.md — Wave 0 RED tests for grant-specific OAuth validation, REST state parity, inventory/collection state, and smoke-only SHOP-16 readiness
