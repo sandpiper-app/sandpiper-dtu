@@ -62,19 +62,47 @@ const newFamiliesPlugin: FastifyPluginAsync = async (fastify) => {
   fastify.post('/api/canvases.sections.lookup', stub('canvases.sections.lookup', { results: [] }));
 
   // ── openid.connect.* ──────────────────────────────────────────────
-  // openid.connect.token: no bearer auth — authenticates via client_id + client_secret
+  // openid.connect.token: no bearer auth — authenticates via client_id + client_secret.
   // Real Slack exchanges client_id + client_secret + code for OIDC identity tokens.
   // The WebClient also sends an Authorization header but the handler must NOT require it.
+  // Client credential map (same shape as oauth.ts CLIENT_SECRETS)
+  const OIDC_CLIENT_SECRETS: Record<string, string> = {
+    'test': 'test',
+    'test-client': 'test-client-secret',
+    'test-client-id-19': 'test-client-secret-19',
+  };
   fastify.post('/api/openid.connect.token', async (request, reply) => {
     const body = (request.body as any) ?? {};
     const { client_id, client_secret, code } = body;
     if (!client_id || !client_secret) {
       return reply.send({ ok: false, error: 'invalid_arguments' });
     }
+    // Validate credentials
+    const expectedSecret = OIDC_CLIENT_SECRETS[client_id];
+    if (!expectedSecret || client_secret !== expectedSecret) {
+      return reply.send({ ok: false, error: 'invalid_client' });
+    }
     const suffix = code ?? 'anon';
+    const oidcToken = `xoxp-oidc-${suffix}`;
+
+    // Ensure U_AUTHED user exists for identity lookups
+    const existingUser = fastify.slackStateManager.getUser('U_AUTHED');
+    if (!existingUser) {
+      fastify.slackStateManager.createUser({
+        id: 'U_AUTHED',
+        team_id: 'T_TWIN',
+        name: 'authed-user',
+        real_name: 'Authed User',
+        email: 'authed-user@twin.dev',
+      });
+    }
+
+    // Persist the OIDC token so openid.connect.userInfo can look it up
+    fastify.slackStateManager.createToken(oidcToken, 'user', 'T_TWIN', 'U_AUTHED', 'openid', 'A_TWIN');
+
     return reply.send({
       ok: true,
-      access_token: `xoxp-oidc-${suffix}`,
+      access_token: oidcToken,
       token_type: 'Bearer',
       id_token: 'eyJhbGciOiJSUzI1NiJ9.stub.oidc',
       refresh_token: `xoxe-oidc-${suffix}`,
@@ -82,7 +110,35 @@ const newFamiliesPlugin: FastifyPluginAsync = async (fastify) => {
       issued_token_type: 'urn:ietf:params:oauth:token-type:access_token',
     });
   });
-  fastify.post('/api/openid.connect.userInfo', stub('openid.connect.userInfo', { sub: 'U_STUB', email: 'stub@twin.dev' }));
+
+  // openid.connect.userInfo: bearer-auth handler — looks up the persisted OIDC token
+  fastify.post('/api/openid.connect.userInfo', async (request, reply) => {
+    const token = extractToken(request);
+    if (!token) return reply.send({ ok: false, error: 'not_authed' });
+    const tokenRecord = fastify.slackStateManager.getToken(token);
+    if (!tokenRecord) return reply.send({ ok: false, error: 'invalid_auth' });
+
+    // Scope enforcement
+    const scopeCheck = checkScope('openid.connect.userInfo', tokenRecord.scope);
+    if (scopeCheck) return reply.status(200).send({ ok: false, ...scopeCheck });
+
+    // Scope headers
+    const accepted = METHOD_SCOPES['openid.connect.userInfo']?.join(',') ?? '';
+    reply.header('X-OAuth-Scopes', tokenRecord.scope);
+    reply.header('X-Accepted-OAuth-Scopes', accepted);
+
+    // Load user identity
+    const user = fastify.slackStateManager.getUser(tokenRecord.user_id);
+
+    return reply.send({
+      ok: true,
+      sub: tokenRecord.user_id,
+      'https://slack.com/user_id': tokenRecord.user_id,
+      email: user?.email ?? 'authed-user@twin.dev',
+      email_verified: true,
+      name: user?.real_name ?? user?.name ?? 'Authed User',
+    });
+  });
 
   // ── stars.* ───────────────────────────────────────────────────────
   fastify.post('/api/stars.add', stub('stars.add'));

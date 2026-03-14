@@ -25,6 +25,13 @@ interface CodeBinding {
   clientId: string;
 }
 
+// Client credential map — used at token exchange to validate client_secret
+const CLIENT_SECRETS: Record<string, string> = {
+  'test': 'test',
+  'test-client': 'test-client-secret',
+  'test-client-id-19': 'test-client-secret-19',
+};
+
 const oauthPlugin: FastifyPluginAsync = async (fastify) => {
   // GET /oauth/v2/authorize — simplified redirect flow
   fastify.get<{
@@ -72,11 +79,20 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
       redirect_uri?: string;
     };
   }>('/api/oauth.v2.access', async (request) => {
-    const { code, client_id, redirect_uri } = request.body ?? {};
+    const { code, client_id, client_secret, redirect_uri } = request.body ?? {};
 
     // SLCK-18: validate required parameters
     if (!client_id) {
       return { ok: false, error: 'invalid_arguments' };
+    }
+
+    // Validate client_secret against CLIENT_SECRETS map
+    const expectedSecret = CLIENT_SECRETS[client_id];
+    if (!expectedSecret) {
+      return { ok: false, error: 'invalid_client' };
+    }
+    if (!client_secret || client_secret !== expectedSecret) {
+      return { ok: false, error: 'invalid_client' };
     }
 
     const binding = code ? issuedCodes.get(code) : undefined;
@@ -113,23 +129,35 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
       fastify.slackStateManager.createTeam(teamId, 'Twin Workspace', 'twin-workspace');
     }
 
+    // Ensure U_AUTHED user exists (needed for user token identity lookups)
+    const existingAuthedUser = fastify.slackStateManager.getUser('U_AUTHED');
+    if (!existingAuthedUser) {
+      fastify.slackStateManager.createUser({
+        id: 'U_AUTHED',
+        team_id: 'T_TWIN',
+        name: 'authed-user',
+        real_name: 'Authed User',
+        email: 'authed-user@twin.dev',
+      });
+    }
+
     // Generate bot token (xoxb-) and user token (xoxp-)
     const tokenSuffix = randomUUID().replace(/-/g, '').substring(0, 24);
     const botToken = `xoxb-${teamId}-${tokenSuffix}`;
     const userToken = `xoxp-${teamId}-${tokenSuffix}`;
 
-    const botScopes = 'chat:write,channels:read,channels:history,users:read,reactions:read,app_mentions:read';
-    const userScopes = 'channels:read,users:read';
+    // Use the authorize-time granted scope from the binding (not hardcoded scopes)
+    const grantedScope = binding.scope;
 
-    // Store tokens
-    fastify.slackStateManager.createToken(botToken, 'bot', teamId, 'U_BOT_TWIN', botScopes, appId);
-    fastify.slackStateManager.createToken(userToken, 'user', teamId, 'U_AUTHED', userScopes, appId);
+    // Store tokens using the granted scope
+    fastify.slackStateManager.createToken(botToken, 'bot', teamId, 'U_BOT_TWIN', grantedScope, appId);
+    fastify.slackStateManager.createToken(userToken, 'user', teamId, 'U_AUTHED', grantedScope, appId);
 
     return {
       ok: true,
       access_token: botToken,
       token_type: 'bot',
-      scope: botScopes,
+      scope: grantedScope,
       bot_user_id: 'U_BOT_TWIN',
       app_id: appId,
       enterprise: null,              // required by InstallProvider.handleCallback() to determine Installation shape
@@ -137,7 +165,7 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
       team: { name: 'Twin Workspace', id: teamId },
       authed_user: {
         id: 'U_AUTHED',
-        scope: userScopes,
+        scope: grantedScope,
         access_token: userToken,
         token_type: 'user',
       },
