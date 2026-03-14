@@ -16,7 +16,13 @@
 import { randomUUID } from 'node:crypto';
 import type { FastifyPluginAsync, FastifyRequest } from 'fastify';
 import { extractToken } from '../../services/token-validator.js';
-import { checkScope, METHOD_SCOPES } from '../../services/method-scopes.js';
+import {
+  checkScope,
+  METHOD_SCOPES,
+  resolveConversationTypeScopes,
+  resolveChannelClass,
+  checkResolvedScopes,
+} from '../../services/method-scopes.js';
 import type { SlackStateManager } from '../../state/slack-state-manager.js';
 import type { SlackRateLimiter } from '../../services/rate-limiter.js';
 
@@ -148,12 +154,16 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.status(200).send({ ok: false, error: 'invalid_auth' });
     }
 
-    // SLCK-18: scope enforcement
-    const scopeCheck = checkScope('conversations.list', tokenRecord.scope);
+    // SLCK-21: dynamic scope enforcement based on requested conversation types
+    const params = getParams(request);
+    const typesRaw = params.types ?? 'public_channel';
+    const types = String(typesRaw).split(',').map((value) => value.trim()).filter(Boolean);
+    const requiredScopes = resolveConversationTypeScopes('conversations.list', types);
+    const scopeCheck = checkResolvedScopes(requiredScopes, tokenRecord.scope);
     if (scopeCheck) return reply.status(200).send({ ok: false, ...scopeCheck });
-    // SLCK-19: scope response headers
+    // SLCK-19: scope response headers — reflect only the resolved scope set
     reply.header('X-OAuth-Scopes', tokenRecord.scope);
-    reply.header('X-Accepted-OAuth-Scopes', METHOD_SCOPES['conversations.list']?.join(',') ?? '');
+    reply.header('X-Accepted-OAuth-Scopes', requiredScopes.join(','));
 
     // Rate limit check
     const limited = fastify.rateLimiter.check('conversations.list', token);
@@ -171,7 +181,6 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.status(errorConfig.status_code ?? 200).send(errorBody);
     }
 
-    const params = getParams(request);
     const limit = params.limit ?? 100;
     const cursor = params.cursor;
 
@@ -210,14 +219,7 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.status(200).send({ ok: false, error: 'invalid_auth' });
     }
 
-    // SLCK-18: scope enforcement
-    const scopeCheck = checkScope('conversations.info', tokenRecord.scope);
-    if (scopeCheck) return reply.status(200).send({ ok: false, ...scopeCheck });
-    // SLCK-19: scope response headers
-    reply.header('X-OAuth-Scopes', tokenRecord.scope);
-    reply.header('X-Accepted-OAuth-Scopes', METHOD_SCOPES['conversations.info']?.join(',') ?? '');
-
-    // Rate limit check
+    // Rate limit check (before channel lookup so ratelimited still wins over channel_not_found)
     const limited = fastify.rateLimiter.check('conversations.info', token);
     if (limited) {
       return reply
@@ -244,6 +246,15 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.status(200).send({ ok: false, error: 'channel_not_found' });
     }
 
+    // SLCK-21: dynamic scope enforcement after channel lookup so we know the channel class
+    const resolvedClass = resolveChannelClass(channel);
+    const requiredScopes = resolveConversationTypeScopes('conversations.info', [resolvedClass]);
+    const scopeCheck = checkResolvedScopes(requiredScopes, tokenRecord.scope);
+    if (scopeCheck) return reply.status(200).send({ ok: false, ...scopeCheck });
+    // SLCK-19: scope response headers — reflect only the resolved scope set
+    reply.header('X-OAuth-Scopes', tokenRecord.scope);
+    reply.header('X-Accepted-OAuth-Scopes', requiredScopes.join(','));
+
     return {
       ok: true,
       channel: formatChannel(channel),
@@ -262,14 +273,7 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.status(200).send({ ok: false, error: 'invalid_auth' });
     }
 
-    // SLCK-18: scope enforcement
-    const scopeCheck = checkScope('conversations.history', tokenRecord.scope);
-    if (scopeCheck) return reply.status(200).send({ ok: false, ...scopeCheck });
-    // SLCK-19: scope response headers
-    reply.header('X-OAuth-Scopes', tokenRecord.scope);
-    reply.header('X-Accepted-OAuth-Scopes', METHOD_SCOPES['conversations.history']?.join(',') ?? '');
-
-    // Rate limit check
+    // Rate limit check (before channel lookup so ratelimited still wins over channel_not_found)
     const limited = fastify.rateLimiter.check('conversations.history', token);
     if (limited) {
       return reply
@@ -292,11 +296,20 @@ const conversationsPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.status(200).send({ ok: false, error: 'channel_not_found' });
     }
 
-    // Verify channel exists
+    // Verify channel exists (must come before scope check so we know the channel class)
     const channel = fastify.slackStateManager.getChannel(channelId);
     if (!channel) {
       return reply.status(200).send({ ok: false, error: 'channel_not_found' });
     }
+
+    // SLCK-21: dynamic scope enforcement after channel lookup so we know the channel class
+    const resolvedClass = resolveChannelClass(channel);
+    const requiredScopes = resolveConversationTypeScopes('conversations.history', [resolvedClass]);
+    const scopeCheck = checkResolvedScopes(requiredScopes, tokenRecord.scope);
+    if (scopeCheck) return reply.status(200).send({ ok: false, ...scopeCheck });
+    // SLCK-19: scope response headers — reflect only the resolved scope set
+    reply.header('X-OAuth-Scopes', tokenRecord.scope);
+    reply.header('X-Accepted-OAuth-Scopes', requiredScopes.join(','));
 
     // Query messages (listMessages fetches limit+1 for has_more detection)
     const messages = fastify.slackStateManager.listMessages(channelId, {
