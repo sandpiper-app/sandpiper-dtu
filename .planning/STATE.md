@@ -2,37 +2,37 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
-status: completed
-stopped_at: Completed 33-01-PLAN.md
-last_updated: "2026-03-14T00:06:29.866Z"
-last_activity: "2026-03-13 — Phase 33 Plan 01 complete: XCUT-01 satisfied, milestone v1.2 Behavioral Fidelity complete"
+status: executing
+stopped_at: Completed 34-01-PLAN.md
+last_updated: "2026-03-14T01:38:51.680Z"
+last_activity: "2026-03-14 — Phase 34 Plan 01 complete: Slack twin compiles (TS2345 fixed), evidence pipeline refreshed (222 live symbols, drift:check pass)"
 progress:
-  total_phases: 21
-  completed_phases: 21
-  total_plans: 65
-  completed_plans: 65
+  total_phases: 25
+  completed_phases: 22
+  total_plans: 66
+  completed_plans: 66
   percent: 100
 ---
 
 # Project State: Sandpiper DTU
 
-**Last Updated:** 2026-03-13
-**Status:** Milestone complete
+**Last Updated:** 2026-03-14
+**Status:** In progress — second review remediation (Phase 34 complete)
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 33 Plan 01 COMPLETE (XCUT-01: 7 reset-coverage proofs across Shopify and Slack twins, all v1.2 requirements satisfied)
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phases 34-37 added from senior coworker second review (12 findings: 2 Critical, 8 High, 2 Medium)
 
 ## Current Position
 
-Phase: 33 of 33 (Cross-Cutting Reset Coverage) — Complete
+Phase: 34 of 37 (Slack Build Fix & Evidence Pipeline) — Complete
 Plan: 1 of 1 complete
-Status: Plan 33-01 complete — XCUT-01 closed with 7 test proofs: app_subscriptions cleared, product_variants cleared, Shopify reset <100ms, Slack reset <100ms, slack_channel_members cleared, slack_views cleared, slack_pins cleared
-Last activity: 2026-03-13 — Phase 33 Plan 01 complete: XCUT-01 satisfied, milestone v1.2 Behavioral Fidelity complete
+Status: Plan 34-01 complete — TS2345 compile error fixed in oauth.ts; vitest-evidence.json regenerated (86 suites, 253 tests, exit 0); coverage-report.json rebuilt at 222 live; pnpm drift:check exits 0
+Last activity: 2026-03-14 — Phase 34 Plan 01 complete: Slack twin builds cleanly, evidence pipeline operational
 
-Progress: [██████████] 100% (overall: 65/65 plans complete)
+Progress: [██████████] 100% (overall: 66/66 plans complete)
 
 ## Performance Metrics
 
@@ -77,10 +77,24 @@ Progress: [██████████] 100% (overall: 65/65 plans complete)
 | Phase 32 P02 | 1min | 2 tasks | 3 files |
 | Phase 32-01 P01 | 2min | 2 tasks | 4 files |
 | Phase 33 P01 | 5min | 2 tasks | 2 files |
+| Phase 34 P01 | 2min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
+### Roadmap Evolution
+
+- Phase 34 added: Slack Build Fix & Evidence Pipeline (second review — findings #1, #2 Critical)
+- Phase 35 added: Slack Behavioral Parity (second review — findings #3, #4, #5, #6 High)
+- Phase 36 added: Shopify Behavioral Parity (second review — findings #7, #8, #9, #10 High)
+- Phase 37 added: Billing Fidelity & Conformance Rigor (second review — findings #11, #12 Medium)
+
 ### Key Decisions
+
+**2026-03-14 - Phase 34 Plan 01 (Slack compile fix + evidence pipeline refresh):**
+- TS2345 fix pattern: `if (!code)` guard before `issuedCodes.delete(code)` preferred over `code!` non-null assertion — guard participates in TypeScript control-flow analysis and is logically unreachable (binding check above proved code truthy)
+- EVIDENCE_MAP comment corrected: removed "copy of LIVE_SYMBOLS from generate-report.ts" language (root cause of audit Finding #2 Critical); new comment accurately describes attribution semantics (symbols live only if their mapped test file appears in vitest-evidence.json passedFiles)
+- Fresh vitest-evidence.json: pnpm test:sdk ran successfully in sandbox (86/86 suites, 253/253 tests, exit 0); gitignored but coverage-report.json (tracked) captures the regeneration outcome at 222 live symbols
+- Phase 35 (Slack Behavioral Parity) and Phase 36 (Shopify Behavioral Parity) now unblocked
 
 **2026-03-13 - Phase 33 Plan 01 (reset coverage — XCUT-01):**
 - XCUT-01 closure via test-only additions: reset mechanism correct by design (:memory: SQLite close/reopen atomically destroys all data); 7 test proofs added (3 Shopify + 4 Slack)
@@ -300,7 +314,7 @@ None.
 
 **Last completed:** Phase 33 Plan 01 — XCUT-01 reset coverage (commits 7fd3b5a, 280b574)
 **Work in progress:** None — Milestone v1.2 Behavioral Fidelity complete
-**Stopped at:** Completed 33-01-PLAN.md
+**Stopped at:** Completed 34-01-PLAN.md
 **Timestamp:** 2026-03-13
 
 ---

@@ -58,7 +58,7 @@
 - [x] **Phase 31: Slack OAuth & Method Coverage** - OAuth exchange validation and comprehensive method smoke tests (gap closure) (completed 2026-03-13)
 - [x] **Phase 32: Conformance Harness & Evidence** - Primitive value comparison and real execution evidence (gap closure) (completed 2026-03-13)
 - [x] **Phase 33: Cross-Cutting Reset Coverage** - Verify all new SQLite tables in StateManager reset logic (gap closure) (completed 2026-03-14)
-- [ ] **Phase 34: Slack Build Fix & Evidence Pipeline** - Fix Slack twin compile error and rewrite coverage attribution from actual test evidence (second review remediation)
+- [x] **Phase 34: Slack Build Fix & Evidence Pipeline** - Fix Slack twin compile error and rewrite coverage attribution from actual test evidence (second review remediation) (completed 2026-03-14)
 - [ ] **Phase 35: Slack Behavioral Parity** - OpenID Connect, filesUploadV2, auth/scope semantics, deferred method registration (second review remediation)
 - [ ] **Phase 36: Shopify Behavioral Parity** - OAuth grant types, missing REST routes, ID round-trip, list filter semantics (second review remediation)
 - [ ] **Phase 37: Billing Fidelity & Conformance Rigor** - Persistent billing shapes and conformance harness 1:1 proof (second review remediation)
@@ -397,7 +397,7 @@ Plans:
 | 31. Slack OAuth & Method Coverage | 2/2 | Complete    | 2026-03-13 | - |
 | 32. Conformance Harness & Evidence | 2/2 | Complete    | 2026-03-13 | - |
 | 33. Cross-Cutting Reset Coverage | 1/1 | Complete    | 2026-03-14 | - |
-| 34. Slack Build Fix & Evidence Pipeline | 0/1 | In progress | - | - |
+| 34. Slack Build Fix & Evidence Pipeline | 1/1 | Complete   | 2026-03-14 | - |
 | 35. Slack Behavioral Parity | 0/0 | Not planned | - | - |
 | 36. Shopify Behavioral Parity | 0/0 | Not planned | - | - |
 | 37. Billing Fidelity & Conformance Rigor | 0/0 | Not planned | - | - |
@@ -444,7 +444,7 @@ Phase 21 (Test Runner & Seeders)
 **Goal:** Fix the Slack twin compile error so both twins are buildable, then rewrite coverage attribution to derive from actual test execution evidence (vitest-evidence.json) instead of the hand-authored EVIDENCE_MAP, removing all provably false live attributions.
 **Depends on:** Phase 33
 **Findings addressed:** #1 (Critical: Slack twin not buildable — oauth.ts:98 TS2345), #2 (Critical: evidence-based coverage is hand-authored, not execution-derived; provably false live attributions in coverage-report.json)
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 34-01-PLAN.md — Fix TS2345 compile error in oauth.ts and regenerate vitest-evidence.json + coverage-report.json
