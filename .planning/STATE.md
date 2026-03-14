@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 40-02-PLAN.md — runtime symbol evidence and Phase 40 coverage report
-last_updated: "2026-03-14T20:02:11.960Z"
-last_activity: 2026-03-14 — Phase 40 Plan 02 complete (INFRA-23 runtime symbol evidence; 368 SDK tests pass; 222 live symbols from runtime hits)
+stopped_at: Completed 40-04-PLAN.md — conformance semantics truthfulness and historical doc qualification
+last_updated: "2026-03-14T20:10:52.339Z"
+last_activity: 2026-03-14 — Phase 39 Plan 04 complete (inventory_levels, custom_collections, collects state; 71 integration tests green)
 progress:
   total_phases: 28
   completed_phases: 27
   total_plans: 86
-  completed_plans: 84
+  completed_plans: 85
   percent: 100
 ---
 
@@ -96,6 +96,7 @@ Progress: [██████████] 100% (overall: Phase 39 complete — 
 | Phase 39 P04 | 7min | 3 tasks | 5 files |
 | Phase 40 P01 | 3min | 2 tasks | 2 files |
 | Phase 40 P02 | 24min | 2 tasks | 11 files |
+| Phase 40 P04 | 3min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -110,6 +111,13 @@ Progress: [██████████] 100% (overall: Phase 39 complete — 
 - Phase 40 added: Verification evidence integrity and conformance truthfulness (re-audit follow-up — remaining evidence/conformance truthfulness gaps)
 
 ### Key Decisions
+
+**2026-03-14 - Phase 40 Plan 04 (conformance semantics truthfulness and historical doc qualification):**
+- compareValueFields: ['ok', 'error'] added to slackNormalizer — ok and error are deterministic on all Slack error responses; success-path ts and ID fields intentionally excluded
+- comparisonMode: 'exact' applied to oauth-access-invalid-code and chat-postMessage-no-channel — cleanest deterministic seams in current conformance suite
+- proofScopeLabel mapping placed in reporter.ts display path only — serialized report.mode in JSON output unchanged to avoid breaking downstream consumers reading the serialized report
+- Phase 40 Qualification Note inserted as blockquote near top of Phase 27/32/34 verification docs — qualification note, not a rewrite of historical evidence; original verification dates unchanged
+- Rebuild of @dtu/conformance dist required after reporter.ts changes (dist is gitignored); documented in SUMMARY.md for continuity
 
 **2026-03-14 - Phase 40 Plan 02 (runtime symbol evidence and Phase 40 coverage report):**
 - WebClient.prototype.apiCall patch before construction: Slack SDK binds method stubs (admin.users.list, chat.postMessage, etc.) at construction time via `self.apiCall.bind(self, method)`; prototype-level patch required before `new WebClient()` so bound stubs capture the instrumented version; prototype is restored immediately after construction
@@ -459,7 +467,7 @@ None.
 
 **Last completed:** Phase 39 — Shopify OAuth, REST state, and ID parity (4/4 plans, SHOP-14..17 verified)
 **Work in progress:** Phase 40 — Verification evidence integrity and conformance truthfulness
-**Stopped at:** Completed 40-02-PLAN.md — runtime symbol evidence and Phase 40 coverage report
+**Stopped at:** Completed 40-04-PLAN.md — conformance semantics truthfulness and historical doc qualification
 **Timestamp:** 2026-03-14
 
 ---
