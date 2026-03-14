@@ -85,19 +85,24 @@ const adminPlugin: FastifyPluginAsync = async (fastify) => {
       fastify.stateManager.createOrder({ ...order, gid: orderGid });
     }
 
-    // Load products — generate GIDs before insertion
+    // Load products — canonical two-step GID (insert with temp, then UPDATE to rowId-based GID)
     for (const product of products) {
-      const productTempId = Date.now() + Math.floor(Math.random() * 100000);
-      const productGid = createGID('Product', productTempId);
       const { variants: variantInputs, ...productData } = product;
-      fastify.stateManager.createProduct({ ...productData, gid: productGid });
+      const rowId = fastify.stateManager.createProduct({
+        ...productData,
+        gid: `gid://shopify/Product/temp-${Date.now()}`,
+      });
+      const finalProductGid = createGID('Product', rowId);
+      fastify.stateManager.database
+        .prepare('UPDATE products SET gid = ? WHERE id = ?')
+        .run(finalProductGid, rowId);
 
-      // Seed variants if provided
+      // Seed variants if provided; use finalProductGid (canonical) not temp GID for product_gid
       if (variantInputs && variantInputs.length > 0) {
         for (const v of variantInputs) {
           const variantTempId = Date.now() + Math.floor(Math.random() * 100000);
           const variantGid = createGID('ProductVariant', variantTempId);
-          fastify.stateManager.createVariant({ ...v, gid: variantGid, product_gid: productGid });
+          fastify.stateManager.createVariant({ ...v, gid: variantGid, product_gid: finalProductGid });
         }
       }
     }
