@@ -112,6 +112,14 @@ Progress: [██████████] 99% (overall: 26/28 phases complete; 
 - apps.connections.open fetch calls require body: JSON.stringify({}) — Fastify rejects Content-Type: application/json with empty body; parity assertions must send a body to get proper Slack-shaped responses
 - Prior sessions (38-02, 38-03, 38-04) ran implementation before 38-01 Wave 0 tests — Wave 0 tests now serve as regression tests; all 287 tests pass
 
+**2026-03-14 - Phase 38 Plan 02 (SLCK-20 + SLCK-23 auth/token parity implementation):**
+- CLIENT_SECRETS map in oauth.ts: 'test'→'test', 'test-client'→'test-client-secret', 'test-client-id-19'→'test-client-secret-19'; unknown client_id or wrong secret returns invalid_client before code lookup
+- oauth.v2.access uses binding.scope for both bot and user tokens (not hardcoded scope strings); in-repo tests authorize with broader scopes to cover all tested methods
+- openid.connect.token calls createToken() before returning — OIDC access_token is stateful; dedicated openid.connect.userInfo handler reads token record and user identity
+- apps.connections.open enforces BOTH token_type==='app' AND xapp- prefix; bot tokens with connections:write scope return invalid_auth
+- auth.test branches on token_type: user → omit bot_id + return user identity; app → omit bot_id + include app_id; bot → preserve existing response
+- seedSlackAppToken() added to seeders.ts with tokenType='app' + scope='connections:write'; Socket Mode test updated to use it
+
 **2026-03-14 - Phase 38 Plan 04 (SLCK-22 client-visible behavior parity):**
 - files.completeUploadExternal normalizes files field: if string, JSON.parse; if array, use as-is; else return invalid_arguments — upstream SDK sends form-encoded JSON string; old code assumed array only
 - Slack-shaped completion metadata: id, name (f.title ?? f.name ?? 'uploaded-file.txt'), title, mimetype, filetype, user (tokenRecord.user_id ?? 'U_BOT_TWIN'), url_private, permalink — all derived from tokenRecord and file_id; no state persistence needed
