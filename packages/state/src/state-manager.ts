@@ -74,6 +74,10 @@ export class StateManager {
   private updateAppSubscriptionStatusStmt: Database.Statement | null = null;
   private listActiveAppSubscriptionsStmt: Database.Statement | null = null;
 
+  // OneTimePurchase prepared statements
+  private createOneTimePurchaseStmt: Database.Statement | null = null;
+  private listOneTimePurchasesByShopStmt: Database.Statement | null = null;
+
   constructor(options: StateManagerOptions = {}) {
     this.dbPath = options.dbPath ?? ':memory:';
   }
@@ -148,6 +152,9 @@ export class StateManager {
       this.getAppSubscriptionStmt = null;
       this.updateAppSubscriptionStatusStmt = null;
       this.listActiveAppSubscriptionsStmt = null;
+      // Reset OneTimePurchase statements
+      this.createOneTimePurchaseStmt = null;
+      this.listOneTimePurchasesByShopStmt = null;
     }
     this.init();
   }
@@ -208,6 +215,9 @@ export class StateManager {
       this.getAppSubscriptionStmt = null;
       this.updateAppSubscriptionStatusStmt = null;
       this.listActiveAppSubscriptionsStmt = null;
+      // Clear OneTimePurchase statements
+      this.createOneTimePurchaseStmt = null;
+      this.listOneTimePurchasesByShopStmt = null;
     }
   }
 
@@ -397,6 +407,21 @@ export class StateManager {
         updated_at INTEGER NOT NULL
       );
       CREATE INDEX IF NOT EXISTS idx_app_subscriptions_shop_domain ON app_subscriptions(shop_domain, status);
+
+      CREATE TABLE IF NOT EXISTS one_time_purchases (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        gid TEXT UNIQUE NOT NULL,
+        name TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'PENDING',
+        test INTEGER DEFAULT 1,
+        price_amount TEXT NOT NULL,
+        price_currency_code TEXT NOT NULL DEFAULT 'USD',
+        return_url TEXT,
+        shop_domain TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS idx_one_time_purchases_shop_domain ON one_time_purchases(shop_domain);
     `);
 
     try {
@@ -405,6 +430,14 @@ export class StateManager {
       );
     } catch {
       // Idempotent migration for existing databases.
+    }
+
+    try {
+      this.database.exec(
+        "ALTER TABLE app_subscriptions ADD COLUMN line_items TEXT"
+      );
+    } catch {
+      // Idempotent — column already exists in upgraded DBs
     }
   }
 
@@ -511,8 +544,8 @@ export class StateManager {
 
     // AppSubscription prepared statements
     this.createAppSubscriptionStmt = db.prepare(
-      `INSERT INTO app_subscriptions (gid, name, status, return_url, test, trial_days, shop_domain, created_at, updated_at)
-       VALUES (?, ?, 'PENDING', ?, ?, ?, ?, ?, ?)`
+      `INSERT INTO app_subscriptions (gid, name, status, return_url, test, trial_days, shop_domain, line_items, created_at, updated_at)
+       VALUES (?, ?, 'PENDING', ?, ?, ?, ?, ?, ?, ?)`
     );
     this.getAppSubscriptionStmt = db.prepare('SELECT * FROM app_subscriptions WHERE id = ?');
     this.updateAppSubscriptionStatusStmt = db.prepare(
@@ -520,6 +553,15 @@ export class StateManager {
     );
     this.listActiveAppSubscriptionsStmt = db.prepare(
       "SELECT * FROM app_subscriptions WHERE status = 'ACTIVE' AND shop_domain = ?"
+    );
+
+    // OneTimePurchase prepared statements
+    this.createOneTimePurchaseStmt = db.prepare(
+      `INSERT INTO one_time_purchases (gid, name, status, test, price_amount, price_currency_code, return_url, shop_domain, created_at, updated_at)
+       VALUES (?, ?, 'PENDING', ?, ?, ?, ?, ?, ?, ?)`
+    );
+    this.listOneTimePurchasesByShopStmt = db.prepare(
+      "SELECT * FROM one_time_purchases WHERE shop_domain = ? ORDER BY created_at DESC"
     );
   }
 
@@ -961,11 +1003,13 @@ export class StateManager {
     test?: boolean;
     trial_days?: number;
     shop_domain: string;
+    line_items?: unknown[];
   }): number {
     if (!this.createAppSubscriptionStmt) throw new Error('StateManager not initialized. Call init() first.');
     const now = Math.floor(Date.now() / 1000);
     // Use crypto.randomUUID() to avoid collision when two creates happen in the same second
     const tempGid = `gid://shopify/AppSubscription/temp-${randomUUID()}`;
+    const lineItemsJson = data.line_items ? JSON.stringify(data.line_items) : null;
     const result = this.createAppSubscriptionStmt.run(
       tempGid,
       data.name,
@@ -973,6 +1017,7 @@ export class StateManager {
       data.test !== false ? 1 : 0,
       data.trial_days ?? 0,
       data.shop_domain,
+      lineItemsJson,
       now,
       now
     );
@@ -999,5 +1044,42 @@ export class StateManager {
   listActiveAppSubscriptions(shopDomain: string): any[] {
     if (!this.listActiveAppSubscriptionsStmt) throw new Error('StateManager not initialized. Call init() first.');
     return this.listActiveAppSubscriptionsStmt.all(shopDomain) as any[];
+  }
+
+  // OneTimePurchase methods
+
+  /** Create a one-time purchase and return its numeric row ID */
+  createOneTimePurchase(data: {
+    name: string;
+    return_url?: string;
+    test?: boolean;
+    price_amount: string;
+    price_currency_code?: string;
+    shop_domain: string;
+  }): number {
+    if (!this.createOneTimePurchaseStmt) throw new Error('StateManager not initialized. Call init() first.');
+    const now = Math.floor(Date.now() / 1000);
+    const tempGid = `gid://shopify/AppPurchaseOneTime/temp-${randomUUID()}`;
+    const result = this.createOneTimePurchaseStmt.run(
+      tempGid,
+      data.name,
+      data.test !== false ? 1 : 0,
+      data.price_amount,
+      data.price_currency_code ?? 'USD',
+      data.return_url ?? null,
+      data.shop_domain,
+      now,
+      now
+    );
+    const rowId = result.lastInsertRowid as number;
+    const finalGid = `gid://shopify/AppPurchaseOneTime/${rowId}`;
+    this.database.prepare('UPDATE one_time_purchases SET gid = ? WHERE id = ?').run(finalGid, rowId);
+    return rowId;
+  }
+
+  /** List all one-time purchases for a shop domain */
+  listOneTimePurchasesByShop(shopDomain: string): any[] {
+    if (!this.listOneTimePurchasesByShopStmt) throw new Error('StateManager not initialized. Call init() first.');
+    return this.listOneTimePurchasesByShopStmt.all(shopDomain) as any[];
   }
 }
