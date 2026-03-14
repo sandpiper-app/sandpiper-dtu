@@ -515,7 +515,7 @@ Plans:
 **Requirements**: INFRA-23, INFRA-24, INFRA-25
 **Depends on:** Phase 38, Phase 39
 **Findings addressed:** Re-audit #1 (fake evidence derivation), #2 (false live attributions), #10 (conformance/docs/tests overstate parity)
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] 40-01-PLAN.md — REQUIREMENTS traceability repair and red truthfulness contract checks

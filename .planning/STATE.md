@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: planning
-stopped_at: Completed 40-04-PLAN.md — conformance semantics truthfulness and historical doc qualification
-last_updated: "2026-03-14T20:10:52.339Z"
+stopped_at: "Completed 40-03-PLAN.md — INFRA-25 provenance validators and hardened drift:check"
+last_updated: "2026-03-14T20:12:16.225Z"
 last_activity: 2026-03-14 — Phase 39 Plan 04 complete (inventory_levels, custom_collections, collects state; 71 integration tests green)
 progress:
   total_phases: 28
-  completed_phases: 27
+  completed_phases: 28
   total_plans: 86
-  completed_plans: 85
+  completed_plans: 86
   percent: 100
 ---
 
@@ -97,6 +97,7 @@ Progress: [██████████] 100% (overall: Phase 39 complete — 
 | Phase 40 P01 | 3min | 2 tasks | 2 files |
 | Phase 40 P02 | 24min | 2 tasks | 11 files |
 | Phase 40 P04 | 3min | 3 tasks | 9 files |
+| Phase 40 P03 | 4min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -467,7 +468,7 @@ None.
 
 **Last completed:** Phase 39 — Shopify OAuth, REST state, and ID parity (4/4 plans, SHOP-14..17 verified)
 **Work in progress:** Phase 40 — Verification evidence integrity and conformance truthfulness
-**Stopped at:** Completed 40-04-PLAN.md — conformance semantics truthfulness and historical doc qualification
+**Stopped at:** Completed 40-03-PLAN.md — INFRA-25 provenance validators and hardened drift:check
 **Timestamp:** 2026-03-14
 
 ---
