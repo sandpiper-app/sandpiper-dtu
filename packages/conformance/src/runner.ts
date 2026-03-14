@@ -89,9 +89,12 @@ export class ConformanceRunner {
           } else if (this.mode === 'offline' && this.fixtureStore) {
             baselineResponse = this.fixtureStore.load(test.id);
           } else if (this.mode === 'twin') {
-            // Twin-only mode: no comparison, just validate structure
-            // We compare against itself (always passes) or skip comparison
-            baselineResponse = twinResponse;
+            // Run operation a second time to get a structural baseline.
+            // Comparing twin-vs-twin (two independent calls) validates shape consistency
+            // without trivially self-comparing. The normalizer strips non-deterministic
+            // fields (IDs, timestamps) before comparison so determinism differences
+            // between calls don't produce false failures.
+            baselineResponse = await this.twin.execute(test.operation);
           }
 
           if (baselineResponse) {
@@ -111,7 +114,27 @@ export class ConformanceRunner {
                   suite.normalizer
                 );
               }
+            } else if (this.mode === 'twin') {
+              // Twin-mode: two independent calls compared.
+              // Respect test.comparisonMode — 'exact' tests (e.g., deterministic error responses)
+              // use exact comparison; everything else uses structural comparison which
+              // strips non-deterministic fields (IDs, timestamps) via the normalizer.
+              if (test.comparisonMode === 'exact') {
+                result = compareResponses(
+                  test.id, test.name, test.category,
+                  twinResponse, baselineResponse,
+                  suite.normalizer, test.requirements ?? []
+                );
+              } else {
+                result = compareResponsesStructurally(
+                  test.id, test.name, test.category,
+                  twinResponse, baselineResponse,
+                  test.requirements ?? [],
+                  suite.normalizer
+                );
+              }
             } else {
+              // offline mode: exact comparison against fixture
               result = compareResponses(
                 test.id, test.name, test.category,
                 twinResponse, baselineResponse,
