@@ -30,7 +30,7 @@ progress:
 Phase: 41 of 41
 Plan: 6 of 6 complete
 Status: Complete
-Last activity: 2026-03-15 — Phase 41 Plan 06 complete: conformance header proof tightened, full signoff green pre- and post-restoration
+Last activity: 2026-03-15 - Completed quick task 3: Fix remaining 3 issues from external review
 
 Progress: [██████████] 100% (overall: 29 of 29 phases complete; Milestone v1.2 complete)
 
@@ -502,6 +502,12 @@ None.
 ### Blockers/Concerns
 
 - This sandbox still blocks local socket binds, so `pnpm test:sdk` cannot boot the live twin harness here. Use in-process `buildApp()` verification or a normal shell when socket-bound test runs are required.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 3 | Fix remaining 3 issues from external review: Slack scope default-deny, construction-time evidence inflation, conformance header allowlist | 2026-03-15 | efbf1f4 | [3-fix-remaining-3-issues-from-external-rev](./quick/3-fix-remaining-3-issues-from-external-rev/) |
 
 ## Session Continuity
 
