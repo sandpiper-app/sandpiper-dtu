@@ -4,7 +4,7 @@ milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: completed
 stopped_at: Completed 41-06-PLAN.md — conformance semantics truthful, artifacts regenerated, post-restoration signoff green
-last_updated: "2026-03-15T07:35:36.798Z"
+last_updated: "2026-03-15T07:42:45.663Z"
 last_activity: "2026-03-15 — Phase 41 Plan 06 complete: conformance header proof tightened, full signoff green pre- and post-restoration"
 progress:
   total_phases: 29
@@ -17,7 +17,7 @@ progress:
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-15
-**Status:** Milestone v1.2 Behavioral Fidelity — COMPLETE
+**Status:** Milestone complete
 
 ## Project Reference
 
