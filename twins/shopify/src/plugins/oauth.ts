@@ -48,6 +48,22 @@ interface OAuthTokenResponse {
   scope: string;
 }
 
+// Offline expiring token response — includes refresh token metadata so that
+// createSession() can populate session.refreshToken and session.refreshTokenExpires.
+// Values match the vendored upstream test expectations:
+//   third_party/.../lib/auth/oauth/__tests__/refresh-token.test.ts  → expires_in: 525600, refresh_token_expires_in: 2592000
+//   third_party/.../lib/auth/oauth/__tests__/token-exchange.test.ts → same shape for expiring offline exchange
+interface OAuthOfflineExpiringTokenResponse {
+  access_token: string;
+  scope: string;
+  expires_in: number;
+  refresh_token: string;
+  refresh_token_expires_in: number;
+}
+
+const OFFLINE_EXPIRES_IN = 525600;        // seconds — ~6 days
+const REFRESH_TOKEN_EXPIRES_IN = 2592000; // seconds — 30 days
+
 interface OAuthErrorResponse {
   error: string;
   error_description?: string;
@@ -255,6 +271,12 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
       body.grant_type === 'urn:ietf:params:oauth:grant-type:token-exchange' &&
       body.requested_token_type === 'urn:shopify:params:oauth:token-type:online-access-token';
 
+    const isOfflineTokenExchange =
+      body.grant_type === 'urn:ietf:params:oauth:grant-type:token-exchange' &&
+      body.requested_token_type === 'urn:shopify:params:oauth:token-type:offline-access-token';
+
+    const isRefreshTokenGrant = body.grant_type === 'refresh_token';
+
     const accessToken = randomUUID();
     fastify.stateManager.createToken(accessToken, TWIN_SHOP_DOMAIN, ADMIN_SCOPES, 'admin');
 
@@ -277,6 +299,30 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
       });
     }
 
+    // refresh_token grant — always returns the full offline expiring shape so that
+    // createSession() populates session.refreshToken and session.refreshTokenExpires.
+    if (isRefreshTokenGrant) {
+      return reply.send({
+        access_token: accessToken,
+        scope: ADMIN_SCOPES,
+        expires_in: OFFLINE_EXPIRES_IN,
+        refresh_token: randomUUID(),
+        refresh_token_expires_in: REFRESH_TOKEN_EXPIRES_IN,
+      } satisfies OAuthOfflineExpiringTokenResponse);
+    }
+
+    // offline token-exchange with expiring=1 — returns the full offline expiring shape
+    if (isOfflineTokenExchange && body.expiring === '1') {
+      return reply.send({
+        access_token: accessToken,
+        scope: ADMIN_SCOPES,
+        expires_in: OFFLINE_EXPIRES_IN,
+        refresh_token: randomUUID(),
+        refresh_token_expires_in: REFRESH_TOKEN_EXPIRES_IN,
+      } satisfies OAuthOfflineExpiringTokenResponse);
+    }
+
+    // offline token-exchange with expiring=0 (or absent) — bare offline response
     return reply.send({ access_token: accessToken, scope: ADMIN_SCOPES });
   });
 

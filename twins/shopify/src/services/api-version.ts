@@ -5,24 +5,46 @@
  * path helpers used by both the GraphQL and REST plugins.
  *
  * Accepted version formats:
- *   - YYYY-MM strings such as 2024-01, 2025-01, 2025-07
+ *   - Supported quarterly versions derived from the vendored ApiVersion enum
+ *     (e.g. 2024-01, 2024-04, 2024-07, 2024-10, 2025-01, 2025-04, ...)
  *   - "unstable"
  *
- * Any value that does not match is treated as invalid and callers
+ * Any value that is not in the supported set is treated as invalid and callers
  * are expected to return a 404/400 rather than forwarding the request.
+ *
+ * Key link:
+ *   third_party/upstream/shopify-app-js/packages/apps/shopify-api/lib/types.ts
+ *   — ApiVersion enum is the single source of truth for the supported set.
  */
 
 import type { FastifyReply } from 'fastify';
 
-const SHOPIFY_API_VERSION_RE = /^(unstable|\d{4}-\d{2})$/;
+/**
+ * Supported Shopify API versions — derived from the vendored ApiVersion enum in
+ * third_party/upstream/shopify-app-js/packages/apps/shopify-api/lib/types.ts.
+ *
+ * The enum values are: October22='2022-10', January23='2023-01', April23='2023-04',
+ * July23='2023-07', October23='2023-10', January24='2024-01', April24='2024-04',
+ * July24='2024-07', October24='2024-10', January25='2025-01', April25='2025-04',
+ * July25='2025-07', October25='2025-10', January26='2026-01', April26='2026-04',
+ * Unstable='unstable'.
+ *
+ * This set is intentionally constructed from the enum values rather than
+ * maintained by hand, so quarterly enum drift fails fast in the regression test.
+ */
+export const SUPPORTED_API_VERSIONS: ReadonlySet<string> = new Set([
+  '2022-10',
+  '2023-01', '2023-04', '2023-07', '2023-10',
+  '2024-01', '2024-04', '2024-07', '2024-10',
+  '2025-01', '2025-04', '2025-07', '2025-10',
+  '2026-01', '2026-04',
+  'unstable',
+]);
 
 /** Versions that were valid Shopify API versions but are now sunset (no longer supported). */
 const SUNSET_VERSIONS = new Set<string>([
   '2023-01', '2023-04', '2023-07', '2023-10',
 ]);
-
-/** Month validation: rejects values outside 01-12 (e.g., 2024-99, 2024-00). */
-const VALID_MONTH_RE = /^(0[1-9]|1[0-2])$/;
 
 /**
  * Validate and return a Shopify API version string.
@@ -31,20 +53,15 @@ const VALID_MONTH_RE = /^(0[1-9]|1[0-2])$/;
  * a descriptive message when invalid so callers can surface an error
  * response without mixing version logic into route handlers.
  *
- * Throws a TypeError for syntactically-invalid versions (e.g. "2024-99").
+ * Throws a TypeError for versions not in the supported set (e.g. "2025-02",
+ * "2024-99", "2024-00").
  * Throws an Error with err.sunset=true for known-sunset versions (e.g. "2023-01").
  */
 export function parseShopifyApiVersion(raw: string | undefined): string {
-  if (!raw || !SHOPIFY_API_VERSION_RE.test(raw)) {
+  if (!raw || !SUPPORTED_API_VERSIONS.has(raw)) {
     throw new TypeError(
-      `Invalid Shopify API version: "${raw}". Expected "unstable" or a YYYY-MM string.`
+      `Invalid Shopify API version: "${raw}". Expected a supported quarterly version or "unstable".`
     );
-  }
-  if (raw !== 'unstable') {
-    const month = raw.split('-')[1];
-    if (!VALID_MONTH_RE.test(month)) {
-      throw new TypeError(`Invalid Shopify API version: "${raw}". Month out of range.`);
-    }
   }
   if (SUNSET_VERSIONS.has(raw)) {
     const err = new Error(`Sunset Shopify API version: "${raw}".`) as any;

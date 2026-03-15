@@ -92,7 +92,7 @@ describe('shopify.auth — token flows — SHOP-10 (live twin)', () => {
     expect(typeof session.accessToken).toBe('string');
   });
 
-  it('refreshToken returns a new Session with accessToken', async () => {
+  it('refreshToken returns a new Session with accessToken, refreshToken, refreshTokenExpires, and expires', async () => {
     // Get a token via tokenExchange first — refreshToken takes { shop, refreshToken: string }
     const sessionToken = await mintSessionToken(
       shopify.config.apiKey,
@@ -111,6 +111,11 @@ describe('shopify.auth — token flows — SHOP-10 (live twin)', () => {
     });
     expect(refreshed.accessToken).toBeDefined();
     expect(refreshed.shop).toBe('dev.myshopify.com');
+    // The twin now returns expires_in, refresh_token, and refresh_token_expires_in
+    // so createSession() must populate these fields.
+    expect(refreshed.refreshToken).toBeDefined();
+    expect(refreshed.refreshTokenExpires).toBeDefined();
+    expect(refreshed.expires).toBeDefined();
   });
 
   it('clientCredentials returns a Session with accessToken', async () => {
