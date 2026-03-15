@@ -282,6 +282,98 @@ export const METHOD_SCOPES: Record<string, string[]> = {
   // ── files.* legacy ────────────────────────────────────────────────
   'files.upload':                             ['files:write'],
   'files.uploadV2':                           ['files:write'],
+
+  // ── files.* (Phase 41 additions) ──────────────────────────────────
+  // files.getUploadURLExternal and completeUploadExternal are part of filesUploadV2 chain
+  'files.getUploadURLExternal':               ['files:write'],
+  'files.completeUploadExternal':             ['files:write'],
+  'files.info':                               ['files:read'],
+  'files.revokePublicURL':                    ['files:write'],
+  'files.sharedPublicURL':                    ['files:write'],
+  'files.comments.delete':                    ['files:write'],
+  'files.remote.add':                         ['remote_files:write'],
+  'files.remote.info':                        ['remote_files:read'],
+  'files.remote.list':                        ['remote_files:read'],
+  'files.remote.remove':                      ['remote_files:write'],
+  'files.remote.share':                       ['remote_files:share'],
+  'files.remote.update':                      ['remote_files:write'],
+
+  // ── search.* (Phase 41 additions) ─────────────────────────────────
+  // search.messages was already present; adding the remaining search methods
+  'search.all':                               ['search:read'],
+  'search.files':                             ['search:read'],
+
+  // ── users.* (Phase 41 additions) ──────────────────────────────────
+  // users.setPhoto requires users.profile:write (distinct from users:write)
+  'users.setPhoto':                           ['users.profile:write'],
+  // users.setActive is a no-op keepalive — no meaningful scope required
+  'users.setActive':                          ['users:write'],
+
+  // ── chat.* stream methods (Phase 41 additions) ────────────────────
+  'chat.appendStream':                        ['chat:write'],
+  'chat.stopStream':                          ['chat:write'],
+
+  // ── reminders.* (Phase 41 additions) ──────────────────────────────
+  'reminders.complete':                       ['reminders:write'],
+  'reminders.delete':                         ['reminders:write'],
+  'reminders.info':                           ['reminders:read'],
+
+  // ── dnd.* (Phase 41 additions) ────────────────────────────────────
+  'dnd.endDnd':                               ['dnd:write'],
+  'dnd.endSnooze':                            ['dnd:write'],
+  'dnd.setSnooze':                            ['dnd:write'],
+  'dnd.teamInfo':                             ['dnd:read'],
+
+  // ── bookmarks.* (Phase 41 additions) ──────────────────────────────
+  'bookmarks.add':                            ['bookmarks:write'],
+  'bookmarks.edit':                           ['bookmarks:write'],
+  'bookmarks.list':                           ['bookmarks:read'],
+  'bookmarks.remove':                         ['bookmarks:write'],
+
+  // ── usergroups.* (Phase 41 additions) ─────────────────────────────
+  'usergroups.create':                        ['usergroups:write'],
+  'usergroups.disable':                       ['usergroups:write'],
+  'usergroups.enable':                        ['usergroups:write'],
+  'usergroups.update':                        ['usergroups:write'],
+  'usergroups.users.list':                    ['usergroups:read'],
+  'usergroups.users.update':                  ['usergroups:write'],
+
+  // ── calls.* (Phase 41 additions) ──────────────────────────────────
+  'calls.add':                                ['calls:write'],
+  'calls.end':                                ['calls:write'],
+  'calls.info':                               ['calls:read'],
+  'calls.update':                             ['calls:write'],
+  'calls.participants.add':                   ['calls:write'],
+  'calls.participants.remove':                ['calls:write'],
+
+  // ── team.* extended (Phase 41 additions) ──────────────────────────
+  'team.accessLogs':                          ['team:read'],
+  'team.billableInfo':                        ['team:read'],
+  'team.integrationLogs':                     ['team:read'],
+  'team.preferences.list':                    ['team:read'],
+  'team.profile.get':                         ['users:read'],
+
+  // ── migration / tooling (Phase 41 additions) ──────────────────────
+  'migration.exchange':                       ['tokens.basic'],
+  'tooling.tokens.rotate':                    ['tokens.basic'],
+
+  // ── dialog / functions / assistant (Phase 41 additions) ───────────
+  // These are no-auth-scope Slack platform methods
+  'dialog.open':                              [],
+  'functions.completeSuccess':                [],
+  'functions.completeError':                  [],
+  'assistant.threads.setStatus':              ['assistant:write'],
+  'assistant.threads.setSuggestedPrompts':    ['assistant:write'],
+  'assistant.threads.setTitle':               ['assistant:write'],
+
+  // ── auth.* additional (Phase 41 additions) ────────────────────────
+  'auth.revoke':                              [],
+  'auth.teams.list':                          [],
+
+  // ── conversations.canvases.* (Phase 41 additions) ─────────────────
+  // conversations.canvases.create is already covered via conversations.ts extended block
+  'conversations.canvases.delete':            ['canvases:write'],
+  'conversations.canvases.sections.lookup':   ['canvases:read'],
 };
 
 /** Return the union of all scopes in the catalog as a sorted, comma-separated string. */
