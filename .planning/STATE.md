@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: executing
-stopped_at: Completed 41-02-PLAN.md — build gate truth and artifact resilience
-last_updated: "2026-03-15T06:57:12.283Z"
-last_activity: 2026-03-14 — Phase 41 planning hardened into six execution-safe plans after adversarial and checker review
+stopped_at: "Completed 41-03-PLAN.md — Shopify regression closure: API version enforcement, offline OAuth shapes, delete/orderUpdate/inventory state fixes"
+last_updated: "2026-03-15T07:04:17.110Z"
+last_activity: "2026-03-15 — Phase 41 Plan 02 complete: root build truthful, Shopify twin compiles, artifact resilience hooks added"
 progress:
   total_phases: 29
   completed_phases: 28
   total_plans: 92
-  completed_plans: 88
+  completed_plans: 89
   percent: 93
 ---
 
@@ -100,6 +100,7 @@ Progress: [█████████░] 93% (overall: 28 of 29 phases complet
 | Phase 40 P03 | 4min | 2 tasks | 5 files |
 | Phase 41 P01 | 8min | 3 tasks | 3 files |
 | Phase 41 P02 | 12min | 2 tasks | 7 files |
+| Phase 41 P03 | 4min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -478,7 +479,7 @@ None.
 
 **Last completed:** Phase 39 — Shopify OAuth, REST state, and ID parity (4/4 plans, SHOP-14..17 verified)
 **Work in progress:** Phase 40 — Verification evidence integrity and conformance truthfulness
-**Stopped at:** Completed 41-02-PLAN.md — build gate truth and artifact resilience
+**Stopped at:** Completed 41-03-PLAN.md — Shopify regression closure: API version enforcement, offline OAuth shapes, delete/orderUpdate/inventory state fixes
 **Timestamp:** 2026-03-14
 
 ---
