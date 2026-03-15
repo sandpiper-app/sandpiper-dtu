@@ -3,20 +3,20 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: executing
-stopped_at: Completed 41-01-PLAN.md — RED contracts for all Phase 41 regression clusters
-last_updated: "2026-03-15T06:55:33.838Z"
+stopped_at: Completed 41-02-PLAN.md — build gate truth and artifact resilience
+last_updated: "2026-03-15T06:57:12.283Z"
 last_activity: 2026-03-14 — Phase 41 planning hardened into six execution-safe plans after adversarial and checker review
 progress:
   total_phases: 29
   completed_phases: 28
   total_plans: 92
-  completed_plans: 87
+  completed_plans: 88
   percent: 93
 ---
 
 # Project State: Sandpiper DTU
 
-**Last Updated:** 2026-03-14
+**Last Updated:** 2026-03-15
 **Status:** Milestone in progress
 
 ## Project Reference
@@ -28,9 +28,9 @@ progress:
 ## Current Position
 
 Phase: 41 of 41
-Plan: 0 of 6 complete
-Status: Planning
-Last activity: 2026-03-14 — Phase 41 planning hardened into six execution-safe plans after adversarial and checker review
+Plan: 2 of 6 complete
+Status: Executing
+Last activity: 2026-03-15 — Phase 41 Plan 02 complete: root build truthful, Shopify twin compiles, artifact resilience hooks added
 
 Progress: [█████████░] 93% (overall: 28 of 29 phases complete; Phase 41 planning in progress)
 
@@ -99,6 +99,7 @@ Progress: [█████████░] 93% (overall: 28 of 29 phases complet
 | Phase 40 P04 | 3min | 3 tasks | 9 files |
 | Phase 40 P03 | 4min | 2 tasks | 5 files |
 | Phase 41 P01 | 8min | 3 tasks | 3 files |
+| Phase 41 P02 | 12min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -113,6 +114,14 @@ Progress: [█████████░] 93% (overall: 28 of 29 phases complet
 - Phase 40 added: Verification evidence integrity and conformance truthfulness (re-audit follow-up — remaining evidence/conformance truthfulness gaps)
 
 ### Key Decisions
+
+**2026-03-15 - Phase 41 Plan 02 (build gate truth and artifact resilience):**
+- Root build now includes `./twins/*` alongside `./packages/*` — a failing twin compile now causes root build failure; the gate is truthful
+- subject_token_type?: string added to OAuthTokenRequestBody in shopify twin oauth.ts — field was referenced in validation but missing from interface; no validation logic changed
+- global-setup.ts: create-if-absent replaces destructive unlinkSync — existing populated artifacts are preserved across standalone runs so downstream gates (coverage:generate, drift:check) remain usable after any exit
+- flushExecutionEvidence() preserve-if-empty: when 0 hits accumulated and existing file has real data, skip flush — prevents single-file afterAll from destroying a populated full-run artifact
+- process-exit hooks (beforeExit, exit, SIGINT, SIGTERM, uncaughtException, unhandledRejection) with idempotent globalThis guard — safe across module re-evaluations in the same Vitest process
+- Resilience test uses backup/restore pattern: backs up existing artifact, probes child, restores backup in finally block — keeps standalone drift:check runnable
 
 **2026-03-14 - Phase 40 Plan 04 (conformance semantics truthfulness and historical doc qualification):**
 - compareValueFields: ['ok', 'error'] added to slackNormalizer — ok and error are deterministic on all Slack error responses; success-path ts and ID fields intentionally excluded
@@ -469,7 +478,7 @@ None.
 
 **Last completed:** Phase 39 — Shopify OAuth, REST state, and ID parity (4/4 plans, SHOP-14..17 verified)
 **Work in progress:** Phase 40 — Verification evidence integrity and conformance truthfulness
-**Stopped at:** Completed 41-01-PLAN.md — RED contracts for all Phase 41 regression clusters
+**Stopped at:** Completed 41-02-PLAN.md — build gate truth and artifact resilience
 **Timestamp:** 2026-03-14
 
 ---
