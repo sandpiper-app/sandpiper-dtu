@@ -151,32 +151,32 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-19 | Phase 21, 41 | Pending |
-| INFRA-20 | Phase 21, 41 | Pending |
-| SHOP-17 | Phase 22, 28, 41 | Pending |
+| INFRA-19 | Phase 21, 41 | Complete |
+| INFRA-20 | Phase 21, 41 | Complete |
+| SHOP-17 | Phase 22, 28, 41 | Complete |
 | SHOP-22 | Phase 22 | Complete |
 | SHOP-23 | Phase 22, 28 | Complete |
-| SHOP-18 | Phase 23, 41 | Pending |
+| SHOP-18 | Phase 23, 41 | Complete |
 | SHOP-19 | Phase 23 | Complete |
-| SHOP-20 | Phase 24, 41 | Pending |
+| SHOP-20 | Phase 24, 41 | Complete |
 | SHOP-21 | Phase 24, 29 | Complete |
 | SHOP-24 | Phase 24 | Complete |
-| SLCK-14 | Phase 25, 31, 41 | Pending |
+| SLCK-14 | Phase 25, 31, 41 | Complete |
 | SLCK-16 | Phase 25, 30 | Complete |
 | SLCK-17 | Phase 25, 30 | Complete |
 | SLCK-15 | Phase 26 | Complete |
-| SLCK-18 | Phase 26, 31, 41 | Pending |
+| SLCK-18 | Phase 26, 31, 41 | Complete |
 | SLCK-19 | Phase 26 | Complete |
-| SLCK-20 | Phase 38, 41 | Pending |
+| SLCK-20 | Phase 38, 41 | Complete |
 | SLCK-21 | Phase 38 | Complete |
-| SLCK-22 | Phase 38, 41 | Pending |
+| SLCK-22 | Phase 38, 41 | Complete |
 | SLCK-23 | Phase 38 | Complete |
 | INFRA-21 | Phase 27, 32 | Complete |
 | INFRA-22 | Phase 27, 32 | Complete |
 | XCUT-01 | Phase 33 | Complete |
-| INFRA-23 | Phase 40, 41 | Pending |
-| INFRA-24 | Phase 40, 41 | Pending |
-| INFRA-25 | Phase 40, 41 | Pending |
+| INFRA-23 | Phase 40, 41 | Complete |
+| INFRA-24 | Phase 40, 41 | Complete |
+| INFRA-25 | Phase 40, 41 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 22 total (all complete)

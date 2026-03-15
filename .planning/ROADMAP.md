@@ -530,7 +530,7 @@ Plans:
 **Requirements**: INFRA-19, INFRA-20, INFRA-23, INFRA-24, INFRA-25, SHOP-17, SHOP-18, SHOP-20, SLCK-14, SLCK-18, SLCK-20, SLCK-22
 **Depends on:** Phase 40
 **Findings addressed:** Post-4765f9 re-audit: root build and SDK evidence-gate regressions, Shopify build/version/OAuth/state regressions, Slack scope/OAuth/files regressions, inflated runtime evidence, weak conformance proof, and representative-only method-coverage proof
-**Plans:** 6/6 plans pending
+**Plans:** 1/6 plans executed
 
 Plans:
 - [ ] 41-01-PLAN.md — Wave 0 truth reset: reopen requirement traceability and add RED contracts for build gates, Shopify regressions, Slack regressions, and proof integrity
