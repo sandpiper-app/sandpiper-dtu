@@ -401,7 +401,10 @@ export interface ScopeCheckResult {
  */
 export function checkScope(method: string, tokenScope: string): ScopeCheckResult | null {
   const required = METHOD_SCOPES[method];
-  if (!required || required.length === 0) return null;
+  if (required !== undefined && required.length === 0) return null; // explicitly empty → pass (e.g. auth.test)
+  if (required === undefined) {
+    return { error: 'missing_scope', needed: 'unknown (method not in scope catalog)', provided: tokenScope };
+  }
 
   const granted = new Set(tokenScope.split(',').map(s => s.trim()).filter(Boolean));
   const missing = required.find(s => !granted.has(s));

@@ -77,7 +77,7 @@ export function createShopifyApiClient<Resources extends ShopifyRestResources = 
     return fetch(hostRewritten, init);
   });
 
-  // Record shopifyApi factory call and top-level Shopify class hit
+  // shopifyApi and Shopify hits above are legitimate construction-time events.
   recordSymbolHit('@shopify/shopify-api@12.3.0/shopifyApi');
   recordSymbolHit('@shopify/shopify-api@12.3.0/Shopify');
 
@@ -98,10 +98,6 @@ export function createShopifyApiClient<Resources extends ShopifyRestResources = 
     ...(options?.scopes && { scopes: options.scopes }),
     ...(options?.restResources && { restResources: options.restResources }),
   });
-
-  // Record Shopify.config hit immediately — the config namespace is always populated
-  // by shopifyApi() and tests access it during client setup.
-  recordSymbolHit('@shopify/shopify-api@12.3.0/Shopify.config');
 
   // NOTE: Shopify.auth, Shopify.clients, ShopifyClients, ShopifyClients.Rest,
   // Shopify.rest, and ShopifyClients.graphqlProxy are NOT recorded here.
@@ -213,6 +209,7 @@ export function createShopifyApiClient<Resources extends ShopifyRestResources = 
   const SHOPIFY_NAMESPACE_SYMBOLS: Record<string, string> = {
     auth: '@shopify/shopify-api@12.3.0/Shopify.auth',
     clients: '@shopify/shopify-api@12.3.0/Shopify.clients',
+    config: '@shopify/shopify-api@12.3.0/Shopify.config',
     rest: '@shopify/shopify-api@12.3.0/Shopify.rest',
     session: '@shopify/shopify-api@12.3.0/Shopify.session',
     webhooks: '@shopify/shopify-api@12.3.0/Shopify.webhooks',

@@ -29,6 +29,38 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createSlackClient } from '../helpers/slack-client.js';
 import { resetSlack, seedSlackBotToken, seedSlackChannel } from '../setup/seeders.js';
+import { checkScope } from '../../../twins/slack/src/services/method-scopes.js';
+
+// ============================================================================
+// checkScope() unit tests — default-deny behavior (Finding #7)
+// ============================================================================
+
+describe('checkScope() default-deny behavior', () => {
+  it('returns missing_scope for an uncatalogued method', () => {
+    const result = checkScope('nonexistent.method', 'read');
+    expect(result).toEqual({
+      error: 'missing_scope',
+      needed: 'unknown (method not in scope catalog)',
+      provided: 'read',
+    });
+  });
+
+  it('returns null for auth.test (explicitly empty scope list)', () => {
+    expect(checkScope('auth.test', 'read')).toBeNull();
+  });
+
+  it('returns null for chat.postMessage with chat:write scope (regression guard)', () => {
+    expect(checkScope('chat.postMessage', 'chat:write')).toBeNull();
+  });
+
+  it('returns missing_scope for chat.postMessage with insufficient scope', () => {
+    const result = checkScope('chat.postMessage', 'read');
+    expect(result).not.toBeNull();
+    expect(result?.error).toBe('missing_scope');
+    expect(result?.needed).toBe('chat:write');
+    expect(result?.provided).toBe('read');
+  });
+});
 
 // Broad scope string for attacker token (has permission but wrong userId)
 const BROAD_SCOPE = 'chat:write,channels:read,channels:history,users:read';
