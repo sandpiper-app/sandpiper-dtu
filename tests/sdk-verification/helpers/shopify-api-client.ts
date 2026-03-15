@@ -99,14 +99,17 @@ export function createShopifyApiClient<Resources extends ShopifyRestResources = 
     ...(options?.restResources && { restResources: options.restResources }),
   });
 
-  // Record sub-namespace hits for the namespaces that are consistently accessed.
-  // These match the EVIDENCE_MAP entries for Shopify.*.
+  // Record Shopify.config hit immediately — the config namespace is always populated
+  // by shopifyApi() and tests access it during client setup.
   recordSymbolHit('@shopify/shopify-api@12.3.0/Shopify.config');
-  recordSymbolHit('@shopify/shopify-api@12.3.0/Shopify.auth');
-  recordSymbolHit('@shopify/shopify-api@12.3.0/Shopify.clients');
-  recordSymbolHit('@shopify/shopify-api@12.3.0/ShopifyClients');
-  recordSymbolHit('@shopify/shopify-api@12.3.0/ShopifyClients.Rest');
-  recordSymbolHit('@shopify/shopify-api@12.3.0/Shopify.rest');
+
+  // NOTE: Shopify.auth, Shopify.clients, ShopifyClients, ShopifyClients.Rest,
+  // Shopify.rest, and ShopifyClients.graphqlProxy are NOT recorded here.
+  // They are recorded only when the corresponding surface is actually accessed:
+  //   - Shopify.auth and Shopify.clients: inside the proxy getter below
+  //   - ShopifyClients, ShopifyClients.Rest: inside the InstrumentedRestClient construct trap
+  //   - Shopify.rest: inside the proxy getter below
+  //   - ShopifyClients.graphqlProxy: inside the wrapped graphqlProxy function body
 
   // Phase 40, INFRA-23: Instrument shopify.clients.Rest constructor so that
   // any RestClient instance created by tests emits runtime symbol hits for
@@ -117,7 +120,11 @@ export function createShopifyApiClient<Resources extends ShopifyRestResources = 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const InstrumentedRestClient = new Proxy(OriginalRestClient as any, {
     construct(Target, args) {
-      // Record that RestClient was constructed
+      // Record ShopifyClients, ShopifyClients.Rest, and RestClient hits at actual construction time.
+      // These were previously recorded eagerly at createShopifyApiClient() body level — now they only
+      // fire when a test actually instantiates a RestClient.
+      recordSymbolHit('@shopify/shopify-api@12.3.0/ShopifyClients');
+      recordSymbolHit('@shopify/shopify-api@12.3.0/ShopifyClients.Rest');
       recordSymbolHit('@shopify/shopify-api@12.3.0/RestClient');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const instance: any = new Target(...args);
@@ -146,6 +153,8 @@ export function createShopifyApiClient<Resources extends ShopifyRestResources = 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const InstrumentedGraphqlClient = new Proxy(OriginalGraphqlClient as any, {
     construct(Target, args) {
+      // Record ShopifyClients.Graphql hit at actual construction time.
+      recordSymbolHit('@shopify/shopify-api@12.3.0/ShopifyClients.Graphql');
       recordSymbolHit('@shopify/shopify-api@12.3.0/GraphqlClient');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const instance: any = new Target(...args);
@@ -171,16 +180,15 @@ export function createShopifyApiClient<Resources extends ShopifyRestResources = 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const originalGraphqlProxy = (shopify.clients as any).graphqlProxy;
   if (typeof originalGraphqlProxy === 'function') {
-    recordSymbolHit('@shopify/shopify-api@12.3.0/ShopifyClients.graphqlProxy');
-    recordSymbolHit('@shopify/shopify-api@12.3.0/GraphqlProxy');
+    // ShopifyClients.graphqlProxy and GraphqlProxy are recorded inside the wrapper body —
+    // only when a test actually invokes graphqlProxy(), not at construction time.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (shopify.clients as any).graphqlProxy = (...args: unknown[]) => {
+      recordSymbolHit('@shopify/shopify-api@12.3.0/ShopifyClients.graphqlProxy');
+      recordSymbolHit('@shopify/shopify-api@12.3.0/GraphqlProxy');
       return originalGraphqlProxy.apply(shopify.clients, args);
     };
   }
-
-  // Record Graphql-related namespace hits
-  recordSymbolHit('@shopify/shopify-api@12.3.0/ShopifyClients.Graphql');
 
   // Proxy the shopify object to capture sub-namespace access hits.
   // This captures Shopify.session, Shopify.webhooks, Shopify.flow,
@@ -200,7 +208,12 @@ export function createShopifyApiClient<Resources extends ShopifyRestResources = 
     (shopify.clients as any).Storefront = InstrumentedStorefrontClient;
   }
 
+  // Shopify.auth, Shopify.clients, and Shopify.rest are recorded here (in the proxy getter)
+  // so they fire only when a test actually reads that property — not at construction time.
   const SHOPIFY_NAMESPACE_SYMBOLS: Record<string, string> = {
+    auth: '@shopify/shopify-api@12.3.0/Shopify.auth',
+    clients: '@shopify/shopify-api@12.3.0/Shopify.clients',
+    rest: '@shopify/shopify-api@12.3.0/Shopify.rest',
     session: '@shopify/shopify-api@12.3.0/Shopify.session',
     webhooks: '@shopify/shopify-api@12.3.0/Shopify.webhooks',
     flow: '@shopify/shopify-api@12.3.0/Shopify.flow',
