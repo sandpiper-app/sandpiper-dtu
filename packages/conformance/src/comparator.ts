@@ -148,6 +148,28 @@ export function compareResponsesStructurally(
     }
   }
 
+  if (normalizer?.compareAllHeaders) {
+    const ignoreSet = new Set((normalizer.ignoreHeaders ?? []).map(h => h.toLowerCase()));
+    const allHeaderNames = new Set([
+      ...Object.keys(twin.headers),
+      ...Object.keys(baseline.headers),
+    ]);
+    for (const lcName of allHeaderNames) {
+      if (ignoreSet.has(lcName)) continue;
+      // skip headers already compared via compareHeaders allowlist
+      if (normalizer.compareHeaders?.map(h => h.toLowerCase()).includes(lcName)) continue;
+      const twinVal = twin.headers[lcName];
+      const baselineVal = baseline.headers[lcName];
+      if (twinVal !== undefined && baselineVal !== undefined && twinVal !== baselineVal) {
+        differences.push({ path: `headers.${lcName}`, kind: 'changed', lhs: twinVal, rhs: baselineVal });
+      } else if (twinVal === undefined && baselineVal !== undefined) {
+        differences.push({ path: `headers.${lcName}`, kind: 'deleted', rhs: baselineVal });
+      } else if (twinVal !== undefined && baselineVal === undefined) {
+        differences.push({ path: `headers.${lcName}`, kind: 'added', lhs: twinVal });
+      }
+    }
+  }
+
   // Compare body structure recursively
   compareStructure(twinBody, baselineBody, 'body', differences);
 
@@ -283,6 +305,16 @@ function normalizeResponse(
     const value = response.headers[lcName];
     if (value !== undefined) {
       retainedHeaders[lcName] = value;
+    }
+  }
+
+  if (normalizer.compareAllHeaders) {
+    const ignoreSet = new Set((normalizer.ignoreHeaders ?? []).map(h => h.toLowerCase()));
+    for (const lcName of Object.keys(response.headers)) {
+      if (ignoreSet.has(lcName)) continue;
+      if (!(lcName in retainedHeaders)) {
+        retainedHeaders[lcName] = response.headers[lcName];
+      }
     }
   }
 

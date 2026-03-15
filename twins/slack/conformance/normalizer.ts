@@ -38,4 +38,6 @@ export const slackNormalizer: FieldNormalizerConfig = {
   // a given token + method combination and are safe to value-compare.
   // Do NOT add volatile headers (x-rate-limit-limit, x-rate-limit-remaining, retry-after).
   compareHeaders: ['x-oauth-scopes', 'x-accepted-oauth-scopes'],
+  compareAllHeaders: true,
+  ignoreHeaders: ['date', 'x-request-id', 'set-cookie', 'connection', 'keep-alive', 'transfer-encoding', 'content-length'],
 };

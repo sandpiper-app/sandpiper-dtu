@@ -107,6 +107,18 @@ export interface FieldNormalizerConfig {
    * Example: compareHeaders: ['x-shopify-api-version']
    */
   compareHeaders?: string[];
+  /**
+   * When true, compare ALL headers except those listed in ignoreHeaders.
+   * Denylist approach — new deterministic headers are automatically included.
+   * When false (default), only headers in compareHeaders are compared (allowlist).
+   */
+  compareAllHeaders?: boolean;
+  /**
+   * Headers to exclude when compareAllHeaders is true.
+   * Has no effect when compareAllHeaders is false.
+   * Always use lowercase header names.
+   */
+  ignoreHeaders?: string[];
   /** Custom normalizer function for complex cases */
   custom?: (obj: unknown) => unknown;
 }

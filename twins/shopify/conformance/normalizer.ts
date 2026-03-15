@@ -32,4 +32,6 @@ export const shopifyNormalizer: FieldNormalizerConfig = {
   // the baseline call use the same request URL, so the version string will always match.
   // Do NOT add volatile headers (x-request-id, date, retry-after) here.
   compareHeaders: ['x-shopify-api-version'],
+  compareAllHeaders: true,
+  ignoreHeaders: ['date', 'x-request-id', 'set-cookie', 'connection', 'keep-alive', 'transfer-encoding', 'content-length'],
 };
