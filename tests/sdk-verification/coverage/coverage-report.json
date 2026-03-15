@@ -1,6 +1,6 @@
 {
   "$schema": "https://sandpiper.dev/schemas/coverage-report.json",
-  "generatedAt": "2026-03-15T06:55:25.378Z",
+  "generatedAt": "2026-03-15T07:32:59.194Z",
   "phase": "40",
   "note": "Phase 40: SDK coverage derived from runtime symbol execution evidence (INFRA-23). Symbol live/deferred status comes from runtime hits joined with passing test files, not from a hand-authored symbol-to-test-file attribution map.",
   "evidenceSource": "runtime-symbol-execution",
@@ -10,8 +10,8 @@
     "evidenceSource": "runtime-symbol-execution",
     "executionArtifact": "tests/sdk-verification/coverage/symbol-execution.json",
     "vitestArtifact": "tests/sdk-verification/coverage/vitest-evidence.json",
-    "symbolExecutionGeneratedAt": "2026-03-14T20:10:12.029Z",
-    "totalSymbolHits": 226
+    "symbolExecutionGeneratedAt": "2026-03-15T07:32:54.696Z",
+    "totalSymbolHits": 350
   },
   "packages": {
     "@shopify/admin-api-client@1.1.1": {
@@ -198,7 +198,7 @@
       "shopifyApi": {
         "tier": "live",
         "evidence": {
-          "hitCount": 10,
+          "hitCount": 12,
           "testFiles": [
             "tests/sdk-verification/sdk/shopify-api-auth.test.ts",
             "tests/sdk-verification/sdk/shopify-api-billing.test.ts",
@@ -208,6 +208,8 @@
             "tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
             "tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
             "tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
+            "tests/sdk-verification/sdk/shopify-behavioral-parity.test.ts",
+            "tests/sdk-verification/sdk/shopify-regression-closure.test.ts",
             "tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts"
           ]
         }
@@ -215,7 +217,7 @@
       "Shopify": {
         "tier": "live",
         "evidence": {
-          "hitCount": 10,
+          "hitCount": 12,
           "testFiles": [
             "tests/sdk-verification/sdk/shopify-api-auth.test.ts",
             "tests/sdk-verification/sdk/shopify-api-billing.test.ts",
@@ -225,6 +227,8 @@
             "tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
             "tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
             "tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
+            "tests/sdk-verification/sdk/shopify-behavioral-parity.test.ts",
+            "tests/sdk-verification/sdk/shopify-regression-closure.test.ts",
             "tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts"
           ]
         }
@@ -232,7 +236,7 @@
       "Shopify.config": {
         "tier": "live",
         "evidence": {
-          "hitCount": 10,
+          "hitCount": 12,
           "testFiles": [
             "tests/sdk-verification/sdk/shopify-api-auth.test.ts",
             "tests/sdk-verification/sdk/shopify-api-billing.test.ts",
@@ -242,6 +246,8 @@
             "tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
             "tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
             "tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
+            "tests/sdk-verification/sdk/shopify-behavioral-parity.test.ts",
+            "tests/sdk-verification/sdk/shopify-regression-closure.test.ts",
             "tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts"
           ]
         }
@@ -249,34 +255,26 @@
       "Shopify.clients": {
         "tier": "live",
         "evidence": {
-          "hitCount": 10,
+          "hitCount": 20,
           "testFiles": [
-            "tests/sdk-verification/sdk/shopify-api-auth.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-billing.test.ts",
             "tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
             "tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-session.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
-            "tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
-            "tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts"
+            "tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts"
           ]
         }
       },
       "Shopify.auth": {
         "tier": "live",
         "evidence": {
-          "hitCount": 10,
+          "hitCount": 46,
           "testFiles": [
             "tests/sdk-verification/sdk/shopify-api-auth.test.ts",
             "tests/sdk-verification/sdk/shopify-api-billing.test.ts",
             "tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
             "tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-session.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
             "tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
-            "tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts"
+            "tests/sdk-verification/sdk/shopify-behavioral-parity.test.ts",
+            "tests/sdk-verification/sdk/shopify-regression-closure.test.ts"
           ]
         }
       },
@@ -318,16 +316,11 @@
       "Shopify.rest": {
         "tier": "live",
         "evidence": {
-          "hitCount": 10,
+          "hitCount": 14,
           "testFiles": [
-            "tests/sdk-verification/sdk/shopify-api-auth.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-billing.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
             "tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-session.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
-            "tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
+            "tests/sdk-verification/sdk/shopify-behavioral-parity.test.ts",
+            "tests/sdk-verification/sdk/shopify-regression-closure.test.ts",
             "tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts"
           ]
         }
@@ -29606,7 +29599,7 @@
       "RestClient.post": {
         "tier": "live",
         "evidence": {
-          "hitCount": 2,
+          "hitCount": 3,
           "testFiles": [
             "tests/sdk-verification/sdk/shopify-api-rest-client.test.ts"
           ]
@@ -35329,51 +35322,27 @@
       "ShopifyClients": {
         "tier": "live",
         "evidence": {
-          "hitCount": 10,
+          "hitCount": 9,
           "testFiles": [
-            "tests/sdk-verification/sdk/shopify-api-auth.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-billing.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-session.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
-            "tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
-            "tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts"
+            "tests/sdk-verification/sdk/shopify-api-rest-client.test.ts"
           ]
         }
       },
       "ShopifyClients.Rest": {
         "tier": "live",
         "evidence": {
-          "hitCount": 10,
+          "hitCount": 9,
           "testFiles": [
-            "tests/sdk-verification/sdk/shopify-api-auth.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-billing.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-session.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
-            "tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
-            "tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts"
+            "tests/sdk-verification/sdk/shopify-api-rest-client.test.ts"
           ]
         }
       },
       "ShopifyClients.Graphql": {
         "tier": "live",
         "evidence": {
-          "hitCount": 10,
+          "hitCount": 6,
           "testFiles": [
-            "tests/sdk-verification/sdk/shopify-api-auth.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-billing.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-session.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
-            "tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
-            "tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts"
+            "tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts"
           ]
         }
       },
@@ -35389,17 +35358,9 @@
       "ShopifyClients.graphqlProxy": {
         "tier": "live",
         "evidence": {
-          "hitCount": 10,
+          "hitCount": 4,
           "testFiles": [
-            "tests/sdk-verification/sdk/shopify-api-auth.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-billing.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-session.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
-            "tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
-            "tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts"
+            "tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts"
           ]
         }
       },
@@ -35494,17 +35455,9 @@
       "GraphqlProxy": {
         "tier": "live",
         "evidence": {
-          "hitCount": 10,
+          "hitCount": 4,
           "testFiles": [
-            "tests/sdk-verification/sdk/shopify-api-auth.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-billing.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-rest-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-session.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-storefront-client.test.ts",
-            "tests/sdk-verification/sdk/shopify-api-webhooks.test.ts",
-            "tests/sdk-verification/sdk/shopify-app-framework-auth-smoke.test.ts",
-            "tests/sdk-verification/sdk/shopify-rest-state-parity.test.ts"
+            "tests/sdk-verification/sdk/shopify-api-graphql-client.test.ts"
           ]
         }
       },
@@ -120333,16 +120286,31 @@
         "evidence": null
       },
       "WebClient.admin.analytics.getFile": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.apps.activities.list": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.apps.approve": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.apps.approved.list": {
         "tier": "live",
@@ -120354,88 +120322,193 @@
         }
       },
       "WebClient.admin.apps.clearResolution": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.apps.config.lookup": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.apps.config.set": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.apps.requests.cancel": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.apps.requests.list": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.apps.restrict": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.apps.restricted.list": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.apps.uninstall": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.auth.policy.assignEntities": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.auth.policy.getEntities": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.auth.policy.removeEntities": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.barriers.create": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.barriers.delete": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.barriers.list": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.barriers.update": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.archive": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.bulkArchive": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.bulkDelete": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.bulkMove": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.convertToPrivate": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.convertToPublic": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.create": {
         "tier": "live",
@@ -120447,56 +120520,121 @@
         }
       },
       "WebClient.admin.conversations.delete": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.disconnectShared": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.ekm.listOriginalConnectedChannelInfo": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.getConversationPrefs": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.getCustomRetention": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.getTeams": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.invite": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.lookup": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.removeCustomRetention": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.rename": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.restrictAccess.addGroup": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.restrictAccess.listGroups": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.restrictAccess.removeGroup": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.search": {
         "tier": "live",
@@ -120508,92 +120646,202 @@
         }
       },
       "WebClient.admin.conversations.setConversationPrefs": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.setCustomRetention": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.setTeams": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.conversations.unarchive": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.emoji.add": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.emoji.addAlias": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.emoji.list": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.emoji.remove": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.emoji.rename": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.functions.list": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.functions.permissions.lookup": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.functions.permissions.set": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.inviteRequests.approve": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.inviteRequests.approved.list": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.inviteRequests.denied.list": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.inviteRequests.deny": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.inviteRequests.list": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.roles.addAssignments": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.roles.listAssignments": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.roles.removeAssignments": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.teams.admins.list": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.teams.create": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.teams.list": {
         "tier": "live",
@@ -120605,52 +120853,112 @@
         }
       },
       "WebClient.admin.teams.owners.list": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.teams.settings.info": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.teams.settings.setDefaultChannels": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.teams.settings.setDescription": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.teams.settings.setDiscoverability": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.teams.settings.setIcon": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.teams.settings.setName": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.usergroups.addChannels": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.usergroups.addTeams": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.usergroups.listChannels": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.usergroups.removeChannels": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.users.assign": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.users.invite": {
         "tier": "live",
@@ -120671,91 +120979,183 @@
         }
       },
       "WebClient.admin.users.remove": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.users.session.clearSettings": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.users.session.getSettings": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.users.session.invalidate": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.users.session.list": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.users.session.reset": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.users.session.resetBulk": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.users.session.setSettings": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.users.setAdmin": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.users.setExpiration": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.users.setOwner": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.users.setRegular": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.users.unsupportedVersions.export": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.workflows.collaborators.add": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.workflows.collaborators.remove": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.workflows.permissions.lookup": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.workflows.search": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.admin.workflows.unpublish": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.api.test": {
         "tier": "live",
         "evidence": {
-          "hitCount": 2,
+          "hitCount": 3,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-auth-gateway.test.ts"
+            "tests/sdk-verification/sdk/slack-auth-gateway.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.assistant.threads.setStatus": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -120763,8 +121163,9 @@
       "WebClient.assistant.threads.setSuggestedPrompts": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -120772,49 +121173,91 @@
       "WebClient.assistant.threads.setTitle": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
       },
       "WebClient.apps.connections.open": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.apps.event.authorizations.list": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.apps.manifest.create": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.apps.manifest.delete": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.apps.manifest.export": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.apps.manifest.update": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.apps.manifest.validate": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.apps.uninstall": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.auth.revoke": {
         "tier": "live",
         "evidence": {
           "hitCount": 1,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.apps.event.authorizations.list": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.apps.manifest.create": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.apps.manifest.delete": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.apps.manifest.export": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.apps.manifest.update": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.apps.manifest.validate": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.apps.uninstall": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.auth.revoke": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 2,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -120822,8 +121265,9 @@
       "WebClient.auth.teams.list": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -120831,17 +121275,19 @@
       "WebClient.auth.test": {
         "tier": "live",
         "evidence": {
-          "hitCount": 2,
+          "hitCount": 3,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-auth-gateway.test.ts"
+            "tests/sdk-verification/sdk/slack-auth-gateway.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.bookmarks.add": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -120849,8 +121295,9 @@
       "WebClient.bookmarks.edit": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -120858,8 +121305,9 @@
       "WebClient.bookmarks.list": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -120867,8 +121315,9 @@
       "WebClient.bookmarks.remove": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -120876,8 +121325,9 @@
       "WebClient.bots.info": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -120885,8 +121335,9 @@
       "WebClient.calls.add": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -120894,8 +121345,9 @@
       "WebClient.calls.end": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -120903,8 +121355,9 @@
       "WebClient.calls.info": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -120912,8 +121365,9 @@
       "WebClient.calls.update": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -120921,8 +121375,9 @@
       "WebClient.calls.participants.add": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -120930,19 +121385,30 @@
       "WebClient.calls.participants.remove": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
       },
       "WebClient.canvases.access.delete": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.canvases.access.set": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.canvases.create": {
         "tier": "live",
@@ -120963,18 +121429,29 @@
         }
       },
       "WebClient.canvases.edit": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.canvases.sections.lookup": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.chat.appendStream": {
         "tier": "live",
         "evidence": {
           "hitCount": 1,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.canvases.sections.lookup": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.chat.appendStream": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 2,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -120982,9 +121459,10 @@
       "WebClient.chat.delete": {
         "tier": "live",
         "evidence": {
-          "hitCount": 3,
+          "hitCount": 4,
           "testFiles": [
             "tests/sdk-verification/sdk/slack-chat.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-scope-enforcement.test.ts"
           ]
         }
@@ -120992,45 +121470,50 @@
       "WebClient.chat.deleteScheduledMessage": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-chat.test.ts"
+            "tests/sdk-verification/sdk/slack-chat.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.chat.getPermalink": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-chat.test.ts"
+            "tests/sdk-verification/sdk/slack-chat.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.chat.meMessage": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-chat.test.ts"
+            "tests/sdk-verification/sdk/slack-chat.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.chat.postEphemeral": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-chat.test.ts"
+            "tests/sdk-verification/sdk/slack-chat.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.chat.postMessage": {
         "tier": "live",
         "evidence": {
-          "hitCount": 16,
+          "hitCount": 18,
           "testFiles": [
             "tests/sdk-verification/sdk/slack-chat.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-pins.test.ts",
             "tests/sdk-verification/sdk/slack-reactions.test.ts",
             "tests/sdk-verification/sdk/slack-scope-enforcement.test.ts"
@@ -121040,27 +121523,30 @@
       "WebClient.chat.scheduleMessage": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-chat.test.ts"
+            "tests/sdk-verification/sdk/slack-chat.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.chat.scheduledMessages.list": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-chat.test.ts"
+            "tests/sdk-verification/sdk/slack-chat.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.chat.startStream": {
         "tier": "live",
         "evidence": {
-          "hitCount": 3,
+          "hitCount": 5,
           "testFiles": [
             "tests/sdk-verification/sdk/slack-chat.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-webclient-base.test.ts"
           ]
         }
@@ -121068,8 +121554,9 @@
       "WebClient.chat.stopStream": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 3,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121077,18 +121564,20 @@
       "WebClient.chat.unfurl": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-chat.test.ts"
+            "tests/sdk-verification/sdk/slack-chat.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.chat.update": {
         "tier": "live",
         "evidence": {
-          "hitCount": 4,
+          "hitCount": 5,
           "testFiles": [
             "tests/sdk-verification/sdk/slack-chat.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-scope-enforcement.test.ts"
           ]
         }
@@ -121096,35 +121585,39 @@
       "WebClient.conversations.acceptSharedInvite": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.approveSharedInvite": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.archive": {
         "tier": "live",
         "evidence": {
-          "hitCount": 2,
+          "hitCount": 3,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.canvases.create": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121132,35 +121625,39 @@
       "WebClient.conversations.close": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.create": {
         "tier": "live",
         "evidence": {
-          "hitCount": 4,
+          "hitCount": 5,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.declineSharedInvite": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.externalInvitePermissions.set": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121168,27 +121665,30 @@
       "WebClient.conversations.history": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.info": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.invite": {
         "tier": "live",
         "evidence": {
-          "hitCount": 3,
+          "hitCount": 4,
           "testFiles": [
             "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-state-tables.test.ts"
           ]
         }
@@ -121196,27 +121696,30 @@
       "WebClient.conversations.inviteShared": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.join": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.kick": {
         "tier": "live",
         "evidence": {
-          "hitCount": 2,
+          "hitCount": 3,
           "testFiles": [
             "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-state-tables.test.ts"
           ]
         }
@@ -121224,45 +121727,50 @@
       "WebClient.conversations.leave": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.list": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.listConnectInvites": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.mark": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.members": {
         "tier": "live",
         "evidence": {
-          "hitCount": 3,
+          "hitCount": 4,
           "testFiles": [
             "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-state-tables.test.ts"
           ]
         }
@@ -121270,9 +121778,10 @@
       "WebClient.conversations.open": {
         "tier": "live",
         "evidence": {
-          "hitCount": 4,
+          "hitCount": 6,
           "testFiles": [
             "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-state-tables.test.ts"
           ]
         }
@@ -121280,26 +121789,29 @@
       "WebClient.conversations.rename": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.replies": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.requestSharedInvite.approve": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121307,8 +121819,9 @@
       "WebClient.conversations.requestSharedInvite.deny": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121316,44 +121829,49 @@
       "WebClient.conversations.requestSharedInvite.list": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.setPurpose": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.setTopic": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.conversations.unarchive": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
-            "tests/sdk-verification/sdk/slack-conversations.test.ts"
+            "tests/sdk-verification/sdk/slack-conversations.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
           ]
         }
       },
       "WebClient.dialog.open": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121361,8 +121879,9 @@
       "WebClient.dnd.endDnd": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121370,8 +121889,9 @@
       "WebClient.dnd.endSnooze": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121379,8 +121899,9 @@
       "WebClient.dnd.info": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121388,8 +121909,9 @@
       "WebClient.dnd.setSnooze": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121397,8 +121919,9 @@
       "WebClient.dnd.teamInfo": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121406,8 +121929,9 @@
       "WebClient.emoji.list": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121424,9 +121948,10 @@
       "WebClient.files.completeUploadExternal": {
         "tier": "live",
         "evidence": {
-          "hitCount": 2,
+          "hitCount": 5,
           "testFiles": [
             "tests/sdk-verification/sdk/slack-client-behavior-parity.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-webclient-base.test.ts"
           ]
         }
@@ -121434,8 +121959,9 @@
       "WebClient.files.delete": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121443,9 +121969,10 @@
       "WebClient.files.getUploadURLExternal": {
         "tier": "live",
         "evidence": {
-          "hitCount": 2,
+          "hitCount": 6,
           "testFiles": [
             "tests/sdk-verification/sdk/slack-client-behavior-parity.test.ts",
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-webclient-base.test.ts"
           ]
         }
@@ -121453,8 +121980,9 @@
       "WebClient.files.info": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121462,8 +121990,9 @@
       "WebClient.files.list": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121471,8 +122000,9 @@
       "WebClient.files.revokePublicURL": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121480,15 +122010,21 @@
       "WebClient.files.sharedPublicURL": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
       },
       "WebClient.files.upload": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.files.uploadV2": {
         "tier": "deferred",
@@ -121497,8 +122033,9 @@
       "WebClient.files.comments.delete": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121506,8 +122043,9 @@
       "WebClient.files.remote.add": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121515,8 +122053,9 @@
       "WebClient.files.remote.info": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121524,8 +122063,9 @@
       "WebClient.files.remote.list": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121533,8 +122073,9 @@
       "WebClient.files.remote.remove": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121542,8 +122083,9 @@
       "WebClient.files.remote.share": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121551,8 +122093,9 @@
       "WebClient.files.remote.update": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121560,8 +122103,9 @@
       "WebClient.functions.completeError": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121569,8 +122113,9 @@
       "WebClient.functions.completeSuccess": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121578,28 +122123,40 @@
       "WebClient.migration.exchange": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
       },
       "WebClient.oauth.access": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.oauth.v2.access": {
         "tier": "live",
         "evidence": {
           "hitCount": 1,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.oauth.v2.access": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 2,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
       },
       "WebClient.oauth.v2.exchange": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.openid.connect.token": {
         "tier": "live",
@@ -121623,8 +122180,9 @@
       "WebClient.pins.add": {
         "tier": "live",
         "evidence": {
-          "hitCount": 5,
+          "hitCount": 6,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-pins.test.ts",
             "tests/sdk-verification/sdk/slack-state-tables.test.ts"
           ]
@@ -121633,8 +122191,9 @@
       "WebClient.pins.list": {
         "tier": "live",
         "evidence": {
-          "hitCount": 2,
+          "hitCount": 3,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-pins.test.ts",
             "tests/sdk-verification/sdk/slack-state-tables.test.ts"
           ]
@@ -121643,8 +122202,9 @@
       "WebClient.pins.remove": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-pins.test.ts"
           ]
         }
@@ -121652,8 +122212,9 @@
       "WebClient.reactions.add": {
         "tier": "live",
         "evidence": {
-          "hitCount": 9,
+          "hitCount": 10,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-reactions.test.ts",
             "tests/sdk-verification/sdk/slack-state-tables.test.ts"
           ]
@@ -121662,8 +122223,9 @@
       "WebClient.reactions.get": {
         "tier": "live",
         "evidence": {
-          "hitCount": 2,
+          "hitCount": 3,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-reactions.test.ts",
             "tests/sdk-verification/sdk/slack-state-tables.test.ts"
           ]
@@ -121672,8 +122234,9 @@
       "WebClient.reactions.list": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-reactions.test.ts"
           ]
         }
@@ -121681,8 +122244,9 @@
       "WebClient.reactions.remove": {
         "tier": "live",
         "evidence": {
-          "hitCount": 3,
+          "hitCount": 4,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-reactions.test.ts",
             "tests/sdk-verification/sdk/slack-state-tables.test.ts"
           ]
@@ -121691,8 +122255,9 @@
       "WebClient.reminders.add": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121700,8 +122265,9 @@
       "WebClient.reminders.complete": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121709,8 +122275,9 @@
       "WebClient.reminders.delete": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121718,8 +122285,9 @@
       "WebClient.reminders.info": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121727,8 +122295,9 @@
       "WebClient.reminders.list": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121743,14 +122312,20 @@
         }
       },
       "WebClient.rtm.start": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.search.all": {
         "tier": "live",
         "evidence": {
           "hitCount": 1,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.search.all": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 2,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121758,8 +122333,9 @@
       "WebClient.search.files": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121767,19 +122343,30 @@
       "WebClient.search.messages": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
       },
       "WebClient.slackLists.access.delete": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.slackLists.access.set": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.slackLists.create": {
         "tier": "live",
@@ -121791,46 +122378,92 @@
         }
       },
       "WebClient.slackLists.download.get": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.slackLists.download.start": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.slackLists.items.create": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.slackLists.items.delete": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.slackLists.items.deleteMultiple": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.slackLists.items.info": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.slackLists.items.list": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.slackLists.items.update": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.slackLists.update": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.team.accessLogs": {
         "tier": "live",
         "evidence": {
           "hitCount": 1,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.slackLists.download.start": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.slackLists.items.create": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.slackLists.items.delete": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.slackLists.items.deleteMultiple": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.slackLists.items.info": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.slackLists.items.list": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.slackLists.items.update": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.slackLists.update": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.team.accessLogs": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 2,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121838,29 +122471,46 @@
       "WebClient.team.billableInfo": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
       },
       "WebClient.team.billing.info": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.team.externalTeams.disconnect": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.team.externalTeams.list": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.team.info": {
         "tier": "live",
         "evidence": {
           "hitCount": 1,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.team.externalTeams.disconnect": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.team.externalTeams.list": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.team.info": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 2,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121868,8 +122518,9 @@
       "WebClient.team.integrationLogs": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121877,8 +122528,9 @@
       "WebClient.team.preferences.list": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121886,8 +122538,9 @@
       "WebClient.team.profile.get": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121895,8 +122548,9 @@
       "WebClient.tooling.tokens.rotate": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121904,8 +122558,9 @@
       "WebClient.usergroups.create": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121913,8 +122568,9 @@
       "WebClient.usergroups.disable": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121922,8 +122578,9 @@
       "WebClient.usergroups.enable": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121931,8 +122588,9 @@
       "WebClient.usergroups.list": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121940,8 +122598,9 @@
       "WebClient.usergroups.update": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121949,8 +122608,9 @@
       "WebClient.usergroups.users.list": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121958,8 +122618,9 @@
       "WebClient.usergroups.users.update": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -121967,8 +122628,9 @@
       "WebClient.users.conversations": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-users.test.ts"
           ]
         }
@@ -121976,21 +122638,28 @@
       "WebClient.users.deletePhoto": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-users.test.ts"
           ]
         }
       },
       "WebClient.users.discoverableContacts.lookup": {
-        "tier": "deferred",
-        "evidence": null
-      },
-      "WebClient.users.getPresence": {
         "tier": "live",
         "evidence": {
           "hitCount": 1,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
+      },
+      "WebClient.users.getPresence": {
+        "tier": "live",
+        "evidence": {
+          "hitCount": 2,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-users.test.ts"
           ]
         }
@@ -121998,8 +122667,9 @@
       "WebClient.users.identity": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-users.test.ts"
           ]
         }
@@ -122007,8 +122677,9 @@
       "WebClient.users.info": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-users.test.ts"
           ]
         }
@@ -122016,8 +122687,9 @@
       "WebClient.users.list": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-users.test.ts"
           ]
         }
@@ -122025,8 +122697,9 @@
       "WebClient.users.lookupByEmail": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-users.test.ts"
           ]
         }
@@ -122034,8 +122707,9 @@
       "WebClient.users.setPhoto": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-stubs-smoke.test.ts"
           ]
         }
@@ -122043,8 +122717,9 @@
       "WebClient.users.setPresence": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-users.test.ts"
           ]
         }
@@ -122052,8 +122727,9 @@
       "WebClient.users.profile.get": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-users.test.ts"
           ]
         }
@@ -122061,8 +122737,9 @@
       "WebClient.users.profile.set": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-users.test.ts"
           ]
         }
@@ -122070,8 +122747,9 @@
       "WebClient.views.open": {
         "tier": "live",
         "evidence": {
-          "hitCount": 3,
+          "hitCount": 5,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-state-tables.test.ts",
             "tests/sdk-verification/sdk/slack-views.test.ts"
           ]
@@ -122080,8 +122758,9 @@
       "WebClient.views.publish": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-views.test.ts"
           ]
         }
@@ -122089,8 +122768,9 @@
       "WebClient.views.push": {
         "tier": "live",
         "evidence": {
-          "hitCount": 1,
+          "hitCount": 2,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-views.test.ts"
           ]
         }
@@ -122098,8 +122778,9 @@
       "WebClient.views.update": {
         "tier": "live",
         "evidence": {
-          "hitCount": 3,
+          "hitCount": 4,
           "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts",
             "tests/sdk-verification/sdk/slack-state-tables.test.ts",
             "tests/sdk-verification/sdk/slack-views.test.ts"
           ]
@@ -122133,20 +122814,40 @@
         }
       },
       "WebClient.workflows.featured.add": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.workflows.featured.list": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.workflows.featured.remove": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.workflows.featured.set": {
-        "tier": "deferred",
-        "evidence": null
+        "tier": "live",
+        "evidence": {
+          "hitCount": 1,
+          "testFiles": [
+            "tests/sdk-verification/sdk/slack-method-coverage.test.ts"
+          ]
+        }
       },
       "WebClient.workflows.stepCompleted": {
         "tier": "live",
@@ -131962,8 +132663,8 @@
     }
   },
   "summary": {
-    "live": 222,
+    "live": 346,
     "stub": 0,
-    "deferred": 32457
+    "deferred": 32333
   }
 }

@@ -166,7 +166,14 @@ describe('shopify.clients.Rest — SHOP-14 (live twin)', () => {
   it('delete() resolves without throwing', async () => {
     const RestClient = shopify.clients.Rest;
     const client = new RestClient({ session });
-    await expect(client.delete({ path: 'products/1' })).resolves.toBeDefined();
+    // Create a product first so DELETE has a real row to remove (state starts empty after reset).
+    // Using a hardcoded id like products/1 fails when state is empty — must use a live id.
+    const created = await client.post<{ product: { id: string } }>({
+      path: 'products',
+      data: { product: { title: 'Delete-me' } },
+    });
+    const productId = created.body.product.id;
+    await expect(client.delete({ path: `products/${productId}` })).resolves.toBeDefined();
   });
 
   it('retries on 429 via test-retry endpoint', async () => {

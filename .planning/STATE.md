@@ -2,37 +2,37 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
-status: executing
-stopped_at: Completed 41-05-PLAN.md — Shopify runtime evidence literal, Slack full-surface manifest-exact proof 278 tests green
-last_updated: "2026-03-15T03:20:40Z"
-last_activity: "2026-03-15 — Phase 41 Plan 05 complete: eager Shopify symbol inflation removed, 276-method Slack matrix proven against twin"
+status: completed
+stopped_at: Completed 41-06-PLAN.md — conformance semantics truthful, artifacts regenerated, post-restoration signoff green
+last_updated: "2026-03-15T03:32:00Z"
+last_activity: "2026-03-15 — Phase 41 Plan 06 complete: deterministic header comparison, fixture exclusion fix, full signoff (pre+post restore) green"
 progress:
   total_phases: 29
-  completed_phases: 28
+  completed_phases: 29
   total_plans: 92
-  completed_plans: 91
-  percent: 93
+  completed_plans: 92
+  percent: 100
 ---
 
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-15
-**Status:** Milestone in progress
+**Status:** Milestone v1.2 Behavioral Fidelity — COMPLETE
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 41 planning (regression closure and release gate recovery) after the post-remediation re-audit disproved the previous milestone-complete claim
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — COMPLETE. All 29 phases, 92 plans, and 23 v1.2 requirements are green. Post-restoration signoff (41-06-02) passed with docs in completed state.
 
 ## Current Position
 
 Phase: 41 of 41
-Plan: 5 of 6 complete
-Status: Executing
-Last activity: 2026-03-15 — Phase 41 Plan 05 complete: eager Shopify symbol inflation removed, 276-method Slack matrix proven against twin
+Plan: 6 of 6 complete
+Status: Complete
+Last activity: 2026-03-15 — Phase 41 Plan 06 complete: conformance header proof tightened, full signoff green pre- and post-restoration
 
-Progress: [█████████░] 93% (overall: 28 of 29 phases complete; Phase 41 planning in progress)
+Progress: [██████████] 100% (overall: 29 of 29 phases complete; Milestone v1.2 complete)
 
 ## Performance Metrics
 
@@ -103,6 +103,7 @@ Progress: [█████████░] 93% (overall: 28 of 29 phases complet
 | Phase 41 P03 | 4min | 2 tasks | 6 files |
 | Phase 41 P04 | 9min | 2 tasks | 7 files |
 | Phase 41 P05 | 17min | 1 task | 4 files |
+| Phase 41 P06 | 12min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -117,6 +118,15 @@ Progress: [█████████░] 93% (overall: 28 of 29 phases complet
 - Phase 40 added: Verification evidence integrity and conformance truthfulness (re-audit follow-up — remaining evidence/conformance truthfulness gaps)
 
 ### Key Decisions
+
+**2026-03-15 - Phase 41 Plan 06 (conformance truthfulness, artifact regeneration, post-restoration signoff):**
+- compareHeaders field added to FieldNormalizerConfig — header allowlist support; only deterministic headers opt in (x-shopify-api-version, x-oauth-scopes, x-accepted-oauth-scopes)
+- normalizeResponse updated to preserve compareHeaders alongside content-type in exact mode; compareResponsesStructurally value-compares declared compareHeaders in structural mode
+- Reporter relabeled twin mode from 'twin consistency' to 'structural smoke'; Slack conformance index description clarifies proof scope boundary
+- Vitest config exclude added for coverage/fixtures/** — failing-evidence-fixture.test.ts intentionally fails and must not be in the main sdk-verification run
+- shopify-api-rest-client.test.ts delete() test fixed to create product first — hardcoded products/1 fails after reset when state is empty
+- Pre-restore signoff (docs pending): 669 tests, 346 live symbols, 0 drift issues, 10/10 Shopify conformance, 20/20 Slack conformance, 4/4 proof-integrity, 278/278 slack method coverage
+- Post-restore signoff (docs completed): same command, same results — 41-06-signoff-receipt.json records both runs with ordered timestamps and exitCode: 0
 
 **2026-03-15 - Phase 41 Plan 05 (literal runtime evidence and manifest-exact Slack surface proof):**
 - Eager Shopify.auth, Shopify.clients, ShopifyClients, ShopifyClients.Rest, Shopify.rest, ShopifyClients.graphqlProxy recordSymbolHit calls removed from factory body; each now fires only from its exact access seam (proxy getter or construct trap)

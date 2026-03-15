@@ -118,3 +118,13 @@ None — plan executed exactly as written. All specified files were created/modi
 ---
 *Phase: 41-regression-closure-and-release-gate-recovery*
 *Completed: 2026-03-15*
+
+## Self-Check: PASSED
+
+- FOUND: tests/sdk-verification/sdk/slack-scope-catalog.test.ts
+- FOUND: tests/sdk-verification/sdk/slack-docker-upload-url-smoke.test.ts
+- FOUND: twins/slack/src/services/oauth-secrets.ts
+- FOUND: .planning/phases/41-regression-closure-and-release-gate-recovery/41-04-SUMMARY.md
+- FOUND commit: bf52ea7 (RED test)
+- FOUND commit: 35df528 (GREEN catalog expansion)
+- FOUND commit: 5b937ca (OAuth/files strictness)

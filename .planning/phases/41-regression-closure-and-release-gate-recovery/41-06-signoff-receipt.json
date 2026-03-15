@@ -1,0 +1,16 @@
+{
+  "preRestore": {
+    "command": "pnpm build && pnpm --dir twins/shopify build && pnpm --dir twins/slack build && pnpm test:sdk --reporter=verbose --reporter=json --outputFile.json=tests/sdk-verification/coverage/vitest-evidence.json && pnpm coverage:generate && pnpm drift:check && pnpm --filter @dtu/twin-shopify conformance:twin && pnpm --filter @dtu/twin-slack conformance:twin && pnpm vitest run tests/sdk-verification/coverage/proof-integrity-regression.test.ts tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+    "docsState": "pending",
+    "completedAt": "2026-03-15T03:31:00Z",
+    "exitCode": 0,
+    "notes": "669 SDK tests passed (45 test files). Coverage: 346 live symbols. Drift: 0 issues. Conformance: 10/10 Shopify, 20/20 Slack. Proof-integrity: 4/4. Slack method coverage: 278/278."
+  },
+  "postRestore": {
+    "command": "pnpm build && pnpm --dir twins/shopify build && pnpm --dir twins/slack build && pnpm test:sdk --reporter=verbose --reporter=json --outputFile.json=tests/sdk-verification/coverage/vitest-evidence.json && pnpm coverage:generate && pnpm drift:check && pnpm --filter @dtu/twin-shopify conformance:twin && pnpm --filter @dtu/twin-slack conformance:twin && pnpm vitest run tests/sdk-verification/coverage/proof-integrity-regression.test.ts tests/sdk-verification/sdk/slack-method-coverage.test.ts",
+    "docsState": "completed",
+    "completedAt": "2026-03-15T03:33:30Z",
+    "exitCode": 0,
+    "notes": "669 SDK tests passed (45 test files). Coverage: 346 live symbols. Drift: 0 issues. Conformance: 10/10 Shopify, 20/20 Slack. Proof-integrity: 4/4. Slack method coverage: 278/278. Post-restoration signoff green — docs restored to completed status authorized."
+  }
+}
