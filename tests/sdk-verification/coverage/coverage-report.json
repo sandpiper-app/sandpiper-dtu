@@ -1,6 +1,6 @@
 {
   "$schema": "https://sandpiper.dev/schemas/coverage-report.json",
-  "generatedAt": "2026-03-14T20:10:17.446Z",
+  "generatedAt": "2026-03-15T06:53:20.424Z",
   "phase": "40",
   "note": "Phase 40: SDK coverage derived from runtime symbol execution evidence (INFRA-23). Symbol live/deferred status comes from runtime hits joined with passing test files, not from a hand-authored symbol-to-test-file attribution map.",
   "evidenceSource": "runtime-symbol-execution",

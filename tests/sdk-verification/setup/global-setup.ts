@@ -12,13 +12,15 @@
  * process.env mutations made here propagate to all Vitest worker threads.
  * ctx.provide() is used in addition for maximum compatibility with inject().
  *
- * Phase 40, INFRA-23:
- *   Removes stale symbol-execution.json before each full project run so
- *   accumulated hits always reflect the current execution, not a prior run.
+ * Phase 41, INFRA-25:
+ *   At startup, writes a valid empty artifact payload to symbol-execution.json
+ *   instead of deleting it. This ensures the file always exists (even if the
+ *   process is killed before any afterAll flush runs), so downstream gates
+ *   (pnpm coverage:generate, pnpm drift:check) remain runnable after any exit.
  */
 
 import type { GlobalSetupContext } from 'vitest/node';
-import { existsSync, unlinkSync } from 'node:fs';
+import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -31,10 +33,22 @@ let shopifyApp: Awaited<ReturnType<typeof import('../../../twins/shopify/src/ind
 let slackApp: Awaited<ReturnType<typeof import('../../../twins/slack/src/index.js').buildApp>> | null = null;
 
 export async function setup(ctx: GlobalSetupContext): Promise<void> {
-  // Remove stale symbol-execution.json so the fresh run starts clean.
-  // This prevents prior execution evidence from contaminating the current run.
-  if (existsSync(symbolExecutionPath)) {
-    unlinkSync(symbolExecutionPath);
+  // Ensure symbol-execution.json exists before tests run.
+  // If the file is absent (fresh checkout, cleaned workspace), write a valid empty
+  // artifact payload so the file is always present on disk from this point forward.
+  // If the file already exists, leave it untouched — the execution-evidence-runtime
+  // failure-path hooks and the afterAll flush will overwrite it with real hit data.
+  //
+  // This replaces the previous destructive unlinkSync (Phase 40) which left the file
+  // absent if the process was killed before afterAll ran. A present-and-valid file
+  // ensures downstream gates (coverage:generate, drift:check) remain runnable after
+  // any exit — green or red.
+  mkdirSync(dirname(symbolExecutionPath), { recursive: true });
+  if (!existsSync(symbolExecutionPath)) {
+    writeFileSync(
+      symbolExecutionPath,
+      JSON.stringify({ generatedAt: new Date().toISOString(), hitCount: 0, hits: [] }, null, 2) + '\n'
+    );
   }
 
   // --- Shopify twin ---
