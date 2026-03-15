@@ -4,8 +4,8 @@ milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: completed
 stopped_at: Completed 41-06-PLAN.md — conformance semantics truthful, artifacts regenerated, post-restoration signoff green
-last_updated: "2026-03-15T03:32:00Z"
-last_activity: "2026-03-15 — Phase 41 Plan 06 complete: deterministic header comparison, fixture exclusion fix, full signoff (pre+post restore) green"
+last_updated: "2026-03-15T07:35:36.798Z"
+last_activity: "2026-03-15 — Phase 41 Plan 06 complete: conformance header proof tightened, full signoff green pre- and post-restoration"
 progress:
   total_phases: 29
   completed_phases: 29
@@ -126,6 +126,15 @@ Progress: [██████████] 100% (overall: 29 of 29 phases comple
 - Vitest config exclude added for coverage/fixtures/** — failing-evidence-fixture.test.ts intentionally fails and must not be in the main sdk-verification run
 - shopify-api-rest-client.test.ts delete() test fixed to create product first — hardcoded products/1 fails after reset when state is empty
 - Pre-restore signoff (docs pending): 669 tests, 346 live symbols, 0 drift issues, 10/10 Shopify conformance, 20/20 Slack conformance, 4/4 proof-integrity, 278/278 slack method coverage
+- Post-restore signoff (docs completed): same command, same results — 41-06-signoff-receipt.json records both runs with ordered timestamps and exitCode: 0
+
+**2026-03-15 - Phase 41 Plan 06 (conformance semantics truthfulness, artifact regeneration, post-restoration signoff):**
+- compareHeaders allowlist in FieldNormalizerConfig: only opt-in deterministic headers (x-shopify-api-version, x-oauth-scopes, x-accepted-oauth-scopes); never volatile headers (date, retry-after, x-request-id)
+- normalizeResponse preserves compareHeaders in exact mode alongside content-type; compareResponsesStructurally value-compares declared compareHeaders
+- Reporter twin-mode label changed from 'twin consistency' to 'structural smoke'; Slack conformance index description now says "structural smoke, not full 1:1 parity"
+- failing-evidence-fixture.test.ts excluded from sdk-verification vitest project (always-failing intentional fixture must not run in main suite)
+- shopify-api-rest-client delete() test fixed to create product first (hardcoded id=1 fails after state reset)
+- Pre-restore signoff (docs pending): 669 tests, 346 live symbols, drift clean, 30/30 conformance — proves product side green before doc restoration
 - Post-restore signoff (docs completed): same command, same results — 41-06-signoff-receipt.json records both runs with ordered timestamps and exitCode: 0
 
 **2026-03-15 - Phase 41 Plan 05 (literal runtime evidence and manifest-exact Slack surface proof):**
@@ -498,7 +507,7 @@ None.
 
 **Last completed:** Phase 39 — Shopify OAuth, REST state, and ID parity (4/4 plans, SHOP-14..17 verified)
 **Work in progress:** Phase 40 — Verification evidence integrity and conformance truthfulness
-**Stopped at:** Completed 41-04-PLAN.md — Slack scope catalog exhaustive, OAuth strict, filesUploadV2 environment-safe
+**Stopped at:** Completed 41-06-PLAN.md — conformance semantics truthful, artifacts regenerated, post-restoration signoff green
 **Timestamp:** 2026-03-14
 
 ---
