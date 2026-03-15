@@ -331,6 +331,11 @@ const restPlugin: FastifyPluginAsync = async (fastify) => {
     const version = parseVersionHeader(req, reply);
     if (version === null) return;
     if (!await requireToken(req, reply)) return;
+    const numericId = parseInt((req.params.id as string).replace(/\.json$/, ''), 10);
+    const deleted = (fastify as any).stateManager.deleteProduct(numericId);
+    if (!deleted) {
+      return reply.status(404).send({ errors: 'Not Found' });
+    }
     return {};
   });
 

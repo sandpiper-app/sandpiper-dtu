@@ -154,7 +154,7 @@ const oauthPlugin: FastifyPluginAsync = async (fastify) => {
 
   fastify.post<{
     Body: OAuthTokenRequestBody;
-    Reply: OAuthTokenResponse | OAuthOnlineTokenResponse | OAuthErrorResponse;
+    Reply: OAuthTokenResponse | OAuthOfflineExpiringTokenResponse | OAuthOnlineTokenResponse | OAuthErrorResponse;
   }>('/admin/oauth/access_token', async (request, reply) => {
     const body = request.body;
 

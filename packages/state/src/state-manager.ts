@@ -896,6 +896,13 @@ export class StateManager {
     return this.listProductsStmt.all();
   }
 
+  /** Delete a product by numeric ID. Returns true if deleted, false if not found. */
+  deleteProduct(id: number): boolean {
+    if (!this.db) throw new Error('StateManager not initialized. Call init() first.');
+    const result = this.db.prepare('DELETE FROM products WHERE id = ?').run(id);
+    return result.changes > 0;
+  }
+
   /** Update an existing product by ID, setting updated_at to current timestamp */
   updateProduct(id: number, data: { title?: string; description?: string; vendor?: string; product_type?: string; price?: string }): void {
     if (!this.updateProductStmt) {
@@ -1234,12 +1241,21 @@ export class StateManager {
     return this.getInventoryLevelByPairStmt!.get(inventoryItemId, locationId);
   }
 
-  /** Adjust inventory level by a delta. Returns null if the row doesn't exist. */
-  adjustInventoryLevel(inventoryItemId: number, locationId: number, availableAdjustment: number): any | null {
-    if (!this.adjustInventoryLevelStmt) throw new Error('StateManager not initialized. Call init() first.');
+  /**
+   * Adjust inventory level by a delta.
+   *
+   * Matches the real Shopify API: if no row exists for the (inventory_item_id, location_id)
+   * pair, it is created with available=0 before the adjustment is applied (implicit connect).
+   * Always returns the updated row.
+   */
+  adjustInventoryLevel(inventoryItemId: number, locationId: number, availableAdjustment: number): any {
+    if (!this.adjustInventoryLevelStmt || !this.connectInventoryLevelStmt) {
+      throw new Error('StateManager not initialized. Call init() first.');
+    }
     const now = Math.floor(Date.now() / 1000);
-    const result = this.adjustInventoryLevelStmt.run(availableAdjustment, now, inventoryItemId, locationId);
-    if (result.changes === 0) return null;
+    // Ensure the row exists before adjusting (implicit connect — Shopify parity).
+    this.connectInventoryLevelStmt.run(inventoryItemId, locationId, now, now);
+    this.adjustInventoryLevelStmt.run(availableAdjustment, now, inventoryItemId, locationId);
     return this.getInventoryLevelByPairStmt!.get(inventoryItemId, locationId);
   }
 

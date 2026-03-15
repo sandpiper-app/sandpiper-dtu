@@ -500,13 +500,28 @@ export const resolvers = {
         return { order: null, userErrors: errors };
       }
 
-      // Build update data, preserving existing values for fields not provided
+      // Build update data, preserving existing values for fields not provided.
+      // Pass raw line_items (not pre-stringified) — stateManager.updateOrder() calls
+      // JSON.stringify() internally, so double-stringifying would corrupt reads.
+      // When lineItems is absent, pass the already-stored JSON string through the
+      // existing_line_items path so the state layer treats it as a raw value.
+      let lineItemsValue: any;
+      if (input.lineItems !== undefined && input.lineItems !== null) {
+        // Resolver received structured data — pass it raw; state layer will stringify once.
+        lineItemsValue = input.lineItems;
+      } else {
+        // No update to line items — preserve existing stored JSON string by parsing it
+        // back to an object so the state layer re-stringifies it consistently.
+        lineItemsValue = existingOrder.line_items
+          ? (() => { try { return JSON.parse(existingOrder.line_items); } catch { return null; } })()
+          : null;
+      }
       const updateData: any = {
         name: existingOrder.name,
         total_price: input.totalPrice ?? existingOrder.total_price,
         currency_code: input.currencyCode ?? existingOrder.currency_code,
         customer_gid: existingOrder.customer_gid,
-        line_items: input.lineItems ? JSON.stringify(input.lineItems) : existingOrder.line_items,
+        line_items: lineItemsValue,
       };
 
       context.stateManager.updateOrder(existingOrder.id, updateData);
