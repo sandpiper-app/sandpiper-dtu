@@ -21,6 +21,7 @@ interface OAuthTokenRequestBody {
   grant_type?: string;
   expiring?: string;
   subject_token?: string;
+  subject_token_type?: string;
   refresh_token?: string;
   requested_token_type?: string;
 }

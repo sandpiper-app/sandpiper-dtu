@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm -r --filter='./packages/*' run build",
+    "build": "pnpm -r --filter='./packages/*' --filter='./twins/*' run build",
     "test": "vitest run",
     "test:sdk": "vitest run --project sdk-verification",
     "coverage:generate": "tsx tests/sdk-verification/coverage/generate-report-evidence.ts",
