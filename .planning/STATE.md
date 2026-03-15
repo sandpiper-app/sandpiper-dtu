@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
 status: executing
-stopped_at: Completed 41-04-PLAN.md — Slack scope catalog exhaustive, OAuth strict, filesUploadV2 environment-safe
-last_updated: "2026-03-15T07:08:26.728Z"
-last_activity: "2026-03-15 — Phase 41 Plan 02 complete: root build truthful, Shopify twin compiles, artifact resilience hooks added"
+stopped_at: Completed 41-05-PLAN.md — Shopify runtime evidence literal, Slack full-surface manifest-exact proof 278 tests green
+last_updated: "2026-03-15T03:20:40Z"
+last_activity: "2026-03-15 — Phase 41 Plan 05 complete: eager Shopify symbol inflation removed, 276-method Slack matrix proven against twin"
 progress:
   total_phases: 29
   completed_phases: 28
   total_plans: 92
-  completed_plans: 90
+  completed_plans: 91
   percent: 93
 ---
 
@@ -28,9 +28,9 @@ progress:
 ## Current Position
 
 Phase: 41 of 41
-Plan: 2 of 6 complete
+Plan: 5 of 6 complete
 Status: Executing
-Last activity: 2026-03-15 — Phase 41 Plan 02 complete: root build truthful, Shopify twin compiles, artifact resilience hooks added
+Last activity: 2026-03-15 — Phase 41 Plan 05 complete: eager Shopify symbol inflation removed, 276-method Slack matrix proven against twin
 
 Progress: [█████████░] 93% (overall: 28 of 29 phases complete; Phase 41 planning in progress)
 
@@ -102,6 +102,7 @@ Progress: [█████████░] 93% (overall: 28 of 29 phases complet
 | Phase 41 P02 | 12min | 2 tasks | 7 files |
 | Phase 41 P03 | 4min | 2 tasks | 6 files |
 | Phase 41 P04 | 9min | 2 tasks | 7 files |
+| Phase 41 P05 | 17min | 1 task | 4 files |
 
 ## Accumulated Context
 
@@ -116,6 +117,13 @@ Progress: [█████████░] 93% (overall: 28 of 29 phases complet
 - Phase 40 added: Verification evidence integrity and conformance truthfulness (re-audit follow-up — remaining evidence/conformance truthfulness gaps)
 
 ### Key Decisions
+
+**2026-03-15 - Phase 41 Plan 05 (literal runtime evidence and manifest-exact Slack surface proof):**
+- Eager Shopify.auth, Shopify.clients, ShopifyClients, ShopifyClients.Rest, Shopify.rest, ShopifyClients.graphqlProxy recordSymbolHit calls removed from factory body; each now fires only from its exact access seam (proxy getter or construct trap)
+- ShopifyClients.Graphql moved from post-factory call to InstrumentedGraphqlClient construct trap — avoids false-positive match on the ShopifyClients pattern check
+- Manifest-exact Slack proof: 276 WebClient methods derived from pinned manifest at test time; filter excludes EventEmitter, string-proto, and non-API prefixes but NOT 'search' (admin.conversations.search and admin.workflows.search are valid Slack methods)
+- Direct WebClient methods (apiCall, paginate, chatStream, filesUploadV2) added to matrix — they appear in WebClient.members without a namespace prefix
+- 278 tests green: 276 method coverage tests + 2 contract assertions (count >= 275, matrix == manifest)
 
 **2026-03-15 - Phase 41 Plan 02 (build gate truth and artifact resilience):**
 - Root build now includes `./twins/*` alongside `./packages/*` — a failing twin compile now causes root build failure; the gate is truthful
