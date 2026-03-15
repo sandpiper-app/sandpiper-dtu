@@ -9,7 +9,7 @@
 
 - ✅ **v1.0 Foundation** - Phases 1-12 (shipped 2026-02-28)
 - ✅ **v1.1 Official SDK Conformance** - Phases 13-20 (shipped 2026-03-10)
-- 🚧 **v1.2 Behavioral Fidelity** - Phases 21-37 (in progress)
+- 🚧 **v1.2 Behavioral Fidelity** - Phases 21-41 (in progress)
 
 ## Phases
 
@@ -43,7 +43,7 @@
 
 ### 🚧 v1.2 Behavioral Fidelity (In Progress)
 
-**Milestone Goal:** Fix adversarial review findings so the twins genuinely behave like the real services — builds pass, coverage is truly evidence-based, OAuth flows are real, REST state persists with correct ID round-trips, Slack covers all 275+ methods with correct scope/auth semantics, and conformance proves 1:1 behavior.
+**Milestone Goal:** Fix adversarial review findings so the twins genuinely behave like the real services — root and twin builds pass, SDK verification and artifact gates stay runnable after failures, coverage is truly execution-derived, OAuth flows are real, REST state persists with correct ID round-trips, Slack scope/auth and upload flows match upstream behavior, and conformance only claims what it actually proves.
 
 - [x] **Phase 21: Test Runner & Seeders** - Fix `pnpm test:sdk` ABI mismatch and update seeders before behavioral changes land (completed 2026-03-12)
 - [x] **Phase 22: Shopify Version Routing & Response Headers** - Parameterize API version routes and add conformance response headers (completed 2026-03-12)
@@ -62,6 +62,7 @@
 - [x] **Phase 35: Slack Behavioral Parity** - OpenID Connect, filesUploadV2, auth/scope semantics, deferred method registration (second review remediation) (completed 2026-03-14)
 - [x] **Phase 36: Shopify Behavioral Parity** - OAuth grant types, missing REST routes, ID round-trip, list filter semantics (second review remediation) (completed 2026-03-14)
 - [x] **Phase 37: Billing Fidelity & Conformance Rigor** - Persistent billing shapes and conformance harness 1:1 proof (second review remediation) (completed 2026-03-14)
+- [ ] **Phase 41: Regression Closure & Release Gate Recovery** - Close the remaining post-remediation regressions in build/test gates, Shopify parity, Slack auth/files parity, and verification truthfulness before any milestone-complete claim is restored
 
 ## Phase Details
 
@@ -522,3 +523,19 @@ Plans:
 - [ ] 40-02-PLAN.md — Runtime symbol execution evidence and provenance-rich coverage report generation
 - [ ] 40-03-PLAN.md — Drift gate hardening for provenance, freshness, and anti-overclaim enforcement
 - [ ] 40-04-PLAN.md — Conformance value-check tightening and historical verification doc realignment
+
+### Phase 41: Regression Closure & Release Gate Recovery
+
+**Goal:** Close every regression still open after Phases 38-40 and restore a truthful release bar: root and twin builds must fail when twins do not compile, `pnpm test:sdk` must finish green without destroying evidence artifacts, Shopify version/OAuth/state flows must match upstream contracts, Slack method scope/OAuth/files behavior must match upstream contracts, and coverage/conformance reporting must prove only what the code actually verifies.
+**Requirements**: INFRA-19, INFRA-20, INFRA-23, INFRA-24, INFRA-25, SHOP-17, SHOP-18, SHOP-20, SLCK-14, SLCK-18, SLCK-20, SLCK-22
+**Depends on:** Phase 40
+**Findings addressed:** Post-4765f9 re-audit: root build and SDK evidence-gate regressions, Shopify build/version/OAuth/state regressions, Slack scope/OAuth/files regressions, inflated runtime evidence, weak conformance proof, and representative-only method-coverage proof
+**Plans:** 6/6 plans pending
+
+Plans:
+- [ ] 41-01-PLAN.md — Wave 0 truth reset: reopen requirement traceability and add RED contracts for build gates, Shopify regressions, Slack regressions, and proof integrity
+- [ ] 41-02-PLAN.md — Gate recovery: include twins in root build, preserve symbol-execution artifacts across failing SDK runs, and restore a trustworthy green verification baseline
+- [ ] 41-03-PLAN.md — Shopify regression closure: quarterly version enforcement, full offline/refresh OAuth shapes, persistent delete/inventory flows, and `orderUpdate` storage repair
+- [ ] 41-04-PLAN.md — Slack regression closure: exhaustive shared method-scope catalog coverage, strict OAuth/OIDC validation, and absolute plus validated `filesUploadV2` behavior
+- [ ] 41-05-PLAN.md — Proof closure: remove synthetic symbol attribution and replace representative Slack sampling with a full manifest-exact bound-surface proof
+- [ ] 41-06-PLAN.md — Conformance semantics and final signoff: tighten deterministic header/value proof, regenerate artifacts, and restore active docs only after the post-restoration full run is green

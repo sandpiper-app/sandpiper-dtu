@@ -2,37 +2,37 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Behavioral Fidelity
-status: completed
-stopped_at: "Completed 40-03-PLAN.md — INFRA-25 provenance validators and hardened drift:check"
-last_updated: "2026-03-14T20:17:40.230Z"
-last_activity: 2026-03-14 — Phase 39 Plan 04 complete (inventory_levels, custom_collections, collects state; 71 integration tests green)
+status: in_progress
+stopped_at: "Planning Phase 41 — phase split into six executable plans after checker hardening"
+last_updated: "2026-03-14T23:55:00.000Z"
+last_activity: 2026-03-14 — Phase 41 planning hardened into six execution-safe plans after adversarial and checker review
 progress:
-  total_phases: 28
+  total_phases: 29
   completed_phases: 28
-  total_plans: 86
+  total_plans: 92
   completed_plans: 86
-  percent: 100
+  percent: 93
 ---
 
 # Project State: Sandpiper DTU
 
 **Last Updated:** 2026-03-14
-**Status:** Milestone complete
+**Status:** Milestone in progress
 
 ## Project Reference
 
 **Core Value:** Sandpiper's integration tests run against behavioral clones that behave identically to real services — fast, deterministic, free, and capable of simulating failure modes impossible to trigger against live APIs.
 
-**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 39 complete (Shopify OAuth/REST/ID parity), Phase 40 remains
+**Current Focus:** Milestone v1.2 Behavioral Fidelity — Phase 41 planning (regression closure and release gate recovery) after the post-remediation re-audit disproved the previous milestone-complete claim
 
 ## Current Position
 
-Phase: 39 of 40
-Plan: 4 of 4 complete
-Status: Complete
-Last activity: 2026-03-14 — Phase 39 Plan 04 complete (inventory_levels, custom_collections, collects state; 71 integration tests green)
+Phase: 41 of 41
+Plan: 0 of 6 complete
+Status: Planning
+Last activity: 2026-03-14 — Phase 41 planning hardened into six execution-safe plans after adversarial and checker review
 
-Progress: [██████████] 100% (overall: Phase 39 complete — 4/4 plans done)
+Progress: [█████████░] 93% (overall: 28 of 29 phases complete; Phase 41 planning in progress)
 
 ## Performance Metrics
 
