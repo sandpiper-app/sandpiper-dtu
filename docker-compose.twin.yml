@@ -39,6 +39,7 @@ services:
       PORT: "3001"
       DB_PATH: ":memory:"
       NODE_ENV: production
+      SLACK_API_URL: "http://localhost:3001/api"
     healthcheck:
       test: ["CMD", "node", "healthcheck.mjs"]
       interval: 10s

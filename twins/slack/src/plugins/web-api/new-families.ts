@@ -26,6 +26,7 @@
 import type { FastifyPluginAsync } from 'fastify';
 import { extractToken } from '../../services/token-validator.js';
 import { checkScope, METHOD_SCOPES } from '../../services/method-scopes.js';
+import { validateOAuthCredentials } from '../../services/oauth-secrets.js';
 import type { SlackStateManager } from '../../state/slack-state-manager.js';
 
 declare module 'fastify' {
@@ -63,31 +64,25 @@ const newFamiliesPlugin: FastifyPluginAsync = async (fastify) => {
 
   // ── openid.connect.* ──────────────────────────────────────────────
   // openid.connect.token: no bearer auth — authenticates via client_id + client_secret.
-  // Real Slack exchanges client_id + client_secret + code for OIDC identity tokens.
-  // The WebClient also sends an Authorization header but the handler must NOT require it.
-  // Client credential map (same shape as oauth.ts CLIENT_SECRETS)
-  // Unknown client IDs (e.g. app IDs used as client IDs in smoke tests) are accepted
-  // if they provide any non-empty client_secret — they just cannot use the OIDC flow
-  // in a way that affects real identity assertions.
-  const OIDC_CLIENT_SECRETS: Record<string, string> = {
-    'test': 'test',
-    'test-client': 'test-client-secret',
-    'test-client-id-19': 'test-client-secret-19',
-  };
+  // Real Slack exchanges client_id + client_secret + (code | refresh_token) for OIDC tokens.
+  // Uses shared OAUTH_CLIENT_SECRETS from oauth-secrets.ts — unknown client_id is invalid_client.
   fastify.post('/api/openid.connect.token', async (request, reply) => {
     const body = (request.body as any) ?? {};
-    const { client_id, client_secret, code } = body;
+    const { client_id, client_secret, code, refresh_token } = body;
+    // Must provide client_id and client_secret
     if (!client_id || !client_secret) {
       return reply.send({ ok: false, error: 'invalid_arguments' });
     }
-    // Validate credentials — only enforce for known client IDs.
-    // Unknown client IDs (e.g. app IDs used in smoke tests) pass through
-    // with any non-empty client_secret.
-    const expectedSecret = OIDC_CLIENT_SECRETS[client_id];
-    if (expectedSecret && client_secret !== expectedSecret) {
-      return reply.send({ ok: false, error: 'invalid_client' });
+    // Must provide either code or refresh_token (OAuthGrantRefresh-compatible)
+    if (!code && !refresh_token) {
+      return reply.send({ ok: false, error: 'invalid_arguments' });
     }
-    const suffix = code ?? 'anon';
+    // Validate credentials against shared map — unknown client_id returns invalid_client
+    const credError = validateOAuthCredentials(client_id, client_secret);
+    if (credError) {
+      return reply.send({ ok: false, error: credError });
+    }
+    const suffix = code ?? refresh_token ?? 'anon';
     const oidcToken = `xoxp-oidc-${suffix}`;
 
     // Ensure U_AUTHED user exists for identity lookups
@@ -200,17 +195,34 @@ const newFamiliesPlugin: FastifyPluginAsync = async (fastify) => {
   fastify.post('/api/files.uploadV2', stub('files.uploadV2', { files: [] }));
 
   // ── oauth.access (legacy, no-auth) ────────────────────────────────────────
-  // No bearer auth — authenticates via client_id/client_secret in body
+  // No bearer auth — authenticates via client_id + client_secret + code in body
   fastify.post('/api/oauth.access', async (request, reply) => {
     const body = (request.body as any) ?? {};
-    if (!body.client_id) return reply.send({ ok: false, error: 'invalid_arguments' });
+    const { client_id, client_secret, code } = body;
+    if (!client_id || !client_secret || !code) {
+      return reply.send({ ok: false, error: 'invalid_arguments' });
+    }
+    // Validate credentials against shared map — unknown/wrong credentials return invalid_client
+    const credError = validateOAuthCredentials(client_id, client_secret);
+    if (credError) {
+      return reply.send({ ok: false, error: credError });
+    }
     return reply.send({ ok: true, access_token: `xoxp-legacy-${Date.now()}`, scope: 'read' });
   });
 
   // ── oauth.v2.exchange (no-auth) ───────────────────────────────────────────
+  // No bearer auth — authenticates via client_id + client_secret + token in body
   fastify.post('/api/oauth.v2.exchange', async (request, reply) => {
     const body = (request.body as any) ?? {};
-    if (!body.client_id) return reply.send({ ok: false, error: 'invalid_arguments' });
+    const { client_id, client_secret, token } = body;
+    if (!client_id || !client_secret || !token) {
+      return reply.send({ ok: false, error: 'invalid_arguments' });
+    }
+    // Validate credentials against shared map — unknown/wrong credentials return invalid_client
+    const credError = validateOAuthCredentials(client_id, client_secret);
+    if (credError) {
+      return reply.send({ ok: false, error: credError });
+    }
     return reply.send({ ok: true, token: `xoxb-exchanged-${Date.now()}`, token_type: 'bot' });
   });
 

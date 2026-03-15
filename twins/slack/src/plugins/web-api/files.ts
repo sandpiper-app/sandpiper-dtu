@@ -41,10 +41,36 @@ const filesPlugin: FastifyPluginAsync = async (fastify) => {
     // SLCK-19: scope headers
     reply.header('X-OAuth-Scopes', tokenRecord.scope);
     reply.header('X-Accepted-OAuth-Scopes', METHOD_SCOPES['files.getUploadURLExternal']?.join(',') ?? '');
+
+    // Validate required arguments: filename must be non-empty, length must be a positive number
+    const body = (request.body as any) ?? {};
+    const { filename, length } = body;
+    if (!filename || typeof filename !== 'string' || filename.trim() === '') {
+      return reply.send({ ok: false, error: 'invalid_arguments' });
+    }
+    const lengthNum = Number(length);
+    if (length === undefined || length === null || length === '' || !Number.isFinite(lengthNum) || lengthNum <= 0) {
+      return reply.send({ ok: false, error: 'invalid_arguments' });
+    }
+
     const file_id = `F_${Math.random().toString(36).substring(2, 11).toUpperCase()}`;
-    // CRITICAL: upload_url MUST be absolute — SDK calls it directly, not via slackApiUrl
-    // Read SLACK_API_URL per-request (set by globalSetup AFTER twin boots)
-    const baseUrl = (process.env.SLACK_API_URL ?? '').replace(/\/api\/?$/, '');
+
+    // CRITICAL: upload_url MUST be absolute — SDK calls it directly, not via slackApiUrl.
+    // Strategy:
+    //   1. Use SLACK_API_URL env var if set (strip trailing /api/ suffix to get base).
+    //   2. Fall back to request origin (protocol + host) if SLACK_API_URL is absent.
+    // This makes the upload URL resolvable even when SLACK_API_URL is not set in the env.
+    let baseUrl = (process.env.SLACK_API_URL ?? '').replace(/\/api\/?$/, '').trim();
+    if (!baseUrl) {
+      // Derive base from the incoming request origin
+      const proto = (request.headers['x-forwarded-proto'] as string) ?? 'http';
+      const host = request.hostname ?? request.headers.host ?? 'localhost';
+      const port = (request.socket as any)?.localPort;
+      // Include port only if non-standard
+      const hostPort = port && port !== 80 && port !== 443 ? `${host}:${port}` : host;
+      baseUrl = `${proto}://${hostPort}`;
+    }
+
     const upload_url = `${baseUrl}/api/_upload/${file_id}`;
     return { ok: true, file_id, upload_url };
   });
@@ -85,6 +111,11 @@ const filesPlugin: FastifyPluginAsync = async (fastify) => {
       return reply.send({ ok: false, error: 'invalid_arguments' });
     }
     if (!Array.isArray(filesArray)) {
+      return reply.send({ ok: false, error: 'invalid_arguments' });
+    }
+
+    // Reject an empty files array — upstream SDK always sends at least one file
+    if (filesArray.length === 0) {
       return reply.send({ ok: false, error: 'invalid_arguments' });
     }
 

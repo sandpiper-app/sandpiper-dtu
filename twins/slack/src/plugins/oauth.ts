@@ -11,6 +11,7 @@
 import type { FastifyPluginAsync } from 'fastify';
 import { randomUUID } from 'node:crypto';
 import type { SlackStateManager } from '../state/slack-state-manager.js';
+import { OAUTH_CLIENT_SECRETS } from '../services/oauth-secrets.js';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -25,12 +26,8 @@ interface CodeBinding {
   clientId: string;
 }
 
-// Client credential map — used at token exchange to validate client_secret
-const CLIENT_SECRETS: Record<string, string> = {
-  'test': 'test',
-  'test-client': 'test-client-secret',
-  'test-client-id-19': 'test-client-secret-19',
-};
+// Re-export from shared source of truth for backwards compat within this file
+const CLIENT_SECRETS = OAUTH_CLIENT_SECRETS;
 
 const oauthPlugin: FastifyPluginAsync = async (fastify) => {
   // GET /oauth/v2/authorize — simplified redirect flow
