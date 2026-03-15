@@ -93,6 +93,20 @@ export interface FieldNormalizerConfig {
    * For array-path comparison use comparisonMode: 'exact'.
    */
   compareValueFields?: string[];
+  /**
+   * Response header names (lowercase) whose values must be compared in both exact and
+   * structural mode. In exact mode, compareHeaders is combined with 'content-type' to
+   * form the set of headers preserved through normalizeResponse. In structural mode,
+   * declared compareHeaders are value-compared after normalizeResponse strips volatile headers.
+   *
+   * Only declare headers that are deterministic across twin and baseline responses
+   * (e.g., 'x-shopify-api-version', 'x-oauth-scopes', 'x-accepted-oauth-scopes').
+   * Do NOT declare volatile headers such as 'x-request-id', 'date', 'retry-after',
+   * or any rate-limit counters.
+   *
+   * Example: compareHeaders: ['x-shopify-api-version']
+   */
+  compareHeaders?: string[];
   /** Custom normalizer function for complex cases */
   custom?: (obj: unknown) => unknown;
 }

@@ -27,12 +27,18 @@ export { slackNormalizer } from './normalizer.js';
 
 /**
  * Full Slack conformance suite combining all individual suites.
- * Runs all conversations, chat, users, and oauth tests in sequence.
+ *
+ * Proof scope:
+ * - Twin mode (pnpm conformance:twin): structural smoke — confirms the twin responds
+ *   with the correct shape and status codes. Tests marked comparisonMode: 'exact' also
+ *   value-compare deterministic fields (ok, error) and declared compareHeaders
+ *   (x-oauth-scopes, x-accepted-oauth-scopes). This is NOT full 1:1 live-API parity.
+ * - Live mode: structural comparison against real Slack API responses.
  */
 export const slackConformanceSuite: ConformanceSuite = {
   name: 'Slack Full',
   description:
-    'Slack conformance subset covering conversations, chat, users, and OAuth',
+    'Slack conformance structural smoke: response shape, status codes, and deterministic value seams (ok, error, oauth scope headers). Not full 1:1 live-API parity.',
   normalizer: slackNormalizer,
   tests: [
     ...conversationsSuite.tests,

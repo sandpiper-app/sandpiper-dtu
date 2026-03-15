@@ -35,11 +35,12 @@ export class ConformanceReporter {
     // only the console label changes so it names the actual proof class:
     //   live     → live parity       (twin compared against real API responses)
     //   offline  → offline fixture   (twin compared against stored fixture responses)
-    //   twin     → twin consistency  (twin compared against itself, structural smoke)
+    //   twin     → structural smoke  (twin compared against itself; proves shape and deterministic
+    //                                 value seams, NOT full value-level 1:1 live-API parity)
     const proofScopeLabel: Record<typeof report.mode, string> = {
       live: 'live parity',
       offline: 'offline fixture',
-      twin: 'twin consistency',
+      twin: 'structural smoke',
     };
     const displayMode = proofScopeLabel[report.mode] ?? report.mode;
 

@@ -27,4 +27,9 @@ export const shopifyNormalizer: FieldNormalizerConfig = {
     'edges.*.node.updatedAt': '<TIMESTAMP>',
   },
   compareValueFields: ['ok'],
+  // x-shopify-api-version is echoed deterministically from the versioned URL path on every
+  // REST and GraphQL response. It is safe to value-compare because both the twin call and
+  // the baseline call use the same request URL, so the version string will always match.
+  // Do NOT add volatile headers (x-request-id, date, retry-after) here.
+  compareHeaders: ['x-shopify-api-version'],
 };

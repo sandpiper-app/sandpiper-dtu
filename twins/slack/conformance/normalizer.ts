@@ -32,4 +32,10 @@ export const slackNormalizer: FieldNormalizerConfig = {
   // twin and live API must agree on both values exactly.  Success-path `ts`
   // and ID fields remain non-deterministic and are excluded here.
   compareValueFields: ['ok', 'error'],
+  // x-oauth-scopes and x-accepted-oauth-scopes are set deterministically by the twin for
+  // every authenticated request: x-oauth-scopes reflects the token's granted scope string,
+  // x-accepted-oauth-scopes reflects the method's required scope list. Both are fixed for
+  // a given token + method combination and are safe to value-compare.
+  // Do NOT add volatile headers (x-rate-limit-limit, x-rate-limit-remaining, retry-after).
+  compareHeaders: ['x-oauth-scopes', 'x-accepted-oauth-scopes'],
 };

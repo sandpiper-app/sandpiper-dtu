@@ -119,6 +119,35 @@ export function compareResponsesStructurally(
     });
   }
 
+  // compareHeaders in structural mode: value-compare explicitly declared deterministic headers
+  if (normalizer?.compareHeaders?.length) {
+    for (const headerName of normalizer.compareHeaders) {
+      const lcName = headerName.toLowerCase();
+      const twinVal = twin.headers[lcName];
+      const baselineVal = baseline.headers[lcName];
+      if (twinVal !== undefined && baselineVal !== undefined && twinVal !== baselineVal) {
+        differences.push({
+          path: `headers.${lcName}`,
+          kind: 'changed',
+          lhs: twinVal,
+          rhs: baselineVal,
+        });
+      } else if (twinVal === undefined && baselineVal !== undefined) {
+        differences.push({
+          path: `headers.${lcName}`,
+          kind: 'deleted',
+          rhs: baselineVal,
+        });
+      } else if (twinVal !== undefined && baselineVal === undefined) {
+        differences.push({
+          path: `headers.${lcName}`,
+          kind: 'added',
+          lhs: twinVal,
+        });
+      }
+    }
+  }
+
   // Compare body structure recursively
   compareStructure(twinBody, baselineBody, 'body', differences);
 
@@ -230,16 +259,36 @@ function compareStructure(
 
 /**
  * Apply normalization to a response: strip fields, replace with placeholders.
+ *
+ * Header policy:
+ * - 'content-type' is always preserved when present (structural content proof).
+ * - Any header name listed in normalizer.compareHeaders is preserved so that
+ *   deterministic proof headers (e.g. x-shopify-api-version, x-oauth-scopes)
+ *   survive into the exact-mode deep-diff comparison.
+ * - All other headers are stripped because they are volatile across calls.
  */
 function normalizeResponse(
   response: ConformanceResponse,
   normalizer: FieldNormalizerConfig
 ): ConformanceResponse {
-  // Only keep semantically meaningful headers (content-type).
-  const { 'content-type': contentType } = response.headers;
+  // Build the retained headers: content-type plus any compareHeaders the suite
+  // has explicitly opted into (deterministic seams only).
+  const retainedHeaders: Record<string, string> = {};
+  const contentType = response.headers['content-type'];
+  if (contentType) {
+    retainedHeaders['content-type'] = contentType;
+  }
+  for (const headerName of normalizer.compareHeaders ?? []) {
+    const lcName = headerName.toLowerCase();
+    const value = response.headers[lcName];
+    if (value !== undefined) {
+      retainedHeaders[lcName] = value;
+    }
+  }
+
   const normalized: ConformanceResponse = {
     status: response.status,
-    headers: contentType ? { 'content-type': contentType } : {},
+    headers: retainedHeaders,
     body: deepClone(response.body),
   };
 
